@@ -1,0 +1,25 @@
+---
+  languageCode: "zh-cn"
+  metaDataFormat: "yaml"
+  contentdir: "content"
+  layoutdir: "layouts"
+  publishdir: "public"
+  builddrafts: false
+  baseurl: "http://zhu327.github.io/"
+  canonifyurls: true
+  permalinks:
+    post: ":year/:month/:day/:title/"
+    fixed: ":title/"
+  pygmentsuseclasses: true
+  PygmentsCodeFences: true
+  paginate: 5
+  rssuri: "feed.xml"
+  taxonomies:
+    tag: "tags"
+  params:
+    Title: "跬步"
+    Tagline: "On Coding"
+    Author: "Timmy"
+    DateForm: "Jan 2 2006"
+    Github: "http://github.com/zhu327"
+    duoshuoShortname: "zhu327"
