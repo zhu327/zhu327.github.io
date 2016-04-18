@@ -38,6 +38,7 @@ finnally:
     cursor.close()
     connect.close()
 ```
+<!--more-->
 
 ### 封装思路
 

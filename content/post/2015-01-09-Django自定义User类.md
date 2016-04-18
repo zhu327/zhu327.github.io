@@ -14,6 +14,7 @@ tags: ["django"]
 [Django forum](https://github.com/zhu327/forum)，学习Django了，准备写一个论坛，想法是实现一个如 <http://f2e.im/> 这样的现代论坛，数据驱动开发，第一步就是设计数据库表结构，Django自带了用户模块，但是定义的字段太少，所以需要自定义扩展下。
 
 在`settings.py`下新增自定义用户类:
+<!--more-->
 
 ```python
 AUTH_USER_MODEL = 'myapp.MyUser'

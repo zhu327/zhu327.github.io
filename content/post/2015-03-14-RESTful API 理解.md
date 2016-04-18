@@ -14,6 +14,7 @@ tags: ["web"]
 
 REST == Representational State Transfer，意思是表现层状态转化，我们来分解这个概念。  
 从字面以上理解这是一个操作的过程，实际上它省略了主语资源(Resources)，合起来就是资源的表现层状态转化。
+<!--more-->
 
 ### 资源 Resources
 

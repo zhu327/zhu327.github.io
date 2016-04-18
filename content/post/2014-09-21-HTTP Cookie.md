@@ -16,6 +16,7 @@ response header 中添加 `Set-Cookie`信息，cookie是一组key，value值。
                 [; expires=<date>][; domain=<domain_name>]
                 [; path=<some_path>][; secure][; httponly]
 
+<!--more-->
 * expires Cookie过期时间
 * domain Cookie的生效域
 * path Cookie的生效路径

@@ -14,6 +14,7 @@ flask使用的是jinja2模板,jinja2自带了i18n扩展支持,但是需要Flask-
 `gettext`是*nix下的标准i18n实现,Python的标准库内置`gettext`,简单的理解一下,就是通过已有的字典映射文件,然后获取环境的语言信息来判断当前使用哪一个语言映射,最终渲染出不同的语言文本,这里就不详细研究`gettext`了,提供我的参考文档:
 
 > <http://underthehood.blog.51cto.com/2531780/1663604>
+<!--more-->
 
 ## flask中使用jinja2
 

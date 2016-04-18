@@ -14,6 +14,7 @@ tags: ["json"]
 <script type="text/javascript" src="http://server2.example.com/RetrieveUser?UserId=1823&jsonp=parseResponse"> </script>
 ```
 
+<!--more-->
 响应内容:
 
 ```javascript

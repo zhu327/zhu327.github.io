@@ -15,6 +15,7 @@ def get_current_user(self):
     if not user_id: return None
     return self.user_model.get_user_by_uid(int(user_id)) # 从数据库中取用户信息
 ```
+<!--more-->
 
 带着疑惑询问了某同事，得到了一个比较靠谱的答案。
 

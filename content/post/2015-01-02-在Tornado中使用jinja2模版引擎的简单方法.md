@@ -14,6 +14,7 @@ tags: ["web", "jinja2", "tornado"]
  
 Google了下Tornado使用jinja2的方法，发现大部分人的实现方法都是重写`ReaquestHandle`的`render`方法，这样的虽然比较简单但是不利于保持Tornado的完整性，所以我使用参考文章中的方法。
 
+<!--more-->
 通过查看代码发现，Tornado在渲染模版的时候会查找`settings["template_loader"]`这个实例，如果没有就用默认模版渲染，所以要做的就是在创建`tornado.web.Application`的时候定义`template_loader`。
 
 ```python

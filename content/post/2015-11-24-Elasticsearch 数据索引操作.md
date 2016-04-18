@@ -14,6 +14,7 @@ IK中文分词
 
 ## 简单搜索
 
+<!--more-->
 ### 1. DSL搜索
 
 ```javascript

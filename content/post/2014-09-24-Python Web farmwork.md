@@ -17,6 +17,7 @@ tags: ["python", "web"]
 4. 定制模版引擎；
 5. 拦截器，在处理函数产生响应前，做预处理，相当于WSGI中middlware的概念，比如处理Cookie等。
 
+<!--more-->
 ### Request
 
 ```python

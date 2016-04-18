@@ -14,6 +14,7 @@ tags: ["python"]
 
 通过`python -V`看到系统已预装`python 2.6.6`，直接在`$OPENSHIFT_DATA_DIR`下安装2.7.10可以正常使用，但需要注意其调用路径为`$OPENSHIFT_DATA_DIR/bin/python`。
 
+<!--more-->
 ```shell
 cd $OPENSHIFT_REPO_DIR
 wget https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz

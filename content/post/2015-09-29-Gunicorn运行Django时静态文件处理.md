@@ -14,6 +14,7 @@ tags: ["django"]
 ### 方法1
 
 强制使用Django的静态文件处理器,通过`python manage.py runserver`的时候,如果DEBUG=True,Django会自动加载自带的静态文件处理器,但是在Gunicorn下,这个设置会失效,我们可以强制使用Django自带的静态文件处理器.
+<!--more-->
 
 ```python
 from django.conf import settings

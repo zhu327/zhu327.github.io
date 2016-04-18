@@ -17,6 +17,7 @@ tags: ["elasticsearch"]
 ```shell
     sudo apt-get install openjdk-7-jre
 ```
+<!--more-->
 
 2. 下载并安装Elasticsearch;
     > https://www.elastic.co/downloads/elasticsearch

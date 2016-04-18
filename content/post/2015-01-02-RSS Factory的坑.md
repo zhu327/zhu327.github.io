@@ -16,6 +16,7 @@ template_loader=JinjaLoader(os.path.join(os.path.dirname(__file__), 'templates/'
     autoescape=True, extensions=['jinja2.ext.autoescape']),
 )
 ```
+<!--more-->
 
 `autoescape=True`开启jinja2的自动转义功能，`extensions=['jinja2.ext.autoescape'])`为jinja2增加扩展，在模版中可以控制某些不需要转义的段落关闭转义。
 

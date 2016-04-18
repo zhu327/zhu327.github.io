@@ -14,6 +14,7 @@ tags: ["web", "django"]
 
 OAuth2.0协议定义了4种授权模式，为了学习OAuth2.0授权协议，这里只实现简化模式。以下为简化模式授权过程。
 
+<!--more-->
 1. 客户端对认证URI`/api/authorize`发起`GET`请求，必须带参数：
    * `response_type`：表示授权类型，此处的值固定为"token"，必选项。
    * `client_id`：表示客户端的ID，必选项。

@@ -80,6 +80,7 @@ def trace_model(sender, instance, raw, using, update_fields, **kwargs):
     except Exception:
         client.captureException()
 ```
+<!--more-->
 
 核心代码就是遍历Model的fields，比较新老数据，如果是外键，还需要记录Model的`__unicode__`方法返回的字符串，最后JSON序列话保存。
 

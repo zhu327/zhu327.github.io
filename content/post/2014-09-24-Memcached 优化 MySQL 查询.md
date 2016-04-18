@@ -14,6 +14,7 @@ Memcached是一个分布式的内存key-value存储系统，由于数据保存�
 
 对于SQL查询先以SQL语句为key查询Memcached，如果查到直接返回，如果没有再去查询MySQL，并把结果缓存到Memcached，下次再次查询时速度显著提升，因为Memcached的数据是保存在内存中的。
 
+<!--more-->
 ### 实现
 
 ```python

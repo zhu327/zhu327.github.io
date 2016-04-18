@@ -19,6 +19,7 @@ tags: ["Django"]
     # setting中设置
     AUTH_USER_MODEL = 'forum.ForumUser' # 指定用户对象使用的类
     ```
+<!--more-->
 
 2. 扩展Model的方法
 

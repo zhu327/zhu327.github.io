@@ -14,6 +14,7 @@ tags: ["python"]
 实现了`__enter__()`与`__exit__()`方法的类实例，运行时，先运行`__enter__()`方法，再运行目标函数，无论是否抛出错误，都运行`__exit__()`方法。  
 with语句可以方便的取代`try:/except:`语句达到在运行函数前先构建环境，退出函数清理环境的目的。  
 
+<!--more-->
 ```python
 with open('filename') as somefile:
     for line in somefile:

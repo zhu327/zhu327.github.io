@@ -14,6 +14,7 @@ Blog现有2个分支：
 1. [awesome](https://github.com/zhu327/boz/tree/awesome)：廖雪峰教程的标准实现
 2. master：: 部署在SAE(Sina App Engine)的版本
 
+<!--more-->
 master相对与awesome的改变主要是在前端的改变，前端可分为访客面与管理面，两面相对独立。  
 访客面UI完全clone自[Heroic Yang's Blog](http://heroicyang.com/)；  
 管理面UI由[Bootstrap](https://github.com/twbs/bootstrap/)简单的拼凑出来，界面简陋，实现了Blog后台管理基本功能。
