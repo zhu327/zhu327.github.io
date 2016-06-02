@@ -28,7 +28,7 @@ haystack不用说,在Django中实现搜索基本上都会用到,因为要用到E
 
 从上面的issues中可以看出,如果需要解决这个问题,需要重写elasticsearch backends中相关设置,在查看了[elasticsearch backends](https://github.com/django-haystack/django-haystack/blob/master/haystack/backends/elasticsearch_backend.py)代码后,发现除了`DEFAULT_SETTINGS`中配置自定义analyzer,`DEFAULT_FIELD_MAPPING`与`FIELD_MAPPINGS`分别用于设置field在mapping中analyzer,重写相关配置与方法可达到定义不同字段的分词器.
 
-但是重写配置方法还是太麻烦了,能不能更简单点呢,所以找到了elasticstack,用上了这个工具后,配置默认的analyzer就非常简单了.
+~~但是重写配置方法还是太麻烦了,能不能更简单点呢,所以找到了elasticstack,用上了这个工具后,配置默认的analyzer就非常简单了.~~
 
 ```python
 HAYSTACK_CONNECTIONS = {
@@ -190,7 +190,7 @@ MapperParsingException[Root mapping definition has unsupported parameters:  [_bo
 
 > <http://stackoverflow.com/questions/35443179/django-haystack-locationfield-created-as-string-instead-of-geo-point-in-elastics>  
 
-### 关于拼音搜索
+### ~~关于拼音搜索~~
 
 在上面实现的api中,实现了一个简单搜索建议的api,本来计划是在获取建议标题时支持拼音搜索的,但是有一些分词与mapping上的问题,暂时还未实现.
 
@@ -218,7 +218,7 @@ MapperParsingException[Root mapping definition has unsupported parameters:  [_bo
              "filter": {
                  "my_pinyin" : {
                      "type" : "pinyin",
-                     "first_letter" : "none",,
+                     "first_letter" : "none",
                      "padding_char" : ""
                  }
              }
