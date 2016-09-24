@@ -10,7 +10,7 @@ tags: ["tornado"]
 
 1. 学习IO多路复用: epoll  
   <http://scotdoyle.com/python-epoll-howto.html>  
-  <http://www.leyle.com/archives/how_to_use_linux_epoll_with_python.html>
+  <https://fukun.org/archives/10051470.html>
 
 2. Reactor模型  
   <http://blog.csdn.net/u013074465/article/details/46276967>  
