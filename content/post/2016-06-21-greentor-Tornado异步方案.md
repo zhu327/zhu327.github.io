@@ -1,7 +1,7 @@
 ---
 date: 2016-06-21T18:51:38+08:00
 title: greentor Tornado异步方案
-tags: ["tornado"]
+tags: ["tornado", "greentor"]
 ---
 
 > <https://emptysqua.re/blog/motor-internals-how-i-asynchronized-a-synchronous-library/>
@@ -63,4 +63,3 @@ def tornado_motor_sock_method(method):
 > <https://github.com/alex8224/gTornado>
 
 greentor的大部分代码来自gTornado，感谢作者为我答疑解惑。下一步我会继续针对IOStream进行优化，以提升IOStream性能。
-
