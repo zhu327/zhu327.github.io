@@ -52,7 +52,7 @@ class EhrElasticsearchSearchBackend(elasticsearch_backend.ElasticsearchSearchBac
                         "type": "custom",
                         "tokenizer": "ik",
                         "filter": [
-                            "full_pinyin",
+                            "first_letter_pinyin",
                         ]
                     },
                 },
@@ -62,6 +62,11 @@ class EhrElasticsearchSearchBackend(elasticsearch_backend.ElasticsearchSearchBac
                         "first_letter": "none",
                         "padding_char": ""
                     },
+                    "first_letter_pinyin" : {
+                        "type" : "pinyin",
+                        "first_letter" : "only",
+                        "padding_char" : ""
+                    }
                 }
             }
         }
@@ -90,3 +95,44 @@ class EhrElasticsearchSearchEngine(elasticsearch_backend.ElasticsearchSearchEngi
 
 在实践的过程中对一些搜索的概念有了更多的了解，通过不同的analyzer组合尝试了很多的分词方式，最终也没有解决简拼的问题，但是解决了基本的拼音联想，以及在重写haystack elasticsearch backends的过程中对ES的配置也学习很多。
 
+### 补充
+
+2016-10-19 同时支持全拼简拼方案
+
+修改了EhrElasticsearchSearchBackend中的settings部分，使haystack中的`EdgeNgramField`支持ik分词后解析出简拼词元，对于需要同时支持全拼与简拼搜索的字段，比如文章的标题，同时创建全拼,简拼索引，搜索时使用或，以下有示例
+
+```python
+from haystack import indexes
+from .models import Article
+
+
+class ArticleIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, model_attr='content', null=True)
+    title_full = indexes.NgramField(model_attr='title', null=True) # 创建标题的全拼索引字段
+    title_lite = indexes.EdgeNgramField(model_attr='title', null=True) # 简拼索引字段
+
+    def get_model(self):
+        return Article
+
+
+from haystack.query import SQ
+from haystack.query import SearchQuerySet, EmptySearchQuerySet
+from haystack.inputs import AutoQuery
+
+# 搜索北京
+quey = u'北京'
+queryset = SearchQuerySet().filter(
+    SQ(text=AutoQuery(query))|SQ(title_full=query)|SQ(title_lite=query))
+
+# 搜索beijing
+quey = u'beijing'
+queryset = SearchQuerySet().filter(
+    SQ(text=AutoQuery(query))|SQ(title_full=query)|SQ(title_lite=query))
+
+# 搜索bj
+quey = u'bj'
+queryset = SearchQuerySet().filter(
+    SQ(text=AutoQuery(query))|SQ(title_full=query)|SQ(title_lite=query))
+```
+
+实现了同时支持 汉字 全拼 简拼 搜索结果。
