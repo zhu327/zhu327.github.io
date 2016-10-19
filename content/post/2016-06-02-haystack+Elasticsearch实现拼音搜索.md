@@ -7,9 +7,9 @@ tags: ["haystack", "elasticsearch"]
 前一篇[Django+Elasticsearch实现搜索功能](https://zhu327.github.io/2016/05/30/djangoelasticsearch%E5%AE%9E%E7%8E%B0%E6%90%9C%E7%B4%A2%E5%8A%9F%E8%83%BD/)已经实现了搜索的基本功能，但是其实还是有一些错误，这里先纠正一下。
 
 1. 以为通过elsticstack实现了默认的分词器
-  通过查看elasticsearch types的mapping发现string类型的根本就没有加载ik analyzer
+   通过查看elasticsearch types的mapping发现string类型的根本就没有加载ik analyzer
 2. 拼音分词方式设置错误
-  拼音分词的尝试过程中，终于实现了全拼分词
+   拼音分词的尝试过程中，终于实现了全拼分词
 
 ### 环境搭建
 
@@ -120,19 +120,16 @@ from haystack.query import SearchQuerySet, EmptySearchQuerySet
 from haystack.inputs import AutoQuery
 
 # 搜索北京
-quey = u'北京'
-queryset = SearchQuerySet().filter(
-    SQ(text=AutoQuery(query))|SQ(title_full=query)|SQ(title_lite=query))
+query = u'北京'
+queryset = SearchQuerySet().filter(SQ(text=AutoQuery(query))|SQ(title_full=query)|SQ(title_lite=query))
 
 # 搜索beijing
-quey = u'beijing'
-queryset = SearchQuerySet().filter(
-    SQ(text=AutoQuery(query))|SQ(title_full=query)|SQ(title_lite=query))
+query = u'beijing'
+queryset = SearchQuerySet().filter(SQ(text=AutoQuery(query))|SQ(title_full=query)|SQ(title_lite=query))
 
 # 搜索bj
-quey = u'bj'
-queryset = SearchQuerySet().filter(
-    SQ(text=AutoQuery(query))|SQ(title_full=query)|SQ(title_lite=query))
+query = u'bj'
+queryset = SearchQuerySet().filter(SQ(text=AutoQuery(query))|SQ(title_full=query)|SQ(title_lite=query))
 ```
 
 实现了同时支持 汉字 全拼 简拼 搜索结果。
