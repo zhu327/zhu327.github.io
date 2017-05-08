@@ -1,6 +1,5 @@
 ---
 date: 2017-05-08T15:19:58+08:00
-draft: true
 title: zerorpc api设计指南
 tags: ["zerorpc"]
 ---
