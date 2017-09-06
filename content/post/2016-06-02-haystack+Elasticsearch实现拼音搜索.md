@@ -1,6 +1,6 @@
 ---
 date: 2016-06-02T11:05:17+08:00
-title: haystack+Elasticsearch实现拼音搜索
+title: haystack-Elasticsearch实现拼音搜索
 tags: ["haystack", "elasticsearch"]
 ---
 

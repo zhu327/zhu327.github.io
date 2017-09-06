@@ -1,6 +1,6 @@
 ---
 date: 2016-05-30T09:51:22+08:00
-title: Django+Elasticsearch实现搜索功能
+title: Django-Elasticsearch实现搜索功能
 tags: ["haystack", "elasticsearch"]
 ---
 
