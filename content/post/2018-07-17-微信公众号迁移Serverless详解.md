@@ -6,6 +6,8 @@ draft: false
 
 3月腾讯云函数计算开放测试, 看到的第一反应是这种Serverless太适合做微信公众号的后端来实现自动应答了, 尝试把我服务了3年的一个公众号迁移到腾讯云函数计算, 结果因为API gateway的一个功能缺失搁置了, 这周腾讯云API gateway终于补上了集成响应的能力, 能正常服务我的公众号, 这里记录下实现过程.
 
+<!--more-->
+
 ### 改造werobot
 
 <https://github.com/zhu327/ifwechat>
