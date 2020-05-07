@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Django db使用MySQL连接池 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Django db使用MySQL连接池</h1>
+  <span class="post-date">Sep 25 2016</span>
+  <p>Django db模块本身不支持MySQL连接池，只有一个配置<code>CONN_MAX_AGE</code>连接最大存活时间，如果WSGI服务器使用了线程池技术，会达到连接复用的效果。但是如果WSGI服务如果是每个请求都创建新的线程，那么这个配置没有任何效果，因为连接保存在<code>Thread.local()</code>名称空间中，在不同的线程中不能复用。</p>
+
+<p>在上一篇<a href="https://zhu327.github.io/2016/09/25/greentor-mysql连接池实现/">greentor MySQL连接池实现</a>中已经实现了MySQL连接池，只需要重写Django MySQL backend以支持连接池，就能达到连接复用的目的，减少socket 3次握手的开销，提高性能。</p>
+
+<p><a href="https://github.com/zhu327/greentor/blob/master/demo/core/base.py">https://github.com/zhu327/greentor/blob/master/demo/core/base.py</a></p>
+
+<p></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">django.db.backends.mysql.base</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SafeText</span><span class="p">,</span> <span class="n">SafeBytes</span><span class="p">,</span> <span class="n">six</span><span class="p">,</span>
+    <span class="n">DatabaseWrapper</span> <span class="k">as</span> <span class="n">BaseDatabaseWrapper</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">greentor.mysql</span> <span class="kn">import</span> <span class="n">ConnectionPool</span>
+
+<span class="k">class</span> <span class="nc">DatabaseWrapper</span><span class="p">(</span><span class="n">BaseDatabaseWrapper</span><span class="p">):</span>
+    <span class="sa">u</span><span class="s2">&#34;&#34;&#34;
+</span><span class="s2">    支持greentor mysql connection pool 的backends
+</span><span class="s2">    &#34;&#34;&#34;</span>
+    <span class="n">pools</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># 类变量用于保存所有不同数据库的连接</span>
+
+    <span class="k">def</span> <span class="nf">get_new_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn_params</span><span class="p">):</span>
+        <span class="c1"># conn = Database.connect(**conn_params)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pools</span><span class="p">:</span> <span class="c1"># 如果需要的数据库还没有连接池则新建连接池</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pools</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">]</span> <span class="o">=</span> <span class="n">ConnectionPool</span><span class="p">(</span><span class="n">mysql_params</span><span class="o">=</span><span class="n">conn_params</span><span class="p">)</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pools</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">]</span><span class="o">.</span><span class="n">get_conn</span><span class="p">()</span> <span class="c1"># 获取新的连接时从连接池中获取</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="n">SafeText</span><span class="p">]</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="n">six</span><span class="o">.</span><span class="n">text_type</span><span class="p">]</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="n">SafeBytes</span><span class="p">]</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">conn</span>
+
+    <span class="k">def</span> <span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span> <span class="c1"># 不再直接关闭连接，而是释放连接到连接池中</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pools</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">]</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">)</span></code></pre></div>
+<p>修改数据库配置引擎</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;NAME&#39;</span><span class="p">:</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;HOST&#39;</span><span class="p">:</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+        <span class="c1"># &#39;ENGINE&#39;: &#39;django.db.backends.mysql&#39;,</span>
+        <span class="s1">&#39;ENGINE&#39;</span><span class="p">:</span> <span class="s1">&#39;core&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;USER&#39;</span><span class="p">:</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PASSWORD&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+<p>连接池backend的代码虽然很少，但是在尝试过程中，基本把Django db模块的代码都过了一遍，感觉自己又牛B了一点点，哈哈。</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2016\/09\/25\/django-db%E4%BD%BF%E7%94%A8mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0\/';
+        this.page.identifier = '\/2016\/09\/25\/django-db%E4%BD%BF%E7%94%A8mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

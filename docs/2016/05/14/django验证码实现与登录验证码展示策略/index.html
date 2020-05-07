@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Django验证码实现与登录验证码展示策略 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Django验证码实现与登录验证码展示策略</h1>
+  <span class="post-date">May 14 2016</span>
+  <p>Django实现验证码有很多现成可用的库，Google后选择<a href="https://github.com/mbi/django-simple-captcha">Django Simple Captcha</a>，需要做一些展示与表单验证方面的定制。</p>
+
+<h3 id="验证码展示">验证码展示</h3>
+
+<p>默认的验证码展示形式不是很适合我们网站的样式，所以在settings中做了一些定制。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 验证码设置</span>
+<span class="n">CAPTCHA_FOREGROUND_COLOR</span> <span class="o">=</span> <span class="s1">&#39;#d83a46&#39;</span> <span class="c1"># 验证码字体颜色</span>
+<span class="n">CAPTCHA_BACKGROUND_COLOR</span> <span class="o">=</span> <span class="s1">&#39;#f5f5f5&#39;</span> <span class="c1"># 验证码背景颜色</span>
+<span class="n">CAPTCHA_NOISE_FUNCTIONS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;captcha.helpers.noise_dots&#39;</span><span class="p">,)</span> <span class="c1"># 验证码混淆配置，这里设置的点点</span>
+<span class="n">CAPTCHA_CHALLENGE_FUNCT</span> <span class="o">=</span> <span class="s1">&#39;random_char_challenge&#39;</span> <span class="c1"># 验证码生成函数配置</span></code></pre></div>
+<p>为了提供验证码的识别率，定制了一个随机字符串生成函数来生成验证码。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># coding: utf-8</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">captcha.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">u</span>
+
+<span class="k">def</span> <span class="nf">random_char_challenge</span><span class="p">():</span>
+    <span class="n">chars</span><span class="p">,</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">u</span><span class="p">(</span><span class="s1">&#39;acefghkprtuvwxy34679&#39;</span><span class="p">),</span> <span class="n">u</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CAPTCHA_LENGTH</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">ret</span></code></pre></div>
+<p></p>
+
+<h3 id="表单验证">表单验证</h3>
+
+<p>Django Simple Captcha提供了<code>from captcha.fields import CaptchaField</code>用来做验证，但是这个field相对来说说是不可见的，其实参数是提供了验证码与hashkey两个，所以自己按照它Model的逻辑写了一个验证表单。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># coding: utf-8</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">captcha.models</span> <span class="kn">import</span> <span class="n">CaptchaStore</span>
+
+
+<span class="k">class</span> <span class="nc">CaptchaForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">Form</span><span class="p">):</span>
+    <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">    验证码验证Form
+</span><span class="s1">    &#39;&#39;&#39;</span>
+    <span class="n">hashkey</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;图片验证码的key值&#39;</span><span class="p">)</span>
+    <span class="n">captcha</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;图片验证码&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">clean_hashkey</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        验证码key值
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="n">hashkey</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hashkey&#39;</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hashkey</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">forms</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;hashkey长度错误&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">hashkey</span>
+
+    <span class="k">def</span> <span class="nf">clean_captcha</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        验证验证码正确
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="n">hashkey</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hashkey&#39;</span><span class="p">)</span>
+        <span class="n">captcha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;captcha&#39;</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">captcha</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">forms</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;验证码长度错误&#39;</span><span class="p">)</span>
+        <span class="n">cs</span> <span class="o">=</span> <span class="n">CaptchaStore</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">response</span><span class="o">=</span><span class="n">captcha</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">hashkey</span><span class="o">=</span><span class="n">hashkey</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cs</span> <span class="ow">or</span> <span class="n">cs</span><span class="o">.</span><span class="n">expiration</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">forms</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;验证码错误&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">captcha</span></code></pre></div>
+<h3 id="登录验证码显示策略">登录验证码显示策略</h3>
+
+<p>刚开始做登录的时候，每次登录都必须填写验证码，产品同事表示用户体验不是很好，要求首次登录不需要显示验证码，输入密码错误后才显示。这里涉及到一个判断逻辑。</p>
+
+<ol>
+<li>用户登录，提交用户名/密码，在redis中取用户输入密码错误次数</li>
+<li>如果次数超过1则验证是否提交验证码，否则直接验证用户名密码</li>
+<li>判断如果用户的密码提交错误redis计数+1，并更新过期时间为10分钟</li>
+<li>如果用户正常登录则删除用户保存在redis中的数</li>
+</ol>
+
+<h3 id="参考">参考</h3>
+
+<blockquote>
+<p><a href="http://blog.csdn.net/tanzuozhev/article/details/50458688">http://blog.csdn.net/tanzuozhev/article/details/50458688</a></p>
+</blockquote>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2016\/05\/14\/django%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%8E%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81%E7%A0%81%E5%B1%95%E7%A4%BA%E7%AD%96%E7%95%A5\/';
+        this.page.identifier = '\/2016\/05\/14\/django%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%8E%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81%E7%A0%81%E5%B1%95%E7%A4%BA%E7%AD%96%E7%95%A5\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

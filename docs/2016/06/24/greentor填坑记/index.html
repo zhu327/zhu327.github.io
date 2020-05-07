@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      greentor填坑记 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">greentor填坑记</h1>
+  <span class="post-date">Jun 24 2016</span>
+  <p>经过2周的学习开发，Tornado + Django ORM的环境搭好了，这阶段的学习告一段落，虽然这个环境是一个玩具环境，没有经过生产的检验，但是在搭环境的过程中学习了Tornado，greenlet，Django数据库相关的姿势，感觉还是有不少提升。</p>
+
+<p>在这2天的调试中，暴露出了2个比较严重的问题，记录下填坑过程。</p>
+
+<h3 id="1-线程安全">1. 线程安全</h3>
+
+<p>WSGI服务器在接受到新的http请求时会开一个新线程来调用application进行处理，Django ORM在有数据库查询的时候，会在当前线程中创建一个新的数据库连接并保存到线程local空间中，在同一个线程中的连接是可以被复用的。不同的线程持有不同的连接，这样就保证Django ORM是线程安全的。</p>
+
+<p>Tornado是单线程的，在Tornado中使用Django ORM无论处理多少请求，都会用同一个保存在当前local()中的连接，这样就必然会产生连接使用的冲突。比如同时并发的2个请求，第一个请求关闭了连接，第二个请求还在继续使用这个连接就会抛出异常。</p>
+
+<p>在greentor的配合下，Tornado涉及数据库连接的请求都运行在greenlet中，如果有一个greenlet local来对每个请求的数据库连接进行隔离，就能避免线程安全问题，在这里的greenlet协程完全可以类比为线程。然而greenlet并没有local，那我们就造一个local出来。</p>
+
+<p></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">greenlet</span> <span class="kn">import</span> <span class="n">getcurrent</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;local&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_get_local_dict</span><span class="p">():</span>
+    <span class="n">current</span> <span class="o">=</span> <span class="n">getcurrent</span><span class="p">()</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;_</span><span class="si">%s</span><span class="s1">__local_dict__&#39;</span> <span class="o">%</span> <span class="n">current</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">local</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="n">local_dict</span> <span class="o">=</span> <span class="n">_get_local_dict</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">local_dict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&#34;&#39;local&#39; object has no attribute &#39;</span><span class="si">%s</span><span class="s2">&#39;&#34;</span> <span class="o">%</span> <span class="n">attr</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">local_dict</span> <span class="o">=</span> <span class="n">_get_local_dict</span><span class="p">()</span>
+        <span class="n">local_dict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__delattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="n">local_dict</span> <span class="o">=</span> <span class="n">_get_local_dict</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">local_dict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span></code></pre></div>
+<p>实际上就是在当前greenlet对象上绑定一个字典属性用于存储数据，然后就是对Django的连接打补丁了。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">greentor.glocal</span> <span class="kn">import</span> <span class="n">local</span>
+<span class="kn">from</span> <span class="nn">django.db.utils</span> <span class="kn">import</span> <span class="n">ConnectionHandler</span> <span class="k">as</span> <span class="n">BaseConnectionHandler</span>
+
+
+<span class="k">class</span> <span class="nc">ConnectionHandler</span><span class="p">(</span><span class="n">BaseConnectionHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">databases</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_databases</span> <span class="o">=</span> <span class="n">databases</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connections</span> <span class="o">=</span> <span class="n">local</span><span class="p">()</span>
+
+
+<span class="kn">import</span> <span class="nn">django.db</span>
+<span class="c1"># 使用greenlet local替换threading local,避免threading safe问题</span>
+<span class="nb">setattr</span><span class="p">(</span><span class="n">django</span><span class="o">.</span><span class="n">db</span><span class="p">,</span> <span class="s1">&#39;connections&#39;</span><span class="p">,</span> <span class="n">ConnectionHandler</span><span class="p">())</span></code></pre></div>
+<h3 id="2-连接自动关闭">2. 连接自动关闭</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">signals</span><span class="o">.</span><span class="n">request_finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">close_old_connections</span><span class="p">)</span></code></pre></div>
+<p>Django db会注册一个信号，在请求处理完成后关闭需要关闭的数据库连接，然而在Tornado的环境中，如果没有手动的关闭数据库连接，这个连接会等到greenlet销毁的时候才会关闭。在使用ab对greentor进行测试时，pymysql会抛出<strong>too many connection</strong>异常，这是因为request处理完成后没有关闭greenlet中的数据库连接导致的。这就要求类似于Django，必须在每个请求结束的时候关闭当前greenlet的数据库连接。</p>
+
+<p>在Tornado的<code>RequestHandler</code>提供了<code>on_finish</code>方法用于重写，<code>on_finish</code>方法会在<code>finish</code>方法中被调用，同时要保证<code>finish</code>方法被运行在greenlet中才能关闭对应的数据库连接。提供一个基类:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">tornado.web</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">connection</span>
+
+
+<span class="k">class</span> <span class="nc">BaseRequestHandler</span><span class="p">(</span><span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_finish</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></code></pre></div>
+<p>为了保证这个方法运行在子greenlet中，必须在<code>get</code>，<code>post</code>等等的方法中调用<code>finish</code>方法。</p>
+
+<p>这2个问题本来在Django中是不存在的，强行对pymysql异步后，就出现了。更好的解决方案是使用数据库连接池，每个request进来时在池中申请可用的连接，请求结束时释放连接到池中，这样就实现了连接的复用。</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2016\/06\/24\/greentor%E5%A1%AB%E5%9D%91%E8%AE%B0\/';
+        this.page.identifier = '\/2016\/06\/24\/greentor%E5%A1%AB%E5%9D%91%E8%AE%B0\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

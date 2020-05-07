@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      微信公众号迁移Serverless详解 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">微信公众号迁移Serverless详解</h1>
+  <span class="post-date">Jul 17 2018</span>
+  <p>3月腾讯云函数计算开放测试, 看到的第一反应是这种Serverless太适合做微信公众号的后端来实现自动应答了, 尝试把我服务了3年的一个公众号迁移到腾讯云函数计算, 结果因为API gateway的一个功能缺失搁置了, 这周腾讯云API gateway终于补上了集成响应的能力, 能正常服务我的公众号, 这里记录下实现过程.</p>
+
+<p></p>
+
+<h3 id="改造werobot">改造werobot</h3>
+
+<p><a href="https://github.com/zhu327/ifwechat">https://github.com/zhu327/ifwechat</a></p>
+
+<p>ifwechat这个公众号是基于<a href="https://github.com/offu/WeRoBot">werobot</a>实现的, 之前以WSGI的方式部署在<a href="https://sae.sina.com.cn/">SAE</a>上, 而不同于WSGI, 函数计算从API gateway触发的事件是一个Python的字典, 需要从这个事件字典里面获取http request的信息来调用werobot的方法. API gateway的触发事件参考: <a href="https://cloud.tencent.com/document/product/583/13197">https://cloud.tencent.com/document/product/583/13197</a></p>
+
+<p>需要实现一个从http request事件到werobot的message的wrapper handler:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># coding: utf-8</span>
+
+<span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">robot</span>
+
+<span class="n">robot</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_pyfile</span><span class="p">(</span><span class="s1">&#39;configs.py&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">werobot_handler</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s2">&#34;queryString&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;timestamp&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+    <span class="n">nonce</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s2">&#34;queryString&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;nonce&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+    <span class="n">signature</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s2">&#34;queryString&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;signature&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">robot</span><span class="o">.</span><span class="n">check_signature</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
+                                 <span class="n">nonce</span><span class="o">=</span><span class="n">nonce</span><span class="p">,</span>
+                                 <span class="n">signature</span><span class="o">=</span><span class="n">signature</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&#34;error: wrong wechat signature&#34;</span>
+    <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&#34;requestContext&#34;</span><span class="p">][</span><span class="s2">&#34;httpMethod&#34;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&#34;GET&#34;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">event</span><span class="p">[</span><span class="s2">&#34;queryString&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;echostr&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">event</span><span class="p">[</span><span class="s2">&#34;requestContext&#34;</span><span class="p">][</span><span class="s2">&#34;httpMethod&#34;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&#34;POST&#34;</span><span class="p">:</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s2">&#34;body&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">event</span><span class="p">[</span><span class="s2">&#34;body&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">u003c&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">u003e&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">parse_message</span><span class="p">(</span>
+            <span class="n">body</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
+            <span class="n">nonce</span><span class="o">=</span><span class="n">nonce</span><span class="p">,</span>
+            <span class="n">msg_signature</span><span class="o">=</span><span class="n">event</span><span class="p">[</span><span class="s2">&#34;queryString&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;msg_signature&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">robot</span><span class="o">.</span><span class="n">get_encrypted_reply</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></code></pre></div>
+<p>在API gateway上创建API时需要勾选集成响应功能, 并且在函数入口返回的格式如下:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># coding: utf-8</span>
+
+<span class="kn">from</span> <span class="nn">scf_werobot</span> <span class="kn">import</span> <span class="n">werobot_handler</span>
+
+
+<span class="k">def</span> <span class="nf">main_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s2">&#34;requestContext&#34;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">return</span> <span class="s2">&#34;error: event is not come from api gateway&#34;</span>
+
+    <span class="n">content</span> <span class="o">=</span> <span class="n">werobot_handler</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&#34;statusCode&#34;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+        <span class="s2">&#34;headers&#34;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&#34;Content-Type&#34;</span><span class="p">:</span> <span class="s2">&#34;application/xml&#34;</span><span class="p">},</span>
+        <span class="s2">&#34;body&#34;</span><span class="p">:</span> <span class="n">content</span>
+    <span class="p">}</span></code></pre></div>
+<h3 id="通过cos实现werobot的session">通过cos实现werobot的session</h3>
+
+<p>除了计算外, ifwechat还用到了werobot的session来存微信用户与ifttt用户之间的对应关系, 在SAE上部署session数据是存在SAE的kvdb里的, 但是在腾讯云这里就没有免费的Redis或者MySQL来用了. 在研究zappa这个serverless框架的时候, 发现他们用AWS S3实现了一个NoDB的库可用用来做kvdb, 而腾讯云对标S3存储的就是cos, 把NoDB fork修改S3代码改成cos sdk调用, 就有了这个<a href="https://github.com/zhu327/NoDB">NoDB for Tencent Cloud COS</a></p>
+
+<p>继承werobot的SessionStorage实现用NoDB来做session backend:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># coding: utf-8</span>
+
+<span class="kn">from</span> <span class="nn">werobot.session</span> <span class="kn">import</span> <span class="n">SessionStorage</span>
+<span class="kn">from</span> <span class="nn">nodb</span> <span class="kn">import</span> <span class="n">NoDB</span>
+
+
+<span class="k">class</span> <span class="nc">NoDBStorage</span><span class="p">(</span><span class="n">SessionStorage</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">secret_id</span><span class="p">,</span> <span class="n">secret_key</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">bucket</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodb</span> <span class="o">=</span> <span class="n">NoDB</span><span class="p">(</span><span class="n">secret_id</span><span class="p">,</span> <span class="n">secret_key</span><span class="p">,</span> <span class="n">region</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodb</span><span class="o">.</span><span class="n">bucket</span> <span class="o">=</span> <span class="n">bucket</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodb</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="nb">set</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span></code></pre></div>
+<p>打包所有代码为zip文件, 并发布到scf就完成了这个迁移过程.</p>
+
+<h3 id="关于zappa">关于zappa</h3>
+
+<p>从迁移过程的体验来看, 功能的开发还是很简单的, 只是部署的过程不是很友好, 如果能有一个类似于zappa这样的自动化部署框架来对接到腾讯云函数计算, 相信对开发者来说会更友好.</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2018\/07\/17\/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3\/';
+        this.page.identifier = '\/2018\/07\/17\/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

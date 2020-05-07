@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Django实现简单OAuth2.0认证服务 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Django实现简单OAuth2.0认证服务</h1>
+  <span class="post-date">Mar 16 2015</span>
+  <p>开始写<a href="https://github.com/zhu327/forum">Django forum</a>的RESTful api，首先解决用户认证的问题，使用OAuth2.0协议实现。</p>
+
+<h3 id="参考">参考</h3>
+
+<p><a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html">理解OAuth 2.0</a></p>
+
+<h3 id="授权">授权</h3>
+
+<p>OAuth2.0协议定义了4种授权模式，为了学习OAuth2.0授权协议，这里只实现简化模式。以下为简化模式授权过程。</p>
+
+<p>
+1. 客户端对认证URI<code>/api/authorize</code>发起<code>GET</code>请求，必须带参数：
+   * <code>response_type</code>：表示授权类型，此处的值固定为&rdquo;token&rdquo;，必选项。
+   * <code>client_id</code>：表示客户端的ID，必选项。
+   * <code>redirect_uri</code>：表示重定向的URI，可选项。
+   * <code>state</code>：表示客户端的当前状态，可以指定任意值，认证服务器会原封不动地返回这个值。
+2. 服务器验证参数返回登陆页面；
+3. 用户输入用户名，密码提交登陆<code>POST</code>表单;
+4. 服务器验证表单，生成access_token，并重定向到<code>redirect_uri</code>，附带参数：
+   * <code>access_token</code>：表示访问令牌，必选项。
+   * <code>token_type</code>：表示令牌类型，该值大小写不敏感，必选项。
+   * <code>expires_in</code>：表示过期时间，单位为秒。如果省略该参数，必须其他方式设置过期时间。
+   * <code>state</code>：如果客户端的请求中包含这个参数，认证服务器的回应也必须一模一样包含这个参数。</p>
+
+<p>然后客户端就可以使用<code>access_token</code>来请求Django forum实现的需要认证的RESTful api了。</p>
+
+<h3 id="实现">实现</h3>
+
+<p>了解了认证过程后，实现起来就比较简单了，为了学习Django class based view，这里尝试不用function based view实现。</p>
+
+<blockquote>
+<p><a href="https://github.com/zhu327/forum/blob/api/api/views/oauth.py">https://github.com/zhu327/forum/blob/api/api/views/oauth.py</a></p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># coding: utf-8</span>
+
+<span class="s1">&#39;&#39;&#39;
+</span><span class="s1">Oauth2.0 认证
+</span><span class="s1">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">hashlib</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">base64</span><span class="o">,</span> <span class="nn">urllib</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render_to_response</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">View</span>
+<span class="kn">from</span> <span class="nn">django.template</span> <span class="kn">import</span> <span class="n">RequestContext</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="kn">from</span> <span class="nn">forum.models</span> <span class="kn">import</span> <span class="n">ForumUser</span>
+<span class="kn">from</span> <span class="nn">forum.forms.user</span> <span class="kn">import</span> <span class="n">LoginForm</span>
+<span class="kn">from</span> <span class="nn">api.forms.oauth</span> <span class="kn">import</span> <span class="n">OauthForm</span>
+
+
+<span class="n">_OAUTH_ERROR</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;0001&#39;</span><span class="p">:</span> <span class="s1">&#39;unkown_client_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;0002&#39;</span><span class="p">:</span> <span class="s1">&#39;redirect_uri_mismatch&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;0003&#39;</span><span class="p">:</span> <span class="s1">&#39;unsupported_response_type&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;0004&#39;</span><span class="p">:</span> <span class="s1">&#39;expired_token&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;0005&#39;</span><span class="p">:</span> <span class="s1">&#39;login_failed&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;0006&#39;</span><span class="p">:</span> <span class="s1">&#39;invalid_access_token&#39;</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_oauth_error</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span>
+        <span class="s1">&#39;error_description&#39;</span><span class="p">:</span> <span class="n">_OAUTH_ERROR</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">code</span><span class="p">),</span> <span class="s1">&#39;unkown_error&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># 生成access_token</span>
+<span class="k">def</span> <span class="nf">make_access_token</span><span class="p">(</span><span class="n">client_id</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">max_age</span><span class="o">=</span><span class="mi">5184000000</span><span class="p">):</span>
+    <span class="n">expires</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">+</span> <span class="n">max_age</span><span class="p">)</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span> <span class="n">expires</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">client_id</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span>\
+        <span class="n">password</span><span class="p">,</span> <span class="n">expires</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">SECRET_KEY</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">encodestring</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">L</span><span class="p">)),</span> <span class="n">expires</span>
+
+
+<span class="c1"># 解析access_token</span>
+<span class="k">def</span> <span class="nf">parse_access_token</span><span class="p">(</span><span class="n">client_id</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">decodestring</span><span class="p">(</span><span class="n">token</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0006&#39;</span><span class="p">)</span>
+        <span class="nb">id</span><span class="p">,</span> <span class="n">expires</span><span class="p">,</span> <span class="n">md5</span> <span class="o">=</span> <span class="n">L</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">expires</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0004&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">ForumUser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ForumUser</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0006&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">md5</span> <span class="o">!=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">client_id</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span><span class="p">,</span> <span class="n">expires</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">SECRET_KEY</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0006&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">user</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0006&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># 装饰器,用于认证access_token,类似于Django自带的login_required使用</span>
+<span class="k">def</span> <span class="nf">login_required</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_wrapped_view</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">client_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">REQUEST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">access_token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">REQUEST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;access_token&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">client_id</span> <span class="ow">and</span> <span class="n">access_token</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">parse_access_token</span><span class="p">(</span><span class="n">client_id</span><span class="p">,</span> <span class="n">access_token</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">HttpResponse</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">r</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">r</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0006&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_wrapped_view</span>
+
+
+<span class="k">class</span> <span class="nc">OauthView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        验证QueryString并返回登录页面
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">OauthForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">form</span><span class="p">[</span><span class="s1">&#39;response_type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0003&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">form</span><span class="p">[</span><span class="s1">&#39;client_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0001&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">form</span><span class="p">[</span><span class="s1">&#39;redirect_uri&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0002&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render_to_response</span><span class="p">(</span><span class="s1">&#39;user/login.html&#39;</span><span class="p">,</span> <span class="n">context_instance</span><span class="o">=</span><span class="n">RequestContext</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        登录成功后返回access_token
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="n">get_form</span> <span class="o">=</span> <span class="n">OauthForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">get_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">get_form</span><span class="p">[</span><span class="s1">&#39;response_type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0003&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">get_form</span><span class="p">[</span><span class="s1">&#39;client_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0001&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">get_form</span><span class="p">[</span><span class="s1">&#39;redirect_uri&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_oauth_error</span><span class="p">(</span><span class="s1">&#39;0002&#39;</span><span class="p">)</span>
+
+        <span class="n">post_form</span> <span class="o">=</span> <span class="n">LoginForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">post_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">render_to_response</span><span class="p">(</span><span class="s1">&#39;user/login.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="n">post_form</span><span class="o">.</span><span class="n">errors</span><span class="p">},</span>\
+                <span class="n">context_instance</span><span class="o">=</span><span class="n">RequestContext</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+
+        <span class="n">user</span> <span class="o">=</span> <span class="n">post_form</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
+        <span class="n">access_token</span><span class="p">,</span> <span class="n">expires_in</span> <span class="o">=</span> <span class="n">make_access_token</span><span class="p">(</span><span class="n">get_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;client_id&#39;</span><span class="p">),</span> <span class="n">user</span><span class="o">.</span><span class="nb">id</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;access_token&#39;</span><span class="p">:</span> <span class="n">access_token</span><span class="p">,</span>
+            <span class="s1">&#39;token_type&#39;</span><span class="p">:</span> <span class="s1">&#39;token&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;expires_in&#39;</span><span class="p">:</span> <span class="n">expires_in</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">get_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">?</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">get_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;redirect_uri&#39;</span><span class="p">),</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">params</span><span class="p">)))</span></code></pre></div>
+<p>以上代码复用了很多Django forum以前实现的东西，比如登陆页面，认证表单等等，实现<code>make_access_token</code>函数用于生成<code>access_token</code>，
+<code>parse_access_token</code>用于解析<code>access_token</code>，并且实现了<code>login_required</code>装饰器用来包裹需要认证的api。</p>
+
+<h3 id="总结">总结</h3>
+
+<p>这里为了方便，只实现了OAuth2.0协议的简单模式，实际上互联网大部分的公开api认证，比如新浪微博都是使用的授权码模式，有了简单模式的经验，
+实现授权码模式也很简单，区别在生成<code>access_token</code>的时候同时生成授权码<code>code</code>，以<code>code</code>为key，
+<code>clien_id</code>,<code>access_token</code>等参数的字典为value，放入memcached缓存中，设置过期时间，然后重定向到<code>redirect_uri</code>并带上<code>code</code>，
+第三方服务器再用<code>code</code>请求<code>/api/token</code>，服务器查找<code>code</code>为key的value，返回<code>access_token</code>给第三方服务器，结束授权。</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2015\/03\/16\/django%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95oauth2.0%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1\/';
+        this.page.identifier = '\/2015\/03\/16\/django%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95oauth2.0%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

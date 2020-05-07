@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Python协程 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Python协程</h1>
+  <span class="post-date">Jun 16 2016</span>
+  <blockquote>
+<p><a href="https://zh.wikipedia.org/zh-cn/%E5%8D%8F%E7%A8%8B">https://zh.wikipedia.org/zh-cn/%E5%8D%8F%E7%A8%8B</a></p>
+</blockquote>
+
+<p>协程可以理解为线程中的微线程，通过手动挂起函数的执行状态，在合适的时机再次激活继续运行，而不需要上下文切换。所以在python中使用协程会比线程性能更好。</p>
+
+<h3 id="tornado协程">Tornado协程</h3>
+
+<blockquote>
+<p><a href="http://blog.csdn.net/wyx819/article/details/45420017">http://blog.csdn.net/wyx819/article/details/45420017</a></p>
+</blockquote>
+
+<p>上面有大牛分析的Tornado的线程实现，依赖与Tornado的IOLoop，所以不能单独拿出来使用。有几个需要理解的概念:</p>
+
+<ol>
+<li>Future对象
+用来保存异步获取到的结果，并在set_reslut的时候调用callback方法，把对应的callback方法放到ioloop的callback列表中等待下一次ioloop循环再执行</li>
+<li>装饰器coroutine
+在这个装饰器中实现了协程的调度，通过不断的调用next函数来不断获取Future对象，然后每次拿到Future对象在add_callback到ioloop上，等到Future被set_reslut后再次next，直到生成器中抛出Return的异常。</li>
+</ol>
+
+<p>具体的实现过程不是很好描述，调度过程比较复杂，还是看看参考文章大牛的解析吧。</p>
+
+<p></p>
+
+<h3 id="greenlet">Greenlet</h3>
+
+<p>生成器实现的协程调度起来很麻烦，而且不是正在意义上的协程，只是实现的代码执行过程中的挂起，唤醒操作。而Greenlet这个Stackless的副产品则实现了真正的协程，在使用过程中通过switch来中断当前执行的函数，切换到另一个greenlet，在其它的geenlet 中调用switch会激活之前被挂起的协程。</p>
+
+<p>Greenlet没有自己的调度过程，所以一般不会直接使用。以下参考文章是Greenlet get started的中文翻译。</p>
+
+<blockquote>
+<p><a href="http://www.importcjj.com/greenlet-qing-liang-ji-bing-fa-bian-cheng.html">http://www.importcjj.com/greenlet-qing-liang-ji-bing-fa-bian-cheng.html</a></p>
+</blockquote>
+
+<h3 id="eventlet">Eventlet</h3>
+
+<blockquote>
+<p><a href="http://blog.csdn.net/gaoxingnengjisuan/article/details/12913275">http://blog.csdn.net/gaoxingnengjisuan/article/details/12913275</a><br />
+<a href="http://blog.csdn.net/gaoxingnengjisuan/article/details/12914831">http://blog.csdn.net/gaoxingnengjisuan/article/details/12914831</a></p>
+</blockquote>
+
+<p>Eventlet在Greenlet的基础上实现了自己的GreenThread，实际上就是greenlet类的扩展封装，而与Greenlet的不同是，Eventlet实现了自己调度器称为Hub，Hub类似于Tornado的IOLoop，是单实例的。在Hub中有一个event loop，根据不同的事件来切换到对应的GreenThread。<br />
+同时Eventlet还实现了一系列的补丁来使Python标准库中的socket等等module来支持GreenThread的切换。Eventlet的Hub可以被定制来实现自己调度过程。</p>
+
+<h3 id="gevent">Gevent</h3>
+
+<blockquote>
+<p><a href="http://xlambda.com/gevent-tutorial/">http://xlambda.com/gevent-tutorial/</a><br />
+<a href="http://www.open-open.com/lib/view/open1409705174822.html">http://www.open-open.com/lib/view/open1409705174822.html</a></p>
+</blockquote>
+
+<p>Gevent的2架马车，libev与Greenlet。不同于Eventlet的用python实现的hub调度，Gevent通过Cython调用libev来实现一个高效的event loop调度循环。同时类似于Event，Gevent也有自己的monkey_patch，在打了补丁后，完全可以使用python线程的方式来无感知的使用协程，减少了开发成本。</p>
+
+<p>在Python的世界里由于GIL的存在，线程一直都不是很好用，所以就有了各种协程的hack。Gevnet是当前使用起来最方便的协程了，但是由于依赖于libev所以不能在pypy上跑，如果需要在pypy上使用协程，Eventlet是最好的选择。</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2016\/06\/16\/python%E5%8D%8F%E7%A8%8B\/';
+        this.page.identifier = '\/2016\/06\/16\/python%E5%8D%8F%E7%A8%8B\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

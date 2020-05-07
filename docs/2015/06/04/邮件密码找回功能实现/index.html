@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      邮件密码找回功能实现 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">邮件密码找回功能实现</h1>
+  <span class="post-date">Jun 4 2015</span>
+  <h3 id="思路">思路</h3>
+
+<p>公司做项目,有用到注册,登录,密码找回等功能,以前自己写的论坛也实现了邮件密码找回,不过比较简单,直接生成随机密码,把新密码发送到用户邮箱.比较不安全,要实现一般网站的用链接找回的功能.</p>
+
+<p>对链接的要求有如下:</p>
+
+<ol>
+<li>每次生成的链接都必须不一样;</li>
+<li>链接要有过期时间,过期以后无效;</li>
+<li>后台在链接被请求时,必须验证链接是否有效.</li>
+</ol>
+
+<p>
+针对这3方面的要求,设计url格式,<code>/resetpassword/?sid=md5加密后的字符串&amp;user=用户名&amp;expires=过期时间时间戳</code>.在user表上增加字段<code>secret_key</code>用于保存加密的密钥.</p>
+
+<p>加密过程,生成sid:</p>
+
+<ol>
+<li>用户在请求<code>/forgot/</code>表单输入邮件地址,时后台校验用户是否存在,如果存在则,通过uuid生成随机字符串<code>secret_key</code>更新用户信息;</li>
+<li>获取当前时间戳+过期时间,生成过期的时间戳;</li>
+<li>md5加密<code>username-expires-secret_key</code>生成sid.</li>
+</ol>
+
+<p>解密验证:</p>
+
+<ol>
+<li>后台获取到<code>/resetpassword/</code>的<code>GET</code>请求后,先验证参数是否正确;</li>
+<li>通过username获取用户信息;</li>
+<li>判断过期时间是否过期;</li>
+<li>md5加密<code>username-expires-secret_key</code>与sid对比是否一致,如一致才会返回重置密码表单;</li>
+<li>重置密码表单提交时<code>POST</code>请求提交地址与<code>GET</code>请求一致,必须再次验证sid.</li>
+</ol>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2015\/06\/04\/%E9%82%AE%E4%BB%B6%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0\/';
+        this.page.identifier = '\/2015\/06\/04\/%E9%82%AE%E4%BB%B6%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

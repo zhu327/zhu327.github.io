@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      IFWechat使用说明 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">IFWechat使用说明</h1>
+  <span class="post-date">Sep 19 2015</span>
+  <h1 id="ifwechat">ifwechat</h1>
+
+<h3 id="①-ifwechat能做什么">①.IFWechat能做什么</h3>
+
+<p>IFWechat是一个能把微信连接到IFTTT的微信公众号,如果你还不知道IFTTT是什么,可以看看这里:<a href="http://www.zhihu.com/question/19739416">ifttt 是一个什么样的网站？</a>.<br />
+IFTTT = if this then that, IFWechat通过微信公众号实现了IFTTT中this的功能,通过微信发送到IFWechat的消息都会触发用户定义的IFTTT Recipes.</p>
+
+<p></p>
+
+<h2 id="②-绑定微信与ifttt">②.绑定微信与IFTTT</h2>
+
+<p>1.关注IFWechat微信公众号</p>
+
+<p><img src="http://7oti6o.com1.z0.glb.clouddn.com/boz-qcode.jpg" alt="qcode" /></p>
+
+<p>2.生成IFTTT Maker Webhooks key</p>
+
+<p>访问<a href="https://ifttt.com/maker_webhooks">IFTTT Maker Webhooks</a><br />
+<img src="http://picbang.qiniudn.com/bozmakerchannel.jpg" alt="IFTTT Maker Webhooks" /></p>
+
+<p>点击<strong>Connect</strong><br />
+访问<a href="https://ifttt.com/services/maker_webhooks/settings">Settings</a>,复制URL后面的key<br />
+<img src="http://picbang.qiniudn.com/bozmakerchannel2.jpg" alt="IFTTT Maker key" /></p>
+
+<p>3.绑定key到IFWechat微信公众号</p>
+
+<p><img src="http://picbang.qiniudn.com/bozbind.jpg" alt="bind key" /></p>
+
+<p>发送 BD+key 绑定.</p>
+
+<h2 id="③-绑定微信与ifttt">③.绑定微信与IFTTT</h2>
+
+<p>1.发送文本消息</p>
+
+<p><img src="http://7oti6o.com1.z0.glb.clouddn.com/bozsend1.png" alt="text" /></p>
+
+<p>IFTTT Recipes示例:<a href="https://ifttt.com/p/zhu327/shared">https://ifttt.com/p/zhu327/shared</a></p>
+
+<p>2.发送照片消息</p>
+
+<p><img src="http://7oti6o.com1.z0.glb.clouddn.com/bozsend2.png" alt="image" /></p>
+
+<p>先发送图片,然后追加一条文本.</p>
+
+<p>3.发送地理位置</p>
+
+<p><img src="http://7oti6o.com1.z0.glb.clouddn.com/bozsend3.png" alt="location" /></p>
+
+<p>4.发送分享链接</p>
+
+<p><img src="http://7oti6o.com1.z0.glb.clouddn.com/bozsend4.png" alt="link" /></p>
+
+<h2 id="④-消息格式">④.消息格式</h2>
+
+<p>上面有一些IFTTT Recipes示例,如果你有更好的创意,那么就需要了解下你发送给IFWechat公众号的消息会在推送给IFTTT的时候的消息格式.</p>
+
+<p>Event Name: text</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&#34;value1&#34;</span><span class="o">:</span> <span class="s2">&#34;Hello world&#34;</span> <span class="c1">// value1为文本内容
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+<p>Event Name: image</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&#34;value1&#34;</span><span class="o">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span> <span class="c1">// value1为图片地址
+</span><span class="c1"></span>    <span class="s2">&#34;value2&#34;</span><span class="o">:</span> <span class="s2">&#34;Hello world&#34;</span> <span class="c1">// value2为文本内容
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+<p>Event Name: location</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&#34;value1&#34;</span><span class="o">:</span> <span class="s2">&#34;深圳市罗湖区国贸&#34;</span><span class="p">,</span> <span class="c1">// value1为地理位置文本
+</span><span class="c1"></span>    <span class="s2">&#34;value2&#34;</span><span class="o">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span> <span class="c1">// value2为纬度
+</span><span class="c1"></span>    <span class="s2">&#34;value3&#34;</span><span class="o">:</span> <span class="s2">&#34;&#34;</span> <span class="c1">// value3为经度
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+<p>Event Name: link</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&#34;value1&#34;</span><span class="o">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span> <span class="c1">// value1为分享链接地址
+</span><span class="c1"></span>    <span class="s2">&#34;value2&#34;</span><span class="o">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span> <span class="c1">// value2为分享标题
+</span><span class="c1"></span>    <span class="s2">&#34;value3&#34;</span><span class="o">:</span> <span class="s2">&#34;&#34;</span> <span class="c1">// value3为分享描述
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2015\/09\/19\/ifwechat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E\/';
+        this.page.identifier = '\/2015\/09\/19\/ifwechat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

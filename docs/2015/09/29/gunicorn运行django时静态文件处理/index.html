@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Gunicorn运行Django时静态文件处理 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Gunicorn运行Django时静态文件处理</h1>
+  <span class="post-date">Sep 29 2015</span>
+  <h3 id="问题">问题</h3>
+
+<p>在用Gunicorn跑Django的时候,比较郁闷的是静态文件的处理,即使在settings设置DEBUG=True,静态文件也不会正常显示.生产环境下一般不会裸跑Gunicorn,一般都会在前面放一个Nginx反代到Gunicorn,而静态文件直接交给Nginx处理.</p>
+
+<p>但是如heroku,coding.net的演示平台这种PaaS就不能自己配置反向代理,怎么样设置wsgi才能正常处理静态文件呢.这里总结下处理这个问题的经验.</p>
+
+<h3 id="方法1">方法1</h3>
+
+<p>强制使用Django的静态文件处理器,通过<code>python manage.py runserver</code>的时候,如果DEBUG=True,Django会自动加载自带的静态文件处理器,但是在Gunicorn下,这个设置会失效,我们可以强制使用Django自带的静态文件处理器.
+</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.conf.urls.static</span> <span class="kn">import</span> <span class="n">static</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># ... the rest of your URLconf goes here ...</span>
+<span class="p">]</span> <span class="o">+</span> <span class="n">static</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">STATIC_URL</span><span class="p">,</span> <span class="n">document_root</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">STATIC_ROOT</span><span class="p">)</span> <span class="c1"># 附加static</span></code></pre></div>
+<h3 id="方法2">方法2</h3>
+
+<p>在玩coding.net的演示平台的时候,发现了<code>Whitenoise</code>这个专门用来处理<code>wsgi app</code>静态文件的库,不用过多的设置,只要在app前加一个中间件就能正常处理静态文件了,并且还支持压缩缓存等强大的功能.</p>
+
+<p>参考<a href="http://python.usyiyi.cn/django/howto/static-files/deployment.html">Deploying static files</a>先把Django下所有的静态文件归集到static目录下面.</p>
+
+<p>在settings中做如下配置:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">STATIC_ROOT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;../forum/static&#39;</span><span class="p">)</span>
+
+<span class="n">STATIC_URL</span> <span class="o">=</span> <span class="s1">&#39;/static/&#39;</span>
+
+<span class="n">STATICFILES_STORAGE</span> <span class="o">=</span> <span class="s1">&#39;whitenoise.django.GzipManifestStaticFilesStorage&#39;</span> <span class="c1"># 设置Gzip压缩</span></code></pre></div>
+<p>在wsgi.py下加上Whitenoise的中间件:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&#34;DJANGO_SETTINGS_MODULE&#34;</span><span class="p">,</span> <span class="s2">&#34;xp.settings&#34;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">django.core.wsgi</span> <span class="kn">import</span> <span class="n">get_wsgi_application</span>
+<span class="n">application</span> <span class="o">=</span> <span class="n">get_wsgi_application</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="nn">whitenoise.django</span> <span class="kn">import</span> <span class="n">DjangoWhiteNoise</span> <span class="c1"># 这里import一定要放在os.environ后面,否则会报错</span>
+<span class="n">application</span> <span class="o">=</span> <span class="n">DjangoWhiteNoise</span><span class="p">(</span><span class="n">application</span><span class="p">)</span></code></pre></div>
+<p>然后愉快的运行Gunicorn吧,静态文件的问题就解决了.</p>
+
+<h3 id="总结">总结</h3>
+
+<p>方法1虽然能用但是只是权益之际,毕竟Django自己的静态文件处理能力还是很弱的,所以推荐方法2,用Whitenoise搭配Gunicorn,完全能在没有Nginx的情况下在生产环境中处理静态文件.</p>
+
+<h3 id="参考">参考</h3>
+
+<blockquote>
+<p><a href="http://docs.coding.io/languages/python/">http://docs.coding.io/languages/python/</a>
+<a href="http://whitenoise.readthedocs.org/en/latest/">http://whitenoise.readthedocs.org/en/latest/</a>
+<a href="https://docs.djangoproject.com/en/1.5/howto/static-files/">https://docs.djangoproject.com/en/1.5/howto/static-files/</a></p>
+</blockquote>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2015\/09\/29\/gunicorn%E8%BF%90%E8%A1%8Cdjango%E6%97%B6%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86\/';
+        this.page.identifier = '\/2015\/09\/29\/gunicorn%E8%BF%90%E8%A1%8Cdjango%E6%97%B6%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

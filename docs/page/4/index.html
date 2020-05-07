@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+	<meta name="generator" content="Hugo 0.40.1" />
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      跬步 &middot; On Coding
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item  active " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+
+
+
+<div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/09/25/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0/">greentor MySQL连接池实现</a></h1>
+        <span class="post-date">Sep 25 2016</span>
+        <blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Connection_pool">https://en.wikipedia.org/wiki/Connection_pool</a></p>
+</blockquote>
+
+<p>通过<a href="https://github.com/zhu327/greentor">greentor</a>实现了pymysql在Tornado上异步调用的过程后发现，每次建立数据库连接都会经过socket 3次握手，而每一次socket读写都会伴随着greenlet的切换，以及ioloop的callback过程，虽然是异步了，但是IO性能并没有提升，所以在研究了<a href="https://github.com/snower/TorMySQL">TorMySQL</a>连接池的实现后，实现了greentor自己的连接池。</p>
+
+<p><a href="https://github.com/zhu327/greentor/blob/master/greentor/green.py">https://github.com/zhu327/greentor/blob/master/greentor/green.py</a></p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/24/greentor%E5%A1%AB%E5%9D%91%E8%AE%B0/">greentor填坑记</a></h1>
+        <span class="post-date">Jun 24 2016</span>
+        <p>经过2周的学习开发，Tornado + Django ORM的环境搭好了，这阶段的学习告一段落，虽然这个环境是一个玩具环境，没有经过生产的检验，但是在搭环境的过程中学习了Tornado，greenlet，Django数据库相关的姿势，感觉还是有不少提升。</p>
+
+<p>在这2天的调试中，暴露出了2个比较严重的问题，记录下填坑过程。</p>
+
+<h3 id="1-线程安全">1. 线程安全</h3>
+
+<p>WSGI服务器在接受到新的http请求时会开一个新线程来调用application进行处理，Django ORM在有数据库查询的时候，会在当前线程中创建一个新的数据库连接并保存到线程local空间中，在同一个线程中的连接是可以被复用的。不同的线程持有不同的连接，这样就保证Django ORM是线程安全的。</p>
+
+<p>Tornado是单线程的，在Tornado中使用Django ORM无论处理多少请求，都会用同一个保存在当前local()中的连接，这样就必然会产生连接使用的冲突。比如同时并发的2个请求，第一个请求关闭了连接，第二个请求还在继续使用这个连接就会抛出异常。</p>
+
+<p>在greentor的配合下，Tornado涉及数据库连接的请求都运行在greenlet中，如果有一个greenlet local来对每个请求的数据库连接进行隔离，就能避免线程安全问题，在这里的greenlet协程完全可以类比为线程。然而greenlet并没有local，那我们就造一个local出来。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/21/greentor-tornado%E5%BC%82%E6%AD%A5%E6%96%B9%E6%A1%88/">greentor Tornado异步方案</a></h1>
+        <span class="post-date">Jun 21 2016</span>
+        <blockquote>
+<p><a href="https://emptysqua.re/blog/motor-internals-how-i-asynchronized-a-synchronous-library/">https://emptysqua.re/blog/motor-internals-how-i-asynchronized-a-synchronous-library/</a></p>
+</blockquote>
+
+<p>这篇文章是Motor的作者介绍Motor如何通过Greenlet来实现PyMongo在Tornado中异步调用的原理，总结来说就一下几点。</p>
+
+<ol>
+<li>使用Torando的IOStream包装socket以实现异步调度</li>
+<li>把IOStream的读写操作放在greenlet中运行，并注册一个switch到当前greenlet的callback到IOStream的Futrue中</li>
+<li>在发生读写操作是switch到当前greenlet的父greenlet继续执行，挂起当前greenlet</li>
+<li>在IOStream的读写操作完成后调用callback switch到挂起的子greenlet中继续执行</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">tornado_motor_sock_method</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+    <span class="n">coro</span> <span class="o">=</span> <span class="n">gen</span><span class="o">.</span><span class="n">coroutine</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+
+    <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">#当前greenlet是一个子greenlet</span>
+        <span class="n">child_gr</span> <span class="o">=</span> <span class="n">greenlet</span><span class="o">.</span><span class="n">getcurrent</span><span class="p">()</span>
+        <span class="c1">#获取当前greenlet的父greenlet，即之前代码提到过的asynchronize所在的greenlet</span>
+        <span class="n">main</span> <span class="o">=</span> <span class="n">child_gr</span><span class="o">.</span><span class="n">parent</span>
+
+        <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">exc_info</span><span class="p">():</span>
+                <span class="n">child_gr</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span><span class="o">*</span><span class="n">future</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">future</span><span class="o">.</span><span class="n">exception</span><span class="p">():</span>
+                <span class="n">child_gr</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">exception</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#当future的结果到达，切换回挂起的子greenlet</span>
+                <span class="n">child_gr</span><span class="o">.</span><span class="n">switch</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
+
+        <span class="c1">#保证callback在当前greenlet的父greenlet中运行</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io_loop</span><span class="o">.</span><span class="n">add_future</span><span class="p">(</span><span class="n">coro</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">callback</span><span class="p">)</span>
+        <span class="c1">#return这句会暂时挂起当前greenlet，将控制权切换回父greenlet，</span>
+        <span class="c1">#在上面的callback执行时，才会切换回当前greenlet，return语句返回</span>
+        <span class="k">return</span> <span class="n">main</span><span class="o">.</span><span class="n">switch</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">wrapped</span></code></pre></div>
+<p>使用greenlet的好处是我们可以通过这个挂起，唤醒的过程来中断当前的同步代码，而不需要用Tornado自己实现协程，每次都要yield出来，然后回调。通过使用greenlet可以很方便的把同步的网络IO库修改为支持Tornado的异步库。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/16/python%E5%8D%8F%E7%A8%8B/">Python协程</a></h1>
+        <span class="post-date">Jun 16 2016</span>
+        <blockquote>
+<p><a href="https://zh.wikipedia.org/zh-cn/%E5%8D%8F%E7%A8%8B">https://zh.wikipedia.org/zh-cn/%E5%8D%8F%E7%A8%8B</a></p>
+</blockquote>
+
+<p>协程可以理解为线程中的微线程，通过手动挂起函数的执行状态，在合适的时机再次激活继续运行，而不需要上下文切换。所以在python中使用协程会比线程性能更好。</p>
+
+<h3 id="tornado协程">Tornado协程</h3>
+
+<blockquote>
+<p><a href="http://blog.csdn.net/wyx819/article/details/45420017">http://blog.csdn.net/wyx819/article/details/45420017</a></p>
+</blockquote>
+
+<p>上面有大牛分析的Tornado的线程实现，依赖与Tornado的IOLoop，所以不能单独拿出来使用。有几个需要理解的概念:</p>
+
+<ol>
+<li>Future对象
+用来保存异步获取到的结果，并在set_reslut的时候调用callback方法，把对应的callback方法放到ioloop的callback列表中等待下一次ioloop循环再执行</li>
+<li>装饰器coroutine
+在这个装饰器中实现了协程的调度，通过不断的调用next函数来不断获取Future对象，然后每次拿到Future对象在add_callback到ioloop上，等到Future被set_reslut后再次next，直到生成器中抛出Return的异常。</li>
+</ol>
+
+<p>具体的实现过程不是很好描述，调度过程比较复杂，还是看看参考文章大牛的解析吧。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/14/tornado%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-ioloop/">Tornado代码阅读笔记 IOLoop</a></h1>
+        <span class="post-date">Jun 14 2016</span>
+        <p>准备用Tornado + greenlet + Django ORM搭一个框架，大体上有个思路，在开始前再次阅读下Tornado的代码。目的是在学习Torndao使用的同时，了解下原理，以便在使用过程中少踩点坑。</p>
+
+<h3 id="准备">准备</h3>
+
+<ol>
+<li><p>学习IO多路复用: epoll<br />
+<a href="http://scotdoyle.com/python-epoll-howto.html">http://scotdoyle.com/python-epoll-howto.html</a><br />
+<a href="https://fukun.org/archives/10051470.html">https://fukun.org/archives/10051470.html</a></p></li>
+
+<li><p>Reactor模型<br />
+<a href="http://blog.csdn.net/u013074465/article/details/46276967">http://blog.csdn.net/u013074465/article/details/46276967</a></p></li>
+</ol>
+
+<p>去年大概这个时候也硬着头皮读过Tornado的代码，当时没有经验，还不知道编程模型，在程序的理解上都是顺序执行的思路，所以看到Tornado的代码只会觉得特么的牛B，各种类，各种方法的调来调去。现在理解了Reactor模型以后，再回过头看Tornado，就比较容易理解了，所以在阅读代码前如果能在构架上先理解，读起来会快很多。</p>
+
+<p>Tornado的代码基于2.0版本，最新的4.3版本读起来比较绕，抽象的更加细化，阅读代码的目的在于学习编程思路，不求新。</p>
+
+<p></p>
+    </div>
+  
+</div>
+
+<div class="pagination">
+  
+  <a class="pagination-item older" href="https://zhu327.github.io/page/5/">Older</a>
+  
+
+  
+  <a class="pagination-item newer" href="https://zhu327.github.io/page/3/">Newer</a>
+  
+</div>
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

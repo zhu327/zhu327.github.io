@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Jinja2 on </title>
+    <link>https://zhu327.github.io/tags/jinja2/</link>
+    <description>Recent content in Jinja2 on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 14 Aug 2015 16:28:42 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/jinja2/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>flask jinja2 i18n国际化简单实现</title>
+      <link>https://zhu327.github.io/2015/08/14/flask-jinja2-i18n%E5%9B%BD%E9%99%85%E5%8C%96%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Fri, 14 Aug 2015 16:28:42 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/08/14/flask-jinja2-i18n%E5%9B%BD%E9%99%85%E5%8C%96%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/</guid>
+      <description>&lt;p&gt;前两个星期,公司有需求要实现APP内嵌网页的英文版,因为要急着上线,所有就没有折腾i18n国际化,直接出了英文的模板,在view函数里面判断语言选择模板来实现.这周有空下来重新整了一下项目的国际化,使用通用的&lt;code&gt;gettext&lt;/code&gt;来实现.&lt;/p&gt;
+
+&lt;p&gt;flask使用的是jinja2模板,jinja2自带了i18n扩展支持,但是需要Flask-Babel扩展的支持,有学习成本,所以没有使用,直接用了python内置的gettext来实现,而且jinja2引擎也提供了gettext的钩子来处理不同的语言.&lt;/p&gt;
+
+&lt;h2 id=&#34;gettext&#34;&gt;gettext&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;gettext&lt;/code&gt;是*nix下的标准i18n实现,Python的标准库内置&lt;code&gt;gettext&lt;/code&gt;,简单的理解一下,就是通过已有的字典映射文件,然后获取环境的语言信息来判断当前使用哪一个语言映射,最终渲染出不同的语言文本,这里就不详细研究&lt;code&gt;gettext&lt;/code&gt;了,提供我的参考文档:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://underthehood.blog.51cto.com/2531780/1663604&#34;&gt;http://underthehood.blog.51cto.com/2531780/1663604&lt;/a&gt;
+&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>RSS Factory的坑</title>
+      <link>https://zhu327.github.io/2015/01/02/rss-factory%E7%9A%84%E5%9D%91/</link>
+      <pubDate>Fri, 02 Jan 2015 19:41:03 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/02/rss-factory%E7%9A%84%E5%9D%91/</guid>
+      <description>&lt;p&gt;花了一天时间把&lt;a href=&#34;https://github.com/zhu327/rss&#34;&gt;RSS Factory&lt;/a&gt;更新了下，把Tornado默认的模版引擎换为jinja2，解析html第三方库换为lxml。遇到了几个坑，纪录下。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;自动转义&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Tornado默认的模版引擎默认自动转义，Flask配置的jinja2也自动转义了，&lt;a href=&#34;http://bozpy.sinaapp.com/blog/15&#34;&gt;在Tornado中使用jinja2模版引擎的简单方法&lt;/a&gt;，按照这个方法模版渲染的时候却没有自动转义，所以还需要进一步配置。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;n&#34;&gt;application&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tornado&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;web&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Application&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;template_loader&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;JinjaLoader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dirname&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;vm&#34;&gt;__file__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;templates/&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;autoescape&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;extensions&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;jinja2.ext.autoescape&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]),&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在Tornado中使用jinja2模版引擎的简单方法</title>
+      <link>https://zhu327.github.io/2015/01/02/%E5%9C%A8tornado%E4%B8%AD%E4%BD%BF%E7%94%A8jinja2%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E%E7%9A%84%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Fri, 02 Jan 2015 10:34:28 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/02/%E5%9C%A8tornado%E4%B8%AD%E4%BD%BF%E7%94%A8jinja2%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E%E7%9A%84%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95/</guid>
+      <description>&lt;h3 id=&#34;参考&#34;&gt;参考&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://veerkat.me/blog/posts/Tornado-shi-yong-Jinja2-mo-ban-yin-qing.html&#34;&gt;Tornado使用Jinja2模板引擎&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
+
+&lt;p&gt;为了让自己的开发工具都能得到统一，所以想着以后不管是用Tornado也好，Bottle也好，模版引擎都开始用jinja2，所以更新了&lt;a href=&#34;https://github.com/zhu327/rss&#34;&gt;RSS Factory&lt;/a&gt;使用的模版引擎。&lt;/p&gt;
+
+&lt;p&gt;Google了下Tornado使用jinja2的方法，发现大部分人的实现方法都是重写&lt;code&gt;ReaquestHandle&lt;/code&gt;的&lt;code&gt;render&lt;/code&gt;方法，这样的虽然比较简单但是不利于保持Tornado的完整性，所以我使用参考文章中的方法。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Jinja2 模版引擎</title>
+      <link>https://zhu327.github.io/2014/09/24/jinja2-%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E/</link>
+      <pubDate>Wed, 24 Sep 2014 21:46:07 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2014/09/24/jinja2-%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E/</guid>
+      <description>&lt;h3 id=&#34;参考&#34;&gt;参考&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://docs.jinkan.org/docs/jinja2/&#34;&gt;Jinja2 文档&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.oschina.net/question/5189_3943&#34;&gt;Jinja2 简明使用手册&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;api&#34;&gt;API&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;jinja2&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Environment&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;FileSystemLoader&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;env&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Environment&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;loader&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;FileSystemLoader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;templ_dir&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

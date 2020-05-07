@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+	<meta name="generator" content="Hugo 0.40.1" />
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      跬步 &middot; On Coding
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item  active " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+
+
+
+<div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/24/python-web-farmwork/">Python Web farmwork</a></h1>
+        <span class="post-date">Sep 24 2014</span>
+        <h3 id="简介">简介</h3>
+
+<ul>
+<li><a href="http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/0014023080708565bc89d6ab886481fb25a16cdc3b773f0000">编写Web框架</a></li>
+<li><a href="https://github.com/zhu327/blog/blob/master/www/transwarp/web.py">web.py</a></li>
+</ul>
+
+<p><a href="http://bozpy.sinaapp.com/blog/7">上一节</a>写了WSGI与Cookie相关的内容，为了方便的实现Web App，需要编写一个简单的Web框架，需要实现以下功能:</p>
+
+<ol>
+<li>处理request；</li>
+<li>生成response header；</li>
+<li>根据request URI找到对应处理的函数，即URL路由；</li>
+<li>定制模版引擎；</li>
+<li>拦截器，在处理函数产生响应前，做预处理，相当于WSGI中middlware的概念，比如处理Cookie等。</li>
+</ol>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/21/http-cookie/">HTTP Cookie</a></h1>
+        <span class="post-date">Sep 21 2014</span>
+        <h3 id="什么是cookie">什么是Cookie</h3>
+
+<p>Cookie用于存储http请求中的用户认证信息，用户在通过登录认证后，服务器在response header中设置Cookie，用户浏览器自动带Cookie访问该网站。</p>
+
+<h3 id="response-中的-cookie">response 中的 Cookie</h3>
+
+<p>response header 中添加 <code>Set-Cookie</code>信息，cookie是一组key，value值。</p>
+
+<pre><code>Set-Cookie: &lt;name&gt;=&lt;value&gt;[; &lt;name&gt;=&lt;value&gt;]...
+            [; expires=&lt;date&gt;][; domain=&lt;domain_name&gt;]
+            [; path=&lt;some_path&gt;][; secure][; httponly]
+</code></pre>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/21/wsgi-%E7%90%86%E8%A7%A3/">WSGI 理解</a></h1>
+        <span class="post-date">Sep 21 2014</span>
+        <h3 id="参考">参考</h3>
+
+<ul>
+<li><a href="http://blog.csdn.net/on_1y/article/details/18803563">WSGI 简介</a></li>
+<li><a href="http://www.cnblogs.com/russellluo/p/3338616.html">用Python写一个简单的Web框架</a></li>
+</ul>
+
+<h3 id="wsgi-简介">WSGI 简介</h3>
+
+<p>WSGI是Python webserver与Web App之间的协议。这个协议定义了Web server和App的行为，是的server与app分离，简化了开发。</p>
+
+<p>WSGI server，Gunicorn(python实现)，uWSGI(C实现)，这些服务器程序都实现了标准的WSGI接口，任意web app都可以使用不同的server。
+</p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/17/urllib2-%E4%BD%BF%E7%94%A8/">urllib2 使用</a></h1>
+        <span class="post-date">Sep 17 2014</span>
+        <h3 id="基础用法">基础用法</h3>
+
+<p><code>urllib2</code>是用来发送http请求，获取响应数据的库。基础用法:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">urllib2</span>
+
+<span class="c1"># urlopen返回类文件对象，可选参数data与请求头header</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s1">&#39;http://bozpy.sinaapp.com&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="n">header</span><span class="p">]])</span>
+<span class="n">body</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># 类文件对象有与文件对象类似的方法，read，readline等</span>
+<span class="n">heade</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">info</span><span class="p">()</span> <span class="c1"># 获取响应的头，字典</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">geturl</span><span class="p">()</span> <span class="c1"># 获取响应的真实url，如果有重定向，url会改变</span></code></pre></div>
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/16/orm-%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%84/">ORM 对象关系映射</a></h1>
+        <span class="post-date">Sep 16 2014</span>
+        <h3 id="orm概念">ORM概念</h3>
+
+<p>wikipedia: <a href="http://zh.wikipedia.org/wiki/对象关系映射">对象关系映射</a></p>
+
+<p>简单的说ORM就是通过操作Python中的对象来实现对关系数据库(MySQL)中数据的操作。<code>Model</code>类与数据库表映射，<code>Model</code>对象与数据库中的行映射，对象的属性与表中的字段映射。</p>
+
+<h3 id="用python实现基本功能的orm">用Python实现基本功能的ORM</h3>
+
+<p>首先定义<code>Field</code>类，代表DB中tabale的每一个字段，对象初始化的时候需要定义的属性有，字段名称，字段数据类型，是否为主键，是否可为空，字段默认值，是否可更改等字段属性</p>
+
+<p></p>
+    </div>
+  
+</div>
+
+<div class="pagination">
+  
+  <a class="pagination-item older" href="https://zhu327.github.io/page/14/">Older</a>
+  
+
+  
+  <a class="pagination-item newer" href="https://zhu327.github.io/page/12/">Newer</a>
+  
+</div>
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

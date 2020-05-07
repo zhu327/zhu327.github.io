@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mysql on </title>
+    <link>https://zhu327.github.io/tags/mysql/</link>
+    <description>Recent content in Mysql on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 24 Sep 2014 22:13:57 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/mysql/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Memcached 优化 MySQL 查询</title>
+      <link>https://zhu327.github.io/2014/09/24/memcached-%E4%BC%98%E5%8C%96-mysql-%E6%9F%A5%E8%AF%A2/</link>
+      <pubDate>Wed, 24 Sep 2014 22:13:57 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2014/09/24/memcached-%E4%BC%98%E5%8C%96-mysql-%E6%9F%A5%E8%AF%A2/</guid>
+      <description>&lt;h3 id=&#34;简介&#34;&gt;简介&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://bozpy.sinaapp.com&#34;&gt;跬步&lt;/a&gt;上线后，SAE后台显示云豆的消耗http与MySQL查询各占一半，正好SAE还支持Memcached，本着不用白不用的原则，为&lt;a href=&#34;https://github.com/zhu327/blog/blob/memcached/www/transwarp/db.py&#34;&gt;db.py&lt;/a&gt;加上了Memcached的缓存支持。&lt;/p&gt;
+
+&lt;p&gt;网站在并发不大的情况下，MySQL查询时间还感受不出来，但是如果并发大的化，MySQL会显著的降低响应速度，所以Memcached应运而生。&lt;/p&gt;
+
+&lt;p&gt;Memcached是一个分布式的内存key-value存储系统，由于数据保存在内存中所以查询速度非常快，一般作为其它数据的中间缓存层来使用。&lt;/p&gt;
+
+&lt;p&gt;对于SQL查询先以SQL语句为key查询Memcached，如果查到直接返回，如果没有再去查询MySQL，并把结果缓存到Memcached，下次再次查询时速度显著提升，因为Memcached的数据是保存在内存中的。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>ORM 对象关系映射</title>
+      <link>https://zhu327.github.io/2014/09/16/orm-%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%84/</link>
+      <pubDate>Tue, 16 Sep 2014 22:51:10 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2014/09/16/orm-%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%84/</guid>
+      <description>&lt;h3 id=&#34;orm概念&#34;&gt;ORM概念&lt;/h3&gt;
+
+&lt;p&gt;wikipedia: &lt;a href=&#34;http://zh.wikipedia.org/wiki/对象关系映射&#34;&gt;对象关系映射&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;简单的说ORM就是通过操作Python中的对象来实现对关系数据库(MySQL)中数据的操作。&lt;code&gt;Model&lt;/code&gt;类与数据库表映射，&lt;code&gt;Model&lt;/code&gt;对象与数据库中的行映射，对象的属性与表中的字段映射。&lt;/p&gt;
+
+&lt;h3 id=&#34;用python实现基本功能的orm&#34;&gt;用Python实现基本功能的ORM&lt;/h3&gt;
+
+&lt;p&gt;首先定义&lt;code&gt;Field&lt;/code&gt;类，代表DB中tabale的每一个字段，对象初始化的时候需要定义的属性有，字段名称，字段数据类型，是否为主键，是否可为空，字段默认值，是否可更改等字段属性&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python 使用 MySQL</title>
+      <link>https://zhu327.github.io/2014/09/15/python-%E4%BD%BF%E7%94%A8-mysql/</link>
+      <pubDate>Mon, 15 Sep 2014 19:36:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2014/09/15/python-%E4%BD%BF%E7%94%A8-mysql/</guid>
+      <description>&lt;h3 id=&#34;mysqldb基本使用方式&#34;&gt;MySQLdb基本使用方式&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;MySQLdb&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;# 建立MySQL连接&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;MySQL&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passwd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;passwd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;db&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;db&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;host&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;host&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;port&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;cursor&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cursor&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 生成游标对象&lt;/span&gt;
+
+&lt;span class=&#34;k&#34;&gt;try&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;cursor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;execute&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;SQL &lt;/span&gt;&lt;span class=&#34;si&#34;&gt;%s&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 游标对象执行SQL语句，语句中有%s，则用args替换&lt;/span&gt;
+
+    &lt;span class=&#34;c1&#34;&gt;# 执行SELECT语句通过以下方法可获取到查询结果&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;result&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cursor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fetchall&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 结果为列表，列表每一项代表查询的一row，每行都是一个列表，列表顺序按照SELECT的字段顺序排序&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;result&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cursor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fetchone&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 获取查询到结果的第一行数据，返回列表，再次运行获取下一条&lt;/span&gt;
+
+    &lt;span class=&#34;n&#34;&gt;cursor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;description&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 查询到字段定义信息&lt;/span&gt;
+
+    &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cursor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;description&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 序列的第一个值为字段名称&lt;/span&gt;
+
+    &lt;span class=&#34;c1&#34;&gt;# 执行INSERT DELETE操作获取受影响的行数&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;r&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cursor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rowcount&lt;/span&gt;
+
+    &lt;span class=&#34;c1&#34;&gt;# 获取INSERT行的主键值，一般是id&lt;/span&gt;
+    &lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cursor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;lastrowid&lt;/span&gt;
+
+    &lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;commit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 游标对象执行语句是以事务方式执行，所以需要提交&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;except&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 如果提交失败&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rollback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 回滚事务&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;finnally&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+    &lt;span class=&#34;c1&#34;&gt;# 最后关闭游标，连接&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;cursor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

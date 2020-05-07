@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+	<meta name="generator" content="Hugo 0.40.1" />
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      跬步 &middot; On Coding
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item  active " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+
+
+
+<div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2017/04/21/django-%E4%BC%98%E5%8C%96%E6%9D%82%E8%B0%88/">Django 优化杂谈</a></h1>
+        <span class="post-date">Apr 21 2017</span>
+        <p>总结下最近看过的一些文章,然后想到的一些优化点,整理一下.</p>
+
+<h3 id="数据库连接池">数据库连接池</h3>
+
+<blockquote>
+<p><a href="http://mt.dbanotes.net/arch/instagram.html">http://mt.dbanotes.net/arch/instagram.html</a></p>
+</blockquote>
+
+<p>Django 默认DB配置提供了选项<code>CONN_MAX_AGE</code>用于配置在同一个thread/greenlet里面DB connection的最大存活时间,便于连接的复用,在实践中发现如果使用gunicorn+gevent的方式来启动WSGI服务,由于gunicorn会创建一个很大的gevent pool,导致数据库连接数会暴涨.所以这个选项被放弃了,另外的方式是使用connection pool.</p>
+
+<p>instagram 使用 PostGreSQL 并且使用 Pgbouncer 这个中间件来管理连接池,MySQL也有Proxy这种中间件但是比较重,所以考虑在django mysql backend的基础上自己实现一个连接池.</p>
+
+<blockquote>
+<p><a href="https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38">https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38</a></p>
+</blockquote>
+
+<p>主要参考了Connector/Python的pool实现.</p>
+
+<p>数据库连接池也不是&rdquo;银弹&rdquo;,在应用层做数据库连接池也不值得推荐,随着业务的扩展,使用一主多备搭建集群,通过读写分类中间件来做连接池管理,推荐<a href="https://github.com/sysown/proxysql">ProxySQL</a>.</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/">在Django中使用zerorpc</a></h1>
+        <span class="post-date">Mar 31 2017</span>
+        <h3 id="前言">前言</h3>
+
+<p>随着系统架构从集中式单点服务器到分布式微服务方向的迁移,RPC是一个不可回避的话题.如何在系统中引入对开发者友好,性能可靠的RPC服务是一个值得深思的问题.</p>
+
+<p>在调研了Thrift,gRPC,zerorpc等方案后,基于以下2点最后选择了zerorpc:</p>
+
+<ul>
+<li>Thrift,gRPC学习成本高,开发者需要重新定义返回结构增加了工作量</li>
+<li>zerorpc完美契合Python,能快速开发,并且支持Node.js,适用于当前技术栈</li>
+</ul>
+
+<h3 id="问题">问题</h3>
+
+<p>虽然zerorpc可以直接嵌入当前系统框架中,但是还是有一些问题需要去考虑解决</p>
+
+<ul>
+<li><p>rpc 接口如何定义</p></li>
+
+<li><p>rpc 服务如何启动</p></li>
+
+<li><p>高并发情况下客户端的可靠性</p></li>
+</ul>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2017/03/14/%E7%94%A8python%E8%A7%A3%E5%86%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">用Python解决数据结构与算法问题</a></h1>
+        <span class="post-date">Mar 14 2017</span>
+        <blockquote>
+<p><a href="https://facert.gitbooks.io/python-data-structure-cn/">用Python解决数据结构与算法问题</a></p>
+</blockquote>
+
+<p>发现一本Python的好书被翻译了，利用下班时间学习了一下，把相关代码都实现了一遍，包括：</p>
+
+<ul>
+<li>栈，队列，双端队列</li>
+<li>无序链表，有序链表</li>
+<li>二叉树，堆，二叉搜索树，AVL树</li>
+<li>图</li>
+</ul>
+
+<p>以及一些算法</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2017/01/01/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98/">如何成为一名优秀的程序员</a></h1>
+        <span class="post-date">Jan 1 2017</span>
+        <h4 id="前言">前言</h4>
+
+<blockquote>
+<p><a href="http://open.163.com/movie/2015/7/B/M/MATL76APV_MATL8FCBM.html">罗子雄：如何成为一名优秀设计师</a></p>
+
+<p><a href="https://www.zhihu.com/lives/789840559912009728/messages">董明伟：Python 工程师的入门和进阶</a></p>
+</blockquote>
+
+<p>董明伟基于自己实践讲的知乎live为Python新人提供了很多实用建议，他推荐的<a href="http://open.163.com/movie/2015/7/B/M/MATL76APV_MATL8FCBM.html">罗子雄：如何成为一名优秀设计师</a>的演讲讲的非常好，总结了设计师从入门到提高的优秀实践。<br />
+罗子雄的演讲我看了三遍，再结合自己的程序员生涯，我想我也可以为Python新人提供一些建议，开了<strong>如何成为一名优秀的程序员</strong>一题，讲讲我的Python工程师之路。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/09/25/django-db%E4%BD%BF%E7%94%A8mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/">Django db使用MySQL连接池</a></h1>
+        <span class="post-date">Sep 25 2016</span>
+        <p>Django db模块本身不支持MySQL连接池，只有一个配置<code>CONN_MAX_AGE</code>连接最大存活时间，如果WSGI服务器使用了线程池技术，会达到连接复用的效果。但是如果WSGI服务如果是每个请求都创建新的线程，那么这个配置没有任何效果，因为连接保存在<code>Thread.local()</code>名称空间中，在不同的线程中不能复用。</p>
+
+<p>在上一篇<a href="https://zhu327.github.io/2016/09/25/greentor-mysql连接池实现/">greentor MySQL连接池实现</a>中已经实现了MySQL连接池，只需要重写Django MySQL backend以支持连接池，就能达到连接复用的目的，减少socket 3次握手的开销，提高性能。</p>
+
+<p><a href="https://github.com/zhu327/greentor/blob/master/demo/core/base.py">https://github.com/zhu327/greentor/blob/master/demo/core/base.py</a></p>
+
+<p></p>
+    </div>
+  
+</div>
+
+<div class="pagination">
+  
+  <a class="pagination-item older" href="https://zhu327.github.io/page/4/">Older</a>
+  
+
+  
+  <a class="pagination-item newer" href="https://zhu327.github.io/page/2/">Newer</a>
+  
+</div>
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

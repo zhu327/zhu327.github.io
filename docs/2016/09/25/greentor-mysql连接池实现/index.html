@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      greentor MySQL连接池实现 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">greentor MySQL连接池实现</h1>
+  <span class="post-date">Sep 25 2016</span>
+  <blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Connection_pool">https://en.wikipedia.org/wiki/Connection_pool</a></p>
+</blockquote>
+
+<p>通过<a href="https://github.com/zhu327/greentor">greentor</a>实现了pymysql在Tornado上异步调用的过程后发现，每次建立数据库连接都会经过socket 3次握手，而每一次socket读写都会伴随着greenlet的切换，以及ioloop的callback过程，虽然是异步了，但是IO性能并没有提升，所以在研究了<a href="https://github.com/snower/TorMySQL">TorMySQL</a>连接池的实现后，实现了greentor自己的连接池。</p>
+
+<p><a href="https://github.com/zhu327/greentor/blob/master/greentor/green.py">https://github.com/zhu327/greentor/blob/master/greentor/green.py</a></p>
+
+<p></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Pool</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">wait_timeout</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maxsize</span> <span class="o">=</span> <span class="n">max_size</span> <span class="c1"># 连接池最大连接数</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_conn_params</span> <span class="o">=</span> <span class="n">params</span> <span class="c1"># 连接参数</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxsize</span><span class="p">)</span> <span class="c1"># 存储连接的双端队列</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span> <span class="c1"># 等待获取连接的callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_timeout</span> <span class="o">=</span> <span class="n">wait_timeout</span> <span class="c1"># 等待超时时间</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># 已创建的连接数</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started</span> <span class="o">=</span> <span class="bp">False</span> <span class="c1"># 连接池是否可用</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ioloop</span> <span class="o">=</span> <span class="n">IOLoop</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span> <span class="c1"># 连接池关闭时间，set该时间后，连接池所有的连接关闭</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ioloop</span><span class="o">.</span><span class="n">add_future</span><span class="p">(</span><span class="n">spawn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">future</span><span class="p">:</span> <span class="n">future</span><span class="p">)</span> <span class="c1"># 在greenlet中启动连接池</span>
+
+    <span class="k">def</span> <span class="nf">create_raw_conn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span> <span class="c1"># 通过self._conn_params参数创建新连接，用于重写</span>
+
+    <span class="k">def</span> <span class="nf">init_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># 创建新的连接，并加入到连接池中</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_raw_conn</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># 可用的连接数</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_conn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">:</span> <span class="c1"># 如果有可用连接，直接返回</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maxsize</span><span class="p">:</span> <span class="c1"># 如果没有可用连接，且创建的连接还没有达到最大连接数，则新建连接</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">init_pool</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wait_conn</span><span class="p">()</span> <span class="c1"># 如果没有可用连接，且以创建了最大连接数，则等待连接释放</span>
+
+    <span class="k">def</span> <span class="nf">wait_conn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">timer</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">child_gr</span> <span class="o">=</span> <span class="n">greenlet</span><span class="o">.</span><span class="n">getcurrent</span><span class="p">()</span>
+        <span class="n">main</span> <span class="o">=</span> <span class="n">child_gr</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_timeout</span><span class="p">:</span> <span class="c1"># 创建计时器，如果等待了超时则抛出异常</span>
+                <span class="n">timer</span> <span class="o">=</span> <span class="n">Timeout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wait_timeout</span><span class="p">)</span>
+                <span class="n">timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wait</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child_gr</span><span class="o">.</span><span class="n">switch</span><span class="p">)</span>
+            <span class="n">main</span><span class="o">.</span><span class="n">switch</span><span class="p">()</span> <span class="c1"># 切换到父greenlet上，直到child_gr.switch被调用</span>
+        <span class="k">except</span> <span class="n">TimeoutException</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&#34;timeout wait connections, connections size </span><span class="si">%s</span><span class="s2">&#34;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timer</span><span class="p">:</span>
+                <span class="n">timer</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span> <span class="c1"># 释放连接，重新加入连接池中</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait</span><span class="p">:</span> <span class="c1"># 如果有等待的greenlet</span>
+            <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ioloop</span><span class="o">.</span><span class="n">add_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span> <span class="c1"># 在下次ioloop过程中切换到等待获取连接的greenlet</span>
+
+    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># 关闭连接池</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="nb">set</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_close_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">conn</span> <span class="ow">in</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">):</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># self.init_pool()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close_all</span><span class="p">()</span></code></pre></div>
+<p>这是一个通用连接池，通过继承<code>Pool</code>类，并重写<code>create_raw_conn</code>方法就可用实现一个简单的连接池，比如mysql，memcache等</p>
+
+<p><a href="https://github.com/zhu327/greentor/blob/master/greentor/mysql.py">https://github.com/zhu327/greentor/blob/master/greentor/mysql.py</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">pymysql.connections</span> <span class="kn">import</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">Connection</span>
+
+<span class="k">class</span> <span class="nc">ConnectionPool</span><span class="p">(</span><span class="n">Pool</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="mi">7200</span><span class="p">,</span> <span class="n">mysql_params</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ConnectionPool</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">max_size</span><span class="o">=</span><span class="n">max_size</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">mysql_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive</span> <span class="o">=</span> <span class="n">keep_alive</span> <span class="c1"># 为避免连接自动断开，配置连接ping周期</span>
+
+    <span class="k">def</span> <span class="nf">create_raw_conn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_conn_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ioloop</span><span class="o">.</span><span class="n">add_timeout</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ping</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">conn</span>
+
+    <span class="nd">@green</span>
+    <span class="k">def</span> <span class="nf">_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">conn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">ping</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ioloop</span><span class="o">.</span><span class="n">add_timeout</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ping</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span></code></pre></div>
+<p>这里实现了一个MySQL的连接池，MySQL默认会有一个8小时空闲，连接自动断开的机制，为了避免连接池中出现无效连接，在设置了<code>keep_alive</code>时间后会周期性的调用连接的<code>ping</code>方法来保证连接的活跃，同时如果连接不在连接池中，说明连接正在被使用，就不需要再<code>ping</code>了。</p>
+
+<p>事隔三个月，在一位新认识的朋友提醒下，又捡起了greentor的开发，把之前准备实现的连接池写了出来。</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2016\/09\/25\/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0\/';
+        this.page.identifier = '\/2016\/09\/25\/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

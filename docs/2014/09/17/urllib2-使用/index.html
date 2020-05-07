@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      urllib2 使用 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">urllib2 使用</h1>
+  <span class="post-date">Sep 17 2014</span>
+  <h3 id="基础用法">基础用法</h3>
+
+<p><code>urllib2</code>是用来发送http请求，获取响应数据的库。基础用法:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">urllib2</span>
+
+<span class="c1"># urlopen返回类文件对象，可选参数data与请求头header</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s1">&#39;http://bozpy.sinaapp.com&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="n">header</span><span class="p">]])</span>
+<span class="n">body</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># 类文件对象有与文件对象类似的方法，read，readline等</span>
+<span class="n">heade</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">info</span><span class="p">()</span> <span class="c1"># 获取响应的头，字典</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">geturl</span><span class="p">()</span> <span class="c1"># 获取响应的真实url，如果有重定向，url会改变</span></code></pre></div>
+<p></p>
+
+<p>上例的请求为<code>GET</code>请求，如果需要带<code>QueryString</code>，要先编码。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">urllib</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://bozpy.sinaapp.com/&#39;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;page&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="n">full_url</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s1">&#39;?&#39;</span> <span class="o">+</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="c1"># urllib.urlencode() 数据编码</span>
+<span class="c1"># &#39;http://bozpy.sinaapp.com/?page=2&#39;</span></code></pre></div>
+<p><code>urlopen</code>方法中不带<code>data</code>是请求为<code>GET</code>，带<code>data</code>请求则为<code>POST</code>。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s1">&#39;http://bozpy.sinaapp.com&#39;</span><span class="p">,</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></code></pre></div>
+<p><code>request head</code> 类型为字典。可用于定义<code>User-Agent</code>。</p>
+
+<h3 id="定制request">定制request</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">urllib2</span><span class="o">,</span> <span class="nn">urllib</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="p">[</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="n">header</span><span class="p">]])</span> <span class="c1"># 返回Request实例</span>
+<span class="n">r</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="c1"># 添加请求头</span>
+<span class="n">r</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="c1"># 添加数据</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></code></pre></div>
+<h3 id="关于cookie">关于cookie</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">urllib2</span><span class="o">,</span> <span class="nn">cookielib</span>
+
+<span class="n">cj</span> <span class="o">=</span> <span class="n">cooklib</span><span class="o">.</span><span class="n">CookieJar</span><span class="p">()</span> <span class="c1"># cookie处理对象</span>
+<span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">HTTPCookieProcessor</span><span class="p">(</span><span class="n">cj</span><span class="p">))</span> <span class="c1"># 生成opener，注册cj</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="c1"># 发送request，如果response带有cookie则存到cj上</span>
+
+<span class="n">opener</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="n">otherurl</span><span class="p">)</span> <span class="c1"># 再请求是自动带上cookie</span></code></pre></div>
+<h3 id="urllib">urllib</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">urllib</span>
+<span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="c1"># 转义字符串用于url中</span>
+<span class="n">urllib</span><span class="o">.</span><span class="n">unquote</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="c1"># 反转</span></code></pre></div>
+<h3 id="其它">其它</h3>
+
+<p>昨天写了两个小工具，所有这里总结下用到的urllib2库。</p>
+
+<p><a href="https://gist.github.com/zhu327/2a473332a796146b4dbd">postEntry.py</a> 通过文件发文章到Boz<br />
+<a href="https://gist.github.com/zhu327/987f3fc288ca55939e73">player.py</a> XBMC小工具</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2014\/09\/17\/urllib2-%E4%BD%BF%E7%94%A8\/';
+        this.page.identifier = '\/2014\/09\/17\/urllib2-%E4%BD%BF%E7%94%A8\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

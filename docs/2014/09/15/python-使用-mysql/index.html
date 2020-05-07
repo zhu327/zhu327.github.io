@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Python 使用 MySQL &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Python 使用 MySQL</h1>
+  <span class="post-date">Sep 15 2014</span>
+  <h3 id="mysqldb基本使用方式">MySQLdb基本使用方式</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">MySQLdb</span>
+
+<span class="c1"># 建立MySQL连接</span>
+<span class="n">connect</span> <span class="o">=</span> <span class="n">MySQL</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="n">passwd</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">connect</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="c1"># 生成游标对象</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SQL </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="c1"># 游标对象执行SQL语句，语句中有%s，则用args替换</span>
+
+    <span class="c1"># 执行SELECT语句通过以下方法可获取到查询结果</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span> <span class="c1"># 结果为列表，列表每一项代表查询的一row，每行都是一个列表，列表顺序按照SELECT的字段顺序排序</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span> <span class="c1"># 获取查询到结果的第一行数据，返回列表，再次运行获取下一条</span>
+
+    <span class="n">cursor</span><span class="o">.</span><span class="n">description</span> <span class="c1"># 查询到字段定义信息</span>
+
+    <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span> <span class="c1"># 序列的第一个值为字段名称</span>
+
+    <span class="c1"># 执行INSERT DELETE操作获取受影响的行数</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">rowcount</span>
+
+    <span class="c1"># 获取INSERT行的主键值，一般是id</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">lastrowid</span>
+
+    <span class="n">connect</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span> <span class="c1"># 游标对象执行语句是以事务方式执行，所以需要提交</span>
+<span class="k">except</span><span class="p">:</span> <span class="c1"># 如果提交失败</span>
+    <span class="n">connect</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span> <span class="c1"># 回滚事务</span>
+<span class="n">finnally</span><span class="p">:</span>
+    <span class="c1"># 最后关闭游标，连接</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">connect</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></code></pre></div>
+<p></p>
+
+<h3 id="封装思路">封装思路</h3>
+
+<p>从用户角度来设计使用方式，然后再设计实现方式，用户可以这样来用db.py</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">transwarp</span> <span class="kn">import</span> <span class="n">db</span>
+
+<span class="c1"># 创建数据库链接引擎，然后就可以直接调用数据操作</span>
+<span class="n">db</span><span class="o">.</span><span class="n">create_engine</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;host&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">3306</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+
+<span class="c1"># 直接操作数据查询，返回列表，列表元为字典为查询的每一行数据</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;select * from user&#39;</span><span class="p">)</span>
+<span class="c1"># user =&gt;</span>
+<span class="c1"># [</span>
+<span class="c1">#     {&#39;id&#39;: 1, &#39;name&#39;: &#39;Timmy Chu&#39;},</span>
+<span class="c1">#     ......</span>
+<span class="c1"># ]</span>
+
+<span class="c1"># 执行INSERT DELETE UPDATE返回受影响的行数</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;insert int user(id, name) value(?, ?)&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;Jack&#39;</span><span class="p">)</span>
+<span class="c1"># n =&gt;</span>
+<span class="c1"># 1</span></code></pre></div>
+<p>具体实现代码在这里<a href="https://github.com/zhu327/boz/blob/master/www/transwarp/db.py">db.py</a></p>
+
+<p>以下为重点:</p>
+
+<ol>
+<li>create_engine函数会生成一个全局变量engine，engine为持有数据库建立*函数*的对象(_Engine类的实例);</li>
+<li>_db_cxt全局变量持有该数据库引擎，并且建立游标，以及关闭链接的函数</li>
+<li>_ConnectionCxt上下文类，<code>__enter__()</code>方法判断是否已经建立链接，没有则执行初始化数据库链接，并把是否需要清理置为<code>True</code>，<code>__exit__()</code>判断是否需要执行清理，需要则关闭连接</li>
+<li>对于事件在_db_cxt全局变量中保存一个transactions变量记录执行语句的条数，只有条数为0才提交</li>
+</ol>
+
+<p>根据以上提示再阅读代码，就很容易理解了。<br />
+另外可以参考廖雪峰的教程: <a href="http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/0013976160374750f95bd09087744569be5aae6160c8351000">编写数据库模块</a></p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2014\/09\/15\/python-%E4%BD%BF%E7%94%A8-mysql\/';
+        this.page.identifier = '\/2014\/09\/15\/python-%E4%BD%BF%E7%94%A8-mysql\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

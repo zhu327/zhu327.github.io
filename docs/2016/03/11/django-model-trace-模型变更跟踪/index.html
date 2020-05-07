@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Django Model Trace 模型变更跟踪 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Django Model Trace 模型变更跟踪</h1>
+  <span class="post-date">Mar 11 2016</span>
+  <p>在公司业务中有很多模块需要记录模型的变更历史，刚开始的时候会针对需要变更记录的表增加一个变更记录表，然后做针对性的开发。后来类似的需求多了，而且不需要很详细的记录，所以单独提取了一个比较简单的模型跟踪模块出来。</p>
+
+<h3 id="原理">原理</h3>
+
+<p>使用Django自己的信号实现，创建了一个公用的model跟踪表，所有配置跟踪的model变更记录都会保存到这张表中，通过一个公用的<code>trace_model</code>函数来保存变更的新老数据，而且只保存修改的字段。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># coding=utf-8</span>
+
+<span class="kn">import</span> <span class="nn">inspect</span><span class="o">,</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">ManyToManyField</span><span class="p">,</span> <span class="n">ManyToOneRel</span>
+<span class="kn">from</span> <span class="nn">django.db.models.fields.related</span> <span class="kn">import</span> <span class="n">ForeignKey</span>
+<span class="kn">from</span> <span class="nn">raven.contrib.django.models</span> <span class="kn">import</span> <span class="n">client</span>
+<span class="kn">from</span> <span class="nn">models</span> <span class="kn">import</span> <span class="n">ModelRecord</span>
+
+
+<span class="k">def</span> <span class="nf">trace_model</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">raw</span><span class="p">,</span> <span class="n">using</span><span class="p">,</span> <span class="n">update_fields</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">adding</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">sender</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">instance</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">change_fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">sender</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_all_field_names</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;add_by&#39;</span><span class="p">,</span> <span class="s1">&#39;add_dt&#39;</span><span class="p">,</span> <span class="s1">&#39;update_by&#39;</span><span class="p">,</span> <span class="s1">&#39;update_dt&#39;</span><span class="p">,</span> <span class="s1">&#39;update_by_id&#39;</span><span class="p">):</span> <span class="c1"># 更新人，添加人，时间不记录</span>
+                <span class="k">continue</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">sender</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">auto_created</span> <span class="ow">or</span> <span class="n">field</span><span class="o">.</span><span class="n">hidden</span> <span class="ow">or</span> <span class="n">field</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ManyToManyField</span><span class="p">,</span> <span class="n">ManyToOneRel</span><span class="p">):</span> <span class="c1"># 特殊的字段不记录</span>
+                <span class="k">continue</span>
+            <span class="n">old</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">old</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">new</span><span class="p">):</span> <span class="c1"># 不同类型的字段转为字符串，相等的不记录</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">):</span><span class="c1"># 如果是外键</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">change_fields</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">old</span><span class="p">:</span>
+                        <span class="n">old</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">related_model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">old</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">new</span><span class="p">:</span>
+                        <span class="n">new</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">related_model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">new</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">+</span><span class="s1">&#39;_id&#39;</span> <span class="ow">in</span> <span class="n">change_fields</span><span class="p">:</span>
+                    <span class="k">pass</span> <span class="c1"># 判断避免同时对外键赋值的清空</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">choices</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">old</span><span class="p">:</span>
+                    <span class="n">old</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;get_&#39;</span><span class="o">+</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_display&#39;</span><span class="p">,</span> <span class="n">old</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new</span><span class="p">:</span>
+                    <span class="n">new</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s1">&#39;get_&#39;</span><span class="o">+</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_display&#39;</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">old</span><span class="p">):</span>
+                    <span class="n">old</span> <span class="o">=</span> <span class="n">old</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">new</span><span class="p">):</span>
+                    <span class="n">new</span> <span class="o">=</span> <span class="n">new</span><span class="p">()</span>
+            <span class="n">old</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">old</span><span class="p">)</span> <span class="k">if</span> <span class="n">old</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="s1">&#39;空&#39;</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">new</span><span class="p">)</span> <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="s1">&#39;空&#39;</span>
+            <span class="n">verbose_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="s1">&#39;verbose_name&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">change_fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">verbose_name</span><span class="p">,</span>
+                <span class="s1">&#39;new&#39;</span><span class="p">:</span> <span class="n">new</span><span class="p">,</span>
+                <span class="s1">&#39;old&#39;</span><span class="p">:</span> <span class="n">old</span>
+            <span class="p">}</span>
+        <span class="n">dbname</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="s1">&#39;_database&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">DATABASES</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="s1">&#39;NAME&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">frame_record</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">frame_record</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;get_response&#39;</span><span class="p">:</span>
+                <span class="n">request</span> <span class="o">=</span> <span class="n">frame_record</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">f_locals</span><span class="p">[</span><span class="s1">&#39;request&#39;</span><span class="p">]</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+                <span class="k">break</span>
+        <span class="c1"># 数据入库</span>
+        <span class="k">if</span> <span class="n">change_fields</span> <span class="ow">and</span> <span class="s1">&#39;user&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+            <span class="n">ModelRecord</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">dbname</span><span class="o">=</span><span class="n">dbname</span><span class="p">,</span>
+                                       <span class="n">table_name</span><span class="o">=</span><span class="n">sender</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">db_table</span><span class="p">,</span>
+                                       <span class="n">table_pk</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span>
+                                       <span class="n">content</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">change_fields</span><span class="p">),</span>
+                                       <span class="n">add_by</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">captureException</span><span class="p">()</span></code></pre></div>
+<p></p>
+
+<p>核心代码就是遍历Model的fields，比较新老数据，如果是外键，还需要记录Model的<code>__unicode__</code>方法返回的字符串，最后JSON序列话保存。</p>
+
+<p>在获取<code>request</code>对象的时候，使用了<code>inspect.stack()</code>回溯了调用栈，直到找到操作人。</p>
+
+<h3 id="注册信号">注册信号</h3>
+
+<p>在<code>settings.py</code>中设置<code>TRACE_CHANGE_MODEL</code>配置，比如像这样:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">TRACE_CHANGE_MODEL</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;apps.employee.models.EmployeeInfo&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;apps.basic.insurance.weal_package.models.InsuranceWealPackage&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;apps.basic.housing_fund.weal_package.models.HousingFundWealPackage&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;apps.employee.models.DynamicFee&#39;</span><span class="p">,</span>
+<span class="p">]</span></code></pre></div>
+<p>在Django的APP环境加载完成后再注册需要跟踪的Model，避免出现重复相互import冲突</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># coding: utf-8</span>
+
+<span class="kn">from</span> <span class="nn">django.apps</span> <span class="kn">import</span> <span class="n">AppConfig</span>
+<span class="kn">from</span> <span class="nn">django.utils.module_loading</span> <span class="kn">import</span> <span class="n">import_string</span>
+<span class="kn">from</span> <span class="nn">django.dispatch</span> <span class="kn">import</span> <span class="n">receiver</span>
+<span class="kn">from</span> <span class="nn">django.db.models.signals</span> <span class="kn">import</span> <span class="n">pre_save</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">signals</span> <span class="kn">import</span> <span class="n">trace_model</span>
+
+
+<span class="c1"># 在Django加载完后注册信号处理</span>
+<span class="k">def</span> <span class="nf">ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;TRACE_CHANGE_MODEL&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">TRACE_CHANGE_MODEL</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">import_string</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">receiver</span><span class="p">(</span><span class="n">pre_save</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">dispatch_uid</span><span class="o">=</span><span class="s1">&#39;TRACE_CHANGE_MODEL&#39;</span><span class="p">)(</span><span class="n">trace_model</span><span class="p">)</span>
+
+
+<span class="n">AppConfig</span><span class="o">.</span><span class="n">ready</span> <span class="o">=</span> <span class="n">ready</span></code></pre></div>
+<h3 id="源码">源码</h3>
+
+<p>以上代码均已提交至github，仅供参考。</p>
+
+<blockquote>
+<p><a href="https://github.com/zhu327/model_trace">https://github.com/zhu327/model_trace</a></p>
+</blockquote>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2016\/03\/11\/django-model-trace-%E6%A8%A1%E5%9E%8B%E5%8F%98%E6%9B%B4%E8%B7%9F%E8%B8%AA\/';
+        this.page.identifier = '\/2016\/03\/11\/django-model-trace-%E6%A8%A1%E5%9E%8B%E5%8F%98%E6%9B%B4%E8%B7%9F%E8%B8%AA\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+
