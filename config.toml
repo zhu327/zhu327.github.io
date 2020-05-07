@@ -31,4 +31,11 @@ Tagline = "On Coding"
 Author = "Timmy"
 DateForm = "Jan 2 2006"
 Github = "https://github.com/zhu327"
-disqusShortname = "zhu327"
+
+[params.valine]
+  appId = 'ets5MnLq4PcezyQ5V12Rn2yc-gzGzoHsz'
+  appKey = '0PRGA047aMY95OeydaayLDEK'
+  verify = false
+  avatar = 'mm' 
+  placeholder = '说点什么吧...'
+  visitor = true
