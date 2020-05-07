@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tornado on </title>
+    <link>https://zhu327.github.io/tags/tornado/</link>
+    <description>Recent content in Tornado on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 25 Sep 2016 15:56:21 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/tornado/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>greentor MySQL连接池实现</title>
+      <link>https://zhu327.github.io/2016/09/25/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Sun, 25 Sep 2016 15:56:21 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/09/25/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Connection_pool&#34;&gt;https://en.wikipedia.org/wiki/Connection_pool&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;通过&lt;a href=&#34;https://github.com/zhu327/greentor&#34;&gt;greentor&lt;/a&gt;实现了pymysql在Tornado上异步调用的过程后发现，每次建立数据库连接都会经过socket 3次握手，而每一次socket读写都会伴随着greenlet的切换，以及ioloop的callback过程，虽然是异步了，但是IO性能并没有提升，所以在研究了&lt;a href=&#34;https://github.com/snower/TorMySQL&#34;&gt;TorMySQL&lt;/a&gt;连接池的实现后，实现了greentor自己的连接池。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/greentor/blob/master/greentor/green.py&#34;&gt;https://github.com/zhu327/greentor/blob/master/greentor/green.py&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>greentor填坑记</title>
+      <link>https://zhu327.github.io/2016/06/24/greentor%E5%A1%AB%E5%9D%91%E8%AE%B0/</link>
+      <pubDate>Fri, 24 Jun 2016 09:25:38 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/06/24/greentor%E5%A1%AB%E5%9D%91%E8%AE%B0/</guid>
+      <description>&lt;p&gt;经过2周的学习开发，Tornado + Django ORM的环境搭好了，这阶段的学习告一段落，虽然这个环境是一个玩具环境，没有经过生产的检验，但是在搭环境的过程中学习了Tornado，greenlet，Django数据库相关的姿势，感觉还是有不少提升。&lt;/p&gt;
+
+&lt;p&gt;在这2天的调试中，暴露出了2个比较严重的问题，记录下填坑过程。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-线程安全&#34;&gt;1. 线程安全&lt;/h3&gt;
+
+&lt;p&gt;WSGI服务器在接受到新的http请求时会开一个新线程来调用application进行处理，Django ORM在有数据库查询的时候，会在当前线程中创建一个新的数据库连接并保存到线程local空间中，在同一个线程中的连接是可以被复用的。不同的线程持有不同的连接，这样就保证Django ORM是线程安全的。&lt;/p&gt;
+
+&lt;p&gt;Tornado是单线程的，在Tornado中使用Django ORM无论处理多少请求，都会用同一个保存在当前local()中的连接，这样就必然会产生连接使用的冲突。比如同时并发的2个请求，第一个请求关闭了连接，第二个请求还在继续使用这个连接就会抛出异常。&lt;/p&gt;
+
+&lt;p&gt;在greentor的配合下，Tornado涉及数据库连接的请求都运行在greenlet中，如果有一个greenlet local来对每个请求的数据库连接进行隔离，就能避免线程安全问题，在这里的greenlet协程完全可以类比为线程。然而greenlet并没有local，那我们就造一个local出来。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>greentor Tornado异步方案</title>
+      <link>https://zhu327.github.io/2016/06/21/greentor-tornado%E5%BC%82%E6%AD%A5%E6%96%B9%E6%A1%88/</link>
+      <pubDate>Tue, 21 Jun 2016 18:51:38 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/06/21/greentor-tornado%E5%BC%82%E6%AD%A5%E6%96%B9%E6%A1%88/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://emptysqua.re/blog/motor-internals-how-i-asynchronized-a-synchronous-library/&#34;&gt;https://emptysqua.re/blog/motor-internals-how-i-asynchronized-a-synchronous-library/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这篇文章是Motor的作者介绍Motor如何通过Greenlet来实现PyMongo在Tornado中异步调用的原理，总结来说就一下几点。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;使用Torando的IOStream包装socket以实现异步调度&lt;/li&gt;
+&lt;li&gt;把IOStream的读写操作放在greenlet中运行，并注册一个switch到当前greenlet的callback到IOStream的Futrue中&lt;/li&gt;
+&lt;li&gt;在发生读写操作是switch到当前greenlet的父greenlet继续执行，挂起当前greenlet&lt;/li&gt;
+&lt;li&gt;在IOStream的读写操作完成后调用callback switch到挂起的子greenlet中继续执行&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;tornado_motor_sock_method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;coro&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;gen&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;coroutine&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+    &lt;span class=&#34;nd&#34;&gt;@functools.wraps&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;wrapped&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;#当前greenlet是一个子greenlet&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;child_gr&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;greenlet&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getcurrent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;#获取当前greenlet的父greenlet，即之前代码提到过的asynchronize所在的greenlet&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;main&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;child_gr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;parent&lt;/span&gt;
+
+        &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;callback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exc_info&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;child_gr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;throw&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exc_info&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;elif&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;child_gr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;throw&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+                &lt;span class=&#34;c1&#34;&gt;#当future的结果到达，切换回挂起的子greenlet&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;child_gr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;switch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+
+        &lt;span class=&#34;c1&#34;&gt;#保证callback在当前greenlet的父greenlet中运行&lt;/span&gt;
+        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;io_loop&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;add_future&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;coro&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;callback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;#return这句会暂时挂起当前greenlet，将控制权切换回父greenlet，&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;#在上面的callback执行时，才会切换回当前greenlet，return语句返回&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;switch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;wrapped&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;使用greenlet的好处是我们可以通过这个挂起，唤醒的过程来中断当前的同步代码，而不需要用Tornado自己实现协程，每次都要yield出来，然后回调。通过使用greenlet可以很方便的把同步的网络IO库修改为支持Tornado的异步库。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Tornado代码阅读笔记 IOLoop</title>
+      <link>https://zhu327.github.io/2016/06/14/tornado%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-ioloop/</link>
+      <pubDate>Tue, 14 Jun 2016 14:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/06/14/tornado%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-ioloop/</guid>
+      <description>&lt;p&gt;准备用Tornado + greenlet + Django ORM搭一个框架，大体上有个思路，在开始前再次阅读下Tornado的代码。目的是在学习Torndao使用的同时，了解下原理，以便在使用过程中少踩点坑。&lt;/p&gt;
+
+&lt;h3 id=&#34;准备&#34;&gt;准备&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;学习IO多路复用: epoll&lt;br /&gt;
+&lt;a href=&#34;http://scotdoyle.com/python-epoll-howto.html&#34;&gt;http://scotdoyle.com/python-epoll-howto.html&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;https://fukun.org/archives/10051470.html&#34;&gt;https://fukun.org/archives/10051470.html&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Reactor模型&lt;br /&gt;
+&lt;a href=&#34;http://blog.csdn.net/u013074465/article/details/46276967&#34;&gt;http://blog.csdn.net/u013074465/article/details/46276967&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;去年大概这个时候也硬着头皮读过Tornado的代码，当时没有经验，还不知道编程模型，在程序的理解上都是顺序执行的思路，所以看到Tornado的代码只会觉得特么的牛B，各种类，各种方法的调来调去。现在理解了Reactor模型以后，再回过头看Tornado，就比较容易理解了，所以在阅读代码前如果能在构架上先理解，读起来会快很多。&lt;/p&gt;
+
+&lt;p&gt;Tornado的代码基于2.0版本，最新的4.3版本读起来比较绕，抽象的更加细化，阅读代码的目的在于学习编程思路，不求新。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>记搜狗微信号搜索反爬虫</title>
+      <link>https://zhu327.github.io/2015/02/15/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB/</link>
+      <pubDate>Sun, 15 Feb 2015 18:44:28 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/02/15/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB/</guid>
+      <description>&lt;h3 id=&#34;反爬虫&#34;&gt;反爬虫&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/rss&#34;&gt;RSS Factory&lt;/a&gt;前段时间又出问题了，访问微信公众号RSS一直500，完全没法用了。&lt;/p&gt;
+
+&lt;p&gt;经调试，发现由于爬取数据太频繁，触发了搜狗微信公众号的反爬虫，探索了下反爬虫的规则:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;没有带Cookie的情况下，频繁访问触发反爬虫&lt;/li&gt;
+&lt;li&gt;带Cookie的情况下，频繁访问偶尔触发反爬出，偶现500错误&lt;/li&gt;
+&lt;li&gt;不带Cookie情况下，隔几个小时范围一下不会触发反爬虫&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python资源存档</title>
+      <link>https://zhu327.github.io/2015/01/27/python%E8%B5%84%E6%BA%90%E5%AD%98%E6%A1%A3/</link>
+      <pubDate>Tue, 27 Jan 2015 23:50:19 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/27/python%E8%B5%84%E6%BA%90%E5%AD%98%E6%A1%A3/</guid>
+      <description>&lt;h3 id=&#34;python&#34;&gt;python&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://python-documentation-cn.readthedocs.org/en/latest/&#34;&gt;python 2.7.3&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://docspy3zh.readthedocs.org/en/latest/index.html&#34;&gt;python 3.2.2&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>RSS Factory的坑</title>
+      <link>https://zhu327.github.io/2015/01/02/rss-factory%E7%9A%84%E5%9D%91/</link>
+      <pubDate>Fri, 02 Jan 2015 19:41:03 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/02/rss-factory%E7%9A%84%E5%9D%91/</guid>
+      <description>&lt;p&gt;花了一天时间把&lt;a href=&#34;https://github.com/zhu327/rss&#34;&gt;RSS Factory&lt;/a&gt;更新了下，把Tornado默认的模版引擎换为jinja2，解析html第三方库换为lxml。遇到了几个坑，纪录下。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;自动转义&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Tornado默认的模版引擎默认自动转义，Flask配置的jinja2也自动转义了，&lt;a href=&#34;http://bozpy.sinaapp.com/blog/15&#34;&gt;在Tornado中使用jinja2模版引擎的简单方法&lt;/a&gt;，按照这个方法模版渲染的时候却没有自动转义，所以还需要进一步配置。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;n&#34;&gt;application&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tornado&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;web&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Application&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;template_loader&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;JinjaLoader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dirname&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;vm&#34;&gt;__file__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;templates/&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;autoescape&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;extensions&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;jinja2.ext.autoescape&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]),&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在Tornado中使用jinja2模版引擎的简单方法</title>
+      <link>https://zhu327.github.io/2015/01/02/%E5%9C%A8tornado%E4%B8%AD%E4%BD%BF%E7%94%A8jinja2%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E%E7%9A%84%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Fri, 02 Jan 2015 10:34:28 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/02/%E5%9C%A8tornado%E4%B8%AD%E4%BD%BF%E7%94%A8jinja2%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E%E7%9A%84%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95/</guid>
+      <description>&lt;h3 id=&#34;参考&#34;&gt;参考&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://veerkat.me/blog/posts/Tornado-shi-yong-Jinja2-mo-ban-yin-qing.html&#34;&gt;Tornado使用Jinja2模板引擎&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
+
+&lt;p&gt;为了让自己的开发工具都能得到统一，所以想着以后不管是用Tornado也好，Bottle也好，模版引擎都开始用jinja2，所以更新了&lt;a href=&#34;https://github.com/zhu327/rss&#34;&gt;RSS Factory&lt;/a&gt;使用的模版引擎。&lt;/p&gt;
+
+&lt;p&gt;Google了下Tornado使用jinja2的方法，发现大部分人的实现方法都是重写&lt;code&gt;ReaquestHandle&lt;/code&gt;的&lt;code&gt;render&lt;/code&gt;方法，这样的虽然比较简单但是不利于保持Tornado的完整性，所以我使用参考文章中的方法。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>WSGI与Tornado想到的</title>
+      <link>https://zhu327.github.io/2014/12/26/wsgi%E4%B8%8Etornado%E6%83%B3%E5%88%B0%E7%9A%84/</link>
+      <pubDate>Fri, 26 Dec 2014 23:59:11 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2014/12/26/wsgi%E4%B8%8Etornado%E6%83%B3%E5%88%B0%E7%9A%84/</guid>
+      <description>&lt;h3 id=&#34;tornado&#34;&gt;Tornado&lt;/h3&gt;
+
+&lt;p&gt;上周用tornado实现了&lt;a href=&#34;https://github.com/zhu327/rss&#34;&gt;RSS Factory&lt;/a&gt;，又从新学了下Tornado下的使用，再次看&lt;a href=&#34;http://demo.pythoner.com/itt2zh/index.html&#34;&gt;introduce to tornado&lt;/a&gt;发现以前看的只学到了Tornado的MVC，使用Tornado也只停留在表面，没有学到Tornado的精髓。这次又学到了不少，这里总结下。&lt;/p&gt;
+
+&lt;h3 id=&#34;长连接-websocket与异步事件循环&#34;&gt;长连接,WebSocket与异步事件循环&lt;/h3&gt;
+
+&lt;p&gt;Web2.0时代产生了很多的实时通知需求，也就是Ajax请求特别多，最初是用轮询实现，但是对服务器的开销很大，所以产生了长连接轮询。&lt;/p&gt;
+
+&lt;p&gt;客户的也就是浏览器请求一个api，Tornado不会立即返回，而是等到有变化的时候返回，浏览器获取响应后，循环再请求api，这样就省掉了很多请求，而且实现了实时通知。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

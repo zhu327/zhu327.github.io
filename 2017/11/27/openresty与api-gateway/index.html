@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      OpenResty与API Gateway &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">OpenResty与API Gateway</h1>
+  <span class="post-date">Nov 27 2017</span>
+  <p>公司业务向微服务方向迁移实践中, API Gateway成为接入层最重要的部分, 在完成开发的同时给同事做了一次OpenResty的分享, 以下是分享的内容整理.</p>
+
+<hr />
+
+<h3 id="当我谈论高性能时我们谈论什么">当我谈论高性能时我们谈论什么 ?</h3>
+
+<p>讨论时间, 大家自由发挥</p>
+
+<ul>
+<li>机器</li>
+<li>语言</li>
+<li>架构
+
+<ul>
+<li>reactor</li>
+<li>coroutine</li>
+<li>cache</li>
+</ul></li>
+</ul>
+
+<p></p>
+
+<h3 id="学习指南-1">学习指南 #1</h3>
+
+<ul>
+<li>reactor
+
+<ul>
+<li><a href="http://blog.csdn.net/u013074465/article/details/46276967">http://blog.csdn.net/u013074465/article/details/46276967</a></li>
+</ul></li>
+<li>coroutine
+
+<ul>
+<li><a href="http://blog.csdn.net/wyx819/article/details/45420017">http://blog.csdn.net/wyx819/article/details/45420017</a></li>
+</ul></li>
+<li>Tornado代码阅读笔记 IOLoop
+
+<ul>
+<li><a href="http://t.cn/R5XxpMM">http://t.cn/R5XxpMM</a></li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h3 id="同步编程">同步编程</h3>
+
+<ul>
+<li>多线程, 用户态/内核态相互切换</li>
+<li>阻塞, 带来线程切换</li>
+</ul>
+
+<h3 id="异步编程">异步编程</h3>
+
+<ul>
+<li>事件驱动</li>
+<li>回调</li>
+<li>协程</li>
+</ul>
+
+<hr />
+
+<h2 id="openresty">OpenResty</h2>
+
+<ul>
+<li>Nginx</li>
+<li><code>lua-nginx-module</code></li>
+<li>lua resty libs
+
+<ul>
+<li><a href="https://github.com/iresty/nginx-lua-module-zh-wiki#description">https://github.com/iresty/nginx-lua-module-zh-wiki#description</a></li>
+</ul></li>
+</ul>
+
+<p><em>无聊的分割线</em></p>
+
+<ul>
+<li>基于lua的Nginx开发</li>
+<li>Nginx的异步机制+lua coroutine</li>
+<li>够用的内置lua libs cosocket异步支持</li>
+<li>内置cache</li>
+</ul>
+
+<p><em>ngx_lua模块的原理</em></p>
+
+<ul>
+<li>每个worker（工作进程）创建一个Lua VM，worker内所有协程共享VM；</li>
+<li>将Nginx I/O原语封装后注入 Lua VM，允许Lua代码直接访问；</li>
+<li>每个外部请求都由一个Lua协程处理，协程之间数据隔离；</li>
+<li>Lua代码调用I/O操作等异步接口时，会挂起当前协程（并保护上下文数据），而不阻塞worker；</li>
+<li>I/O等异步操作完成时还原相关协程上下文数据，并继续运行；</li>
+</ul>
+
+<hr />
+
+<h3 id="学习指南-2">学习指南 #2</h3>
+
+<ul>
+<li>OpenResty 系列课程
+
+<ul>
+<li><a href="http://www.stuq.org/course/1015">http://www.stuq.org/course/1015</a></li>
+</ul></li>
+<li>agentzh 的 Nginx 教程
+
+<ul>
+<li><a href="https://openresty.org/download/agentzh-nginx-tutorials-zhcn.html">https://openresty.org/download/agentzh-nginx-tutorials-zhcn.html</a></li>
+</ul></li>
+<li>OpenResty 最佳实践
+
+<ul>
+<li><a href="https://moonbingbing.gitbooks.io/openresty-best-practices/content/">https://moonbingbing.gitbooks.io/openresty-best-practices/content/</a></li>
+</ul></li>
+<li>nginx-lua-module-zh-wiki
+
+<ul>
+<li><a href="https://github.com/iresty/nginx-lua-module-zh-wiki">https://github.com/iresty/nginx-lua-module-zh-wiki</a></li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h3 id="api-gateway">API Gateway</h3>
+
+<ul>
+<li>微服务</li>
+<li>入口</li>
+<li>授权、监控、负载均衡、缓存、请求分片和管理、静态响应处理</li>
+</ul>
+
+<h3 id="学习指南-3">学习指南 #3</h3>
+
+<ul>
+<li>微服务
+
+<ul>
+<li><a href="http://blog.csdn.net/wurenhai/article/details/37659335/">http://blog.csdn.net/wurenhai/article/details/37659335/</a></li>
+</ul></li>
+<li>API Gateway
+
+<ul>
+<li><a href="http://dockone.io/article/482">http://dockone.io/article/482</a></li>
+</ul></li>
+</ul>
+
+<p><img src="https://camo.githubusercontent.com/0e1bbef1559f33dd31b9f352c83d2caf2bc4e61b/687474703a2f2f636c2e6c792f696d6167652f3142334a33623368314831632f496d616765253230323031352d30372d30372532306174253230362e35372e3235253230504d2e706e67" width="720"></p>
+
+<hr />
+
+<h3 id="kong">Kong</h3>
+
+<ul>
+<li>基于Openresty</li>
+<li>自带武器库</li>
+<li>灵活的插件定制</li>
+</ul>
+
+<h3 id="学习指南-4">学习指南 #4</h3>
+
+<ul>
+<li>Kong源码分析
+
+<ul>
+<li><a href="http://cyukang.com/2017/07/02/kong-intro.html">http://cyukang.com/2017/07/02/kong-intro.html</a></li>
+</ul></li>
+<li>深入理解orange
+
+<ul>
+<li><a href="https://github.com/linger1216/understanding-orange">https://github.com/linger1216/understanding-orange</a></li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h3 id="定制需求">定制需求</h3>
+
+<ul>
+<li>eebo auth
+
+<ul>
+<li>独立auth模块</li>
+<li>灵活配置api是否需要auth</li>
+<li>Python服务无需关注认证细节</li>
+</ul></li>
+<li>eebo limiting
+
+<ul>
+<li>基于内置rate-limiting开发</li>
+<li>提供<code>company_id/user_id</code>维度</li>
+</ul></li>
+<li>eebo balancer
+
+<ul>
+<li>提供私有服务</li>
+<li>强大的分布式分发</li>
+</ul></li>
+</ul>
+
+<h3 id="自带的插件">自带的插件</h3>
+
+<ul>
+<li>CORS
+
+<ul>
+<li>用于处理跨域请求</li>
+</ul></li>
+<li>IP Restriction
+
+<ul>
+<li>IP 黑白名单</li>
+</ul></li>
+<li>Correlation ID
+
+<ul>
+<li>为每个请求生成唯一请求id</li>
+<li>方便定位, 跟踪日志</li>
+</ul></li>
+<li>Syslog
+
+<ul>
+<li>推送日志到Syslog-</li>
+</ul></li>
+</ul>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2017\/11\/27\/openresty%E4%B8%8Eapi-gateway\/';
+        this.page.identifier = '\/2017\/11\/27\/openresty%E4%B8%8Eapi-gateway\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

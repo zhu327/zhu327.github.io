@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      WSGI 理解 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">WSGI 理解</h1>
+  <span class="post-date">Sep 21 2014</span>
+  <h3 id="参考">参考</h3>
+
+<ul>
+<li><a href="http://blog.csdn.net/on_1y/article/details/18803563">WSGI 简介</a></li>
+<li><a href="http://www.cnblogs.com/russellluo/p/3338616.html">用Python写一个简单的Web框架</a></li>
+</ul>
+
+<h3 id="wsgi-简介">WSGI 简介</h3>
+
+<p>WSGI是Python webserver与Web App之间的协议。这个协议定义了Web server和App的行为，是的server与app分离，简化了开发。</p>
+
+<p>WSGI server，Gunicorn(python实现)，uWSGI(C实现)，这些服务器程序都实现了标准的WSGI接口，任意web app都可以使用不同的server。
+</p>
+
+<p>WSGI app，大部分python web framwork的实现最终返回的都是一个WSGI app给WSGI server调用，框架主要实现的就是url路由，cookie处理等等中间件。</p>
+
+<p>WSGI协议中还有一个middleware(中间件)，中间件对于server与app都是透明的，即对与app middleware是server，对server middelware是app。middleware可用叠加，实现不同的功能。</p>
+
+<h3 id="应用程序">应用程序</h3>
+
+<p>一个WSGI app看起来应该是这样的:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200 OK&#39;</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/html&#39;</span><span class="p">)]</span>
+    <span class="n">start_response</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;Hello world!&#39;</span><span class="p">]</span></code></pre></div>
+<p>根据WSGI，app必须是一个callable对象，可以是函数，类，实现了<code>__call__</code>方法的实例对象。</p>
+
+<p>WSGI app接受2个参数environ和start_response，environ是一个包含了CGI环境变量与WSGI相关变量的字典，
+start_response是一个函数对象，用于处理response header，接受2个参数status是response状态码，headers是response header的列表，列表项是元组。</p>
+
+<p>app返回一个可迭代对象，可以是list，实现了<code>__iter__</code>方法的类，其它的可迭代对象。用于response body。另外start_response函数调用会返回一个write方法，也可以写入response body，但是不推荐使用，这个write方法只用为了兼容以前的框架保留的。</p>
+
+<h3 id="environ">environ</h3>
+
+<ul>
+<li>REQUEST_METHOD</li>
+<li>PATH_INFO</li>
+<li>QUERY_STRING</li>
+
+<li><p>CONTENT_TYPE</p></li>
+
+<li><p>wsgi.input</p></li>
+</ul>
+
+<p>以上是主要用到的environ变量，其它请参考参考文章，包含了CGI环境变量，wsgi.input是request body。</p>
+
+<h4 id="start-response">start_response</h4>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">start_response</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span></code></pre></div>
+<p>只用在exc_info不为None时start_response才能调用多次。</p>
+
+<h3 id="middleware">middleware</h3>
+
+<p>middleware先作为app被server调用，获取environ信息，可用匹配URL调用对应的不同的app，或者处理header中的cookie等等中间过程。</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2014\/09\/21\/wsgi-%E7%90%86%E8%A7%A3\/';
+        this.page.identifier = '\/2014\/09\/21\/wsgi-%E7%90%86%E8%A7%A3\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

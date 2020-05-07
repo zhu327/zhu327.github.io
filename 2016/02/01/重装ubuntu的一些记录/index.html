@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      重装Ubuntu的一些记录 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">重装Ubuntu的一些记录</h1>
+  <span class="post-date">Feb 1 2016</span>
+  <p>** 手贱把工作电脑的Ubuntu搞挂了好像，不得已重装一下，这里记录一下过程</p>
+
+<p>工作中用到Ubuntu主要是做Python开发环境，在家习惯了用Mac，切换到Ubuntu还是很方便了，比较坑的，是经常莫名其妙的系统错误。</p>
+
+<h3 id="1-安装系统">1. 安装系统</h3>
+
+<p>必须是Ubuntu 14.04 64bit 选择不在线更新安装</p>
+
+<h3 id="2-更新系统">2. 更新系统</h3>
+
+<p>在系统设置中选择国内的源，我用的是163的
+</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get update <span class="o">&amp;&amp;</span> sudo apt-get upgrade
+sudo apt-get install vim</code></pre></div>
+<h3 id="3-安装markdowm编辑器">3. 安装markdowm编辑器</h3>
+
+<p>因为要写这篇记录，所以我先安装了haroopad这个markdown编辑器</p>
+
+<blockquote>
+<p><a href="http://pad.haroopress.com/user.html">http://pad.haroopress.com/user.html</a></p>
+</blockquote>
+
+<p>下载安装即可</p>
+
+<h3 id="4-安装chrome">4. 安装Chrome</h3>
+
+<p>必须要找个64bit deb包才能安装，可能翻墙才能下载到</p>
+
+<h3 id="5-去除amazon广告">5. 去除Amazon广告</h3>
+
+<blockquote>
+<p><a href="http://jingyan.baidu.com/article/676629974846c554d51b84cb.html">http://jingyan.baidu.com/article/676629974846c554d51b84cb.html</a></p>
+</blockquote>
+
+<h3 id="6-安装搜狗输入法">6. 安装搜狗输入法</h3>
+
+<blockquote>
+<p><a href="http://pinyin.sogou.com/linux/?r=pinyin">http://pinyin.sogou.com/linux/?r=pinyin</a></p>
+</blockquote>
+
+<p>下载安装即可</p>
+
+<h3 id="7-安装sublime-text-3">7. 安装Sublime Text 3</h3>
+
+<blockquote>
+<p><a href="http://c758482.r82.cf2.rackcdn.com/sublime-text_build-3083_amd64.deb">http://c758482.r82.cf2.rackcdn.com/sublime-text_build-3083_amd64.deb</a></p>
+</blockquote>
+
+<p>linux下Sublime支持搜狗中文输入</p>
+
+<blockquote>
+<p><a href="http://www.cnblogs.com/wangkongming/p/4302642.html">http://www.cnblogs.com/wangkongming/p/4302642.html</a></p>
+</blockquote>
+
+<p>Sublime Text 3 扩展支持Python/Django</p>
+
+<blockquote>
+<p><a href="http://python.jobbole.com/81312/">http://python.jobbole.com/81312/</a></p>
+</blockquote>
+
+<h3 id="8-安装geary邮件客户端">8. 安装geary邮件客户端</h3>
+
+<blockquote>
+<p><a href="http://www.omgubuntu.co.uk/2015/03/install-geary-ubuntu-linux-email-update">http://www.omgubuntu.co.uk/2015/03/install-geary-ubuntu-linux-email-update</a></p>
+</blockquote>
+
+<p>geary是一款轻量级的邮件客户端，相比Thunderbird会比较现代化一点，用惯了Mac的邮件，所以用这个替代，Ubuntu软件中心的版本比较低，所以自己添加一个PPA安装新的版本</p>
+
+<h3 id="9-安装rabbitvcs">9. 安装RabbitVCS</h3>
+
+<p>工作用的版本管理工具是SVN，命令行比较麻烦，需要安装RabbitVCS，是Linux最好的SVN客户端了，体验更Win下的小乌龟一毛一样</p>
+
+<blockquote>
+<p><a href="http://wiki.rabbitvcs.org/wiki/install/ubuntu">http://wiki.rabbitvcs.org/wiki/install/ubuntu</a></p>
+</blockquote>
+
+<h3 id="10-安装virtualbox">10. 安装VirtualBox</h3>
+
+<p>Ubuntu下总是要用到一些Windwos的软件，所有需要安装一个xp虚拟机来跑Win下的软件，比如QQ这些，不想用Wine的原因是，安装配置太折腾，即使安装好了，也会发现字体等等很丑，所以还不如直接虚拟机了</p>
+
+<blockquote>
+<p><a href="https://www.virtualbox.org/wiki/Linux_Downloads">https://www.virtualbox.org/wiki/Linux_Downloads</a></p>
+</blockquote>
+
+<p>找对应的版本下载安装</p>
+
+<h3 id="11-安装aria2">11. 安装Aria2</h3>
+
+<p>aria2是一个下载工具，应该我的xp镜像是保存在百度网盘的，所以需要用aria2来快速下载</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get install aria2</code></pre></div>
+<h3 id="12-安装mysql-workbench">12. 安装MySQL Workbench</h3>
+
+<blockquote>
+<p><a href="http://mirror.yandex.ru/mirrors/ftp.mysql.com/Downloads/MySQLGUITools/mysql-workbench-community-6.3.6-1ubu1404-amd64.deb">http://mirror.yandex.ru/mirrors/ftp.mysql.com/Downloads/MySQLGUITools/mysql-workbench-community-6.3.6-1ubu1404-amd64.deb</a></p>
+</blockquote>
+
+<p>一个MySQL的官方客户端，不是很好用，但是也没有太多的选择</p>
+
+<h3 id="13-安装oh-my-zsh">13. 安装Oh My Zsh</h3>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get install zsh git
+sh -c <span class="s2">&#34;</span><span class="k">$(</span>wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -<span class="k">)</span><span class="s2">&#34;</span></code></pre></div>
+<p>用过的人都说好</p>
+
+<h3 id="14-安装pip-virtualenv">14. 安装pip virtualenv</h3>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">wget https://bootstrap.pypa.io/get-pip.py
+sudo python get-pip.py
+sudo pip install virtualenv</code></pre></div>
+<h3 id="其它">其它</h3>
+
+<blockquote>
+<p>WPS: <a href="http://community.wps.cn/download/">http://community.wps.cn/download/</a><br />
+有道词典: <a href="http://cidian.youdao.com/index-linux.html">http://cidian.youdao.com/index-linux.html</a><br />
+网易云音乐: <a href="http://music.163.com/#/download">http://music.163.com/#/download</a></p>
+</blockquote>
+
+<h3 id="2016-10-08-更新">2016-10-08 更新</h3>
+
+<ul>
+<li>Typora</li>
+</ul>
+
+<p>好用的Markdown编辑器,已淘汰Haroopad<br />
+  <a href="https://www.typora.io/#linux">https://www.typora.io/#linux</a></p>
+
+<ul>
+<li><p>Chrome App</p>
+
+<ul>
+<li><a href="https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop">Postman</a></li>
+</ul></li>
+</ul>
+
+<h3 id="2017-01-01-更新">2017-01-01 更新</h3>
+
+<ul>
+<li><a href="https://www.rescuetime.com/download_linux">RescueTime</a> 时间记录工具</li>
+</ul>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2016\/02\/01\/%E9%87%8D%E8%A3%85ubuntu%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%B0%E5%BD%95\/';
+        this.page.identifier = '\/2016\/02\/01\/%E9%87%8D%E8%A3%85ubuntu%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%B0%E5%BD%95\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

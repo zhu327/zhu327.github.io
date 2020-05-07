@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Ajax中的jsonp理解 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Ajax中的jsonp理解</h1>
+  <span class="post-date">Jul 20 2015</span>
+  <p>公司自有服务都是后台api来实现,即使是website也是通过调用api获取来渲染网页,正常的Ajax中请求都是调用浏览器的XMLHttpRequest接口来异步请求数据,但是无论是Chrome,还是IE都有一个限制,就是不能跨域通过XMLHttpRequest来发请求.</p>
+
+<p>话说你有过墙梯我有张良计,聪明的开发者总是会有办法来绕过浏览器跨域的限制来请求数据,在HTML中具有<code>src</code>属性的标签例如<code>script</code>,<code>img</code>都是可用跨域来请求<code>src</code>指向的资源数据的,既然<code>script</code>标签可以跨域,那就利用这个来实现跨域.但是<code>script</code>标签返回的数据不能直接是json格式,需要是标准的javascript函数调用,所以需要返回的数据中包括一个在已有js函数的本地调用方式,传入我们需要的数据,这里的数据才是json格式的.</p>
+
+<p>发送请求:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;http://server2.example.com/RetrieveUser?UserId=1823&amp;jsonp=parseResponse&#34;</span><span class="p">&gt;</span> <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></code></pre></div>
+<p>
+响应内容:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">parseResponse</span><span class="p">({</span><span class="s2">&#34;Name&#34;</span><span class="o">:</span> <span class="s2">&#34;Cheeso&#34;</span><span class="p">,</span> <span class="s2">&#34;Id&#34;</span> <span class="o">:</span> <span class="mi">1823</span><span class="p">,</span> <span class="s2">&#34;Rank&#34;</span><span class="o">:</span> <span class="mi">7</span><span class="p">})</span>
+</code></pre></div>
+<p>在本地一个parseResponse的函数可用用来处理服务端传入的参数,而一般这个回调函数是作为参数来传递给服务端api的就是<code>src</code>属性的jsonp参数.<br />
+最近也是因为客户有跨域请求我们api数据的需求所有了解了一下jsonp,不得不说开发者前辈们的各种机智,在jQuery中使用jsonp更是方便,不需要自己写<code>script</code>标签.</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&#34;text/javascript&#34;</span><span class="o">&gt;</span>
+<span class="nx">jQuery</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+ 
+    <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+        <span class="nx">type</span><span class="o">:</span> <span class="s2">&#34;get&#34;</span><span class="p">,</span>
+        <span class="kr">async</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nx">url</span><span class="o">:</span> <span class="s2">&#34;http://flightQuery.com/jsonp/flightResult.aspx?code=CA1998&#34;</span><span class="p">,</span>
+        <span class="nx">dataType</span><span class="o">:</span> <span class="s2">&#34;jsonp&#34;</span><span class="p">,</span>
+        <span class="nx">jsonp</span><span class="o">:</span> <span class="s2">&#34;callback&#34;</span><span class="p">,</span><span class="c1">//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
+</span><span class="c1"></span>        <span class="nx">jsonpCallback</span><span class="o">:</span><span class="s2">&#34;flightHandler&#34;</span><span class="p">,</span><span class="c1">//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写&#34;?&#34;，jQuery会自动为你处理数据
+</span><span class="c1"></span>        <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">json</span><span class="p">){</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;您查询到航班信息：票价： &#39;</span> <span class="o">+</span> <span class="nx">json</span><span class="p">.</span><span class="nx">price</span> <span class="o">+</span> <span class="s1">&#39; 元，余票： &#39;</span> <span class="o">+</span> <span class="nx">json</span><span class="p">.</span><span class="nx">tickets</span> <span class="o">+</span> <span class="s1">&#39; 张。&#39;</span><span class="p">);</span>
+        <span class="p">},</span>
+        <span class="nx">error</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;fail&#39;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+<span class="o">&lt;</span><span class="err">/script&gt;</span>
+</code></pre></div>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2015\/07\/20\/ajax%E4%B8%AD%E7%9A%84jsonp%E7%90%86%E8%A7%A3\/';
+        this.page.identifier = '\/2015\/07\/20\/ajax%E4%B8%AD%E7%9A%84jsonp%E7%90%86%E8%A7%A3\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rpc on </title>
+    <link>https://zhu327.github.io/tags/rpc/</link>
+    <description>Recent content in Rpc on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 24 Mar 2018 15:38:54 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/rpc/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>服务治理与RPC</title>
+      <link>https://zhu327.github.io/2018/03/24/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B8%8Erpc/</link>
+      <pubDate>Sat, 24 Mar 2018 15:38:54 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2018/03/24/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B8%8Erpc/</guid>
+      <description>&lt;p&gt;以前写过Django中使用zerorpc的方法，但是由于我们的Django是运行在gevent下，而zeromq需要启动一个后台进程处理消息，与gevent使用的greenlet携程是冲突的。&lt;/p&gt;
+
+&lt;p&gt;在Java的世界里，Spring Cloud全家桶覆盖了微服务的方方面面，专注于服务治理的框架也有阿里的Dubbo，微博的Motan。但是Python这边没有找到合适的轮子，甚至于好的RPC框架也没有，只有gRPC，Thrift这种跨语言的RPC框架。而这些跨语言的RPC框架基本上也是基于C/C++的Python port。&lt;/p&gt;
+
+&lt;p&gt;在github上全局搜索Python rpc，找到一个原生支持gevent的&lt;a href=&#34;https://github.com/studio-ousia/mprpc&#34;&gt;MPRPC&lt;/a&gt;，而且也找到了微博Motan的Golang版本，所以考虑读Motan-go的源码学习一下什么是服务治理，再基于MPRPC实现自己的轮子。这就有了&lt;a href=&#34;https://github.com/zhu327/doge&#34;&gt;doge&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

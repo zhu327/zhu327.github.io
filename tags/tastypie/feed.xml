@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tastypie on </title>
+    <link>https://zhu327.github.io/tags/tastypie/</link>
+    <description>Recent content in Tastypie on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 15 May 2016 10:49:01 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/tastypie/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Tastypie实现accesstoken认证</title>
+      <link>https://zhu327.github.io/2016/05/15/tastypie%E5%AE%9E%E7%8E%B0accesstoken%E8%AE%A4%E8%AF%81/</link>
+      <pubDate>Sun, 15 May 2016 10:49:01 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/05/15/tastypie%E5%AE%9E%E7%8E%B0accesstoken%E8%AE%A4%E8%AF%81/</guid>
+      <description>&lt;p&gt;Tastypie提供了几种基本的认证方式比如SessionAuthentication，Django实现的web站点一般都是基于cookie-session的认证方式，在Django中使用中间件的方式处理cookie与session，以及用户认证。使用起来是很方便的。&lt;/p&gt;
+
+&lt;p&gt;但是在api中就不能继续使用cookie了，我们会使用accesstoken的方式来实现认证。之前同事使用redis实现了一版accesstoken的认证，但是由于考虑不周全，导致在使用过程中出现了很多bug，然后为了解决bug又写了很多恶心的兼容代码，所以抽空直接使用熟悉的session重构了认证过程。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Tastypie入门小结</title>
+      <link>https://zhu327.github.io/2016/03/09/tastypie%E5%85%A5%E9%97%A8%E5%B0%8F%E7%BB%93/</link>
+      <pubDate>Wed, 09 Mar 2016 15:28:33 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/03/09/tastypie%E5%85%A5%E9%97%A8%E5%B0%8F%E7%BB%93/</guid>
+      <description>&lt;h3 id=&#34;tastypie是什么&#34;&gt;Tastypie是什么&lt;/h3&gt;
+
+&lt;p&gt;Tastypie是基于Django的RESTful api开发框架，如果你有一个通过Django实现的网站，那么通过Tastypie写少许的代码就能实现一个全功能的REST api。&lt;/p&gt;
+
+&lt;h3 id=&#34;我要写些什么&#34;&gt;我要写些什么&lt;/h3&gt;
+
+&lt;p&gt;这不是一篇Tastypie的入门教程，如果需要教程，可以从官方文档开始，我写的只在探索Tastypie的过程中我认为值得记录的地方。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://django-tastypie.readthedocs.org/en/latest/tutorial.html&#34;&gt;Getting Started with Tastypie&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

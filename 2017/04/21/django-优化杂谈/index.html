@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Django 优化杂谈 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Django 优化杂谈</h1>
+  <span class="post-date">Apr 21 2017</span>
+  <p>总结下最近看过的一些文章,然后想到的一些优化点,整理一下.</p>
+
+<h3 id="数据库连接池">数据库连接池</h3>
+
+<blockquote>
+<p><a href="http://mt.dbanotes.net/arch/instagram.html">http://mt.dbanotes.net/arch/instagram.html</a></p>
+</blockquote>
+
+<p>Django 默认DB配置提供了选项<code>CONN_MAX_AGE</code>用于配置在同一个thread/greenlet里面DB connection的最大存活时间,便于连接的复用,在实践中发现如果使用gunicorn+gevent的方式来启动WSGI服务,由于gunicorn会创建一个很大的gevent pool,导致数据库连接数会暴涨.所以这个选项被放弃了,另外的方式是使用connection pool.</p>
+
+<p>instagram 使用 PostGreSQL 并且使用 Pgbouncer 这个中间件来管理连接池,MySQL也有Proxy这种中间件但是比较重,所以考虑在django mysql backend的基础上自己实现一个连接池.</p>
+
+<blockquote>
+<p><a href="https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38">https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38</a></p>
+</blockquote>
+
+<p>主要参考了Connector/Python的pool实现.</p>
+
+<p>数据库连接池也不是&rdquo;银弹&rdquo;,在应用层做数据库连接池也不值得推荐,随着业务的扩展,使用一主多备搭建集群,通过读写分类中间件来做连接池管理,推荐<a href="https://github.com/sysown/proxysql">ProxySQL</a>.</p>
+
+<p></p>
+
+<h3 id="缓存一切">缓存一切</h3>
+
+<blockquote>
+<p><a href="https://mozillazg.github.io/2015/09/high-performance-django-note-1.html">https://mozillazg.github.io/2015/09/high-performance-django-note-1.html</a></p>
+</blockquote>
+
+<p>从服务器的角度来看,我们可以用Nginx cache/Varnish来缓存响应.这里我们只讨论django cache framework.</p>
+
+<p>我们的系统中使用redis作为缓存服务器,使用redis-py与django-redis作为cache backend.</p>
+
+<p>redis-py是纯python实现的,查看了文档后发现它也支持使用一个C客户端的python绑定,只需要安装<a href="https://github.com/redis/hiredis-py">hiredis-py</a>即可使用C解析器提升redis性能.</p>
+
+<p>redis-py是自带connection pool支持的,默认使用<code>redis.connection.ConnectionPool</code>,连接数较多的情况下可能导致连接不够用抛出异常,可以考虑用<code>redis.connection.BlockingConnectionPool</code>替换,无连接可用时阻塞.</p>
+
+<h4 id="session">Session</h4>
+
+<p>Django 默认的 Session Engine 用的是数据库,因为Session中间件的缘故,每个请求进来都会首先访问Session表.我们可以用缓存来替代这个数据库访问的过程,推荐配置<code>SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'</code>即用了缓存,又保存到db保证数据不丢失.</p>
+
+<p>Django 的 session 表在一段时间以后会数据会变得很大,需要定时执行<code>python manage.py clearsessions</code>来清理过期session.</p>
+
+<h4 id="缓存model">缓存Model</h4>
+
+<blockquote>
+<p><a href="https://github.com/rosarior/awesome-django">https://github.com/rosarior/awesome-django</a></p>
+</blockquote>
+
+<p>awesome-django有一些用户缓存的工具,翻过一些文档后决定引入<a href="https://github.com/django-cache-machine/django-cache-machine">django-cache-machine</a></p>
+
+<ul>
+<li>访问频繁读多写少的Model要缓存</li>
+<li>写多读少的Model酌情缓存(写的时候更新缓存开销大)</li>
+</ul>
+
+<h3 id="日志">日志</h3>
+
+<p>Python的日志是同步的,所以如果直接把日志写入文件,也会有文件系统I/O的开销,更快的方式是把日志记录到<code>sys.stderr</code>或<code>sys.stdout</code>,然后用gunicorn把标准输出的日志重定向到文件.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 日志配置</span>
+<span class="kn">import</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">logging.config</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;console&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;stream&#39;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;root&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;console&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="s1">&#39;INFO&#39;</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+<p>gunicorn选项:</p>
+
+<blockquote>
+<p><a href="http://docs.gunicorn.org/en/stable/settings.html#capture-output">http://docs.gunicorn.org/en/stable/settings.html#capture-output</a></p>
+</blockquote>
+
+<h3 id="celery">Celery</h3>
+
+<blockquote>
+<p><a href="http://docs.jinkan.org/docs/celery/userguide/optimizing.html">http://docs.jinkan.org/docs/celery/userguide/optimizing.html</a>
+<a href="https://blog.balthazar-rouberol.com/celery-best-practices">https://blog.balthazar-rouberol.com/celery-best-practices</a>
+<a href="http://orangleliu.info/2014/08/09/celery-best-practice/">http://orangleliu.info/2014/08/09/celery-best-practice/</a></p>
+</blockquote>
+
+<p>安装 librabbitmq 提升amqp访问速度,路由长任务与短任务到不同的Queue,并配置不同的预取策略.使用<a href="https://github.com/msgpack/msgpack-python">msgpack</a>来序列化消息,性能优于json.</p>
+
+<h3 id="gevent-与-mysqldb">gevent 与 MySQLdb</h3>
+
+<p>因为redis最够快,所以在gunicorn+gevent的服务器下使用redis C客户端绑定也没什么问题,但是MySQL就不一样了,为了让MySQLdb也能在gevent/greenlet下切换引入Douban的greenify库.</p>
+
+<blockquote>
+<p><a href="https://github.com/douban/greenify">https://github.com/douban/greenify</a></p>
+</blockquote>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2017\/04\/21\/django-%E4%BC%98%E5%8C%96%E6%9D%82%E8%B0%88\/';
+        this.page.identifier = '\/2017\/04\/21\/django-%E4%BC%98%E5%8C%96%E6%9D%82%E8%B0%88\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

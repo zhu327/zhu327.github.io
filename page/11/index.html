@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+	<meta name="generator" content="Hugo 0.40.1" />
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      跬步 &middot; On Coding
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item  active " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+
+
+
+<div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/10/django%E5%AE%9E%E7%8E%B0join%E6%9F%A5%E8%AF%A2/">Django实现JOIN查询</a></h1>
+        <span class="post-date">Jan 10 2015</span>
+        <p>在写Django Model的Manager面临的一大问题是怎么样才能实现Django Model的复杂查询，比如LEFT JOIN语句的使用，Google用了不少时间，基本上了解大概，总结下，大概有3种方式。</p>
+
+<h3 id="参考">参考</h3>
+
+<blockquote>
+<p><a href="http://wing2south.com/post/django-raw-sql/">闲话 Django Raw SQL</a><br />
+<a href="http://blog.jobbole.com/74881/">实例详解Django的 select_related 和 prefetch_related 函数对 QuerySet 查询的优化</a></p>
+</blockquote>
+
+<h3 id="想法">想法</h3>
+
+<p>写Model的时候参考<a href="http://f2m.im">http://f2m.im</a>的表结构，发现它大量使用了JOIN查询，而且在多个表上都没有使用外键，我想不用外键也是为了方便修改，删除时产生不必要的约束。Django Model实现了ForeignKey，很方便的能查询到外键所在的实例，进一步能查询的更多，但是查询一次相当于执行一次SQL语句，这就造成了性能开销。所以F2E才会使用JOIN语句把计算的过程都交给MySQL。
+</p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/09/django%E8%87%AA%E5%AE%9A%E4%B9%89user%E7%B1%BB/">Django自定义User类</a></h1>
+        <span class="post-date">Jan 9 2015</span>
+        <h3 id="参考">参考</h3>
+
+<blockquote>
+<p><a href="https://docs.djangoproject.com/en/1.5/ref/contrib/auth/#django.contrib.auth.models.User">Substituting a custom User model</a><br />
+<a href="http://django-china.cn/topic/133/">django（v1.5） 自定义用户基础</a></p>
+</blockquote>
+
+<h3 id="实现">实现</h3>
+
+<p><a href="https://github.com/zhu327/forum">Django forum</a>，学习Django了，准备写一个论坛，想法是实现一个如 <a href="http://f2e.im/">http://f2e.im/</a> 这样的现代论坛，数据驱动开发，第一步就是设计数据库表结构，Django自带了用户模块，但是定义的字段太少，所以需要自定义扩展下。</p>
+
+<p>在<code>settings.py</code>下新增自定义用户类:
+</p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/02/rss-factory%E7%9A%84%E5%9D%91/">RSS Factory的坑</a></h1>
+        <span class="post-date">Jan 2 2015</span>
+        <p>花了一天时间把<a href="https://github.com/zhu327/rss">RSS Factory</a>更新了下，把Tornado默认的模版引擎换为jinja2，解析html第三方库换为lxml。遇到了几个坑，纪录下。</p>
+
+<p><strong>自动转义</strong></p>
+
+<p>Tornado默认的模版引擎默认自动转义，Flask配置的jinja2也自动转义了，<a href="http://bozpy.sinaapp.com/blog/15">在Tornado中使用jinja2模版引擎的简单方法</a>，按照这个方法模版渲染的时候却没有自动转义，所以还需要进一步配置。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">application</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">(</span>
+<span class="n">template_loader</span><span class="o">=</span><span class="n">JinjaLoader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;templates/&#39;</span><span class="p">),</span>
+    <span class="n">autoescape</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;jinja2.ext.autoescape&#39;</span><span class="p">]),</span>
+<span class="p">)</span></code></pre></div>
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/02/%E4%BD%BF%E7%94%A8lxml%E5%A4%84%E7%90%86dom/">使用lxml处理DOM</a></h1>
+        <span class="post-date">Jan 2 2015</span>
+        <h3 id="参考">参考</h3>
+
+<ul>
+<li><a href="http://www.cnblogs.com/bluescorpio/archive/2013/06/09/3127957.html">lxml.etree 教程</a></li>
+<li><a href="http://www.cnblogs.com/ifantastic/tag/XPath/">[XPath] XPath 与 lxml</a></li>
+<li><a href="http://www.ibm.com/developerworks/cn/xml/x-hiperfparse/">使用由 Python 编写的 lxml 实现高性能 XML 解析</a></li>
+</ul>
+
+<h3 id="前言">前言</h3>
+
+<p><a href="https://github.com/zhu327/rss">RSS Factory</a>本来使用BeautifulSoup来解析xml，html。但是发现还有更好的第三份库lxml性能更好，使用更方便。</p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/02/%E5%9C%A8tornado%E4%B8%AD%E4%BD%BF%E7%94%A8jinja2%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E%E7%9A%84%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95/">在Tornado中使用jinja2模版引擎的简单方法</a></h1>
+        <span class="post-date">Jan 2 2015</span>
+        <h3 id="参考">参考</h3>
+
+<ul>
+<li><a href="http://veerkat.me/blog/posts/Tornado-shi-yong-Jinja2-mo-ban-yin-qing.html">Tornado使用Jinja2模板引擎</a></li>
+</ul>
+
+<h3 id="实现">实现</h3>
+
+<p>为了让自己的开发工具都能得到统一，所以想着以后不管是用Tornado也好，Bottle也好，模版引擎都开始用jinja2，所以更新了<a href="https://github.com/zhu327/rss">RSS Factory</a>使用的模版引擎。</p>
+
+<p>Google了下Tornado使用jinja2的方法，发现大部分人的实现方法都是重写<code>ReaquestHandle</code>的<code>render</code>方法，这样的虽然比较简单但是不利于保持Tornado的完整性，所以我使用参考文章中的方法。</p>
+    </div>
+  
+</div>
+
+<div class="pagination">
+  
+  <a class="pagination-item older" href="https://zhu327.github.io/page/12/">Older</a>
+  
+
+  
+  <a class="pagination-item newer" href="https://zhu327.github.io/page/10/">Newer</a>
+  
+</div>
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

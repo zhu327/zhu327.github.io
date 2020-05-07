@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Django forum总结 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Django forum总结</h1>
+  <span class="post-date">Jan 31 2015</span>
+  <p><a href="https://github.com/zhu327/forum">https://github.com/zhu327/forum</a></p>
+
+<p>元旦的时候决定开始学习Django，学习最好的方式无非边学边做，所以把2年前没敢看的一个Tornado项目通过用Django实现了，这里总结下。</p>
+
+<h3 id="models">models</h3>
+
+<ol>
+<li><p>扩展默认User类</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">AbstractUser</span>
+<span class="c1"># 继承这个类即可</span>
+
+<span class="c1"># setting中设置</span>
+<span class="n">AUTH_USER_MODEL</span> <span class="o">=</span> <span class="s1">&#39;forum.ForumUser&#39;</span> <span class="c1"># 指定用户对象使用的类</span></code></pre></div>
+<p></p></li>
+
+<li><p>扩展Model的方法</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 默认Model对象有个属性objects有各种方法，扩展这个方法</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Manager</span>
+<span class="c1"># 扩展这个类</span>
+<span class="c1"># self.get_query_set() 这个方法返回基础的QuerySet，所以扩展Manager都是围绕这个方法来写</span>
+<span class="c1"># 在Model类中把objects指向这个Manager的对象</span>
+<span class="k">class</span> <span class="nc">Topic</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">TopicManager</span><span class="p">()</span> <span class="c1"># 默认objects就是model.Manager的对象</span></code></pre></div></li>
+
+<li><p>QuerySet对象的一些方法</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 复杂查询使用join连接方法，用于1对1的对象，一般ForeignKey</span>
+<span class="n">QuerySet</span><span class="o">.</span><span class="n">select_related</span><span class="p">()</span>
+<span class="c1"># 复杂查询，用于 _set的提前查询，用于1对多，多对多，ForeignKey的被指向对象都可以，通过SQL in方法</span>
+<span class="n">QuerySet</span><span class="o">.</span><span class="n">prefetch_related</span><span class="p">()</span>
+<span class="c1"># exits() 判断是否有结果</span>
+<span class="n">QuerySet</span><span class="o">.</span><span class="n">exits</span><span class="p">()</span>
+<span class="c1"># bulk_create() 批量创建，参数为Model对象的列表</span>
+<span class="n">Model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">bulk_create</span><span class="p">()</span></code></pre></div></li>
+</ol>
+
+<h3 id="auth">AUTH</h3>
+
+<p><a href="https://github.com/zhu327/forum">Django forum</a>用到了Django自带的认证系统，但是做了很多的自定义内容。</p>
+
+<ol>
+<li><p>settings</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 自定义User类</span>
+<span class="n">AUTH_USER_MODEL</span> <span class="o">=</span> <span class="s1">&#39;forum.ForumUser&#39;</span>
+
+<span class="c1"># 用户认证BackEnds</span>
+<span class="n">AUTHENTICATION_BACKENDS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;forum.backends.EmailAuthBackend&#39;</span><span class="p">,)</span>
+
+<span class="c1"># 默认登陆uri</span>
+<span class="n">LOGIN_URL</span> <span class="o">=</span> <span class="s1">&#39;/login/&#39;</span></code></pre></div>
+<p>这里重点说一下<code>AUTHENTICATION_BACKENDS</code>，这个Django的认证后端，在使用Django的<code>auth.login(request, user)</code>登录用户的时候，user对象必须是由<code>authenticate</code>返回才行，否则会抛出没有BackEnds的异常。而<code>authenticate</code>就是通过<code>settings.AUTHENTICATION_BACKENDS</code>来认证用户的，并返回带BackEnds对象的User实例。默认的<code>AUTHENTICATION_BACKENDS</code>使用用户名与密码来来认证，Django forum使用email与密码认证所以需要重写认证后端。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">django.contrib.auth.backends</span> <span class="kn">import</span> <span class="n">ModelBackend</span> <span class="c1"># 继承这个为了使用admin的权限控制</span>
+<span class="kn">from</span> <span class="nn">forum.models</span> <span class="kn">import</span> <span class="n">ForumUser</span>
+
+<span class="k">class</span> <span class="nc">EmailAuthBackend</span><span class="p">(</span><span class="n">ModelBackend</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>   <span class="n">password</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">ForumUser</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">check_password</span><span class="p">(</span><span class="n">password</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">user</span>
+                <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">except</span> <span class="n">ForumUser</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="k">def</span> <span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ForumUser</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ForumUser</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span></code></pre></div>
+<p>这个自定义认证后端继承自<code>ModelBackend</code>，需要实现2个方法<code>authenticate</code>方法用于认证，返回None或者用户对象，<code>get_user</code>参数为用户id，返回用户对象或<code>None</code>。</p></li>
+
+<li><p>Django admin使用自定义的登录页面</p>
+
+<p>Django admin有自带的登录页面，如何用自己的登录页面来登录admin呢。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">autodiscover</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">login</span> <span class="o">=</span> <span class="n">login_required</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">login</span><span class="p">)</span> <span class="c1"># 设置admin登录的页面，settings.LOGIN_URL</span></code></pre></div>
+<p>在admin所在的<code>urls.py</code>中做以上设置，访问admin即可自动重定向到<code>settings.LOGIN_URL</code>设置的url上，并且带上<code>next</code>参数在登录后返回admin。</p></li>
+</ol>
+
+<h3 id="template">template</h3>
+
+<ol>
+<li><p>自定义模板filter</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">template</span>
+<span class="n">register</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">Library</span><span class="p">()</span>
+<span class="nd">@register.filter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">custom_filter</span><span class="p">():</span>
+    <span class="o">...</span></code></pre></div>
+<p>但是这个自定义多虑期只能额外有1个参数，如何用多个参数呢。用自定义tag</p></li>
+
+<li><p>自定义tag</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="nd">@register.simple_tag</span> <span class="c1"># tag名即为函数名</span>
+<span class="k">def</span> <span class="nf">func</span><span class="p">():</span>
+    <span class="o">...</span></code></pre></div></li>
+
+<li><p>一些内置filter</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">add</span> <span class="c1"># 用来求和</span>
+<span class="n">linebreaks</span> <span class="c1"># 对字符串中的\n替换为&lt;/br&gt;，\n\n替换为&lt;p&gt;&lt;/p&gt;</span></code></pre></div></li>
+</ol>
+
+<h3 id="cache">Cache</h3>
+
+<p>使用memcached:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># settings</span>
+<span class="n">CACHES</span> <span class="o">=</span> <span class="p">{</span> <span class="c1"># memcached缓存设置</span>
+    <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;BACKEND&#39;</span><span class="p">:</span> <span class="s1">&#39;django.core.cache.backends.memcached.MemcachedCache&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;LOCATION&#39;</span><span class="p">:</span> <span class="s1">&#39;127.0.0.1:11211&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">SESSION_ENGINE</span> <span class="o">=</span> <span class="s1">&#39;django.contrib.sessions.backends.cache&#39;</span> <span class="c1"># 使用memcached存储session</span></code></pre></div>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2015\/01\/31\/django-forum%E6%80%BB%E7%BB%93\/';
+        this.page.identifier = '\/2015\/01\/31\/django-forum%E6%80%BB%E7%BB%93\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

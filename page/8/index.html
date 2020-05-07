@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+	<meta name="generator" content="Hugo 0.40.1" />
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      跬步 &middot; On Coding
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item  active " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+
+
+
+<div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/09/29/gunicorn%E8%BF%90%E8%A1%8Cdjango%E6%97%B6%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/">Gunicorn运行Django时静态文件处理</a></h1>
+        <span class="post-date">Sep 29 2015</span>
+        <h3 id="问题">问题</h3>
+
+<p>在用Gunicorn跑Django的时候,比较郁闷的是静态文件的处理,即使在settings设置DEBUG=True,静态文件也不会正常显示.生产环境下一般不会裸跑Gunicorn,一般都会在前面放一个Nginx反代到Gunicorn,而静态文件直接交给Nginx处理.</p>
+
+<p>但是如heroku,coding.net的演示平台这种PaaS就不能自己配置反向代理,怎么样设置wsgi才能正常处理静态文件呢.这里总结下处理这个问题的经验.</p>
+
+<h3 id="方法1">方法1</h3>
+
+<p>强制使用Django的静态文件处理器,通过<code>python manage.py runserver</code>的时候,如果DEBUG=True,Django会自动加载自带的静态文件处理器,但是在Gunicorn下,这个设置会失效,我们可以强制使用Django自带的静态文件处理器.
+</p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/09/19/ifwechat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/">IFWechat使用说明</a></h1>
+        <span class="post-date">Sep 19 2015</span>
+        <h1 id="ifwechat">ifwechat</h1>
+
+<h3 id="①-ifwechat能做什么">①.IFWechat能做什么</h3>
+
+<p>IFWechat是一个能把微信连接到IFTTT的微信公众号,如果你还不知道IFTTT是什么,可以看看这里:<a href="http://www.zhihu.com/question/19739416">ifttt 是一个什么样的网站？</a>.<br />
+IFTTT = if this then that, IFWechat通过微信公众号实现了IFTTT中this的功能,通过微信发送到IFWechat的消息都会触发用户定义的IFTTT Recipes.</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/08/14/flask-jinja2-i18n%E5%9B%BD%E9%99%85%E5%8C%96%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/">flask jinja2 i18n国际化简单实现</a></h1>
+        <span class="post-date">Aug 14 2015</span>
+        <p>前两个星期,公司有需求要实现APP内嵌网页的英文版,因为要急着上线,所有就没有折腾i18n国际化,直接出了英文的模板,在view函数里面判断语言选择模板来实现.这周有空下来重新整了一下项目的国际化,使用通用的<code>gettext</code>来实现.</p>
+
+<p>flask使用的是jinja2模板,jinja2自带了i18n扩展支持,但是需要Flask-Babel扩展的支持,有学习成本,所以没有使用,直接用了python内置的gettext来实现,而且jinja2引擎也提供了gettext的钩子来处理不同的语言.</p>
+
+<h2 id="gettext">gettext</h2>
+
+<p><code>gettext</code>是*nix下的标准i18n实现,Python的标准库内置<code>gettext</code>,简单的理解一下,就是通过已有的字典映射文件,然后获取环境的语言信息来判断当前使用哪一个语言映射,最终渲染出不同的语言文本,这里就不详细研究<code>gettext</code>了,提供我的参考文档:</p>
+
+<blockquote>
+<p><a href="http://underthehood.blog.51cto.com/2531780/1663604">http://underthehood.blog.51cto.com/2531780/1663604</a>
+</p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/07/20/docker%E5%88%9D%E6%8E%A2/">Docker初探</a></h1>
+        <span class="post-date">Jul 20 2015</span>
+        <p>听闻Docker很久了,一直也没有动手玩一下,只知道是Linux的新的虚拟技术容器,比以往的虚拟机轻量很多,能最大化利用硬件资源.</p>
+
+<p>最近<a href="https://github.com/zhu327/rss">RSS Factory</a>因为使用量太大,又一次被搜狗反爬虫机制封杀,不少人来问我如果要自己搭建RSS服务怎么操作,也有自己动手的小伙伴遇到各种问题来问我,鉴于现在市面上有一些免费Docker CaaS提供商,所以考虑自己搭建一个RSS Factory的Docker image来分享给小伙伴来使用.顺便探索一下Docker的使用方法.</p>
+
+<h2 id="概念">概念</h2>
+
+<ol>
+<li><p>Docker repository: 可以理解为Docker的GIT库,Docker的官方的repository就叫Docker hub,可用想见Github之于GIT,上面世界各地的开发者分享的Docker镜像或者Dockerfile;</p></li>
+
+<li><p>Docker image: Docker镜像,Docker容器实例是通过Docker镜像来构建的,Docker镜像可用看做是一个没有跑起来的Docker环境,存储了Docker环境的所有变更与配置;</p></li>
+</ol>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/07/20/ajax%E4%B8%AD%E7%9A%84jsonp%E7%90%86%E8%A7%A3/">Ajax中的jsonp理解</a></h1>
+        <span class="post-date">Jul 20 2015</span>
+        <p>公司自有服务都是后台api来实现,即使是website也是通过调用api获取来渲染网页,正常的Ajax中请求都是调用浏览器的XMLHttpRequest接口来异步请求数据,但是无论是Chrome,还是IE都有一个限制,就是不能跨域通过XMLHttpRequest来发请求.</p>
+
+<p>话说你有过墙梯我有张良计,聪明的开发者总是会有办法来绕过浏览器跨域的限制来请求数据,在HTML中具有<code>src</code>属性的标签例如<code>script</code>,<code>img</code>都是可用跨域来请求<code>src</code>指向的资源数据的,既然<code>script</code>标签可以跨域,那就利用这个来实现跨域.但是<code>script</code>标签返回的数据不能直接是json格式,需要是标准的javascript函数调用,所以需要返回的数据中包括一个在已有js函数的本地调用方式,传入我们需要的数据,这里的数据才是json格式的.</p>
+
+<p>发送请求:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;http://server2.example.com/RetrieveUser?UserId=1823&amp;jsonp=parseResponse&#34;</span><span class="p">&gt;</span> <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></code></pre></div>
+    </div>
+  
+</div>
+
+<div class="pagination">
+  
+  <a class="pagination-item older" href="https://zhu327.github.io/page/9/">Older</a>
+  
+
+  
+  <a class="pagination-item newer" href="https://zhu327.github.io/page/7/">Newer</a>
+  
+</div>
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

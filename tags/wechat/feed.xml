@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Wechat on </title>
+    <link>https://zhu327.github.io/tags/wechat/</link>
+    <description>Recent content in Wechat on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 29 Apr 2016 14:34:31 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/wechat/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>网站账号绑定微信方案</title>
+      <link>https://zhu327.github.io/2016/04/29/%E7%BD%91%E7%AB%99%E8%B4%A6%E5%8F%B7%E7%BB%91%E5%AE%9A%E5%BE%AE%E4%BF%A1%E6%96%B9%E6%A1%88/</link>
+      <pubDate>Fri, 29 Apr 2016 14:34:31 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/04/29/%E7%BD%91%E7%AB%99%E8%B4%A6%E5%8F%B7%E7%BB%91%E5%AE%9A%E5%BE%AE%E4%BF%A1%E6%96%B9%E6%A1%88/</guid>
+      <description>&lt;p&gt;一般面向用户的网站都会有一些通知用户的需求，传统的方式会通过email，短信等等方式，鉴于微信的流行，像拉勾会使用微信来做通知。通过微信通知就需要把网站内部的账户体系与微信关联起来，目前体验比较好的绑定方式是通过微信扫描二维码来绑定用户账号。&lt;br /&gt;
+从用户的角度来看，扫一扫绑定，很简单的功能，但是在研究了微信开发文档后，从开发的角度来看，其实流程还是比较复杂的，所以这里整理一下实现思路。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>IFWechat使用说明</title>
+      <link>https://zhu327.github.io/2015/09/19/ifwechat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/</link>
+      <pubDate>Sat, 19 Sep 2015 20:10:16 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/09/19/ifwechat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/</guid>
+      <description>&lt;h1 id=&#34;ifwechat&#34;&gt;ifwechat&lt;/h1&gt;
+
+&lt;h3 id=&#34;①-ifwechat能做什么&#34;&gt;①.IFWechat能做什么&lt;/h3&gt;
+
+&lt;p&gt;IFWechat是一个能把微信连接到IFTTT的微信公众号,如果你还不知道IFTTT是什么,可以看看这里:&lt;a href=&#34;http://www.zhihu.com/question/19739416&#34;&gt;ifttt 是一个什么样的网站？&lt;/a&gt;.&lt;br /&gt;
+IFTTT = if this then that, IFWechat通过微信公众号实现了IFTTT中this的功能,通过微信发送到IFWechat的消息都会触发用户定义的IFTTT Recipes.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
