@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lxml on </title>
+    <link>https://zhu327.github.io/tags/lxml/</link>
+    <description>Recent content in Lxml on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 02 Jan 2015 19:41:03 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/lxml/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>RSS Factory的坑</title>
+      <link>https://zhu327.github.io/2015/01/02/rss-factory%E7%9A%84%E5%9D%91/</link>
+      <pubDate>Fri, 02 Jan 2015 19:41:03 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/02/rss-factory%E7%9A%84%E5%9D%91/</guid>
+      <description>&lt;p&gt;花了一天时间把&lt;a href=&#34;https://github.com/zhu327/rss&#34;&gt;RSS Factory&lt;/a&gt;更新了下，把Tornado默认的模版引擎换为jinja2，解析html第三方库换为lxml。遇到了几个坑，纪录下。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;自动转义&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Tornado默认的模版引擎默认自动转义，Flask配置的jinja2也自动转义了，&lt;a href=&#34;http://bozpy.sinaapp.com/blog/15&#34;&gt;在Tornado中使用jinja2模版引擎的简单方法&lt;/a&gt;，按照这个方法模版渲染的时候却没有自动转义，所以还需要进一步配置。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;n&#34;&gt;application&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tornado&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;web&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Application&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;template_loader&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;JinjaLoader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dirname&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;vm&#34;&gt;__file__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;templates/&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;autoescape&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;extensions&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;jinja2.ext.autoescape&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]),&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>使用lxml处理DOM</title>
+      <link>https://zhu327.github.io/2015/01/02/%E4%BD%BF%E7%94%A8lxml%E5%A4%84%E7%90%86dom/</link>
+      <pubDate>Fri, 02 Jan 2015 13:08:08 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/02/%E4%BD%BF%E7%94%A8lxml%E5%A4%84%E7%90%86dom/</guid>
+      <description>&lt;h3 id=&#34;参考&#34;&gt;参考&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cnblogs.com/bluescorpio/archive/2013/06/09/3127957.html&#34;&gt;lxml.etree 教程&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cnblogs.com/ifantastic/tag/XPath/&#34;&gt;[XPath] XPath 与 lxml&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.ibm.com/developerworks/cn/xml/x-hiperfparse/&#34;&gt;使用由 Python 编写的 lxml 实现高性能 XML 解析&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/rss&#34;&gt;RSS Factory&lt;/a&gt;本来使用BeautifulSoup来解析xml，html。但是发现还有更好的第三份库lxml性能更好，使用更方便。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

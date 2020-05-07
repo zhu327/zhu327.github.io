@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Zerorpc on </title>
+    <link>https://zhu327.github.io/tags/zerorpc/</link>
+    <description>Recent content in Zerorpc on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 08 May 2017 15:19:58 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/zerorpc/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>zerorpc api设计指南</title>
+      <link>https://zhu327.github.io/2017/05/08/zerorpc-api%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97/</link>
+      <pubDate>Mon, 08 May 2017 15:19:58 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/05/08/zerorpc-api%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://tailnode.tk/2017/03/google-api-design-guide/contents/&#34;&gt;Google API 设计指南&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/&#34;&gt;在Django中使用zerorpc&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;之前实现了在Django环境下使用zerorpc的封装,api的组织单位是function.受到Google API 设计指南的启发,重新设计了一种基于Resources的api组织风格,并且约定Resource的方法名与Django Rest Framework的ViewSets中实现的action名称一致.&lt;/p&gt;
+
+&lt;p&gt;zerorpc默认只能在同一个Server上面注册一个对象,而我们需要注册多个类(一个类表示一Resources),在阅读zerorpc Server的代码后,想到一个简单的方式来注册Resources.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在Django中使用zerorpc</title>
+      <link>https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/</link>
+      <pubDate>Fri, 31 Mar 2017 15:59:13 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;随着系统架构从集中式单点服务器到分布式微服务方向的迁移,RPC是一个不可回避的话题.如何在系统中引入对开发者友好,性能可靠的RPC服务是一个值得深思的问题.&lt;/p&gt;
+
+&lt;p&gt;在调研了Thrift,gRPC,zerorpc等方案后,基于以下2点最后选择了zerorpc:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Thrift,gRPC学习成本高,开发者需要重新定义返回结构增加了工作量&lt;/li&gt;
+&lt;li&gt;zerorpc完美契合Python,能快速开发,并且支持Node.js,适用于当前技术栈&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;问题&#34;&gt;问题&lt;/h3&gt;
+
+&lt;p&gt;虽然zerorpc可以直接嵌入当前系统框架中,但是还是有一些问题需要去考虑解决&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;rpc 接口如何定义&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;rpc 服务如何启动&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;高并发情况下客户端的可靠性&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

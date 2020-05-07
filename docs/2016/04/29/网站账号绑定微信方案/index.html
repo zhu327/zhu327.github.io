@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      网站账号绑定微信方案 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">网站账号绑定微信方案</h1>
+  <span class="post-date">Apr 29 2016</span>
+  <p>一般面向用户的网站都会有一些通知用户的需求，传统的方式会通过email，短信等等方式，鉴于微信的流行，像拉勾会使用微信来做通知。通过微信通知就需要把网站内部的账户体系与微信关联起来，目前体验比较好的绑定方式是通过微信扫描二维码来绑定用户账号。<br />
+从用户的角度来看，扫一扫绑定，很简单的功能，但是在研究了微信开发文档后，从开发的角度来看，其实流程还是比较复杂的，所以这里整理一下实现思路。</p>
+
+<p></p>
+
+<p><img src="http://7oti6o.com1.z0.glb.clouddn.com/hugo%2Fwechat-bind.png" alt="wechat bind" width="720px"></p>
+
+<p>从整个绑定流程来看，后台服务会分为2个部分: 1. 网站, 2. 微信公众号服务，2部分相对独立。</p>
+
+<h3 id="绑定流程">绑定流程</h3>
+
+<ol>
+<li>网站生成二维码
+
+<ul>
+<li>已登录用户点击绑定微信</li>
+<li>网站调用微信<a href="https://mp.weixin.qq.com/wiki/18/167e7d94df85d8389df6c94a7a8f78ba.html">生成带参数的二维码</a>api</li>
+<li>在redis/db存储ticket与登录用户关系</li>
+<li>返回二维码链接地址</li>
+</ul></li>
+<li>用户扫描二维码</li>
+<li>微信通知公众号服务
+
+<ul>
+<li><a href="http://mp.weixin.qq.com/wiki/2/5baf56ce4947d35003b86a9805634b1e.html#.E6.89.AB.E6.8F.8F.E5.B8.A6.E5.8F.82.E6.95.B0.E4.BA.8C.E7.BB.B4.E7.A0.81.E4.BA.8B.E4.BB.B6">扫描带参数二维码事件</a></li>
+<li>公众号服务发送openid与ticket到网站callback api</li>
+</ul></li>
+<li>网站绑定用户与微信
+
+<ul>
+<li>通过ticket获取用户</li>
+<li>通过openid调用<a href="https://mp.weixin.qq.com/wiki/1/8a5ce6257f1d3b2afb20f83e72b72ce9.html">获取用户基本信息</a>获取用户信息</li>
+<li>绑定微信用户信息到用户</li>
+<li>发送绑定成功时间到网站前端(使用websocket)</li>
+</ul></li>
+<li>前端刷新页面展示已绑定信息</li>
+</ol>
+
+<h3 id="总结">总结</h3>
+
+<p>从以上流程来看，网站与微信公众号之间通过callback api来交互，或许可以改为任务队列的方式，网站后端与前端必须要有一个websocket才能正常通知微信绑定成功，否则只能用户自己刷新页面才能看到。一个看似很简单的功能，可能需要的工作量不少，产品提供的需求可能就是一句话，开发却要耗上几天，所以很多时候还是需要多多沟通啦。</p>
+
+<h3 id="参考">参考</h3>
+
+<blockquote>
+<p><a href="https://mp.weixin.qq.com/wiki/home/index.html">https://mp.weixin.qq.com/wiki/home/index.html</a><br />
+<a href="http://wechat-python-sdk.com/quickstart/official/">http://wechat-python-sdk.com/quickstart/official/</a><br />
+<a href="http://www.jianshu.com/p/a51c54ddd0f3">http://www.jianshu.com/p/a51c54ddd0f3</a></p>
+</blockquote>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2016\/04\/29\/%E7%BD%91%E7%AB%99%E8%B4%A6%E5%8F%B7%E7%BB%91%E5%AE%9A%E5%BE%AE%E4%BF%A1%E6%96%B9%E6%A1%88\/';
+        this.page.identifier = '\/2016\/04\/29\/%E7%BD%91%E7%AB%99%E8%B4%A6%E5%8F%B7%E7%BB%91%E5%AE%9A%E5%BE%AE%E4%BF%A1%E6%96%B9%E6%A1%88\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

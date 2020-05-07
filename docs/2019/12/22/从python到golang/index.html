@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      从Python到Golang &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">从Python到Golang</h1>
+  <span class="post-date">Dec 22 2019</span>
+  <p>是的, 从去年底开始, 我差不多写Golang一年了, 从最开始的视频流处理, 到Websocket远程控制, 再到现在写的高性能鉴权中间件. 为什么不用Python? 因为Python满足不了长连接或者高性能的需求. 为什么不用其它语言? 大概是因为Golang足够<code>简单</code>吧. 这里分享下这一年多写Golang相对于Python的一些感想.</p>
+
+<h3 id="强类型">强类型</h3>
+
+<h4 id="代码检查">代码检查</h4>
+
+<p>Golang是强类型语言, 配合IDE, Lint, 编译工具, 一些常见的, 马马虎虎的写代码的低级错误在代码提交之前就能被检测出来. 虽然Python也有flak8, 但是相对于Golang犯低级错误的可能性更大些, 特别是对于没有单元测试的代码(是的, 单元测试不是每个团队都会做的).</p>
+
+<p></p>
+
+<h4 id="代码提示">代码提示</h4>
+
+<p>写过Pyhon的人都知道, 无论是Pycharm也好还是VS Code也好, 代码提示对于多重继承的类总是不那么友好, 当然Pyhon3的type hint会稍好一些. 而Golang就没有这方面的困扰, 类型一目了然, 代码补全, 提示更高效一些.</p>
+
+<h4 id="像计算机科学家一样思考">像计算机科学家一样思考</h4>
+
+<p>有一本书叫《像计算机科学家一样思考Python》, 那么如何做到像计算科学家一样思考呢, 需要理解程序在计算机上是怎么运行的, 然后就会知道为什么有类型系统. Python在很大程度上隐藏了这些细节, 但是只是隐藏并不是没有, 要想写好Python依然需要学习计算机相关的基础知识. Golang与C一脉相承, 如果不了解程序运行的这些细节, 写出烂代码的可能性会更高.</p>
+
+<h3 id="程序设计">程序设计</h3>
+
+<p>写Python的时候会有种感觉, 由于框架比较完善, 在写业务的时候都是一把梭, 先把代码堆出来再说. 但是写Golang就是另一种感觉了, 你要设计一个好的结构才能方便的进行扩展, 设计出好的接口来减少耦合. 在写实现前就需要对于程序有一个详细的设计, 不能想到哪写到哪, 不然项目的后期改动就是灾难(是的, 我已经经历过2次这样的灾难了).</p>
+
+<h3 id="编写可测试的代码">编写可测试的代码</h3>
+
+<p>虽然不是每个团队都写单元测试, 但是想成为一名优秀的程序员, 单元测试必不可少. 特别是对于Python语言, 由于lint工具的薄弱, 保证代码质量不犯低级错误的方式就只能是测试了. Python写单元测试也是很简单了, Mock工具也很方便.</p>
+
+<p>Golang就不一样, 接手过一个没有单元测试项目, 为了提高项目质量, 我从单元测试开始入手, 面临的是完全没法测试的代码, 各种依赖纠缠, 想Mock都没法动手, 这就是不可测试的代码. 为了测试, 我完全重构了整个模块, 抽象接口, 提取函数, 花了很大的精力才搞定单元测试. 所以在写Golang代码时还要考虑代码是不是能方便的测试, 最好能边写实现边写单元测试. 当然能做到测试驱动开发就更好了.</p>
+
+<h3 id="性能分析">性能分析</h3>
+
+<p>写Golang后接触到了性能分析, profile 火焰图都使用过, 也从算法上优化过程序性能. 那为啥之前写了好几年Python都没做过性能分析呢, 可能是因为对Python的性能预期更低吧. 本来就没想过Python性能好到哪里去, 所以就不考虑分析了, 做业务的过程中更多的是优化SQL查询性能.</p>
+
+<h3 id="问题的分析与解决">问题的分析与解决</h3>
+
+<p>这是与Golang无关的一个话题, 也是过去一年中我认识到的我的短板. 以往工作都是为了快速解决问题, 而忽略了很多需要思考的地方, 导致后续的一些事故, 以及难以扩展的问题. 在经历了一次失败的答辩, 以及上了《问题的分析与解决》这门课程, 然后在参与大佬同事的一些方案设计评审后才理清楚这些.</p>
+
+<h4 id="提问题">提问题</h4>
+
+<p>什么是问题, 问题的本质是什么? who what when where, 这就是问题, 先理清楚这个问题的本质, 什么人做了什么在哪里什么时间产生了什么. 然后是How/How Many, 是怎么发生的, 发生了多少次, 影响了什么.</p>
+
+<h4 id="分析问题">分析问题</h4>
+
+<p>分析产生问题的所有原因, 理清了原因才能针对性的输出解决方案.</p>
+
+<ol>
+<li><p>对比法</p>
+
+<p>对比问题产生的前后, 做了什么变化, 产生了什么效果, 找出问题的原因</p></li>
+
+<li><p>鱼骨图</p>
+
+<p>列出问题相关的所有因子, 从各个大的因子方面分析导致问题出现的原因</p></li>
+
+<li><p>why why why</p>
+
+<p>不停的问原因, 直到找到问题的根因</p></li>
+</ol>
+
+<p>通过以上方式, 找出问题所有的原因, 一定要改掉以偏概全的毛病, 理性分析问题, 不要找到了一个原因就马上开始想解决办法, 只有找到所有的原因, 才能针对的提出解决方案.</p>
+
+<h4 id="解决方案">解决方案</h4>
+
+<p>由于问题可能是多个原因导致的, 所以解决方法可能不会完美的覆盖所有的原因, 这时候就需要对比多个解决方案. 根据经验从多个维度对比打分各个解决方案找出最优解.</p>
+
+<h4 id="风险管理">风险管理</h4>
+
+<p>选择的解决方案会不会带来什么风险, 有什么预防措施, 如果真的发生了这样的风险有什么应对措施.</p>
+
+<p>通过以上一套问题的分析与解决方法论, 基本上在做架构设计, 出各种方案时都能做到有理有据, 引用小龙今年年会的主题: 思辨大于执行.</p>
+
+<h3 id="最后">最后</h3>
+
+<p>从去年进入腾讯到现在已经1年半的时间, 从运维组调动到了开发组, 经历一次失败的答辩, 回过头来看, 不曾后悔自己做的所有决定. 看过很多书, 各方面对比去年确实提高了很多, 但是也清楚的认识到自己的短板, 再接再厉, 继续加油, 展望未来.</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2019\/12\/22\/%E4%BB%8Epython%E5%88%B0golang\/';
+        this.page.identifier = '\/2019\/12\/22\/%E4%BB%8Epython%E5%88%B0golang\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Python Web farmwork &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Python Web farmwork</h1>
+  <span class="post-date">Sep 24 2014</span>
+  <h3 id="简介">简介</h3>
+
+<ul>
+<li><a href="http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/0014023080708565bc89d6ab886481fb25a16cdc3b773f0000">编写Web框架</a></li>
+<li><a href="https://github.com/zhu327/blog/blob/master/www/transwarp/web.py">web.py</a></li>
+</ul>
+
+<p><a href="http://bozpy.sinaapp.com/blog/7">上一节</a>写了WSGI与Cookie相关的内容，为了方便的实现Web App，需要编写一个简单的Web框架，需要实现以下功能:</p>
+
+<ol>
+<li>处理request；</li>
+<li>生成response header；</li>
+<li>根据request URI找到对应处理的函数，即URL路由；</li>
+<li>定制模版引擎；</li>
+<li>拦截器，在处理函数产生响应前，做预处理，相当于WSGI中middlware的概念，比如处理Cookie等。</li>
+</ol>
+
+<p></p>
+
+<h3 id="request">Request</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Request</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environ</span><span class="p">):</span> <span class="c1"># 参数为WSGI中的environ</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_environ</span> <span class="o">=</span> <span class="n">environ</span>
+
+    <span class="k">def</span> <span class="nf">_get_raw_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        用来生成Request的k-v字典
+</span><span class="s1">        wsgi.input 类文件对象，保存了post请求中的body
+</span><span class="s1">        cgi.FieldStorage() 生成字典，处理包括environ中的QueryString和wsgi.input中的参数，格式化
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_raw_input&#39;</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">_convet</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">_to_unicode</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">item</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">MultiFile</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_to_unicode</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="n">cgi</span><span class="o">.</span><span class="n">FieldStorage</span><span class="p">(</span><span class="n">fp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_environ</span><span class="p">[</span><span class="s1">&#39;wsgi.input&#39;</span><span class="p">],</span> <span class="n">environ</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_environ</span><span class="p">,</span> <span class="n">keep_blank_values</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">fs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_convet</span><span class="p">(</span><span class="n">fs</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_raw_input</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_input</span>
+
+    <span class="c1"># 根据key返回value</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+
+    <span class="c1"># 返回key-value的dict</span>
+    <span class="k">def</span> <span class="nf">input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        返回字典的拷贝
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="n">copy</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span>
+        <span class="k">return</span> <span class="n">copy</span>
+
+    <span class="c1"># 返回URL的path</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">path_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">unquote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PATH_INFO&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+    <span class="c1"># 返回request method</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_environ</span><span class="p">[</span><span class="s1">&#39;REQUEST_METHOD&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        获取HTTP头，在Request中以HTTP_开头的都是header
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_headers&#39;</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_environ</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;HTTP_&#39;</span><span class="p">):</span>
+                    <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_to_unicode</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span>
+
+    <span class="c1"># 返回HTTP header</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_headers</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_get_cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        获取Cookie，HTTP头中HTTP_COOKIE，格式化Cookie返回字典
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_cookie&#39;</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">c_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;HTTP_COOKIE&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">c_str</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">c_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">):</span>
+                    <span class="n">pos</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+                    <span class="n">d</span><span class="p">[</span><span class="n">c</span><span class="p">[:</span><span class="n">pos</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">unquote</span><span class="p">(</span><span class="n">_to_unicode</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">:]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cookie</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cookie</span>
+
+    <span class="c1"># 更加key返回Cookie value</span>
+    <span class="k">def</span> <span class="nf">cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cookie</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cookies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_cookie</span><span class="p">())</span></code></pre></div>
+<h3 id="response-header">Response header</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Response</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="s1">&#39;200 OK&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CONTENT-TYPE&#39;</span><span class="p">:</span> <span class="s1">&#39;text/html; charset=utf-8&#39;</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        生成header，设置Cookie，Set-Cookie
+</span><span class="s1">        _RESPONSE_HEADER_DICT是一个保存了常用header的字典
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[(</span><span class="n">_RESPONSE_HEADER_DICT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_cookie&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cookie</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;Set-Cookie&#39;</span><span class="p">,</span> <span class="n">_to_str</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
+        <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_HEADER_X_POWERED_BY</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">L</span>
+
+    <span class="c1"># 设置header</span>
+    <span class="k">def</span> <span class="nf">set_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_RESPONSE_HEADER_DICT</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_to_str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">unset_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_RESPONSE_HEADER_DICT</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CONTENT-TYPE&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="nd">@content_type.setter</span>
+    <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;CONTENT-TYPE&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unset_header</span><span class="p">(</span><span class="s1">&#39;CONTENT-TYPE&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 设置Cookie</span>
+    <span class="k">def</span> <span class="nf">set_cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">max_age</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">expires</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        生成Cookie
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_cookie&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cookie</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">value</span><span class="p">))]</span>
+        <span class="k">if</span> <span class="n">expires</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">expires</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Expires=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">expires</span><span class="p">,</span> <span class="n">UTC_0</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%a, </span><span class="si">%d</span><span class="s1">-%b-%Y %H:%M:%S GMT&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">expires</span><span class="p">,</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">)):</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Expires=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">expires</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">UTC_0</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%a, </span><span class="si">%d</span><span class="s1">-%b-%Y %H:%M:%S GMT&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_age</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
+            <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Max_Age=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">max_age</span><span class="p">)</span>
+        <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Path=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cookie</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">delete_cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        删除Cookie实际就是把过期时间设置到当前时间之前
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;__delete__&#39;</span><span class="p">,</span> <span class="n">expires</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># 设置status</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span>
+
+    <span class="nd">@status.setter</span>
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        设置status
+</span><span class="s1">        _RESPONSE_STATUSES status的字典
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">&gt;=</span><span class="mi">100</span> <span class="ow">and</span> <span class="n">value</span><span class="o">&lt;=</span><span class="mi">900</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="n">_RESPONSE_STATUSES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">st</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">st</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad response status code </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_RE_RESPONSE_STATUS</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad response status code </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Bad type of response code.&#39;</span><span class="p">)</span></code></pre></div>
+<h3 id="wsgi-入口">WSGI 入口</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">WSGIApplication</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document_root</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># 返回WSGI处理函数</span>
+    <span class="k">def</span> <span class="nf">get_wsgi_application</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+        <span class="c1"># WSGI入口处理函数</span>
+        <span class="k">def</span> <span class="nf">wsgi</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span> <span class="c1"># 入口函数get_wsgi_application方法返回这个函数，标准的WSGI app</span>
+            <span class="n">ctx</span><span class="o">.</span><span class="n">application</span> <span class="o">=</span> <span class="n">_application</span>
+            <span class="n">ctx</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">env</span><span class="p">)</span> <span class="c1"># 生成reuqest字典</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span> <span class="c1"># 生成response header对象</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">fn_exec</span><span class="p">()</span> <span class="c1"># 生成response body</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Template</span><span class="p">):</span> <span class="c1"># 判断是否为Tmplate</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_temlate_engine</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">model</span><span class="p">)</span> <span class="c1"># 模版引擎渲染</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">start_response</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span> <span class="c1"># 输出response body</span>
+                <span class="k">return</span> <span class="n">r</span>
+            <span class="k">except</span> <span class="n">RedirectError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="c1"># 如果为重定向</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Location&#39;</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+                <span class="n">start_response</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">[]</span>
+            <span class="k">except</span> <span class="n">HttpError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="c1"># 如果为HTTP错误</span>
+                <span class="n">start_response</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;404 Not Found&#39;</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;templates/404.html&#39;</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_temlate_engine</span><span class="p">(</span><span class="s1">&#39;404.html&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span>
+                <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;&lt;html&gt;&lt;body&gt;&lt;h1&gt;&#39;</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="s1">&#39;&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&#39;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="c1"># 其它错误500，如果为debug模式，把错误信息输出</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span><span class="p">:</span>
+                    <span class="n">start_response</span><span class="p">(</span><span class="s1">&#39;500 Internal Server Error&#39;</span><span class="p">,</span> <span class="p">[])</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;&lt;html&gt;&lt;body&gt;&lt;h1&gt;500 Internal Server Error&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&#39;</span><span class="p">]</span>
+                <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">exc_traceback</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+                <span class="n">fp</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+                <span class="n">traceback</span><span class="o">.</span><span class="n">print_exception</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">exc_traceback</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">fp</span><span class="p">)</span>
+                <span class="n">stacks</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+                <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">start_response</span><span class="p">(</span><span class="s1">&#39;500 Internal Server Error&#39;</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="k">return</span> <span class="p">[</span>
+                   <span class="sa">r</span><span class="s1">&#39;&#39;&#39;&lt;html&gt;&lt;body&gt;&lt;h1&gt;500 Internal Server Error&lt;/h1&gt;&lt;div style=&#34;font-family:Monaco, Menlo, Consolas, &#39;Courier New&#39;, monospace;&#34;&gt;&lt;pre&gt;&#39;&#39;&#39;</span><span class="p">,</span>
+                    <span class="n">stacks</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;lt;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;gt;&#39;</span><span class="p">),</span>
+                    <span class="s1">&#39;&lt;/pre&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;&#39;</span><span class="p">]</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">ctx</span><span class="o">.</span><span class="n">request</span> <span class="c1"># 完成后清理当前的request和response header</span>
+                <span class="k">del</span> <span class="n">ctx</span><span class="o">.</span><span class="n">response</span>
+        <span class="k">return</span> <span class="n">wsgi</span></code></pre></div>
+<p>这里看到了一个关键的函数用于生成response body，下面来看一下这个fn_exec</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">_re_route</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(\:[a-zA-Z_]\w*)&#39;</span><span class="p">)</span> <span class="c1"># 匹配只要是有:的就认为是有参数</span>
+
+<span class="c1"># 构建参数分离的正则表达式:abc/ 即名为abc的参数</span>
+<span class="k">def</span> <span class="nf">_build_regex</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">re_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;^&#39;</span><span class="p">]</span>
+    <span class="n">is_var</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_re_route</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">is_var</span><span class="p">:</span>
+            <span class="n">varname</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">re_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;(?P&lt;</span><span class="si">%s</span><span class="s1">&gt;[^</span><span class="se">\\</span><span class="s1">/]+)&#39;</span> <span class="o">%</span> <span class="n">varname</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">c</span><span class="o">&gt;=</span><span class="s1">&#39;0&#39;</span> <span class="ow">and</span> <span class="n">c</span><span class="o">&lt;=</span><span class="s1">&#39;9&#39;</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="n">c</span>
+                <span class="k">elif</span> <span class="n">c</span><span class="o">&gt;=</span><span class="s1">&#39;a&#39;</span> <span class="ow">and</span> <span class="n">c</span><span class="o">&lt;=</span><span class="s1">&#39;z&#39;</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="n">c</span>
+                <span class="k">elif</span> <span class="n">c</span><span class="o">&gt;=</span><span class="s1">&#39;A&#39;</span> <span class="ow">and</span> <span class="n">c</span><span class="o">&lt;=</span><span class="s1">&#39;Z&#39;</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="n">c</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">c</span> <span class="c1"># 加\\是转移为\在r&#39;\-&#39;与&#39;\\-&#39;等同，在正则表达式下r&#39;\-&#39;等同&#39;-&#39;</span>
+            <span class="n">re_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">is_var</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">is_var</span>
+    <span class="n">re_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">re_list</span><span class="p">)</span>
+
+<span class="c1"># 定制url路由</span>
+<span class="k">class</span> <span class="nc">Route</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">    区分函数是否为静态，不带参数，如果带参数则生成正则表达式
+</span><span class="s1">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">__route__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">__method__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_static</span> <span class="o">=</span> <span class="n">_re_route</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span> <span class="c1"># 判断path是否有参数</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_static</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">route</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">_build_regex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">))</span> <span class="c1"># 构造参数匹配正则表达式</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+
+    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">route</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">WSGIApplication</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document_root</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        定义了5个列表分别用力存储get post处理函数和拦截器
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_document_root</span> <span class="o">=</span> <span class="n">document_root</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_static</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_static</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_dynamic</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_dynamic</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interceptors</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_check_not_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&#34;can&#39;t modify WSGIApplication when it is running&#34;</span><span class="p">)</span>
+
+    <span class="c1"># 添加一个URL定义</span>
+    <span class="k">def</span> <span class="nf">add_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span> <span class="c1"># 判断函数get post，动态添加到对应的列表</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_not_running</span><span class="p">()</span>
+        <span class="n">route</span> <span class="o">=</span> <span class="n">Route</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">route</span><span class="o">.</span><span class="n">is_static</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">route</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_static</span><span class="p">[</span><span class="n">route</span><span class="o">.</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">route</span>
+            <span class="k">elif</span> <span class="n">route</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_post_static</span><span class="p">[</span><span class="n">route</span><span class="o">.</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">route</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">route</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_dynamic</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">route</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">route</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_post_dynamic</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">route</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;add route </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">route</span><span class="o">.</span><span class="n">method</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="o">+</span><span class="n">route</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c1"># 从模块添加url</span>
+    <span class="k">def</span> <span class="nf">add_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mod</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_not_running</span><span class="p">()</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">mod</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;add model </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__route__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__method__&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_url</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+    <span class="c1"># 添加一个Interceptor定义</span>
+    <span class="k">def</span> <span class="nf">add_interceptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_not_running</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interceptors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;add interceptor </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">func</span><span class="o">.</span><span class="n">func_name</span><span class="p">)</span>
+
+    <span class="c1"># 设置TemplateEngine</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">template_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_template_engine</span>
+
+    <span class="nd">@template_engine.setter</span>
+    <span class="k">def</span> <span class="nf">template_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">engine</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_temlate_engine</span> <span class="o">=</span> <span class="n">engine</span>
+
+    <span class="c1"># 返回WSGI处理函数</span>
+    <span class="k">def</span> <span class="nf">get_wsgi_application</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_not_running</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_dynamic</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StaticFileRoute</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="n">_application</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">document_root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_document_root</span><span class="p">)</span> <span class="c1"># 这里只在取静态文件时有用，传入一个目录</span>
+
+        <span class="c1"># 根据method与path路由获取处理函数，分为一般的和带参数的</span>
+        <span class="k">def</span> <span class="nf">fn_route</span><span class="p">():</span> <span class="c1"># 获取path_info，根据path与method匹配处理函数</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">path_info</span>
+            <span class="n">method</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+                <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_static</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">fn</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dynamic</span><span class="p">:</span>
+                    <span class="n">args</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="c1"># 正则匹配出函数的参数</span>
+                    <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">notfound</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+                <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_static</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">fn</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_dynamic</span><span class="p">:</span>
+                    <span class="n">args</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">notfound</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">badrequest</span><span class="p">()</span>
+
+        <span class="c1"># 对于处理函数包裹上拦截器规则</span>
+        <span class="n">fn_exec</span> <span class="o">=</span> <span class="n">_build_interceptor_chain</span><span class="p">(</span><span class="n">fn_route</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_interceptors</span><span class="p">)</span> <span class="c1"># 先不要看这里，这里用来为fn_route函数包裹上拦截器</span>
+
+        <span class="c1"># WSGI入口处理函数</span>
+        <span class="k">def</span> <span class="nf">wsgi</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+            <span class="k">pass</span></code></pre></div>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2014\/09\/24\/python-web-farmwork\/';
+        this.page.identifier = '\/2014\/09\/24\/python-web-farmwork\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

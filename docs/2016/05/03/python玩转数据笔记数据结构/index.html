@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      python玩转数据笔记:数据结构 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">python玩转数据笔记:数据结构</h1>
+  <span class="post-date">May 3 2016</span>
+  <p>想储备点数据分析相关知识，所以抽了1天时间上了1门数据分析入门的公开课，记录一下学到的东西。</p>
+
+<blockquote>
+<p><a href="https://www.coursera.org/learn/hipython">python玩转数据</a></p>
+</blockquote>
+
+<h3 id="ndarray-多维数组">ndarray 多维数组</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span> <span class="c1"># 自动生成3*4的二维数组，全为1</span>
+<span class="n">array</span><span class="p">([[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
+<span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+       <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># 生成全为0</span>
+<span class="n">array</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 类似于range生成列表</span>
+<span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span></code></pre></div>
+<p></p>
+
+<p><img src="http://7oti6o.com1.z0.glb.clouddn.com//blog/ndarray.png" alt="ndarray" /></p>
+
+<h3 id="ndarray-运算">ndarray 运算</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">aarr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">barr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aarr</span> <span class="o">*</span> <span class="n">barr</span> <span class="c1"># 直接对同位置的进行运算，+ - * / % +=等</span>
+<span class="n">array</span><span class="p">([[</span> <span class="mi">6</span><span class="p">,</span>  <span class="mi">8</span><span class="p">],</span>
+       <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">18</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">barr</span> <span class="o">&gt;</span> <span class="mi">5</span> <span class="c1"># bool运算</span>
+<span class="n">array</span><span class="p">([[</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span>
+       <span class="p">[</span><span class="bp">False</span><span class="p">,</span>  <span class="bp">True</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">barr</span><span class="o">.</span><span class="n">shape</span> <span class="c1"># 获取数组行列数结构</span>
+<span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">barr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># 重排数据结构</span>
+<span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">barr</span><span class="o">.</span><span class="nb">sum</span><span class="p">()</span> <span class="c1"># 算和</span>
+<span class="mi">18</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">barr</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># 算列的和</span>
+<span class="n">array</span><span class="p">([</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">barr</span>
+<span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+       <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">barr</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 算行的和 axis 0 纵轴 1 横轴</span>
+<span class="n">array</span><span class="p">([</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="n">aarr</span><span class="p">,</span> <span class="n">barr</span><span class="p">)</span> <span class="c1"># 筛选组合，判断c的同位置元素如果大于5则选aarr同位置的，否则选barr的</span>
+<span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+       <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">return</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfunction</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span> <span class="c1"># 通过1个函数来创建数组，第二个参数为数组的行与列数，传给func的参数行列的索引</span>
+<span class="n">array</span><span class="p">([[</span>  <span class="mf">1.</span><span class="p">,</span>   <span class="mf">2.</span><span class="p">,</span>   <span class="mf">3.</span><span class="p">,</span>   <span class="mf">4.</span><span class="p">,</span>   <span class="mf">5.</span><span class="p">,</span>   <span class="mf">6.</span><span class="p">,</span>   <span class="mf">7.</span><span class="p">,</span>   <span class="mf">8.</span><span class="p">,</span>   <span class="mf">9.</span><span class="p">],</span>
+       <span class="p">[</span>  <span class="mf">2.</span><span class="p">,</span>   <span class="mf">4.</span><span class="p">,</span>   <span class="mf">6.</span><span class="p">,</span>   <span class="mf">8.</span><span class="p">,</span>  <span class="mf">10.</span><span class="p">,</span>  <span class="mf">12.</span><span class="p">,</span>  <span class="mf">14.</span><span class="p">,</span>  <span class="mf">16.</span><span class="p">,</span>  <span class="mf">18.</span><span class="p">],</span>
+       <span class="p">[</span>  <span class="mf">3.</span><span class="p">,</span>   <span class="mf">6.</span><span class="p">,</span>   <span class="mf">9.</span><span class="p">,</span>  <span class="mf">12.</span><span class="p">,</span>  <span class="mf">15.</span><span class="p">,</span>  <span class="mf">18.</span><span class="p">,</span>  <span class="mf">21.</span><span class="p">,</span>  <span class="mf">24.</span><span class="p">,</span>  <span class="mf">27.</span><span class="p">],</span>
+       <span class="p">[</span>  <span class="mf">4.</span><span class="p">,</span>   <span class="mf">8.</span><span class="p">,</span>  <span class="mf">12.</span><span class="p">,</span>  <span class="mf">16.</span><span class="p">,</span>  <span class="mf">20.</span><span class="p">,</span>  <span class="mf">24.</span><span class="p">,</span>  <span class="mf">28.</span><span class="p">,</span>  <span class="mf">32.</span><span class="p">,</span>  <span class="mf">36.</span><span class="p">],</span>
+       <span class="p">[</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">10.</span><span class="p">,</span>  <span class="mf">15.</span><span class="p">,</span>  <span class="mf">20.</span><span class="p">,</span>  <span class="mf">25.</span><span class="p">,</span>  <span class="mf">30.</span><span class="p">,</span>  <span class="mf">35.</span><span class="p">,</span>  <span class="mf">40.</span><span class="p">,</span>  <span class="mf">45.</span><span class="p">],</span>
+       <span class="p">[</span>  <span class="mf">6.</span><span class="p">,</span>  <span class="mf">12.</span><span class="p">,</span>  <span class="mf">18.</span><span class="p">,</span>  <span class="mf">24.</span><span class="p">,</span>  <span class="mf">30.</span><span class="p">,</span>  <span class="mf">36.</span><span class="p">,</span>  <span class="mf">42.</span><span class="p">,</span>  <span class="mf">48.</span><span class="p">,</span>  <span class="mf">54.</span><span class="p">],</span>
+       <span class="p">[</span>  <span class="mf">7.</span><span class="p">,</span>  <span class="mf">14.</span><span class="p">,</span>  <span class="mf">21.</span><span class="p">,</span>  <span class="mf">28.</span><span class="p">,</span>  <span class="mf">35.</span><span class="p">,</span>  <span class="mf">42.</span><span class="p">,</span>  <span class="mf">49.</span><span class="p">,</span>  <span class="mf">56.</span><span class="p">,</span>  <span class="mf">63.</span><span class="p">],</span>
+       <span class="p">[</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">16.</span><span class="p">,</span>  <span class="mf">24.</span><span class="p">,</span>  <span class="mf">32.</span><span class="p">,</span>  <span class="mf">40.</span><span class="p">,</span>  <span class="mf">48.</span><span class="p">,</span>  <span class="mf">56.</span><span class="p">,</span>  <span class="mf">64.</span><span class="p">,</span>  <span class="mf">72.</span><span class="p">],</span>
+       <span class="p">[</span>  <span class="mf">9.</span><span class="p">,</span>  <span class="mf">18.</span><span class="p">,</span>  <span class="mf">27.</span><span class="p">,</span>  <span class="mf">36.</span><span class="p">,</span>  <span class="mf">45.</span><span class="p">,</span>  <span class="mf">54.</span><span class="p">,</span>  <span class="mf">63.</span><span class="p">,</span>  <span class="mf">72.</span><span class="p">,</span>  <span class="mf">81.</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">aarr</span><span class="p">,</span> <span class="n">barr</span><span class="p">)</span> <span class="c1"># ufunc的数组+</span>
+<span class="n">array</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+       <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">accumulate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span> <span class="c1"># reduce的方式对数组求和，并返回求和后的新的数组</span>
+<span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span></code></pre></div>
+<h3 id="series-列-有序字段">Series 列 有序字段</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">])</span> <span class="c1"># 自动增加索引，类似与字典的key-value结构</span>
+<span class="mi">0</span>    <span class="mi">1</span>
+<span class="mi">1</span>    <span class="mi">2</span>
+<span class="mi">2</span>    <span class="n">a</span>
+<span class="n">dtype</span><span class="p">:</span> <span class="nb">object</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aser</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">])</span> <span class="c1"># 自定义索引名称</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aser</span>
+<span class="n">a</span>    <span class="mi">1</span>
+<span class="n">b</span>    <span class="mi">2</span>
+<span class="n">c</span>    <span class="mi">3</span>
+<span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aser</span><span class="o">.</span><span class="n">index</span>
+<span class="n">Index</span><span class="p">([</span><span class="sa">u</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="p">)</span> <span class="c1"># 获取Series的索引</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aser</span><span class="o">.</span><span class="n">values</span>
+<span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="c1"># 获取Series的值，返回数组对象</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aser</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="c1"># 通过索引取值</span>
+<span class="mi">2</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aser</span> <span class="o">*</span> <span class="mi">2</span> <span class="c1"># 运算，可类比ndarray的运算</span>
+<span class="n">a</span>    <span class="mi">2</span>
+<span class="n">b</span>    <span class="mi">4</span>
+<span class="n">c</span>    <span class="mi">6</span>
+<span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">aser</span><span class="p">)</span> <span class="c1"># 计算自然对数的n次方</span>
+<span class="n">a</span>     <span class="mf">2.718282</span>
+<span class="n">b</span>     <span class="mf">7.389056</span>
+<span class="n">c</span>    <span class="mf">20.085537</span>
+<span class="n">dtype</span><span class="p">:</span> <span class="n">float64</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]</span> <span class="c1"># 数据对齐，如果没有对应索引的数据，自动填充NaN</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bser</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bser</span>
+<span class="n">a</span>    <span class="mf">1.0</span>
+<span class="n">b</span>    <span class="mf">2.0</span>
+<span class="n">c</span>    <span class="n">NaN</span>
+<span class="n">dtype</span><span class="p">:</span> <span class="n">float64</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">bser</span><span class="p">)</span> <span class="c1"># 判断是否有NaN元素，返回一个新的结果Series</span>
+<span class="n">a</span>    <span class="bp">False</span>
+<span class="n">b</span>    <span class="bp">False</span>
+<span class="n">c</span>     <span class="bp">True</span>
+<span class="n">dtype</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cser</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">})</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bser</span> <span class="o">+</span> <span class="n">cser</span> <span class="c1"># 运算时如果有不相称的索引也会对齐</span>
+<span class="n">a</span>    <span class="mf">3.0</span>
+<span class="n">b</span>    <span class="mf">7.0</span>
+<span class="n">c</span>    <span class="n">NaN</span>
+<span class="n">d</span>    <span class="n">NaN</span>
+<span class="n">dtype</span><span class="p">:</span> <span class="n">float64</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aser</span><span class="o">.</span><span class="n">name</span> <span class="c1"># 名称属性，分别对应Series的名称与索引名称</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aser</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aser</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;names&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aser</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;col&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">aser</span>
+<span class="n">col</span>
+<span class="n">a</span>    <span class="mi">1</span>
+<span class="n">b</span>    <span class="mi">2</span>
+<span class="n">c</span>    <span class="mi">3</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">names</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span></code></pre></div>
+<h3 id="dataframe-数据帧-表">DataFrame 数据帧 表</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;col1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;col2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span>
+   <span class="n">col1</span>  <span class="n">col2</span>
+<span class="mi">0</span>     <span class="mi">1</span>     <span class="mi">3</span>
+<span class="mi">1</span>     <span class="mi">2</span>     <span class="mi">4</span>
+<span class="mi">2</span>     <span class="mi">3</span>     <span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span><span class="p">[</span><span class="s1">&#39;col1&#39;</span><span class="p">]</span> <span class="c1"># 通过列名获取单列数据，返回Series对象</span>
+<span class="mi">0</span>    <span class="mi">1</span>
+<span class="mi">1</span>    <span class="mi">2</span>
+<span class="mi">2</span>    <span class="mi">3</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">col1</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span><span class="o">.</span><span class="n">col1</span> <span class="c1"># . 也可以用</span>
+<span class="mi">0</span>    <span class="mi">1</span>
+<span class="mi">1</span>    <span class="mi">2</span>
+<span class="mi">2</span>    <span class="mi">3</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">col1</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># 通过索引获取一行数据，返回Series</span>
+<span class="n">col1</span>    <span class="mi">1</span>
+<span class="n">col2</span>    <span class="mi">3</span>
+<span class="n">Name</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span><span class="o">.</span><span class="n">col1</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span> <span class="c1"># 重写一列的值</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span>
+    <span class="n">col1</span>  <span class="n">col2</span>
+<span class="mi">0</span>  <span class="n">admin</span>     <span class="mi">3</span>
+<span class="mi">1</span>  <span class="n">admin</span>     <span class="mi">4</span>
+<span class="mi">2</span>  <span class="n">admin</span>     <span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span><span class="p">[</span><span class="s1">&#39;col1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span>
+   <span class="n">col1</span>  <span class="n">col2</span>
+<span class="mi">0</span>    <span class="mi">10</span>     <span class="mi">3</span>
+<span class="mi">1</span>     <span class="mi">9</span>     <span class="mi">4</span>
+<span class="mi">2</span>     <span class="mi">8</span>     <span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">del</span> <span class="n">adf</span><span class="p">[</span><span class="s1">&#39;col1&#39;</span><span class="p">]</span> <span class="c1"># 删除一列</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span>
+   <span class="n">col2</span>
+<span class="mi">0</span>     <span class="mi">3</span>
+<span class="mi">1</span>     <span class="mi">4</span>
+<span class="mi">2</span>     <span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;index&#39;</span> <span class="c1"># 索引名</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">adf</span>
+       <span class="n">col2</span>
+<span class="n">index</span>      
+<span class="mi">0</span>         <span class="mi">3</span>
+<span class="mi">1</span>         <span class="mi">4</span>
+<span class="mi">2</span>         <span class="mi">5</span></code></pre></div>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2016\/05\/03\/python%E7%8E%A9%E8%BD%AC%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84\/';
+        this.page.identifier = '\/2016\/05\/03\/python%E7%8E%A9%E8%BD%AC%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

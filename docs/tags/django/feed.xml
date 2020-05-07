@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Django on </title>
+    <link>https://zhu327.github.io/tags/django/</link>
+    <description>Recent content in Django on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 21 Apr 2017 11:19:30 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/django/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Django 优化杂谈</title>
+      <link>https://zhu327.github.io/2017/04/21/django-%E4%BC%98%E5%8C%96%E6%9D%82%E8%B0%88/</link>
+      <pubDate>Fri, 21 Apr 2017 11:19:30 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/04/21/django-%E4%BC%98%E5%8C%96%E6%9D%82%E8%B0%88/</guid>
+      <description>&lt;p&gt;总结下最近看过的一些文章,然后想到的一些优化点,整理一下.&lt;/p&gt;
+
+&lt;h3 id=&#34;数据库连接池&#34;&gt;数据库连接池&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://mt.dbanotes.net/arch/instagram.html&#34;&gt;http://mt.dbanotes.net/arch/instagram.html&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Django 默认DB配置提供了选项&lt;code&gt;CONN_MAX_AGE&lt;/code&gt;用于配置在同一个thread/greenlet里面DB connection的最大存活时间,便于连接的复用,在实践中发现如果使用gunicorn+gevent的方式来启动WSGI服务,由于gunicorn会创建一个很大的gevent pool,导致数据库连接数会暴涨.所以这个选项被放弃了,另外的方式是使用connection pool.&lt;/p&gt;
+
+&lt;p&gt;instagram 使用 PostGreSQL 并且使用 Pgbouncer 这个中间件来管理连接池,MySQL也有Proxy这种中间件但是比较重,所以考虑在django mysql backend的基础上自己实现一个连接池.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38&#34;&gt;https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;主要参考了Connector/Python的pool实现.&lt;/p&gt;
+
+&lt;p&gt;数据库连接池也不是&amp;rdquo;银弹&amp;rdquo;,在应用层做数据库连接池也不值得推荐,随着业务的扩展,使用一主多备搭建集群,通过读写分类中间件来做连接池管理,推荐&lt;a href=&#34;https://github.com/sysown/proxysql&#34;&gt;ProxySQL&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在Django中使用zerorpc</title>
+      <link>https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/</link>
+      <pubDate>Fri, 31 Mar 2017 15:59:13 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;随着系统架构从集中式单点服务器到分布式微服务方向的迁移,RPC是一个不可回避的话题.如何在系统中引入对开发者友好,性能可靠的RPC服务是一个值得深思的问题.&lt;/p&gt;
+
+&lt;p&gt;在调研了Thrift,gRPC,zerorpc等方案后,基于以下2点最后选择了zerorpc:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Thrift,gRPC学习成本高,开发者需要重新定义返回结构增加了工作量&lt;/li&gt;
+&lt;li&gt;zerorpc完美契合Python,能快速开发,并且支持Node.js,适用于当前技术栈&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;问题&#34;&gt;问题&lt;/h3&gt;
+
+&lt;p&gt;虽然zerorpc可以直接嵌入当前系统框架中,但是还是有一些问题需要去考虑解决&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;rpc 接口如何定义&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;rpc 服务如何启动&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;高并发情况下客户端的可靠性&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Django db使用MySQL连接池</title>
+      <link>https://zhu327.github.io/2016/09/25/django-db%E4%BD%BF%E7%94%A8mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/</link>
+      <pubDate>Sun, 25 Sep 2016 16:41:33 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/09/25/django-db%E4%BD%BF%E7%94%A8mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/</guid>
+      <description>&lt;p&gt;Django db模块本身不支持MySQL连接池，只有一个配置&lt;code&gt;CONN_MAX_AGE&lt;/code&gt;连接最大存活时间，如果WSGI服务器使用了线程池技术，会达到连接复用的效果。但是如果WSGI服务如果是每个请求都创建新的线程，那么这个配置没有任何效果，因为连接保存在&lt;code&gt;Thread.local()&lt;/code&gt;名称空间中，在不同的线程中不能复用。&lt;/p&gt;
+
+&lt;p&gt;在上一篇&lt;a href=&#34;https://zhu327.github.io/2016/09/25/greentor-mysql连接池实现/&#34;&gt;greentor MySQL连接池实现&lt;/a&gt;中已经实现了MySQL连接池，只需要重写Django MySQL backend以支持连接池，就能达到连接复用的目的，减少socket 3次握手的开销，提高性能。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/greentor/blob/master/demo/core/base.py&#34;&gt;https://github.com/zhu327/greentor/blob/master/demo/core/base.py&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>greentor MySQL连接池实现</title>
+      <link>https://zhu327.github.io/2016/09/25/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Sun, 25 Sep 2016 15:56:21 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/09/25/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Connection_pool&#34;&gt;https://en.wikipedia.org/wiki/Connection_pool&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;通过&lt;a href=&#34;https://github.com/zhu327/greentor&#34;&gt;greentor&lt;/a&gt;实现了pymysql在Tornado上异步调用的过程后发现，每次建立数据库连接都会经过socket 3次握手，而每一次socket读写都会伴随着greenlet的切换，以及ioloop的callback过程，虽然是异步了，但是IO性能并没有提升，所以在研究了&lt;a href=&#34;https://github.com/snower/TorMySQL&#34;&gt;TorMySQL&lt;/a&gt;连接池的实现后，实现了greentor自己的连接池。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/greentor/blob/master/greentor/green.py&#34;&gt;https://github.com/zhu327/greentor/blob/master/greentor/green.py&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>greentor填坑记</title>
+      <link>https://zhu327.github.io/2016/06/24/greentor%E5%A1%AB%E5%9D%91%E8%AE%B0/</link>
+      <pubDate>Fri, 24 Jun 2016 09:25:38 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/06/24/greentor%E5%A1%AB%E5%9D%91%E8%AE%B0/</guid>
+      <description>&lt;p&gt;经过2周的学习开发，Tornado + Django ORM的环境搭好了，这阶段的学习告一段落，虽然这个环境是一个玩具环境，没有经过生产的检验，但是在搭环境的过程中学习了Tornado，greenlet，Django数据库相关的姿势，感觉还是有不少提升。&lt;/p&gt;
+
+&lt;p&gt;在这2天的调试中，暴露出了2个比较严重的问题，记录下填坑过程。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-线程安全&#34;&gt;1. 线程安全&lt;/h3&gt;
+
+&lt;p&gt;WSGI服务器在接受到新的http请求时会开一个新线程来调用application进行处理，Django ORM在有数据库查询的时候，会在当前线程中创建一个新的数据库连接并保存到线程local空间中，在同一个线程中的连接是可以被复用的。不同的线程持有不同的连接，这样就保证Django ORM是线程安全的。&lt;/p&gt;
+
+&lt;p&gt;Tornado是单线程的，在Tornado中使用Django ORM无论处理多少请求，都会用同一个保存在当前local()中的连接，这样就必然会产生连接使用的冲突。比如同时并发的2个请求，第一个请求关闭了连接，第二个请求还在继续使用这个连接就会抛出异常。&lt;/p&gt;
+
+&lt;p&gt;在greentor的配合下，Tornado涉及数据库连接的请求都运行在greenlet中，如果有一个greenlet local来对每个请求的数据库连接进行隔离，就能避免线程安全问题，在这里的greenlet协程完全可以类比为线程。然而greenlet并没有local，那我们就造一个local出来。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Django save方法的update_fields参数</title>
+      <link>https://zhu327.github.io/2016/05/16/django-save%E6%96%B9%E6%B3%95%E7%9A%84update_fields%E5%8F%82%E6%95%B0/</link>
+      <pubDate>Mon, 16 May 2016 09:49:32 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/05/16/django-save%E6%96%B9%E6%B3%95%E7%9A%84update_fields%E5%8F%82%E6%95%B0/</guid>
+      <description>&lt;p&gt;在Django中对Model对象的属性赋值，并使用save方法，save方法并不会检测Model对象变更了什么属性，而是会使用&lt;code&gt;update&lt;/code&gt;语句set所有的field为当前的值，也就是说只修改了部分字段，也会update所有字段的值，这样会导致2个问题:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;SQL语句过大，导致SQL执行慢(一般也不会有什么影响)&lt;/li&gt;
+&lt;li&gt;如果同时操作同一个Model对象，更新不同的字段，后save的操作会用老的值覆盖掉早点操作的值&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;所以推荐在调用save方法的时候传&lt;code&gt;update_fields&lt;/code&gt;参数，但是这样就要求我们必须对每次save的fields都在代码中记下来，不是很方便，所以开发一个通用的专门用来处理update_fields参数的Mixin类来解决这个问题。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Tastypie实现accesstoken认证</title>
+      <link>https://zhu327.github.io/2016/05/15/tastypie%E5%AE%9E%E7%8E%B0accesstoken%E8%AE%A4%E8%AF%81/</link>
+      <pubDate>Sun, 15 May 2016 10:49:01 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/05/15/tastypie%E5%AE%9E%E7%8E%B0accesstoken%E8%AE%A4%E8%AF%81/</guid>
+      <description>&lt;p&gt;Tastypie提供了几种基本的认证方式比如SessionAuthentication，Django实现的web站点一般都是基于cookie-session的认证方式，在Django中使用中间件的方式处理cookie与session，以及用户认证。使用起来是很方便的。&lt;/p&gt;
+
+&lt;p&gt;但是在api中就不能继续使用cookie了，我们会使用accesstoken的方式来实现认证。之前同事使用redis实现了一版accesstoken的认证，但是由于考虑不周全，导致在使用过程中出现了很多bug，然后为了解决bug又写了很多恶心的兼容代码，所以抽空直接使用熟悉的session重构了认证过程。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Django验证码实现与登录验证码展示策略</title>
+      <link>https://zhu327.github.io/2016/05/14/django%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%8E%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81%E7%A0%81%E5%B1%95%E7%A4%BA%E7%AD%96%E7%95%A5/</link>
+      <pubDate>Sat, 14 May 2016 13:54:06 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/05/14/django%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%8E%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81%E7%A0%81%E5%B1%95%E7%A4%BA%E7%AD%96%E7%95%A5/</guid>
+      <description>&lt;p&gt;Django实现验证码有很多现成可用的库，Google后选择&lt;a href=&#34;https://github.com/mbi/django-simple-captcha&#34;&gt;Django Simple Captcha&lt;/a&gt;，需要做一些展示与表单验证方面的定制。&lt;/p&gt;
+
+&lt;h3 id=&#34;验证码展示&#34;&gt;验证码展示&lt;/h3&gt;
+
+&lt;p&gt;默认的验证码展示形式不是很适合我们网站的样式，所以在settings中做了一些定制。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 验证码设置&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;CAPTCHA_FOREGROUND_COLOR&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;#d83a46&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 验证码字体颜色&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;CAPTCHA_BACKGROUND_COLOR&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;#f5f5f5&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 验证码背景颜色&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;CAPTCHA_NOISE_FUNCTIONS&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;captcha.helpers.noise_dots&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 验证码混淆配置，这里设置的点点&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;CAPTCHA_CHALLENGE_FUNCT&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;random_char_challenge&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 验证码生成函数配置&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;为了提供验证码的识别率，定制了一个随机字符串生成函数来生成验证码。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# coding: utf-8&lt;/span&gt;
+
+&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;random&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;captcha.conf&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;six&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;u&lt;/span&gt;
+
+&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;random_char_challenge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;chars&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;u&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;acefghkprtuvwxy34679&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;u&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;range&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CAPTCHA_LENGTH&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;random&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;choice&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;chars&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;upper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Django Model Trace 模型变更跟踪</title>
+      <link>https://zhu327.github.io/2016/03/11/django-model-trace-%E6%A8%A1%E5%9E%8B%E5%8F%98%E6%9B%B4%E8%B7%9F%E8%B8%AA/</link>
+      <pubDate>Fri, 11 Mar 2016 11:46:53 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/03/11/django-model-trace-%E6%A8%A1%E5%9E%8B%E5%8F%98%E6%9B%B4%E8%B7%9F%E8%B8%AA/</guid>
+      <description>&lt;p&gt;在公司业务中有很多模块需要记录模型的变更历史，刚开始的时候会针对需要变更记录的表增加一个变更记录表，然后做针对性的开发。后来类似的需求多了，而且不需要很详细的记录，所以单独提取了一个比较简单的模型跟踪模块出来。&lt;/p&gt;
+
+&lt;h3 id=&#34;原理&#34;&gt;原理&lt;/h3&gt;
+
+&lt;p&gt;使用Django自己的信号实现，创建了一个公用的model跟踪表，所有配置跟踪的model变更记录都会保存到这张表中，通过一个公用的&lt;code&gt;trace_model&lt;/code&gt;函数来保存变更的新老数据，而且只保存修改的字段。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# coding=utf-8&lt;/span&gt;
+
+&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;inspect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;json&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;django.conf&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;django.db.models&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ManyToManyField&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ManyToOneRel&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;django.db.models.fields.related&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ForeignKey&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;raven.contrib.django.models&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;client&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;models&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ModelRecord&lt;/span&gt;
+
+
+&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;trace_model&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sender&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;instance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;raw&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;using&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;update_fields&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;try&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;instance&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_state&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;adding&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;obj&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sender&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;objects&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;instance&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;change_fields&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sender&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_meta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_all_field_names&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;add_by&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;add_dt&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;update_by&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;update_dt&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;update_by_id&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 更新人，添加人，时间不记录&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;continue&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;field&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sender&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_meta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_field&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;auto_created&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;or&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;hidden&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;or&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;vm&#34;&gt;__class__&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ManyToManyField&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ManyToOneRel&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 特殊的字段不记录&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;continue&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;getattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;obj&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;getattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;instance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;str&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;str&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 不同类型的字段转为字符串，相等的不记录&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;continue&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;isinstance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ForeignKey&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# 如果是外键&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;change_fields&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+                        &lt;span class=&#34;n&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;related_model&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;objects&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;first&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+                        &lt;span class=&#34;n&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;related_model&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;objects&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;first&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;elif&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;_id&amp;#39;&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;change_fields&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;pass&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 判断避免同时对外键赋值的清空&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;continue&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;choices&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;getattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;obj&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;get_&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;_display&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;getattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;instance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;get_&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;_display&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;callable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;callable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;str&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;None&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;空&amp;#39;&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;str&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;None&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;空&amp;#39;&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;verbose_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;getattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;field&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;verbose_name&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;change_fields&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;s1&#34;&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;verbose_name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+                &lt;span class=&#34;s1&#34;&gt;&amp;#39;new&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+                &lt;span class=&#34;s1&#34;&gt;&amp;#39;old&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;old&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;dbname&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;getattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sender&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;_database&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DATABASES&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;default&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;NAME&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;frame_record&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;inspect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;stack&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;frame_record&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;get_response&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;request&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;frame_record&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f_locals&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;request&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;user&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;break&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;# 数据入库&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;change_fields&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;user&amp;#39;&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;locals&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;ModelRecord&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;objects&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;create&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dbname&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dbname&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+                                       &lt;span class=&#34;n&#34;&gt;table_name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sender&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_meta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;db_table&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+                                       &lt;span class=&#34;n&#34;&gt;table_pk&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;instance&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+                                       &lt;span class=&#34;n&#34;&gt;content&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;json&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dumps&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;change_fields&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt;
+                                       &lt;span class=&#34;n&#34;&gt;add_by&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;except&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;Exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;client&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;captureException&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Tastypie入门小结</title>
+      <link>https://zhu327.github.io/2016/03/09/tastypie%E5%85%A5%E9%97%A8%E5%B0%8F%E7%BB%93/</link>
+      <pubDate>Wed, 09 Mar 2016 15:28:33 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/03/09/tastypie%E5%85%A5%E9%97%A8%E5%B0%8F%E7%BB%93/</guid>
+      <description>&lt;h3 id=&#34;tastypie是什么&#34;&gt;Tastypie是什么&lt;/h3&gt;
+
+&lt;p&gt;Tastypie是基于Django的RESTful api开发框架，如果你有一个通过Django实现的网站，那么通过Tastypie写少许的代码就能实现一个全功能的REST api。&lt;/p&gt;
+
+&lt;h3 id=&#34;我要写些什么&#34;&gt;我要写些什么&lt;/h3&gt;
+
+&lt;p&gt;这不是一篇Tastypie的入门教程，如果需要教程，可以从官方文档开始，我写的只在探索Tastypie的过程中我认为值得记录的地方。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://django-tastypie.readthedocs.org/en/latest/tutorial.html&#34;&gt;Getting Started with Tastypie&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Gunicorn运行Django时静态文件处理</title>
+      <link>https://zhu327.github.io/2015/09/29/gunicorn%E8%BF%90%E8%A1%8Cdjango%E6%97%B6%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/</link>
+      <pubDate>Tue, 29 Sep 2015 18:36:08 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/09/29/gunicorn%E8%BF%90%E8%A1%8Cdjango%E6%97%B6%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/</guid>
+      <description>&lt;h3 id=&#34;问题&#34;&gt;问题&lt;/h3&gt;
+
+&lt;p&gt;在用Gunicorn跑Django的时候,比较郁闷的是静态文件的处理,即使在settings设置DEBUG=True,静态文件也不会正常显示.生产环境下一般不会裸跑Gunicorn,一般都会在前面放一个Nginx反代到Gunicorn,而静态文件直接交给Nginx处理.&lt;/p&gt;
+
+&lt;p&gt;但是如heroku,coding.net的演示平台这种PaaS就不能自己配置反向代理,怎么样设置wsgi才能正常处理静态文件呢.这里总结下处理这个问题的经验.&lt;/p&gt;
+
+&lt;h3 id=&#34;方法1&#34;&gt;方法1&lt;/h3&gt;
+
+&lt;p&gt;强制使用Django的静态文件处理器,通过&lt;code&gt;python manage.py runserver&lt;/code&gt;的时候,如果DEBUG=True,Django会自动加载自带的静态文件处理器,但是在Gunicorn下,这个设置会失效,我们可以强制使用Django自带的静态文件处理器.
+&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>邮件密码找回功能实现</title>
+      <link>https://zhu327.github.io/2015/06/04/%E9%82%AE%E4%BB%B6%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Thu, 04 Jun 2015 15:15:53 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/06/04/%E9%82%AE%E4%BB%B6%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/</guid>
+      <description>&lt;h3 id=&#34;思路&#34;&gt;思路&lt;/h3&gt;
+
+&lt;p&gt;公司做项目,有用到注册,登录,密码找回等功能,以前自己写的论坛也实现了邮件密码找回,不过比较简单,直接生成随机密码,把新密码发送到用户邮箱.比较不安全,要实现一般网站的用链接找回的功能.&lt;/p&gt;
+
+&lt;p&gt;对链接的要求有如下:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;每次生成的链接都必须不一样;&lt;/li&gt;
+&lt;li&gt;链接要有过期时间,过期以后无效;&lt;/li&gt;
+&lt;li&gt;后台在链接被请求时,必须验证链接是否有效.&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    
+    <item>
+      <title>Django实现简单OAuth2.0认证服务</title>
+      <link>https://zhu327.github.io/2015/03/16/django%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95oauth2.0%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Mon, 16 Mar 2015 23:12:18 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/03/16/django%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95oauth2.0%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1/</guid>
+      <description>&lt;p&gt;开始写&lt;a href=&#34;https://github.com/zhu327/forum&#34;&gt;Django forum&lt;/a&gt;的RESTful api，首先解决用户认证的问题，使用OAuth2.0协议实现。&lt;/p&gt;
+
+&lt;h3 id=&#34;参考&#34;&gt;参考&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html&#34;&gt;理解OAuth 2.0&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;授权&#34;&gt;授权&lt;/h3&gt;
+
+&lt;p&gt;OAuth2.0协议定义了4种授权模式，为了学习OAuth2.0授权协议，这里只实现简化模式。以下为简化模式授权过程。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SAE上用kvdb做Django缓存</title>
+      <link>https://zhu327.github.io/2015/03/11/sae%E4%B8%8A%E7%94%A8kvdb%E5%81%9Adjango%E7%BC%93%E5%AD%98/</link>
+      <pubDate>Wed, 11 Mar 2015 19:36:41 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/03/11/sae%E4%B8%8A%E7%94%A8kvdb%E5%81%9Adjango%E7%BC%93%E5%AD%98/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://forum.sinaapp.com&#34;&gt;Django forum&lt;/a&gt;在SAE上开启了5M的memcached缓存空间，memcached是用空间计费的，所以在没什么流量的情况下每天也要用1云豆，以blog上的经验来看不用缓存的情况下mysql的消耗又比较大，所以权衡之后选择SAE自己实现的kvdb缓存后端来做缓存，这样缓存消耗的云豆可以忽略不计，又可以达到缓存加速的效果。&lt;/p&gt;
+
+&lt;p&gt;参考Django自带的memcache缓存后端来写kvdb的缓存后端。在插入数据的时候添加一个超时时间戳，获取数据的时候判断数据是否超时，如超时则删除数据。另外在实现清空所有数据的时候kvdb没有实现相应的方法，我自己阅读kvdb文档后通过迭代key值来实现清空，有一个可能的问题是这个迭代删除最多只能一次删除100条数据。&lt;/p&gt;
+
+&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
+
+&lt;p&gt;基于&lt;code&gt;django.core.cache.backends.base.BaseCache&lt;/code&gt;，对kvdb已有的接口进行重写适配，kvdb未实现的接口则沿用。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/forum/blob/sae/xp/cache.py&#34;&gt;https://github.com/zhu327/forum/blob/sae/xp/cache.py&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Django forum总结</title>
+      <link>https://zhu327.github.io/2015/01/31/django-forum%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Sat, 31 Jan 2015 13:22:55 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/31/django-forum%E6%80%BB%E7%BB%93/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/forum&#34;&gt;https://github.com/zhu327/forum&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;元旦的时候决定开始学习Django，学习最好的方式无非边学边做，所以把2年前没敢看的一个Tornado项目通过用Django实现了，这里总结下。&lt;/p&gt;
+
+&lt;h3 id=&#34;models&#34;&gt;models&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;扩展默认User类&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;django.contrib.auth.models&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;AbstractUser&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# 继承这个类即可&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;# setting中设置&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;AUTH_USER_MODEL&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;forum.ForumUser&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 指定用户对象使用的类&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python资源存档</title>
+      <link>https://zhu327.github.io/2015/01/27/python%E8%B5%84%E6%BA%90%E5%AD%98%E6%A1%A3/</link>
+      <pubDate>Tue, 27 Jan 2015 23:50:19 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/27/python%E8%B5%84%E6%BA%90%E5%AD%98%E6%A1%A3/</guid>
+      <description>&lt;h3 id=&#34;python&#34;&gt;python&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://python-documentation-cn.readthedocs.org/en/latest/&#34;&gt;python 2.7.3&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://docspy3zh.readthedocs.org/en/latest/index.html&#34;&gt;python 3.2.2&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Django实现JOIN查询</title>
+      <link>https://zhu327.github.io/2015/01/10/django%E5%AE%9E%E7%8E%B0join%E6%9F%A5%E8%AF%A2/</link>
+      <pubDate>Sat, 10 Jan 2015 19:28:37 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/10/django%E5%AE%9E%E7%8E%B0join%E6%9F%A5%E8%AF%A2/</guid>
+      <description>&lt;p&gt;在写Django Model的Manager面临的一大问题是怎么样才能实现Django Model的复杂查询，比如LEFT JOIN语句的使用，Google用了不少时间，基本上了解大概，总结下，大概有3种方式。&lt;/p&gt;
+
+&lt;h3 id=&#34;参考&#34;&gt;参考&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://wing2south.com/post/django-raw-sql/&#34;&gt;闲话 Django Raw SQL&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://blog.jobbole.com/74881/&#34;&gt;实例详解Django的 select_related 和 prefetch_related 函数对 QuerySet 查询的优化&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;想法&#34;&gt;想法&lt;/h3&gt;
+
+&lt;p&gt;写Model的时候参考&lt;a href=&#34;http://f2m.im&#34;&gt;http://f2m.im&lt;/a&gt;的表结构，发现它大量使用了JOIN查询，而且在多个表上都没有使用外键，我想不用外键也是为了方便修改，删除时产生不必要的约束。Django Model实现了ForeignKey，很方便的能查询到外键所在的实例，进一步能查询的更多，但是查询一次相当于执行一次SQL语句，这就造成了性能开销。所以F2E才会使用JOIN语句把计算的过程都交给MySQL。
+&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Django自定义User类</title>
+      <link>https://zhu327.github.io/2015/01/09/django%E8%87%AA%E5%AE%9A%E4%B9%89user%E7%B1%BB/</link>
+      <pubDate>Fri, 09 Jan 2015 20:31:28 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/09/django%E8%87%AA%E5%AE%9A%E4%B9%89user%E7%B1%BB/</guid>
+      <description>&lt;h3 id=&#34;参考&#34;&gt;参考&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.djangoproject.com/en/1.5/ref/contrib/auth/#django.contrib.auth.models.User&#34;&gt;Substituting a custom User model&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://django-china.cn/topic/133/&#34;&gt;django（v1.5） 自定义用户基础&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/forum&#34;&gt;Django forum&lt;/a&gt;，学习Django了，准备写一个论坛，想法是实现一个如 &lt;a href=&#34;http://f2e.im/&#34;&gt;http://f2e.im/&lt;/a&gt; 这样的现代论坛，数据驱动开发，第一步就是设计数据库表结构，Django自带了用户模块，但是定义的字段太少，所以需要自定义扩展下。&lt;/p&gt;
+
+&lt;p&gt;在&lt;code&gt;settings.py&lt;/code&gt;下新增自定义用户类:
+&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

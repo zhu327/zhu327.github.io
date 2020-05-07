@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Elasticsearch IK安装 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Elasticsearch IK安装</h1>
+  <span class="post-date">Feb 1 2016</span>
+  <p>** 本文描述的的安装环境均为Ubuntu 14.04 64bit</p>
+
+<h4 id="1-安装elasticsearch">1. 安装Elasticsearch</h4>
+
+<p>参考
+&gt; <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-14-04">https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-14-04</a></p>
+
+<ol>
+<li>安装OpenJDK;</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">    sudo apt-get install openjdk-7-jre</code></pre></div>
+<p></p>
+
+<ol>
+<li><p>下载并安装Elasticsearch;
+&gt; <a href="https://www.elastic.co/downloads/elasticsearch">https://www.elastic.co/downloads/elasticsearch</a></p>
+
+<p>当前最新版本为2.0,本文以2.0版本为准</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo dpkg -i elasticsearch-2.0.0.deb</code></pre></div>
+<p>安装完成后会创建<code>/usr/share/elasticsearch</code>目录,<code>/etc/elasticsearch</code>目录为配置文件目录,<code>/etc/init.d/elasticsearch</code>启动文件.</p></li>
+
+<li><p>启动Elasticsearch</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo /etc/init.d/elasticsearch start
+sudo service elasticsearch start</code></pre></div></li>
+
+<li><p>验证安装</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">curl <span class="s1">&#39;http://localhost:9200/?pretty&#39;</span></code></pre></div></li>
+</ol>
+
+<h4 id="2-简单配置elasticsearch">2. 简单配置Elasticsearch</h4>
+
+<p>Elasticsearch的配置文件保存在<code>/etc/elasticsearch/elasticsearch.yml</code>中,配置项都有注释,这里我们只配置一些基础的项.</p>
+
+<ol>
+<li><p>cluster.name
+集群名称,Elasticsearch会自动查找在同一网段的同一集群名的node来组成搜索集群,这里我们只有单node,所有任意配置一个需要集群名即可</p></li>
+
+<li><p>node.name
+节点名称,在集群中的单节点名,同一集群的节点名不能一样</p></li>
+
+<li><p>node.master
+在同一个集群中的节点,分为master与slave,master节点主要是维持集群状态健康,不负责数据存取与索引建立的工作,所以不会过载.slave负责处理数据任务,即使slave过载,只要集群中有其它的节点健康,不会影响到整个节点.
+这个配置只能设置为true或者false,这里我们使用单节点,所以不用设置,默认就为true,须知,一般我们的出口ip节点设置为master,且集群中至少要有一个master.</p></li>
+
+<li><p>node.data
+true或者false,设置当前节点是否存储索引数据,一般我们不需要配置这项,默认为true,但是如果在集群中,出口ip节点为master,我们会设置node.data为false,这样出口node就会只负责从slave上抓取数据,聚合结果.可以称之为&rdquo;search load balancer&rdquo;.</p></li>
+
+<li><p>其它
+index.number_of_shards: 索引分片数
+index.number_of_replicas: 索引副本数
+比较多的分片可以改善建索引的性能,比较多的副本可以改善搜索速度.
+path.data: 索引数据存储路径,默认为/var/lib/elasticsearch</p></li>
+
+<li><p>安全相关
+network.bind_host: localhost 设置服务node的ip
+script.disable_dynamic: true 禁止远程执行脚本</p></li>
+</ol>
+
+<h4 id="3-使用elasticsearch">3. 使用Elasticsearch</h4>
+
+<ol>
+<li><p>创建索引</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">curl -X POST <span class="s1">&#39;http://localhost:9200/tutorial/helloworld/1&#39;</span> -d <span class="s1">&#39;{ &#34;message&#34;: &#34;Hello World!&#34; }&#39;</span></code></pre></div></li>
+
+<li><p>简单检索
+通过id检索:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">curl <span class="s1">&#39;http://localhost:9200/tutorial/helloworld/1&#39;</span></code></pre></div>
+<p>搜索字段:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">curl -X GET <span class="s1">&#39;http://localhost:9200/tutorial/helloworld/_search?q=message:Hello&amp;pretty&#39;</span></code></pre></div></li>
+
+<li><p>使用DSL查询语句</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&#34;query&#34;</span> <span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&#34;match&#34;</span> <span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&#34;last_name&#34;</span> <span class="o">:</span> <span class="s2">&#34;Smith&#34;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html</a></p>
+</blockquote></li>
+</ol>
+
+<p>待续&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/usr/lib/jvm/java-1.7.0-openjdk-amd64
+sudo apt-get install openjdk-7-jdk
+sudo apt-get install openjdk-7-jre-headless
+sudo apt-get install openjdk-7-jre-lib</code></pre></div>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2016\/02\/01\/elasticsearch-ik%E5%AE%89%E8%A3%85\/';
+        this.page.identifier = '\/2016\/02\/01\/elasticsearch-ik%E5%AE%89%E8%A3%85\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

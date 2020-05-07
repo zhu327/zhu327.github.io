@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      HTTP Cookie &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">HTTP Cookie</h1>
+  <span class="post-date">Sep 21 2014</span>
+  <h3 id="什么是cookie">什么是Cookie</h3>
+
+<p>Cookie用于存储http请求中的用户认证信息，用户在通过登录认证后，服务器在response header中设置Cookie，用户浏览器自动带Cookie访问该网站。</p>
+
+<h3 id="response-中的-cookie">response 中的 Cookie</h3>
+
+<p>response header 中添加 <code>Set-Cookie</code>信息，cookie是一组key，value值。</p>
+
+<pre><code>Set-Cookie: &lt;name&gt;=&lt;value&gt;[; &lt;name&gt;=&lt;value&gt;]...
+            [; expires=&lt;date&gt;][; domain=&lt;domain_name&gt;]
+            [; path=&lt;some_path&gt;][; secure][; httponly]
+</code></pre>
+
+<p>
+* expires Cookie过期时间
+* domain Cookie的生效域
+* path Cookie的生效路径
+* secure 表示cookie只能被发送到http服务器
+* httponly 表示cookie不能被客户端脚本获取到</p>
+
+<p>不带expires的Cookie表示临时Cookie只在当前会话有效，关闭浏览器Cookie实效。</p>
+
+<h3 id="request-中的-cookie">request 中的 Cookie</h3>
+
+<p>浏览器在接受的response中如果发现有<code>Set-Cookie</code>头，则在下一个request中设置<code>Cookie</code>头，如果有expires还要判断Cookie是否过期，reqeust中的cookie没有expires字段，
+如果是临时Cookie，浏览器直接保存在内存中，带expire的cookie如果未过期保存硬盘中，浏览器自动删除过期的Cookie，所有服务器要删除Cookie就是重新发送带<code>Set-Cookie</code>并且expires
+早与当前时间的Cookie。</p>
+
+<h3 id="关于-session">关于 session</h3>
+
+<p>session是保存在服务端的会话控制，一般服务器会发送包含sessionid的临时Cookie给浏览器，服务器根据sessionid获取保存的用户信息，自行维护过期时间等信息。</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2014\/09\/21\/http-cookie\/';
+        this.page.identifier = '\/2014\/09\/21\/http-cookie\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

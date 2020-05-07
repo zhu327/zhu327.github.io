@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+	<meta name="generator" content="Hugo 0.40.1" />
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      跬步 &middot; On Coding
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item  active " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+
+
+
+<div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/02/haystack-elasticsearch%E5%AE%9E%E7%8E%B0%E6%8B%BC%E9%9F%B3%E6%90%9C%E7%B4%A2/">haystack-Elasticsearch实现拼音搜索</a></h1>
+        <span class="post-date">Jun 2 2016</span>
+        <p>前一篇<a href="https://zhu327.github.io/2016/05/30/djangoelasticsearch%E5%AE%9E%E7%8E%B0%E6%90%9C%E7%B4%A2%E5%8A%9F%E8%83%BD/">Django+Elasticsearch实现搜索功能</a>已经实现了搜索的基本功能，但是其实还是有一些错误，这里先纠正一下。</p>
+
+<ol>
+<li>以为通过elsticstack实现了默认的分词器
+通过查看elasticsearch types的mapping发现string类型的根本就没有加载ik analyzer</li>
+<li>拼音分词方式设置错误
+拼音分词的尝试过程中，终于实现了全拼分词</li>
+</ol>
+
+<h3 id="环境搭建">环境搭建</h3>
+
+<p>Elasticsearch安装拼音分词:</p>
+
+<blockquote>
+<p><a href="http://my.oschina.net/UpBoy/blog/625014?fromerr=mRvT8rzk">http://my.oschina.net/UpBoy/blog/625014?fromerr=mRvT8rzk</a></p>
+</blockquote>
+
+<p>Django依赖安装:</p>
+
+<pre><code>django-haystack==2.5.dev1
+</code></pre>
+
+<p>之前会使用elasticstack与haystack2.4配合，发现问题比较多，所以删掉elasticstack，升级haystack为github上的最新版本</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/30/django-elasticsearch%E5%AE%9E%E7%8E%B0%E6%90%9C%E7%B4%A2%E5%8A%9F%E8%83%BD/">Django-Elasticsearch实现搜索功能</a></h1>
+        <span class="post-date">May 30 2016</span>
+        <p>在项目中实现了资讯搜索功能，用到了Django Tastypie haystack Elasticsearch ik分词，覆盖了我对搜索了解的所有姿势。其实也就了解一些简单的概念，不过haystack+elasticsearch并不需要太多搜索基础，只要看看haystack文档就就能实现简单的搜索需求了。</p>
+
+<h3 id="搭建elasticsearch环境">搭建Elasticsearch环境</h3>
+
+<blockquote>
+<p><a href="http://www.sojson.com/blog/81">http://www.sojson.com/blog/81</a></p>
+</blockquote>
+
+<p>参考以上文档搭建了自己的ES环境，然后再安装Django实现搜索的相关库:</p>
+
+<pre><code>django-haystack==2.4.1
+elasticsearch==2.3.0
+elasticstack==0.4.1
+</code></pre>
+
+<p>haystack不用说，在Django中实现搜索基本上都会用到，因为要用到Elasticsearch的BackEnds，所以要装elasticsearch，最后elasticstack会在下面说到。</p>
+
+<h3 id="haystack使用ik分词">haystack使用ik分词</h3>
+
+<p>在elasticsearch中可以在创建了indexs后可以在settings中自定义analyzer，在创建types时可以设置各个field使用的analyzer，但是在haystack中就比较麻烦了。</p>
+
+<blockquote>
+<p><a href="https://github.com/django-haystack/django-haystack/issues/639">https://github.com/django-haystack/django-haystack/issues/639</a></p>
+</blockquote>
+
+<p>从上面的issues中可以看出，如果需要解决这个问题，需要重写elasticsearch backends中相关设置，在查看了<a href="https://github.com/django-haystack/django-haystack/blob/master/haystack/backends/elasticsearch_backend.py">elasticsearch backends</a>代码后，发现除了<code>DEFAULT_SETTINGS</code>中配置自定义analyzer，<code>DEFAULT_FIELD_MAPPING</code>与<code>FIELD_MAPPINGS</code>分别用于设置field在mapping中analyzer，重写相关配置与方法可达到定义不同字段的分词器。</p>
+
+<p><del>但是重写配置方法还是太麻烦了，能不能更简单点呢，所以找到了elasticstack，用上了这个工具后，配置默认的analyzer就非常简单了。</del></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">HAYSTACK_CONNECTIONS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;ENGINE&#39;</span><span class="p">:</span> <span class="s1">&#39;elasticstack.backends.ConfigurableElasticSearchEngine&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;URL&#39;</span><span class="p">:</span> <span class="s1">&#39;http://127.0.0.1:9200/&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;INDEX_NAME&#39;</span><span class="p">:</span> <span class="s1">&#39;haystack&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+<span class="n">ELASTICSEARCH_DEFAULT_ANALYZER</span> <span class="o">=</span> <span class="s1">&#39;ik&#39;</span> <span class="c1"># 设置默认分词器为ik</span></code></pre></div>
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/16/django-save%E6%96%B9%E6%B3%95%E7%9A%84update_fields%E5%8F%82%E6%95%B0/">Django save方法的update_fields参数</a></h1>
+        <span class="post-date">May 16 2016</span>
+        <p>在Django中对Model对象的属性赋值，并使用save方法，save方法并不会检测Model对象变更了什么属性，而是会使用<code>update</code>语句set所有的field为当前的值，也就是说只修改了部分字段，也会update所有字段的值，这样会导致2个问题:</p>
+
+<ol>
+<li>SQL语句过大，导致SQL执行慢(一般也不会有什么影响)</li>
+<li>如果同时操作同一个Model对象，更新不同的字段，后save的操作会用老的值覆盖掉早点操作的值</li>
+</ol>
+
+<p>所以推荐在调用save方法的时候传<code>update_fields</code>参数，但是这样就要求我们必须对每次save的fields都在代码中记下来，不是很方便，所以开发一个通用的专门用来处理update_fields参数的Mixin类来解决这个问题。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/15/tastypie%E5%AE%9E%E7%8E%B0accesstoken%E8%AE%A4%E8%AF%81/">Tastypie实现accesstoken认证</a></h1>
+        <span class="post-date">May 15 2016</span>
+        <p>Tastypie提供了几种基本的认证方式比如SessionAuthentication，Django实现的web站点一般都是基于cookie-session的认证方式，在Django中使用中间件的方式处理cookie与session，以及用户认证。使用起来是很方便的。</p>
+
+<p>但是在api中就不能继续使用cookie了，我们会使用accesstoken的方式来实现认证。之前同事使用redis实现了一版accesstoken的认证，但是由于考虑不周全，导致在使用过程中出现了很多bug，然后为了解决bug又写了很多恶心的兼容代码，所以抽空直接使用熟悉的session重构了认证过程。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/14/django%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%8E%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81%E7%A0%81%E5%B1%95%E7%A4%BA%E7%AD%96%E7%95%A5/">Django验证码实现与登录验证码展示策略</a></h1>
+        <span class="post-date">May 14 2016</span>
+        <p>Django实现验证码有很多现成可用的库，Google后选择<a href="https://github.com/mbi/django-simple-captcha">Django Simple Captcha</a>，需要做一些展示与表单验证方面的定制。</p>
+
+<h3 id="验证码展示">验证码展示</h3>
+
+<p>默认的验证码展示形式不是很适合我们网站的样式，所以在settings中做了一些定制。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 验证码设置</span>
+<span class="n">CAPTCHA_FOREGROUND_COLOR</span> <span class="o">=</span> <span class="s1">&#39;#d83a46&#39;</span> <span class="c1"># 验证码字体颜色</span>
+<span class="n">CAPTCHA_BACKGROUND_COLOR</span> <span class="o">=</span> <span class="s1">&#39;#f5f5f5&#39;</span> <span class="c1"># 验证码背景颜色</span>
+<span class="n">CAPTCHA_NOISE_FUNCTIONS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;captcha.helpers.noise_dots&#39;</span><span class="p">,)</span> <span class="c1"># 验证码混淆配置，这里设置的点点</span>
+<span class="n">CAPTCHA_CHALLENGE_FUNCT</span> <span class="o">=</span> <span class="s1">&#39;random_char_challenge&#39;</span> <span class="c1"># 验证码生成函数配置</span></code></pre></div>
+<p>为了提供验证码的识别率，定制了一个随机字符串生成函数来生成验证码。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># coding: utf-8</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">captcha.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">u</span>
+
+<span class="k">def</span> <span class="nf">random_char_challenge</span><span class="p">():</span>
+    <span class="n">chars</span><span class="p">,</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">u</span><span class="p">(</span><span class="s1">&#39;acefghkprtuvwxy34679&#39;</span><span class="p">),</span> <span class="n">u</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CAPTCHA_LENGTH</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">ret</span></code></pre></div>
+<p></p>
+    </div>
+  
+</div>
+
+<div class="pagination">
+  
+  <a class="pagination-item older" href="https://zhu327.github.io/page/6/">Older</a>
+  
+
+  
+  <a class="pagination-item newer" href="https://zhu327.github.io/page/4/">Newer</a>
+  
+</div>
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

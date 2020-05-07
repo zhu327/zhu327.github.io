@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      记搜狗微信号搜索反爬虫 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">记搜狗微信号搜索反爬虫</h1>
+  <span class="post-date">Feb 15 2015</span>
+  <h3 id="反爬虫">反爬虫</h3>
+
+<p><a href="https://github.com/zhu327/rss">RSS Factory</a>前段时间又出问题了，访问微信公众号RSS一直500，完全没法用了。</p>
+
+<p>经调试，发现由于爬取数据太频繁，触发了搜狗微信公众号的反爬虫，探索了下反爬虫的规则:</p>
+
+<ol>
+<li>没有带Cookie的情况下，频繁访问触发反爬虫</li>
+<li>带Cookie的情况下，频繁访问偶尔触发反爬出，偶现500错误</li>
+<li>不带Cookie情况下，隔几个小时范围一下不会触发反爬虫</li>
+</ol>
+
+<p>
+Cookie有几个关键字段用于识别爬虫，SUID，SNUID，SUV。<br />
+不带Cookie请求任意搜狗微信公众号页面，应答set-cookie会带SUID，SNUID字段，SUV由JavaScript生成。</p>
+
+<h3 id="应对反爬虫">应对反爬虫</h3>
+
+<p>基于以上探索的反爬虫措施，制定应对反爬虫的策略。</p>
+
+<ol>
+<li>维护一个Cookie池</li>
+<li>爬取数据时随机取Cookie</li>
+<li>定时更新Cookies池</li>
+</ol>
+
+<h3 id="实现">实现</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="nd">@tornado.gen.coroutine</span>
+<span class="k">def</span> <span class="nf">get_cookies</span><span class="p">():</span>
+    <span class="n">cookies</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">httpclient</span><span class="o">.</span><span class="n">AsyncHTTPClient</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://weixin.sogou.com/weixin?query=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="s1">&#39;abcdefghijklmnopqrstuvwxyz&#39;</span><span class="p">)</span>
+
+        <span class="c1"># 获取SNUID</span>
+        <span class="n">cookie_request</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">httpclient</span><span class="o">.</span><span class="n">HTTPRequest</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;HEAD&#39;</span><span class="p">)</span>
+        <span class="n">cookie</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">cookie_request</span><span class="p">)</span>
+        <span class="n">SUID</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(SUID=\S+?);&#39;</span><span class="p">,</span> <span class="n">cookie</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;set-cookie&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(SNUID=\S+?);&#39;</span><span class="p">,</span> <span class="n">cookie</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;set-cookie&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">SNUID</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Cookie:&#39;</span><span class="p">:</span> <span class="s1">&#39;; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">SUID</span><span class="p">,</span> <span class="n">getSUV</span><span class="p">(),</span> <span class="n">SNUID</span><span class="p">])}</span>
+            <span class="n">cookies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
+
+    <span class="n">mc</span> <span class="o">=</span> <span class="n">memcache</span><span class="o">.</span><span class="n">Client</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:15211&#39;</span> <span class="o">%</span> <span class="n">IP</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">cookies</span><span class="p">:</span>
+        <span class="n">mc</span><span class="o">.</span><span class="nb">set</span><span class="p">(</span><span class="s1">&#39;cookie&#39;</span><span class="p">,</span> <span class="n">cookies</span><span class="p">)</span></code></pre></div>
+<p>用到了Tornado的协程，使用异步httpClient，发送请求时使用HEAD方法，只请求头部，通过解析<code>set-cookie</code>生成自己的Cookie头，连续不带Cookies访问10次，生成Cookie池，并且保存在memcached中。</p>
+
+<p>在调用<code>tornado.ioloop.IOLoop.instance().start()</code>之前，调用<code>get_cookies()</code>，任务就能正常运行了，但是我们需要定时更新Cookie池，所以还要添加定时任务。</p>
+
+<p>tornado有两种方式可以定时运行可调用对象：</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 延时运行，接受delta延时时间间隔为datetime.delta对象，func为可调用对象，但是只能调用一次，所以如果用add_timeout还需要在func中显式的再add_timeout才能实现定时调用</span>
+<span class="n">tornado</span><span class="o">.</span><span class="n">ioloop</span><span class="o">.</span><span class="n">IOLoop</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">add_timeout</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+
+<span class="c1"># 定时回调，以毫秒为单位，每6个小时调用一次</span>
+<span class="n">tornado</span><span class="o">.</span><span class="n">ioloop</span><span class="o">.</span><span class="n">PeriodicCallback</span><span class="p">(</span><span class="n">get_cookies</span><span class="p">,</span> <span class="mi">6</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></code></pre></div>
+<h3 id="效果">效果</h3>
+
+<p>实现了定时任务后每6个小时会更新一次Cookie池，产生10个新的Cookie，爬取数据时使用随机Cookie明显降低了产生500的概率，效果良好。</p>
+
+<p>欢迎使用<a href="https://github.com/zhu327/rss">RSS Factory</a>。</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2015\/02\/15\/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB\/';
+        this.page.identifier = '\/2015\/02\/15\/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

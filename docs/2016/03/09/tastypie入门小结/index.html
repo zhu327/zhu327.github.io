@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Tastypie入门小结 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Tastypie入门小结</h1>
+  <span class="post-date">Mar 9 2016</span>
+  <h3 id="tastypie是什么">Tastypie是什么</h3>
+
+<p>Tastypie是基于Django的RESTful api开发框架，如果你有一个通过Django实现的网站，那么通过Tastypie写少许的代码就能实现一个全功能的REST api。</p>
+
+<h3 id="我要写些什么">我要写些什么</h3>
+
+<p>这不是一篇Tastypie的入门教程，如果需要教程，可以从官方文档开始，我写的只在探索Tastypie的过程中我认为值得记录的地方。</p>
+
+<blockquote>
+<p><a href="http://django-tastypie.readthedocs.org/en/latest/tutorial.html">Getting Started with Tastypie</a></p>
+</blockquote>
+
+<p></p>
+
+<h3 id="认证-authorization">认证 authorization</h3>
+
+<p>认证是指谁在访问该api，Tastypie的默认认证是Authorization(匿名只读认证)，由于我们的业务场景api的使用对象是WEB网站以及APP，而且是以WEB网站优先的，所以计划使用SessionAuthentication与ApiKeyAuthentication。</p>
+
+<p>SessionAuthentication是使用在网站上的，ApiKeyAuthentication可能需要定制，因为我们的OAUTH的token格式需要解密解析，待后续APP开发再进行。</p>
+
+<p>另外，在调试api的时候可能需要使用BasicAuthentication用用户名/密码来认证，requests库可以方便的使用BasicAuthentication，所以写一个<code>Meta</code>基类来实现。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">BaseMeta</span><span class="p">:</span>
+    <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">    Resource Meta 基类，把Resource的常用设置写在这里
+</span><span class="s1">    &#39;&#39;&#39;</span>
+    <span class="n">list_allowed_methods</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="s1">&#39;post&#39;</span><span class="p">]</span>
+    <span class="n">detail_allowed_methods</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="s1">&#39;put&#39;</span><span class="p">,</span> <span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="s1">&#39;patch&#39;</span><span class="p">]</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="mi">20</span> <span class="c1"># 默认列表显示数量</span>
+    <span class="n">authentication</span> <span class="o">=</span> <span class="n">SessionAuthentication</span><span class="p">()</span>
+    <span class="n">always_return_data</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+    <span class="n">BaseMeta</span><span class="o">.</span><span class="n">serializer</span> <span class="o">=</span> <span class="n">PrettyJSONSerializer</span><span class="p">()</span>
+    <span class="n">BaseMeta</span><span class="o">.</span><span class="n">authentication</span> <span class="o">=</span> <span class="n">MultiAuthentication</span><span class="p">(</span><span class="n">SessionAuthentication</span><span class="p">(),</span> <span class="n">BasicAuthentication</span><span class="p">())</span></code></pre></div>
+<p>在定义Resource类时Meta类通过继承BaseMeta来写。</p>
+
+<h3 id="授权-authorization">授权 authorization</h3>
+
+<p>授权，用户是否有权限访问该api，在已有的权限设计中，我们对每个Django的View都设计了权限，而Tastypie的DjangoAuthorization的是通过在Model中定义的权限来进行授权的。所以定义了一个业务授权的授权类。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">BaseAuthorization</span><span class="p">(</span><span class="n">Authorization</span><span class="p">):</span>
+    <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">    Tastypie 权限验证基类
+</span><span class="s1">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="s1">&#39;&#39;&#39;
+</span><span class="s1">        read_list_perm 读列表权限
+</span><span class="s1">        read_detail_perm 读详情页权限
+</span><span class="s1">        create_detail_perm 创建对象权限
+</span><span class="s1">        update_list_perm 更新列表权限
+</span><span class="s1">        update_detail_perm 更新详情权限
+</span><span class="s1">        delete_detail_perm 删除对象权限
+</span><span class="s1">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">perm_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;read_list_perm&#39;</span><span class="p">,</span> <span class="s1">&#39;read_detail_perm&#39;</span><span class="p">,</span> <span class="s1">&#39;create_detail_perm&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;update_list_perm&#39;</span><span class="p">,</span> <span class="s1">&#39;update_detail_perm&#39;</span><span class="p">,</span> <span class="s1">&#39;delete_detail_perm&#39;</span><span class="p">):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">perm_name</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">perm_name</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseAuthorization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">read_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_list</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_list_perm</span> <span class="ow">and</span> <span class="n">bundle</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">has_perm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_list_perm</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">object_list</span>
+        <span class="k">raise</span> <span class="n">Unauthorized</span><span class="p">(</span><span class="s2">&#34;You are not allowed to access that resource.&#34;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">read_detail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_list</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_detail_perm</span> <span class="ow">and</span> <span class="n">bundle</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">has_perm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_detail_perm</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">raise</span> <span class="n">Unauthorized</span><span class="p">(</span><span class="s2">&#34;You are not allowed to access that resource.&#34;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">create_detail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_list</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_detail_perm</span> <span class="ow">and</span> <span class="n">bundle</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">has_perm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">create_detail_perm</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">raise</span> <span class="n">Unauthorized</span><span class="p">(</span><span class="s2">&#34;You are not allowed to access that resource.&#34;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">update_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_list</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_list_perm</span> <span class="ow">and</span> <span class="n">bundle</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">has_perm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_list_perm</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">object_list</span>
+        <span class="k">raise</span> <span class="n">Unauthorized</span><span class="p">(</span><span class="s2">&#34;You are not allowed to access that resource.&#34;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">update_detail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_list</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_detail_perm</span> <span class="ow">and</span> <span class="n">bundle</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">has_perm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_detail_perm</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">raise</span> <span class="n">Unauthorized</span><span class="p">(</span><span class="s2">&#34;You are not allowed to access that resource.&#34;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">delete_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_list</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Unauthorized</span><span class="p">(</span><span class="s2">&#34;Sorry, no deletes.&#34;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">delete_detail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_list</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_detail_perm</span> <span class="ow">and</span> <span class="n">bundle</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">has_perm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_detail_perm</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">raise</span> <span class="n">Unauthorized</span><span class="p">(</span><span class="s2">&#34;You are not allowed to access that resource.&#34;</span><span class="p">)</span>
+
+<span class="c1"># 这样使用</span>
+<span class="k">class</span> <span class="nc">TestResource</span><span class="p">(</span><span class="n">ModelResouce</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">BaseMeta</span><span class="p">):</span>
+        <span class="n">authorization</span> <span class="o">=</span> <span class="n">BaseAuthorization</span><span class="p">(</span>
+            <span class="n">read_list_perm</span><span class="o">=</span><span class="s1">&#39;auth.employee_view&#39;</span><span class="p">,</span>
+            <span class="n">read_detail_perm</span><span class="o">=</span><span class="s1">&#39;auth.employee_view&#39;</span><span class="p">,</span>
+            <span class="n">create_detail_perm</span><span class="o">=</span><span class="s1">&#39;auth.employee_create&#39;</span><span class="p">,</span>
+            <span class="n">update_detail_perm</span><span class="o">=</span><span class="s1">&#39;auth.employee_update&#39;</span><span class="p">,</span>
+            <span class="n">delete_detail_perm</span><span class="o">=</span><span class="s1">&#39;auth.employee_delete&#39;</span>
+        <span class="p">)</span></code></pre></div>
+<p>这样在读取或者写入数据的权限就跟业务在View中使用的权限一致了。</p>
+
+<h3 id="捆对象-bundles">捆对象 Bundles</h3>
+
+<p>在定制Resource的过程中，不可避免的会使用捆对象，这是一个抽象的概念，代表了获取资源，或者写入资源过程中对单个资源的封装，它有这些属性。</p>
+
+<ol>
+<li>obj: Model对象
+
+<ul>
+<li>在<code>GET</code>方法中obj是根据<code>id</code>来得到的Model对象</li>
+<li>在<code>POST</code>方法中obj是生成的<code>id</code>为空等待保存的对象</li>
+<li>在<code>PUT/PATCH</code>中obj是某些字段已改变但是没有保存的对象</li>
+</ul></li>
+<li>data: 数据字典
+
+<ul>
+<li>在<code>GET</code>方法中data是等待序列化的字典数据</li>
+<li>在<code>POST/PUT/PATCH</code>法中data是从客户端发送过来的数据</li>
+</ul></li>
+<li>request: Django request对象</li>
+</ol>
+
+<p>其它还有<code>related_obj</code>, <code>related_name</code>暂时未用到</p>
+
+<h3 id="脱水-dehydrate">脱水 dehydrate</h3>
+
+<p>类似于Django Form类中clean以及clean_FOO方法的使用，用于处理即将被序列化的数据，即在<code>GET</code>方法中会调用。如果需要对发送给客户端的数据进行加工，则需要定义相关的脱水方法。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">TestResource</span><span class="p">(</span><span class="n">ModelResouce</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">dehydrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
+        <span class="c1"># 修改数据</span>
+        <span class="n">bundle</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">buuidle</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="c1"># 增加数据</span>
+        <span class="n">bundle</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;v1&#39;</span>
+    <span class="k">return</span> <span class="n">bundle</span></code></pre></div>
+<h3 id="hydrate-注水">hydrate 注水</h3>
+
+<p>与脱水相反，注水是指在<code>POST/PUT/PATCH</code>方法中对客户端传过来的数据进行加工。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">TestResource</span><span class="p">(</span><span class="n">ModelResouce</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">hydrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
+        <span class="c1"># 修改数据</span>
+        <span class="n">city_id</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;insrance_city&#39;</span><span class="p">)</span>
+        <span class="n">city</span> <span class="o">=</span> <span class="n">City</span><span class="o">.</span><span class="nb">object</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">city_id</span><span class="p">)</span>
+        <span class="n">bundle</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">city</span> <span class="o">=</span> <span class="n">city</span>
+    <span class="k">return</span> <span class="n">bundle</span></code></pre></div>
+<h3 id="过滤查询-filtering">过滤查询 filtering</h3>
+
+<p>类似于我们业务中的搜索，使用Django Model自带的filter功能来过滤列表。使用方法可以参考文档：</p>
+
+<blockquote>
+<p><a href="http://django-tastypie.readthedocs.org/en/latest/resources.html#basic-filtering">http://django-tastypie.readthedocs.org/en/latest/resources.html#basic-filtering</a></p>
+</blockquote>
+
+<p>对于在我们业务中类似于关键字搜索，需要同时查询多个字段的需求，可以考虑重写Resouce中的方法，或者增加方法，增加Meta属性，期望能达到我们正在使用的<code>SearchMixin</code>的效果。一个重写方法的例子:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">EmployeeInfoResource</span><span class="p">(</span><span class="n">ModelResource</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">applicable_filters</span><span class="p">):</span>
+        <span class="n">qs</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">EmployeeInfoResource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">apply_filters</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">applicable_filters</span><span class="p">)</span>
+        <span class="n">keyword</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;keyword&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">keyword</span><span class="p">:</span>
+            <span class="n">keyword</span> <span class="o">=</span> <span class="n">keyword</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">qs</span> <span class="o">=</span> <span class="n">qs</span><span class="o">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">Q</span><span class="p">(</span><span class="n">credentials_no__icontains</span><span class="o">=</span><span class="n">keyword</span><span class="p">)</span> <span class="o">|</span> <span class="n">Q</span><span class="p">(</span><span class="n">emp_name__icontains</span><span class="o">=</span><span class="n">keyword</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">qs</span></code></pre></div>
+<p>以上就是我在探索Tastypie的过程中一点心得，在实际的开发中，相信除了以资源为核心的api外，还有一些操作类的业务需求api，如果这些api基于Tastypie来写可能会得不偿失，所以还需要对操作类api进行规范。</p>
+
+<h3 id="操作类api">操作类api</h3>
+
+<p>可以考虑返回的Response直接输出JsonResponse，或者直接使用Tastypie定义的各种HTTP状态码Response对象，可以在这里看到。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">tastypie.http</span> <span class="kn">import</span> <span class="o">*</span></code></pre></div>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2016\/03\/09\/tastypie%E5%85%A5%E9%97%A8%E5%B0%8F%E7%BB%93\/';
+        this.page.identifier = '\/2016\/03\/09\/tastypie%E5%85%A5%E9%97%A8%E5%B0%8F%E7%BB%93\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

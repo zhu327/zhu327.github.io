@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      zerorpc api设计指南 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+    
+      
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">zerorpc api设计指南</h1>
+  <span class="post-date">May 8 2017</span>
+  <blockquote>
+<p><a href="http://tailnode.tk/2017/03/google-api-design-guide/contents/">Google API 设计指南</a><br />
+<a href="https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/">在Django中使用zerorpc</a></p>
+</blockquote>
+
+<p>之前实现了在Django环境下使用zerorpc的封装,api的组织单位是function.受到Google API 设计指南的启发,重新设计了一种基于Resources的api组织风格,并且约定Resource的方法名与Django Rest Framework的ViewSets中实现的action名称一致.</p>
+
+<p>zerorpc默认只能在同一个Server上面注册一个对象,而我们需要注册多个类(一个类表示一Resources),在阅读zerorpc Server的代码后,想到一个简单的方式来注册Resources.</p>
+
+<p></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">zerorpc</span>
+
+<span class="n">_methods</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="n">_methods</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;{}:{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                     <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">k</span><span class="p">))})</span>
+    <span class="k">return</span> <span class="bp">cls</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="nd">@register</span>
+    <span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+
+    <span class="n">server</span> <span class="o">=</span> <span class="n">zerorpc</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="n">_methods</span><span class="p">,</span> <span class="n">heartbeat</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&#34;tcp://{0}:{1}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">4242</span><span class="p">))</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">run</span><span class="p">()</span></code></pre></div>
+<p>通过在方法名前增加类名称前缀在Server的<code>_methods</code>字典里面增加了<code>Class:method</code>格式的调用方法.这样就实现了注册多个类到zerorpc Server.</p>
+
+<h4 id="约定">约定</h4>
+
+<ul>
+<li>每个类代表一个Resources</li>
+<li>方法名称<strong>create,list,retrieve,update,destroy</strong>分别对应于创建,列表,详情,更新,删除操作</li>
+</ul>
+
+<p>约定尽量切合DRF已有的风格,不需要暴露的方法以<code>_</code>开头.</p>
+
+<h4 id="调用">调用</h4>
+
+<p>还需要改造下Client端,因为默认的Client不能直接使用<code>class:method</code>的方法名来调用rpc api</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">zerorpc</span>
+
+<span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="n">zerorpc</span><span class="o">.</span><span class="n">Client</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;prefix&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Client</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">,</span> <span class="n">method</span><span class="p">])</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span> <span class="k">else</span> <span class="n">method</span>
+        <span class="k">return</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">:</span> <span class="bp">self</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span></code></pre></div>
+<p>重写下Client,实例化时添加可选的prefix参数来指定调用的Resources,通过<code>set_prefix</code>方法来修改调用的Resources.</p>
+
+
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/zhu327.github.io\/2017\/05\/08\/zerorpc-api%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97\/';
+        this.page.identifier = '\/2017\/05\/08\/zerorpc-api%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97\/';
+    };
+
+    (function() {
+        var d = document, s = d.createElement('script');
+        var disqus_shortname = 'zhu327';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+
