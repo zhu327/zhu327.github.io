@@ -78,6 +78,13 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2020/10/22/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">领域驱动设计与微服务</a></h1>
+        <span class="post-date">Oct 22 2020</span>
+        DRF的起手式  CURD Boy的通常的工作模式   先设计Serializer还是先设计Model?  问题是什么  框架捆绑  写框架无关的代码  复杂的逻辑会陷入职责不清晰, 交叉依赖  抽象一层   面向对象 SOLID原则
+   SRP The Single Responsibility Principle  单一责任原则     OCP The Open Closed Principle 开放封闭原则   LSP The Liskov Substitution Principle 里氏替换原则   DIP The Dependency Inversion Principle 依赖倒置原则   ISP The Interface Segregation Principle 接口分离原则    clean Architecture  实体: 模型, 比如权限中心的一条策略就是一个实体, 它具有唯一的ID  模型不是分散的, 与存储无关, 避免交叉依赖  用例: 业务的使用规则, 实例在某种场景下的使用方式, 一段实体的使用逻辑  与api无关, 只与业务逻辑相关  对外暴露接口与适配器  隐藏用例与实体, 只对外暴露接口  框架, 驱动  对接接口, 实现适配器接口    从业务出发, 以业务逻辑为核心构建系统 灵活的使用外部依赖, 扩展方便  六边形架构  以业务为核心, 外部依赖全部做成适配器, 方便替换  领域驱动设计 为解决复杂的现实问题的一种设计模式, 将数据和行为封装在一起，并与现实世界中的业务对象相映射。各类具备明确的职责划分，将领域逻辑分散到领域对象中。
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2020/05/07/%E8%AF%BB%E4%B9%A6%E6%96%B9%E6%B3%95%E8%AE%BA/">读书方法论</a></h1>
         <span class="post-date">May 7 2020</span>
         <p>从2017年决定补计算机基础开始, 至今已经读了50来本计算机书籍. 读书的时间总是很宝贵, 如何正确的读书呢? 下面是我的一些经验与总结.</p>
@@ -132,14 +139,6 @@
 <p>产品是一款服务于人力资源的SaaS在线服务, 面向HR有Web Android/iOS 小程序多个客户端, 后端采用RESTful风格API来提供服务. 主要使用Python语言, 方便快速迭代.</p>
 
 <p>架构的演进经历了4个大的阶段: 1. MVC 2. 服务拆分 3. 微服务架构 4. 领域驱动设计.</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2018/07/17/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3/">微信公众号迁移Serverless详解</a></h1>
-        <span class="post-date">Jul 17 2018</span>
-        <p>3月腾讯云函数计算开放测试, 看到的第一反应是这种Serverless太适合做微信公众号的后端来实现自动应答了, 尝试把我服务了3年的一个公众号迁移到腾讯云函数计算, 结果因为API gateway的一个功能缺失搁置了, 这周腾讯云API gateway终于补上了集成响应的能力, 能正常服务我的公众号, 这里记录下实现过程.</p>
 
 <p></p>
     </div>
