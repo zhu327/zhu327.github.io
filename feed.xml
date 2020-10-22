@@ -74,13 +74,19 @@
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;&lt;strong&gt;SRP&lt;/strong&gt;&lt;/th&gt;
-&lt;th&gt;&lt;a href=&#34;http://www.objectmentor.com/resources/articles/srp.pdf&#34;&gt;The Single Responsibility Principle &lt;/a&gt;&lt;/th&gt;
-&lt;th&gt;单一责任原则&lt;/th&gt;
+&lt;th&gt;-&lt;/th&gt;
+&lt;th&gt;-&lt;/th&gt;
+&lt;th&gt;-&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
 
 &lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SRP&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href=&#34;http://www.objectmentor.com/resources/articles/srp.pdf&#34;&gt;The Single Responsibility Principle &lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;单一责任原则&lt;/td&gt;
+&lt;/tr&gt;
+
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;OCP&lt;/strong&gt;&lt;/td&gt;
 &lt;td&gt;&lt;a href=&#34;http://www.objectmentor.com/resources/articles/ocp.pdf&#34;&gt;The Open Closed Principle&lt;/a&gt;&lt;/td&gt;
@@ -109,7 +115,7 @@
 
 &lt;h3 id=&#34;clean-architecture&#34;&gt;clean Architecture&lt;/h3&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://zhixinliu.com/images/201507-CleanArchitecture.jpg&#34; alt=&#34; &#34; style=&#34;zoom:80%;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/201507-CleanArchitecture.jpg&#34; alt=&#34; &#34; style=&#34;zoom:80%;&#34; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;实体: 模型, 比如权限中心的一条策略就是一个实体, 它具有唯一的ID
@@ -143,7 +149,7 @@
 
 &lt;h3 id=&#34;六边形架构&#34;&gt;六边形架构&lt;/h3&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://insights.thoughtworkers.org/wp-content/uploads/2017/06/3-application.jpg&#34; alt=&#34;img&#34; style=&#34;zoom: 80%;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/3-application.jpg&#34; alt=&#34;img&#34; style=&#34;zoom: 80%;&#34; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;以业务为核心, 外部依赖全部做成适配器, 方便替换&lt;/li&gt;
