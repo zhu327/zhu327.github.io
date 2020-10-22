@@ -80,8 +80,19 @@
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2020/10/22/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">领域驱动设计与微服务</a></h1>
         <span class="post-date">Oct 22 2020</span>
-        DRF的起手式  CURD Boy的通常的工作模式   先设计Serializer还是先设计Model?  问题是什么  框架捆绑  写框架无关的代码  复杂的逻辑会陷入职责不清晰, 交叉依赖  抽象一层   面向对象 SOLID原则
-   SRP The Single Responsibility Principle  单一责任原则     OCP The Open Closed Principle 开放封闭原则   LSP The Liskov Substitution Principle 里氏替换原则   DIP The Dependency Inversion Principle 依赖倒置原则   ISP The Interface Segregation Principle 接口分离原则    clean Architecture  实体: 模型, 比如权限中心的一条策略就是一个实体, 它具有唯一的ID  模型不是分散的, 与存储无关, 避免交叉依赖  用例: 业务的使用规则, 实例在某种场景下的使用方式, 一段实体的使用逻辑  与api无关, 只与业务逻辑相关  对外暴露接口与适配器  隐藏用例与实体, 只对外暴露接口  框架, 驱动  对接接口, 实现适配器接口    从业务出发, 以业务逻辑为核心构建系统 灵活的使用外部依赖, 扩展方便  六边形架构  以业务为核心, 外部依赖全部做成适配器, 方便替换  领域驱动设计 为解决复杂的现实问题的一种设计模式, 将数据和行为封装在一起，并与现实世界中的业务对象相映射。各类具备明确的职责划分，将领域逻辑分散到领域对象中。
+        <h3 id="drf的起手式">DRF的起手式</h3>
+
+<ul>
+<li>CURD Boy的通常的工作模式</li>
+</ul>
+
+<p><img src="https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/image-20201010162649717.png" alt="image-20201010162649717"  /></p>
+
+<ul>
+<li>先设计Serializer还是先设计Model?</li>
+</ul>
+
+<p></p>
     </div>
   
     <div class="post">
