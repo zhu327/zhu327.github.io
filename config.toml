@@ -35,5 +35,5 @@ Github = "https://github.com/zhu327"
 [params.utteranc]
   enable = true
   repo = "zhu327/zhu327.github.io"
-  issueTerm = "pathname"
+  issueTerm = "title"
   theme = "github-light"
