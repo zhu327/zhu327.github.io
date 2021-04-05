@@ -83,31 +83,31 @@
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;SRP&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href=&#34;http://www.objectmentor.com/resources/articles/srp.pdf&#34;&gt;The Single Responsibility Principle &lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;The Single Responsibility Principle&lt;/td&gt;
 &lt;td&gt;单一责任原则&lt;/td&gt;
 &lt;/tr&gt;
 
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;OCP&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href=&#34;http://www.objectmentor.com/resources/articles/ocp.pdf&#34;&gt;The Open Closed Principle&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;The Open Closed Principle&lt;/td&gt;
 &lt;td&gt;开放封闭原则&lt;/td&gt;
 &lt;/tr&gt;
 
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;LSP&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href=&#34;http://www.objectmentor.com/resources/articles/lsp.pdf&#34;&gt;The Liskov Substitution Principle&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;The Liskov Substitution Principle&lt;/td&gt;
 &lt;td&gt;里氏替换原则&lt;/td&gt;
 &lt;/tr&gt;
 
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;DIP&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href=&#34;http://www.objectmentor.com/resources/articles/dip.pdf&#34;&gt;The Dependency Inversion Principle&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;The Dependency Inversion Principle&lt;/td&gt;
 &lt;td&gt;依赖倒置原则&lt;/td&gt;
 &lt;/tr&gt;
 
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;ISP&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href=&#34;http://www.objectmentor.com/resources/articles/isp.pdf&#34;&gt;The Interface Segregation Principle&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;The Interface Segregation Principle&lt;/td&gt;
 &lt;td&gt;接口分离原则&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
