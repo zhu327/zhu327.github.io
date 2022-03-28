@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2020. All rights reserved.</p>
+    <p>&copy; 2022. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,35 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/16/python%E5%8D%8F%E7%A8%8B/">Python协程</a></h1>
+        <span class="post-date">Jun 16 2016</span>
+        <blockquote>
+<p><a href="https://zh.wikipedia.org/zh-cn/%E5%8D%8F%E7%A8%8B">https://zh.wikipedia.org/zh-cn/%E5%8D%8F%E7%A8%8B</a></p>
+</blockquote>
+
+<p>协程可以理解为线程中的微线程，通过手动挂起函数的执行状态，在合适的时机再次激活继续运行，而不需要上下文切换。所以在python中使用协程会比线程性能更好。</p>
+
+<h3 id="tornado协程">Tornado协程</h3>
+
+<blockquote>
+<p><a href="http://blog.csdn.net/wyx819/article/details/45420017">http://blog.csdn.net/wyx819/article/details/45420017</a></p>
+</blockquote>
+
+<p>上面有大牛分析的Tornado的线程实现，依赖与Tornado的IOLoop，所以不能单独拿出来使用。有几个需要理解的概念:</p>
+
+<ol>
+<li>Future对象
+用来保存异步获取到的结果，并在set_reslut的时候调用callback方法，把对应的callback方法放到ioloop的callback列表中等待下一次ioloop循环再执行</li>
+<li>装饰器coroutine
+在这个装饰器中实现了协程的调度，通过不断的调用next函数来不断获取Future对象，然后每次拿到Future对象在add_callback到ioloop上，等到Future被set_reslut后再次next，直到生成器中抛出Return的异常。</li>
+</ol>
+
+<p>具体的实现过程不是很好描述，调度过程比较复杂，还是看看参考文章大牛的解析吧。</p>
+
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/14/tornado%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-ioloop/">Tornado代码阅读笔记 IOLoop</a></h1>
@@ -184,16 +213,6 @@ elasticstack==0.4.1
 </ol>
 
 <p>所以推荐在调用save方法的时候传<code>update_fields</code>参数，但是这样就要求我们必须对每次save的fields都在代码中记下来，不是很方便，所以开发一个通用的专门用来处理update_fields参数的Mixin类来解决这个问题。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/15/tastypie%E5%AE%9E%E7%8E%B0accesstoken%E8%AE%A4%E8%AF%81/">Tastypie实现accesstoken认证</a></h1>
-        <span class="post-date">May 15 2016</span>
-        <p>Tastypie提供了几种基本的认证方式比如SessionAuthentication，Django实现的web站点一般都是基于cookie-session的认证方式，在Django中使用中间件的方式处理cookie与session，以及用户认证。使用起来是很方便的。</p>
-
-<p>但是在api中就不能继续使用cookie了，我们会使用accesstoken的方式来实现认证。之前同事使用redis实现了一版accesstoken的认证，但是由于考虑不周全，导致在使用过程中出现了很多bug，然后为了解决bug又写了很多恶心的兼容代码，所以抽空直接使用熟悉的session重构了认证过程。</p>
 
 <p></p>
     </div>

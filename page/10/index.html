@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2020. All rights reserved.</p>
+    <p>&copy; 2022. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,22 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/03/14/restful-api-%E7%90%86%E8%A7%A3/">RESTful API 理解</a></h1>
+        <span class="post-date">Mar 14 2015</span>
+        <h3 id="参考">参考</h3>
+
+<p><a href="http://www.ruanyifeng.com/blog/2011/09/restful.html">理解RESTful架构</a><br />
+<a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html">RESTful API 设计指南</a><br />
+<a href="http://get.jobdeer.com/343.get">来自HeroKu的HTTP API 设计指南(中文版)</a></p>
+
+<h3 id="概念">概念</h3>
+
+<p>REST == Representational State Transfer，意思是表现层状态转化，我们来分解这个概念。<br />
+从字面以上理解这是一个操作的过程，实际上它省略了主语资源(Resources)，合起来就是资源的表现层状态转化。
+</p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/03/11/sae%E4%B8%8A%E7%94%A8kvdb%E5%81%9Adjango%E7%BC%93%E5%AD%98/">SAE上用kvdb做Django缓存</a></h1>
@@ -133,20 +149,6 @@
 
 <span class="c1"># setting中设置</span>
 <span class="n">AUTH_USER_MODEL</span> <span class="o">=</span> <span class="s1">&#39;forum.ForumUser&#39;</span> <span class="c1"># 指定用户对象使用的类</span></code></pre></div>
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/31/cookie%E4%B8%8Esession/">Cookie与Session</a></h1>
-        <span class="post-date">Jan 31 2015</span>
-        <p>前面学习了Cookie，知道Cookie是在浏览器端保存的用户状态，但是对Session一直没什么概念。学习Django的过程中直接使用了Django的认证系统，虽然用到了Session但是没有接触到Session的直接使用，然后在学习F2E.im的代码中，发现Tornado自带的secret cookie其实也能加密传递cookie，通过cookie传递一个userid到用户浏览器，认证的时候使用userid到数据库中查找用户信息，也能很好的认证用户。那为什么要使用session呢。</p>
-
-<p>Tonado中认证示例:</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 重写tornado.web.RequestHandler中get_current_user方法用于认证</span>
-<span class="k">def</span> <span class="nf">get_current_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="n">user_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_secure_cookie</span><span class="p">(</span><span class="s2">&#34;user&#34;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">user_id</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_model</span><span class="o">.</span><span class="n">get_user_by_uid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">user_id</span><span class="p">))</span> <span class="c1"># 从数据库中取用户信息</span></code></pre></div>
 <p></p>
     </div>
   

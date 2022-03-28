@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2020. All rights reserved.</p>
+    <p>&copy; 2022. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,22 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/24/memcached-%E4%BC%98%E5%8C%96-mysql-%E6%9F%A5%E8%AF%A2/">Memcached 优化 MySQL 查询</a></h1>
+        <span class="post-date">Sep 24 2014</span>
+        <h3 id="简介">简介</h3>
+
+<p><a href="http://bozpy.sinaapp.com">跬步</a>上线后，SAE后台显示云豆的消耗http与MySQL查询各占一半，正好SAE还支持Memcached，本着不用白不用的原则，为<a href="https://github.com/zhu327/blog/blob/memcached/www/transwarp/db.py">db.py</a>加上了Memcached的缓存支持。</p>
+
+<p>网站在并发不大的情况下，MySQL查询时间还感受不出来，但是如果并发大的化，MySQL会显著的降低响应速度，所以Memcached应运而生。</p>
+
+<p>Memcached是一个分布式的内存key-value存储系统，由于数据保存在内存中所以查询速度非常快，一般作为其它数据的中间缓存层来使用。</p>
+
+<p>对于SQL查询先以SQL语句为key查询Memcached，如果查到直接返回，如果没有再去查询MySQL，并把结果缓存到Memcached，下次再次查询时速度显著提升，因为Memcached的数据是保存在内存中的。</p>
+
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/24/jinja2-%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E/">Jinja2 模版引擎</a></h1>
@@ -149,22 +165,6 @@
 
 <p>WSGI server，Gunicorn(python实现)，uWSGI(C实现)，这些服务器程序都实现了标准的WSGI接口，任意web app都可以使用不同的server。
 </p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/17/urllib2-%E4%BD%BF%E7%94%A8/">urllib2 使用</a></h1>
-        <span class="post-date">Sep 17 2014</span>
-        <h3 id="基础用法">基础用法</h3>
-
-<p><code>urllib2</code>是用来发送http请求，获取响应数据的库。基础用法:</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">urllib2</span>
-
-<span class="c1"># urlopen返回类文件对象，可选参数data与请求头header</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s1">&#39;http://bozpy.sinaapp.com&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="n">header</span><span class="p">]])</span>
-<span class="n">body</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># 类文件对象有与文件对象类似的方法，read，readline等</span>
-<span class="n">heade</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">info</span><span class="p">()</span> <span class="c1"># 获取响应的头，字典</span>
-<span class="n">url</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">geturl</span><span class="p">()</span> <span class="c1"># 获取响应的真实url，如果有重定向，url会改变</span></code></pre></div>
-<p></p>
     </div>
   
 </div>

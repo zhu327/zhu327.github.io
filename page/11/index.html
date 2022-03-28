@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2020. All rights reserved.</p>
+    <p>&copy; 2022. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,20 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/31/cookie%E4%B8%8Esession/">Cookie与Session</a></h1>
+        <span class="post-date">Jan 31 2015</span>
+        <p>前面学习了Cookie，知道Cookie是在浏览器端保存的用户状态，但是对Session一直没什么概念。学习Django的过程中直接使用了Django的认证系统，虽然用到了Session但是没有接触到Session的直接使用，然后在学习F2E.im的代码中，发现Tornado自带的secret cookie其实也能加密传递cookie，通过cookie传递一个userid到用户浏览器，认证的时候使用userid到数据库中查找用户信息，也能很好的认证用户。那为什么要使用session呢。</p>
+
+<p>Tonado中认证示例:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 重写tornado.web.RequestHandler中get_current_user方法用于认证</span>
+<span class="k">def</span> <span class="nf">get_current_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_secure_cookie</span><span class="p">(</span><span class="s2">&#34;user&#34;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user_id</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_model</span><span class="o">.</span><span class="n">get_user_by_uid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">user_id</span><span class="p">))</span> <span class="c1"># 从数据库中取用户信息</span></code></pre></div>
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/27/python%E8%B5%84%E6%BA%90%E5%AD%98%E6%A1%A3/">Python资源存档</a></h1>
@@ -140,22 +154,6 @@
     <span class="n">autoescape</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;jinja2.ext.autoescape&#39;</span><span class="p">]),</span>
 <span class="p">)</span></code></pre></div>
 <p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/02/%E4%BD%BF%E7%94%A8lxml%E5%A4%84%E7%90%86dom/">使用lxml处理DOM</a></h1>
-        <span class="post-date">Jan 2 2015</span>
-        <h3 id="参考">参考</h3>
-
-<ul>
-<li><a href="http://www.cnblogs.com/bluescorpio/archive/2013/06/09/3127957.html">lxml.etree 教程</a></li>
-<li><a href="http://www.cnblogs.com/ifantastic/tag/XPath/">[XPath] XPath 与 lxml</a></li>
-<li><a href="http://www.ibm.com/developerworks/cn/xml/x-hiperfparse/">使用由 Python 编写的 lxml 实现高性能 XML 解析</a></li>
-</ul>
-
-<h3 id="前言">前言</h3>
-
-<p><a href="https://github.com/zhu327/rss">RSS Factory</a>本来使用BeautifulSoup来解析xml，html。但是发现还有更好的第三份库lxml性能更好，使用更方便。</p>
     </div>
   
 </div>
