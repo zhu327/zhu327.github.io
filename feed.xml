@@ -7,7 +7,7 @@
     <language>zh-cn</language>
     
     
-    <updated>Mon, 28 Mar 2022 17:38:04 &#43;0800</updated>
+    <updated>Wed, 30 Mar 2022 17:38:04 &#43;0800</updated>
     
     <item>
       <title>About</title>
@@ -28,6 +28,227 @@
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>编程语言漫谈</title>
+      <link>https://zhu327.github.io/2022/03/30/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%BC%AB%E8%B0%88/</link>
+      <pubDate>Wed, 30 Mar 2022 17:38:04 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2022/03/30/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%BC%AB%E8%B0%88/</guid>
+      <description>&lt;p&gt;半年前还是2021年春节的时候, 在家休假的我, 在B站上发现了一门叫&lt;a href=&#34;https://www.bilibili.com/video/BV1hp4y1k7SV&#34;&gt;RUST语言的课程&lt;/a&gt;, 学习的过程中, 发现RUST语言为了绝对的安全性, 在语法本身上做了很多的妥协, 所以想着等我学完这门课, 再基于自己以往编程语言的学习经历, 写一篇&amp;lt;如何学习一门新的编程语言&amp;gt;的文章. 但是时过境迁, 我并没有学完这门RUST课, 所以&amp;lt;如何学习一门新的编程语言&amp;gt;也就无疾而终了. 回过头来再思考下以往我学习的那些编程语言, 就有了这篇文章&amp;lt;编程语言漫谈&amp;gt;. 我希望以一种比较轻松的散文的形式来阐述我过完学习的一些经验与思考.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://user-images.githubusercontent.com/873883/160806614-07709f0a-add6-464b-a76a-bbaffdeab727.jpg&#34; alt=&#34;微信图片_20210904113900&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;1-程序是如何运行的&#34;&gt;1. 程序是如何运行的&lt;/h3&gt;
+
+&lt;p&gt;关于程序是如何运行的是一个很大的话题, 我个人认为最好的教材是这本&lt;a href=&#34;https://book.douban.com/subject/26912767/&#34;&gt;深入理解计算机系统&lt;/a&gt;, 值得每个程序员深入的阅读, 这里我就不再对这本书的内容做详细的总结, 只提2个点, CPU与内存.&lt;/p&gt;
+
+&lt;h4 id=&#34;cpu&#34;&gt;CPU&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://pic2.zhimg.com/v2-8b5b6ff186ebb7deef6905aa71c48261_r.jpg&#34; alt=&#34;preview&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;说到CPU就绕不过冯诺依曼结构, 在这个体系中, CPU就是一个非常傻的元器件, 它只做3件事:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;获取输入指令&lt;/li&gt;
+&lt;li&gt;执行指令&lt;/li&gt;
+&lt;li&gt;输出结果&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;然后循环做以上三件事, 只要不断电, 永不停歇.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://static001.geekbang.org/infoq/f5/f51fe88175b096a4cb3cbf6bd233fac3.png&#34; alt=&#34;img&#34; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;1．取指令阶段&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;取指令（Instruction Fetch，IF）阶段是将一条指令从主存中取到指令寄存器的过程。&lt;/p&gt;
+
+&lt;p&gt;程序计数器PC中的数值，用来指示当前指令在主存中的位置。当一条指令被取出后，PC中的数值将根据指令字长度而自动递增。若为单字长指令，则(PC)+1PC，若为双字长指令，则(PC)+2PC，依此类推。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2．指令译码阶段&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;取出指令后，计算机立即进入指令译码（Instruction Decode，ID）阶段。&lt;/p&gt;
+
+&lt;p&gt;在指令译码阶段，指令译码器按照预定的指令格式，对取回的指令进行拆分和解释，识别和区分出不同的指令类别及各种获取操作数的方法。&lt;/p&gt;
+
+&lt;p&gt;在组合逻辑控制的计算机中，指令译码器对不同的指令操作码产生不同的控制电位，以形成不同的微操作序列；在微程序控制的计算机中，指令译码器用指令操作码找到执行该指令的微程序的入口，并从此入口开始执行。&lt;/p&gt;
+
+&lt;p&gt;在传统的设计里，CPU中负责指令译码的部分是无法改变的硬件。不过，在众多运用微程序控制技术的新型CPU中，微程序有时是可重写的，可以通过修改成品CPU来改变CPU的译码方式。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3．执行指令阶段&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在取指令和指令译码阶段之后，接着进入执行指令（Execute，EX）阶段。&lt;/p&gt;
+
+&lt;p&gt;此阶段的任务是完成指令所规定的各种操作，具体实现指令的功能。为此，CPU的不同部分被连接起来，以执行所需的操作。&lt;/p&gt;
+
+&lt;p&gt;例如，如果要求完成一个加法运算，算术逻辑单元（ALU）将被连接到一组输入和一组输出，输入端提供需要相加的数值，而输出端将含有最后的运算结果。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;4．访存取数阶段&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;根据指令需要，有可能要访问主存，读取操作数，这样就进入了访存取数（Memory，MEM）阶段。&lt;/p&gt;
+
+&lt;p&gt;此阶段的任务是：根据指令地址码，得到操作数在主存中的地址，并从主存中读取该操作数用于运算。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;5．结果写回阶段&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;作为最后一个阶段，结果写回（Writeback，WB）阶段把执行指令阶段的运行结果数据“写回”到某种存储形式。结果数据经常被写到CPU的内部寄存器中，以便被后续的指令快速地存取。在有些情况下，结果数据也可被写入相对较慢、但较廉价且容量较大的主存。许多指令还会改变程序状态字寄存器中标志位的状态，这些标志位标识着不同的操作结果，可被用来影响程序的动作。&lt;/p&gt;
+
+&lt;p&gt;在指令执行完毕、结果数据写回之后，若无意外事件（如结果溢出等）发生，计算机就接着从程序计数器PC中取得下一条指令地址，开始新一轮的循环，下一个指令周期将正常地顺序取出下一条指令。&lt;/p&gt;
+
+&lt;p&gt;许多新型CPU可以同时取出、译码和执行多条指令，体现出并行处理的特性。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;以上内容引用至&lt;a href=&#34;[CPU的工作过程 (intel.com)](https://software.intel.com/content/www/cn/zh/develop/articles/book-processor-architecture_cpu_work_process.html)&#34;&gt;CPU的工作过程&lt;/a&gt;, 虽然有5个阶段, 但是仔细看现代CPU还是脱离不了冯诺依曼体系结构, 仍然是在循环着取指令, 执行指令, 输出结果的过程.&lt;/p&gt;
+
+&lt;h4 id=&#34;内存&#34;&gt;内存&lt;/h4&gt;
+
+&lt;p&gt;从以上CPU结构, 我们可以看出无论是取指令还是输出结果, CPU都依赖于总线与外部存储, 也就是内存做交互. 那么程序是如何使用内存的呢, 这里以Linux的程序内存布局为例来说明.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://images0.cnblogs.com/blog/350213/201501/200639136566196.png&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在Linux系统中, 每个程序在运行时, 都会由操作系统将自己的可执行二进制文件载入到内存中, 通过虚拟内存地址空间, 每个程序看到的自己的内存高地址与低地址都是一样的, 其中用于运行函数本地变量的地址空间叫栈, 而需要程序自行管理内存的空间叫堆. 每个函数运行时都会在栈上创建一块栈帧, 函数返回时pop出栈帧, 空间被回收. 在堆上的内存分配则需要手动管理, 程序自行申请空间, 回收空间.&lt;/p&gt;
+
+&lt;h4 id=&#34;汇编&#34;&gt;汇编&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;汇编语言&lt;/strong&gt;（英语：&lt;strong&gt;assembly language&lt;/strong&gt;）[&lt;a href=&#34;https://zh.wikipedia.org/wiki/汇编语言#cite_note-1&#34;&gt;注 1]&lt;/a&gt;[&lt;a href=&#34;https://zh.wikipedia.org/wiki/汇编语言#cite_note-2&#34;&gt;1]&lt;/a&gt;是任何一种用于&lt;a href=&#34;https://zh.wikipedia.org/wiki/电子计算机&#34;&gt;电子计算机&lt;/a&gt;、&lt;a href=&#34;https://zh.wikipedia.org/wiki/微处理器&#34;&gt;微处理器&lt;/a&gt;、&lt;a href=&#34;https://zh.wikipedia.org/wiki/微控制器&#34;&gt;微控制器&lt;/a&gt;，或其他可编程器件的&lt;a href=&#34;https://zh.wikipedia.org/wiki/低级语言&#34;&gt;低级语言&lt;/a&gt;。在不同的设备中，汇编语言对应着不同的&lt;a href=&#34;https://zh.wikipedia.org/wiki/机器语言&#34;&gt;机器语言&lt;/a&gt;&lt;a href=&#34;https://zh.wikipedia.org/wiki/指令集架構&#34;&gt;指令集&lt;/a&gt;。一种汇编语言专用于某种&lt;a href=&#34;https://zh.wikipedia.org/wiki/计算机系统结构&#34;&gt;计算机系统结构&lt;/a&gt;，而不像许多&lt;a href=&#34;https://zh.wikipedia.org/wiki/高级语言&#34;&gt;高级语言&lt;/a&gt;，可以在不同系统平台之间移植。&lt;/p&gt;
+
+&lt;p&gt;使用汇编语言编写的源代码，然后通过相应的汇编程序将它们转换成可执行的机器代码。这一过程被称为&lt;strong&gt;汇编过程&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;汇编语言使用助记符（Mnemonics）来代替和表示特定低级机器语言的操作。特定的汇编目标指令集可能会包括特定的操作数。许多汇编程序可以识别代表地址和常量的标签（Label）和符号（Symbols），这样就可以用字符来代表操作数而无需采取&lt;a href=&#34;https://zh.wikipedia.org/wiki/寫死&#34;&gt;写死&lt;/a&gt;的方式。普遍地说，每一种特定的汇编语言和其特定的机器语言指令集是一一对应的。&lt;/p&gt;
+
+&lt;p&gt;许多汇编程序为程序开发、汇编控制、辅助&lt;a href=&#34;https://zh.wikipedia.org/wiki/调试工具&#34;&gt;调试&lt;/a&gt;提供了额外的支持机制。有的汇编语言编写工具经常会提供&lt;a href=&#34;https://zh.wikipedia.org/wiki/巨集&#34;&gt;宏&lt;/a&gt;，它们也被称为宏汇编器。&lt;/p&gt;
+
+&lt;p&gt;现在汇编语言已不像其他大多数的程序设计语言一样被广泛用于&lt;a href=&#34;https://zh.wikipedia.org/wiki/程序設計&#34;&gt;程序设计&lt;/a&gt;，在今天的实际应用中，它通常被应用在底层硬件操作和高要求的程序优化的场合。&lt;a href=&#34;https://zh.wikipedia.org/wiki/驅動程序&#34;&gt;驱动程序&lt;/a&gt;、嵌入式&lt;a href=&#34;https://zh.wikipedia.org/wiki/操作系统&#34;&gt;操作系统&lt;/a&gt;和实时运行程序中都会需要汇编语言。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;以上是维基百科对于汇编的解释, 简单的理解汇编就是对于特定的硬件的指令的一种符号表示, 每个汇编指令与二进制的CPU指令机器码是一一对应的, 是为了避免让程序员直接写二进制程序被发明出来的一种便捷方式. 从汇编语言转换成可执行的二进制文件需要执行汇编过程.&lt;/p&gt;
+
+&lt;p&gt;直接写汇编也不方便, 需要程序员了解整个CPU的结构, 了解所有CPU提供的指令, 了解每个寄存器的作用, 了解内存中每个地址该存什么, 而程序员通常并不想详细了解这些. 那怎么办呢:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;遇到问题不会解决的时候，多加一层就可以解决&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这是计算机领域的一条金句, 为了解决汇编的上述问题, 通过抽象一门新的编程语言, 向程序员屏蔽掉以上细节, 可以大大的提高程序员的生产效率, 下面将介绍C语言来如何解决汇编带来的问题.&lt;/p&gt;
+
+&lt;h3 id=&#34;2-c语言&#34;&gt;2. C语言&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy85c053c1hjTjY4cjlIUkc4RUR5cjRxaWJXdVB1ZVROYURJd0tmaWJVdFBKeVQxV1FQWnpyWXVXMjJERWlhdDZOdkFDdWxvN1VUM3MzOHM0b1pORVZ0MTBydy82NDA?x-oss-process=image/format,png&#34; alt=&#34;C语言编译&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;C语言是计算机世界的基石级语言, 它通过抽象的函数, 循环, 分支语句使得程序员不需要了解计算中的底层实现细节, 向程序员屏蔽了不同计算机指令架构的差异, 通过不同的编译器实现, 只需要写一份代码就可以在多个不同指令架构的机器上执行相同的逻辑.&lt;/p&gt;
+
+&lt;p&gt;在Google有很多关于 Jeff Dean的笑话, 其中有一个关于编译器的:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Jeff Dean每次写完代码, 都会编译一遍, 不是为了检查自己写的程序是否正确, 而是检查编译器是否有BUG&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;C语言并不是一门完美的语言, 写C语言的程序员往往关注程序的性能, 这就需要程序员了解性能的瓶颈在哪里, 往往又需要了解到程序的每一条指令的执行细节, 这就造成了一个矛盾的点, C语言本身是想向程序员屏蔽计算机的实现细节, 但是想要用C语言写好程序又需要程序员充分了解C语言编译生成的每条汇编的细节.&lt;/p&gt;
+
+&lt;p&gt;同时C语言使用手动管理内存的方式, 或多或少会制造出各种内存的安全性问题, 比如空指针, 野指针等等问题, 对于程序员来说, 应付这些问题并不轻松.&lt;/p&gt;
+
+&lt;p&gt;随着计算机硬件性能的大幅提升, 使得程序员可以不再那么多的关注程序本身的运行性能, 更多的关注程序的逻辑实现, 互联网的兴起, 又导致IO密集的应用占比大幅提高, 为了解放生产力, 需要更高层次的语言, Python就是其中的一种.&lt;/p&gt;
+
+&lt;h3 id=&#34;3-python语言&#34;&gt;3. Python语言&lt;/h3&gt;
+
+&lt;p&gt;问: &lt;strong&gt;Python语言是解释型语言还是编译型语言?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Python语言既是解释型语言又是编译型语言, 下面通过解释Python的运行过程来进一步说明&lt;/p&gt;
+
+&lt;h4 id=&#34;执行过程&#34;&gt;执行过程&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://pic3.zhimg.com/v2-7624126b628c655fad226c1d2cc57a0e_r.jpg&#34; alt=&#34;Python执行过程&#34; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;启动编译&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Python在启动时首先加载所有的&lt;code&gt;.py&lt;/code&gt;文件并编译成字节码&lt;code&gt;.pyc&lt;/code&gt;文件, &lt;code&gt;pyc&lt;/code&gt;文件保存的Python代码编译出来的PyCode对象, 所谓的字节码到底是什么东西呢, 其实是一系列的指令, 这些指令不同于机器码的指令集, 它是Python自己定义指令集, 运行在Python VM上&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;虚拟机翻译&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Python虚拟机就是用来执行Python虚拟指令的虚拟机, VM与实体CPU类似, 通过一个大循环, 不停的执行PyCode中的指令, 与实体CPU不同的是, 它是一个中间层, 它会把Python的指令翻译成对应的C代码的调用, 最终通过CPython解释器来完成Python指令到CPU指令的翻译&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;机器码执行&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;我们所写的Python代码最终还是会被CPython解释成机器码到CPU上执行, 这里可以思考一下, 增加了CPython这一层后, 带来的好处, 以及坏处是什么?&lt;/p&gt;
+
+&lt;p&gt;好处很明显, Python相对于C语言大大降低了编程的门槛, 实现同样的功能, Python代码量会比C代码少的多. 从上面的执行过程可以看出不同于C语言的可执行二进制直接加载到机器的虚拟内存空间中, Python代码需要启动时的编译过程, 执行时的VM翻译过程, 最终转换成机器码执行, 无论是VM的翻译过程, 还是最终执行机器码, 相对于C实现的机器指令的数量都会大大增加, 这个增加是千百倍的增加, 带来的差异就是同样的功能, Python的实现会比C实现慢得多.&lt;/p&gt;
+
+&lt;h4 id=&#34;自动内存管理-gc&#34;&gt;自动内存管理(GC)&lt;/h4&gt;
+
+&lt;p&gt;上面说完了Python的代码执行, 接下来进入内存管理, 首先问一个问题, &lt;strong&gt;Python对象是分配在堆还是栈上的?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;在 Python 中，内存管理涉及到一个包含所有 Python 对象和数据结构的私有堆（heap）。这个私有堆的管理由内部的 &lt;em&gt;Python 内存管理器（Python memory manager）&lt;/em&gt; 保证。Python 内存管理器有不同的组件来处理各种动态存储管理方面的问题，如共享、分割、预分配或缓存。&lt;/p&gt;
+
+&lt;p&gt;在最底层，一个原始内存分配器通过与操作系统的内存管理器交互，确保私有堆中有足够的空间来存储所有与 Python 相关的数据。在原始内存分配器的基础上，几个对象特定的分配器在同一堆上运行，并根据每种对象类型的特点实现不同的内存管理策略。例如，整数对象在堆内的管理方式不同于字符串、元组或字典，因为整数需要不同的存储需求和速度与空间的权衡。因此，Python 内存管理器将一些工作分配给对象特定分配器，但确保后者在私有堆的范围内运行。&lt;/p&gt;
+
+&lt;p&gt;Python 堆内存的管理是由解释器来执行，用户对它没有控制权，即使他们经常操作指向堆内内存块的对象指针，理解这一点十分重要。Python 对象和其他内部缓冲区的堆空间分配是由 Python 内存管理器按需通过本文档中列出的 Python/C API 函数进行的。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h5 id=&#34;垃圾回收&#34;&gt;垃圾回收&lt;/h5&gt;
+
+&lt;ol&gt;
+&lt;li&gt;引用计数&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;最基本的垃圾回收方式, PyObject对象每增加一个引用, 引用计数+1, 减少一个引用, 引用计数-1, 引用计数更新为0时, 等待被回收, 但是循环引用的对象, 计数永远不会清零, 这就需要标记清楚来辅助处理&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;标记清除&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://img2020.cnblogs.com/blog/1881426/202005/1881426-20200504131641651-297345687.png&#34; alt=&#34;标记i清楚&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Python解释器隔一段时间会进行一次全对象的扫描, 对于隔离于ROOT节点的孤立引用, 执行回收, 没有被ROOT节点引用的孤立节点, 即使引用计数大于0, 也会被回收.&lt;/p&gt;
+
+&lt;p&gt;但是每次执行扫描, 都会产生STW, 影响程序的执行, 所以就有了内存分代&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;分代回收&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Python解释器将将对象分为三代:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;0代表幼年对象&lt;/li&gt;
+&lt;li&gt;1代表青年对象&lt;/li&gt;
+&lt;li&gt;2代表老年对象
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;对象所在分代级别越低, GC回收的频率越低, 低级别的对象如果一直没有回收, 会被转移到高级别的代中, 这样就区分了不同活跃度的对象, 提高了GC回收的效率&lt;/p&gt;
+
+&lt;h4 id=&#34;小结&#34;&gt;小结&lt;/h4&gt;
+
+&lt;p&gt;从以上Python执行过程与内存管理中可以看出, Python并不适用于高性能需求的场景, 而GC带来延时也使Python不适用于实时性要求高的应用, 这些场景是C语言的主战场. 但是Python由于简单的语法, 高效的编码方式, 大大提高了程序员的生产效率, 在互联网时代, 要求快速实现, 快速实验的前提下, Python也越来越流行.&lt;/p&gt;
+
+&lt;p&gt;那么有没有一种性能够用, 又兼具开发效率的语言呢, Golang就提供了这样一种折中的选择.&lt;/p&gt;
+
+&lt;h3 id=&#34;4-golang&#34;&gt;4. Golang&lt;/h3&gt;
+
+&lt;p&gt;Golang是一门编译型的语言, 同C语言一样它也是通过编译器把代码直接编译为二进制的机器码来保证执行性能, 与C语言不同的时, 它在编译时会在二进制中插入一个Golang的Runtime, Runtime帮助做用户态的Goroutine的调度, 做自动内存管理. 可以说Golang继承了C语言的精华, 并对C语言程序容易出错的点, 提出了自己的改进方案.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://img.draveness.me/2020-02-02-15805792666151-golang-gmp.png&#34; alt=&#34;Golang调度&#34; /&gt;
+&lt;img src=&#34;https://qiankunli.github.io/public/upload/go/go_memory_layout.jpeg&#34; alt=&#34;Golang内存分配&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Golang语言也不是完美的, 它的性能还是比不上极致优化的C语言, GC带来的STW也导致不能应用于实时性领域. 但是在云原生时代, 它的原生支持并发, 优秀的自动内存管理, 在开发效率与性能之间的平衡性, 给程序员提供了一个新的选择.&lt;/p&gt;
+
+&lt;h3 id=&#34;5-总结&#34;&gt;5. 总结&lt;/h3&gt;
+
+&lt;p&gt;笔者主要使用的语言是Python与Golang, 对Python的运用更多一些, 原因是Python在Web后端开发的应用会更方便一些, 能够快速实现功能, 解决产品需求. Golang更多应用于一些对性能/并发要求比较高的场景, 当前我们会使用Golang构建的鉴权中间承载整个部门的健全需求.&lt;/p&gt;
+
+&lt;p&gt;没有银弹!!! 没有完美的技术, 没有完美的方案, 只有在某个时间点, 某个环境下合适的技术或方案, 如何在这些技术与方案中做抉择, 平衡各方需求, 是对程序员最大的挑战.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1683,288 +1904,6 @@
 
 &lt;blockquote&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/douban/greenify&#34;&gt;https://github.com/douban/greenify&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;</description>
-    </item>
-    
-    <item>
-      <title>在Django中使用zerorpc</title>
-      <link>https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/</link>
-      <pubDate>Fri, 31 Mar 2017 15:59:13 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/</guid>
-      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
-
-&lt;p&gt;随着系统架构从集中式单点服务器到分布式微服务方向的迁移,RPC是一个不可回避的话题.如何在系统中引入对开发者友好,性能可靠的RPC服务是一个值得深思的问题.&lt;/p&gt;
-
-&lt;p&gt;在调研了Thrift,gRPC,zerorpc等方案后,基于以下2点最后选择了zerorpc:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Thrift,gRPC学习成本高,开发者需要重新定义返回结构增加了工作量&lt;/li&gt;
-&lt;li&gt;zerorpc完美契合Python,能快速开发,并且支持Node.js,适用于当前技术栈&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;问题&#34;&gt;问题&lt;/h3&gt;
-
-&lt;p&gt;虽然zerorpc可以直接嵌入当前系统框架中,但是还是有一些问题需要去考虑解决&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;rpc 接口如何定义&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;rpc 服务如何启动&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;高并发情况下客户端的可靠性&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;服务端&#34;&gt;服务端&lt;/h3&gt;
-
-&lt;p&gt;在当前的系统中大量使用Celery,djang-celery定义Task的方式是在每个install app中定义&lt;code&gt;tasks.py&lt;/code&gt;文件,然后通过&lt;code&gt;@task&lt;/code&gt;装饰器来生成Task.所以这里为了方便定义rpc interface设计一套类似于Celery的规范.需要输出rpc interface的app下面创建&lt;code&gt;rpcs.py&lt;/code&gt;文件&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# rpcs.py&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;# coding: utf-8&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;eebo.core.utils.zrpc&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;rpc&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;.models&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Ticket&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;.serializers&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TicketSerializer&lt;/span&gt;
-
-
-&lt;span class=&#34;nd&#34;&gt;@rpc.register&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;get_ticket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;t&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Ticket&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;objects&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;first&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TicketSerializer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;
-
-
-&lt;span class=&#34;nd&#34;&gt;@rpc.register&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;ticket_list&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;stream&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;get_tickets&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;qs&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Ticket&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;objects&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()[:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TicketSerializer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;qs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;many&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;iter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;code&gt;rpc.register&lt;/code&gt;装饰器用来注册函数到rpc服务上,可选参数:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;name: 客户调用方法名称, 没有写的情况下就是func name如get_ticket&lt;/li&gt;
-&lt;li&gt;stream: 默认False, 如果为True, 则使用zerorpc的流式响应传输, 数据量比较大的情况时使用, 返回可迭代对象&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;我们来看看&lt;code&gt;eebo.core.utils.zrpc&lt;/code&gt;如何来实现这个注册过程:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# coding: utf-8&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;zerorpc&lt;/span&gt;
-
-
-&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RPC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;nd&#34;&gt;@classmethod&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;register&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;cls&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;stream&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;_wrapper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;func&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-            &lt;span class=&#34;nb&#34;&gt;setattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;cls&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;or&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;func&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;vm&#34;&gt;__name__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;zerorpc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;stream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;lambda&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;func&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;stream&lt;/span&gt;
-                    &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;staticmethod&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;func&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;func&lt;/span&gt;
-
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_wrapper&lt;/span&gt;
-
-
-&lt;span class=&#34;n&#34;&gt;rpc&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;RPC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;通过一个类方法来往类上面绑定方法,需要注意的是&lt;code&gt;name&lt;/code&gt;的定义必须是全局唯一的.&lt;/p&gt;
-
-&lt;p&gt;现在我们有了定义rpc interface的方法,下面来看看如何启动rpc server.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# runrpc.py&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;# coding: utf-8&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;re&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;sys&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;imp&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;_imp&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;importlib&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;django.conf&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;django.core.management.base&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;BaseCommand&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CommandError&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;eebo.core.utils.zrpc&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;rpc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ServerExecMiddleware&lt;/span&gt;
-
-&lt;span class=&#34;n&#34;&gt;naiveip_re&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;re&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;compile&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;sa&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;^(?:
-&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;(?P&amp;lt;addr&amp;gt;
-&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;    (?P&amp;lt;ipv4&amp;gt;\d{1,3}(?:\.\d{1,3}){3}) |         # IPv4 address
-&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;    (?P&amp;lt;ipv6&amp;gt;\[[a-fA-F0-9:]+\]) |               # IPv6 address
-&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;    (?P&amp;lt;fqdn&amp;gt;[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*) # FQDN
-&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;):)?(?P&amp;lt;port&amp;gt;\d+)$&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;re&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;X&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-
-&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Command&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;BaseCommand&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;help&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Starts a lightweight RPC server for development.&amp;#34;&lt;/span&gt;
-
-    &lt;span class=&#34;n&#34;&gt;default_addr&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;127.0.0.1&amp;#39;&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;default_port&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;4242&amp;#39;&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;add_arguments&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;parser&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;parser&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;add_argument&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;addrport&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-                            &lt;span class=&#34;n&#34;&gt;nargs&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;?&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-                            &lt;span class=&#34;n&#34;&gt;help&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;Optional port number, or ipaddr:port&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;handle&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;options&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;use_ipv6&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;options&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;addrport&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]:&lt;/span&gt;
-            &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;addr&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;
-            &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;default_port&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;m&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;re&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;match&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;naiveip_re&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;options&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;addrport&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;m&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;raise&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CommandError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;%s&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#34; is not a valid port number &amp;#39;&lt;/span&gt;
-                                   &lt;span class=&#34;s1&#34;&gt;&amp;#39;or address:port pair.&amp;#39;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;
-                                   &lt;span class=&#34;n&#34;&gt;options&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;addrport&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
-            &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;addr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_ipv4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_ipv6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_fqdn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groups&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isdigit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;raise&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CommandError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;%r&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt; is not a valid port number.&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;
-                                   &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;addr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_ipv6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-                    &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;addr&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;addr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-                    &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;use_ipv6&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;
-                    &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_raw_ipv6&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;elif&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;use_ipv6&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_fqdn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-                    &lt;span class=&#34;k&#34;&gt;raise&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CommandError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;%s&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#34; is not a valid IPv6 address.&amp;#39;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;
-                                       &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;addr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;addr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-            &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;addr&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;default_addr_ipv6&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;use_ipv6&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;default_addr&lt;/span&gt;
-            &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_raw_ipv6&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;use_ipv6&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;options&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;options&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;Run the server, using the autoreloader if needed.&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;autodiscover_rpc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-
-        &lt;span class=&#34;n&#34;&gt;server&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_server&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-
-        &lt;span class=&#34;k&#34;&gt;try&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;server&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;except&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;KeyboardInterrupt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;server&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;sys&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;exit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;autodiscover_rpc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;related_name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;rpcs&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pkg&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;INSTALLED_APPS&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;try&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-                &lt;span class=&#34;n&#34;&gt;pkg_path&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;importlib&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;import_module&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pkg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;__path__&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;except&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;AttributeError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;continue&lt;/span&gt;
-
-            &lt;span class=&#34;k&#34;&gt;try&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-                &lt;span class=&#34;n&#34;&gt;_imp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;find_module&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;related_name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pkg_path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;except&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;ImportError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;continue&lt;/span&gt;
-
-            &lt;span class=&#34;k&#34;&gt;try&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-                &lt;span class=&#34;n&#34;&gt;importlib&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;import_module&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;{0}.{1}&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;format&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pkg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;related_name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;except&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;ImportError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;pass&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;get_server&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;options&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;Return the default zerorpc server for the runner.&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;zerorpc&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;server&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;zerorpc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Server&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rpc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;heartbeat&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;30&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;server&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;tcp://{0}:{1}&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;format&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;addr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
-        &lt;span class=&#34;c1&#34;&gt;# close django old connections&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;zerorpc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_instance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;register_middleware&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerExecMiddleware&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
-
-        &lt;span class=&#34;c1&#34;&gt;# for sentry&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;try&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-            &lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;raven.contrib.zerorpc&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SentryMiddleware&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;hasattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;RAVEN_CONFIG&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-                &lt;span class=&#34;n&#34;&gt;sentry&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SentryMiddleware&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;hide_zerorpc_frames&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-                                          &lt;span class=&#34;n&#34;&gt;dsn&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RAVEN_CONFIG&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;dsn&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
-                &lt;span class=&#34;n&#34;&gt;zerorpc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_instance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;register_middleware&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sentry&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;except&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;ImportError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;pass&lt;/span&gt;
-
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;server&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;code&gt;runrpc.py&lt;/code&gt;是一个Django management commands 文件需要放到某个install app目录的&lt;code&gt;management/commands&lt;/code&gt;下面,启动服务器:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;python manage.py runrpc &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;.0.0.0:4242&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;autodiscover_rpc&lt;/code&gt; 自动发现rpc interface注册函数&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;get_server&lt;/code&gt; 生成zerorpc server对象&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;在&lt;code&gt;get_server&lt;/code&gt;中对zerorpc注册了2个中间件,&lt;code&gt;SentryMiddleware&lt;/code&gt;用于捕获rpc interface抛出的异常发送到sentry,&lt;code&gt;ServerExecMiddleware&lt;/code&gt;用于处理Django db connection,看看代码:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# zrpc.py&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;# coding: utf-8&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;django.db&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;close_old_connections&lt;/span&gt;
-
-&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;ServerExecMiddleware&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;server_before_exec&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;request_event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;close_old_connections&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;server_after_exec&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;request_event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;reply_event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;close_old_connections&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;在每个rpc interface被调用前与调用后都调用&lt;code&gt;close_old_connections&lt;/code&gt;关闭db connection,这里是为了实现&lt;code&gt;django.db&lt;/code&gt;中对请求处理前与处理后注册信号:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;django.db.__init__.py&lt;/code&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;n&#34;&gt;signals&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;request_started&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close_old_connections&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;signals&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;request_finished&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close_old_connections&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;目的是保证在rpc interface中使用ORM时,connection没有超时断开.&lt;/p&gt;
-
-&lt;h3 id=&#34;客户端&#34;&gt;客户端&lt;/h3&gt;
-
-&lt;p&gt;由于rpc的调用是阻塞的,不能全局只创建一个client.但是也不能每个请求都创建client,所以这里参考&lt;code&gt;redis-py&lt;/code&gt;的client实现,定义一个支持连接池的zerorpc client.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# zrpc.py&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;# coding: utf-8&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;os&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;zerorpc&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;redis.connection&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;BlockingConnectionPool&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;gevent.queue&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;LifoQueue&lt;/span&gt;
-
-&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Connection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__init__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;connect_to&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;heartbeat&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;30&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;client&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;zerorpc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Client&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;heartbeat&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;heartbeat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;client&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connect_to&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pid&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getpid&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;disconnect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;client&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-
-
-&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RPCClient&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__init__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;connect_to&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;heartbeat&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;30&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connection_pool&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;BlockingConnectionPool&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connection_class&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Connection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;queue_class&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;LifoQueue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;timeout&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;heartbeat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;connect_to&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connect_to&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;heartbeat&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;heartbeat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connection_pool&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;disconnect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__getattr__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;lambda&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__call__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;connection&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connection_pool&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_connection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;try&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;getattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connection&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;client&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;finally&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-            &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connection_pool&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;release&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;这里直接复用了&lt;code&gt;redis-py&lt;/code&gt;定义的连接池,当前系统使用gunicorn + gevent的方式启动Django服务,所以&lt;code&gt;queue_class&lt;/code&gt;使用了gevent的&lt;code&gt;LifoQueue&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;在使用过程中还发现了这个问题:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/0rpc/zerorpc-python/issues/123&#34;&gt;https://github.com/0rpc/zerorpc-python/issues/123&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;需要打个补丁解决:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;zmq.green&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&#34;c1&#34;&gt;# patch zmq garbage-collection Thread to use green Context:&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;zmq.utils.garbage&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;gc&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;gc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;context&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;zmq&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
-
-&lt;p&gt;技术的选型需要契合项目实际情况,不要盲目上新技术引入不必要的成本.为了推广方案,必须全局的考虑方案是否易使用,是否易部署.&lt;/p&gt;
-
-&lt;p&gt;完整代码:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;https://gist.github.com/zhu327/5b6c06eccc5758d4e642ee899a518687&#34;&gt;https://gist.github.com/zhu327/5b6c06eccc5758d4e642ee899a518687&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;</description>
     </item>
     

@@ -78,6 +78,21 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/16/django-save%E6%96%B9%E6%B3%95%E7%9A%84update_fields%E5%8F%82%E6%95%B0/">Django save方法的update_fields参数</a></h1>
+        <span class="post-date">May 16 2016</span>
+        <p>在Django中对Model对象的属性赋值，并使用save方法，save方法并不会检测Model对象变更了什么属性，而是会使用<code>update</code>语句set所有的field为当前的值，也就是说只修改了部分字段，也会update所有字段的值，这样会导致2个问题:</p>
+
+<ol>
+<li>SQL语句过大，导致SQL执行慢(一般也不会有什么影响)</li>
+<li>如果同时操作同一个Model对象，更新不同的字段，后save的操作会用老的值覆盖掉早点操作的值</li>
+</ol>
+
+<p>所以推荐在调用save方法的时候传<code>update_fields</code>参数，但是这样就要求我们必须对每次save的fields都在代码中记下来，不是很方便，所以开发一个通用的专门用来处理update_fields参数的Mixin类来解决这个问题。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/15/tastypie%E5%AE%9E%E7%8E%B0accesstoken%E8%AE%A4%E8%AF%81/">Tastypie实现accesstoken认证</a></h1>
         <span class="post-date">May 15 2016</span>
         <p>Tastypie提供了几种基本的认证方式比如SessionAuthentication，Django实现的web站点一般都是基于cookie-session的认证方式，在Django中使用中间件的方式处理cookie与session，以及用户认证。使用起来是很方便的。</p>
@@ -150,15 +165,6 @@
 <span class="n">array</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">]])</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 类似于range生成列表</span>
 <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span></code></pre></div>
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/04/29/%E7%BD%91%E7%AB%99%E8%B4%A6%E5%8F%B7%E7%BB%91%E5%AE%9A%E5%BE%AE%E4%BF%A1%E6%96%B9%E6%A1%88/">网站账号绑定微信方案</a></h1>
-        <span class="post-date">Apr 29 2016</span>
-        <p>一般面向用户的网站都会有一些通知用户的需求，传统的方式会通过email，短信等等方式，鉴于微信的流行，像拉勾会使用微信来做通知。通过微信通知就需要把网站内部的账户体系与微信关联起来，目前体验比较好的绑定方式是通过微信扫描二维码来绑定用户账号。<br />
-从用户的角度来看，扫一扫绑定，很简单的功能，但是在研究了微信开发文档后，从开发的角度来看，其实流程还是比较复杂的，所以这里整理一下实现思路。</p>
-
 <p></p>
     </div>
   
