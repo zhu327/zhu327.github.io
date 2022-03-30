@@ -146,7 +146,7 @@
 
 <p>从以上CPU结构, 我们可以看出无论是取指令还是输出结果, CPU都依赖于总线与外部存储, 也就是内存做交互. 那么程序是如何使用内存的呢, 这里以Linux的程序内存布局为例来说明.</p>
 
-<p><img src="https://images0.cnblogs.com/blog/350213/201501/200639136566196.png" alt="image" /></p>
+<p><img src="https://user-images.githubusercontent.com/873883/160808304-cffa5cad-f5d9-443d-9a52-eb565c25c3dd.png" alt="memory" width="720px"></p>
 
 <p>在Linux系统中, 每个程序在运行时, 都会由操作系统将自己的可执行二进制文件载入到内存中, 通过虚拟内存地址空间, 每个程序看到的自己的内存高地址与低地址都是一样的, 其中用于运行函数本地变量的地址空间叫栈, 而需要程序自行管理内存的空间叫堆. 每个函数运行时都会在栈上创建一块栈帧, 函数返回时pop出栈帧, 空间被回收. 在堆上的内存分配则需要手动管理, 程序自行申请空间, 回收空间.</p>
 
@@ -246,7 +246,7 @@
 <li>标记清除</li>
 </ol>
 
-<p><img src="https://user-images.githubusercontent.com/873883/160808304-cffa5cad-f5d9-443d-9a52-eb565c25c3dd.png" alt="python" width="720px"></p>
+<p><img src="https://user-images.githubusercontent.com/873883/160809972-6b6d53fc-a132-4cb3-8fc1-b68a1c0dc8d1.png" alt="python" width="720px"></p>
 
 <p>Python解释器隔一段时间会进行一次全对象的扫描, 对于隔离于ROOT节点的孤立引用, 执行回收, 没有被ROOT节点引用的孤立节点, 即使引用计数大于0, 也会被回收.</p>
 
