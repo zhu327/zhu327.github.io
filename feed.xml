@@ -208,7 +208,7 @@
 &lt;li&gt;标记清除&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://img2020.cnblogs.com/blog/1881426/202005/1881426-20200504131641651-297345687.png&#34; alt=&#34;标记i清楚&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://user-images.githubusercontent.com/873883/160808304-cffa5cad-f5d9-443d-9a52-eb565c25c3dd.png&#34; alt=&#34;标记i清楚&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Python解释器隔一段时间会进行一次全对象的扫描, 对于隔离于ROOT节点的孤立引用, 执行回收, 没有被ROOT节点引用的孤立节点, 即使引用计数大于0, 也会被回收.&lt;/p&gt;
 
