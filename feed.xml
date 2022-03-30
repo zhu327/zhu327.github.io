@@ -38,7 +38,7 @@
       <guid>https://zhu327.github.io/2022/03/30/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%BC%AB%E8%B0%88/</guid>
       <description>&lt;p&gt;半年前还是2021年春节的时候, 在家休假的我, 在B站上发现了一门叫&lt;a href=&#34;https://www.bilibili.com/video/BV1hp4y1k7SV&#34;&gt;RUST语言的课程&lt;/a&gt;, 学习的过程中, 发现RUST语言为了绝对的安全性, 在语法本身上做了很多的妥协, 所以想着等我学完这门课, 再基于自己以往编程语言的学习经历, 写一篇&amp;lt;如何学习一门新的编程语言&amp;gt;的文章. 但是时过境迁, 我并没有学完这门RUST课, 所以&amp;lt;如何学习一门新的编程语言&amp;gt;也就无疾而终了. 回过头来再思考下以往我学习的那些编程语言, 就有了这篇文章&amp;lt;编程语言漫谈&amp;gt;. 我希望以一种比较轻松的散文的形式来阐述我过完学习的一些经验与思考.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://user-images.githubusercontent.com/873883/160806614-07709f0a-add6-464b-a76a-bbaffdeab727.jpg&#34; alt=&#34;微信图片_20210904113900&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://user-images.githubusercontent.com/873883/160806614-07709f0a-add6-464b-a76a-bbaffdeab727.jpg&#34; alt=&#34;rust&#34; width=&#34;720px&#34;&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;
 
@@ -239,8 +239,9 @@
 
 &lt;p&gt;Golang是一门编译型的语言, 同C语言一样它也是通过编译器把代码直接编译为二进制的机器码来保证执行性能, 与C语言不同的时, 它在编译时会在二进制中插入一个Golang的Runtime, Runtime帮助做用户态的Goroutine的调度, 做自动内存管理. 可以说Golang继承了C语言的精华, 并对C语言程序容易出错的点, 提出了自己的改进方案.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://img.draveness.me/2020-02-02-15805792666151-golang-gmp.png&#34; alt=&#34;Golang调度&#34; /&gt;
-&lt;img src=&#34;https://qiankunli.github.io/public/upload/go/go_memory_layout.jpeg&#34; alt=&#34;Golang内存分配&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://img.draveness.me/2020-02-02-15805792666151-golang-gmp.png&#34; alt=&#34;golang&#34; width=&#34;720px&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://qiankunli.github.io/public/upload/go/go_memory_layout.jpeg&#34; alt=&#34;Golang内存分配&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Golang语言也不是完美的, 它的性能还是比不上极致优化的C语言, GC带来的STW也导致不能应用于实时性领域. 但是在云原生时代, 它的原生支持并发, 优秀的自动内存管理, 在开发效率与性能之间的平衡性, 给程序员提供了一个新的选择.&lt;/p&gt;
 
