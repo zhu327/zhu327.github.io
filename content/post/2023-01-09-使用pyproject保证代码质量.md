@@ -1,6 +1,6 @@
 ---
-title: "使用pyproject.toml保证Python项目代码质量"
-date: 2023-01-09T17:38:04+08:00
+title: "使用pyproject.toml保证代码质量"
+date: 2023-01-09T15:53:52+08:00
 draft: false
 ---
 
@@ -18,6 +18,8 @@ draft: false
 - .bandit
 
 我们的项目代码中充斥这这些与代码无关的配置, `pyproject.toml`就是用来统一纳管Python项目的所有这些配置的东西, 得到了以上大部分工具的支持.
+
+<!--more-->
 
 ### 2. poetry
 
