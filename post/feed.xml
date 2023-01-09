@@ -6,10 +6,38 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 30 Mar 2022 17:38:04 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 09 Jan 2023 15:53:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>使用pyproject.toml保证代码质量</title>
+      <link>https://zhu327.github.io/2023/01/09/%E4%BD%BF%E7%94%A8pyproject.toml%E4%BF%9D%E8%AF%81%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/</link>
+      <pubDate>Mon, 09 Jan 2023 15:53:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2023/01/09/%E4%BD%BF%E7%94%A8pyproject.toml%E4%BF%9D%E8%AF%81%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/</guid>
+      <description>&lt;h3 id=&#34;1-pyproject-toml是什么&#34;&gt;1. pyproject.toml是什么&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://python.freelycode.com/contribution/detail/1910&#34;&gt;https://python.freelycode.com/contribution/detail/1910&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在使用&lt;code&gt;pyproject.toml&lt;/code&gt;前, 我们的Python项目根目录下会存在很多项目相关的配置文件, 比如:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;requirements.txt&lt;/li&gt;
+&lt;li&gt;requirements_dev.txt&lt;/li&gt;
+&lt;li&gt;.flake8&lt;/li&gt;
+&lt;li&gt;mypy.ini&lt;/li&gt;
+&lt;li&gt;.isort.cfg&lt;/li&gt;
+&lt;li&gt;.bandit&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们的项目代码中充斥这这些与代码无关的配置, &lt;code&gt;pyproject.toml&lt;/code&gt;就是用来统一纳管Python项目的所有这些配置的东西, 得到了以上大部分工具的支持.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>编程语言漫谈</title>

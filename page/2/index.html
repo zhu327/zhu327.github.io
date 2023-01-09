@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2022. All rights reserved.</p>
+    <p>&copy; 2023. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,20 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2019/12/22/%E4%BB%8Epython%E5%88%B0golang/">从Python到Golang</a></h1>
+        <span class="post-date">Dec 22 2019</span>
+        <p>是的, 从去年底开始, 我差不多写Golang一年了, 从最开始的视频流处理, 到Websocket远程控制, 再到现在写的高性能鉴权中间件. 为什么不用Python? 因为Python满足不了长连接或者高性能的需求. 为什么不用其它语言? 大概是因为Golang足够<code>简单</code>吧. 这里分享下这一年多写Golang相对于Python的一些感想.</p>
+
+<h3 id="强类型">强类型</h3>
+
+<h4 id="代码检查">代码检查</h4>
+
+<p>Golang是强类型语言, 配合IDE, Lint, 编译工具, 一些常见的, 马马虎虎的写代码的低级错误在代码提交之前就能被检测出来. 虽然Python也有flak8, 但是相对于Golang犯低级错误的可能性更大些, 特别是对于没有单元测试的代码(是的, 单元测试不是每个团队都会做的).</p>
+
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2018/08/29/gunicorn%E4%B8%8Euwsgi%E4%B9%8B%E6%88%91%E8%A7%81/">Gunicorn与uWSGI之我见</a></h1>
@@ -119,18 +133,6 @@
 <h3 id="gluaweb">gluaweb</h3>
 
 <p>虽然看过几本Golang的书, 也读过几个开源项目的代码, 来腾讯后还上过两门Golang的课, 但是却没有写过一个Golang的项目, 从新读过net/http标准库的文档, 再看看Gopher Lua的例子就写了<a href="https://github.com/zhu327/gluaweb">gluaweb</a></p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2018/03/24/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B8%8Erpc/">服务治理与RPC</a></h1>
-        <span class="post-date">Mar 24 2018</span>
-        <p>以前写过Django中使用zerorpc的方法，但是由于我们的Django是运行在gevent下，而zeromq需要启动一个后台进程处理消息，与gevent使用的greenlet携程是冲突的。</p>
-
-<p>在Java的世界里，Spring Cloud全家桶覆盖了微服务的方方面面，专注于服务治理的框架也有阿里的Dubbo，微博的Motan。但是Python这边没有找到合适的轮子，甚至于好的RPC框架也没有，只有gRPC，Thrift这种跨语言的RPC框架。而这些跨语言的RPC框架基本上也是基于C/C++的Python port。</p>
-
-<p>在github上全局搜索Python rpc，找到一个原生支持gevent的<a href="https://github.com/studio-ousia/mprpc">MPRPC</a>，而且也找到了微博Motan的Golang版本，所以考虑读Motan-go的源码学习一下什么是服务治理，再基于MPRPC实现自己的轮子。这就有了<a href="https://github.com/zhu327/doge">doge</a>。</p>
 
 <p></p>
     </div>

@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2022. All rights reserved.</p>
+    <p>&copy; 2023. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,22 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/11/06/%E6%A0%91%E8%8E%93%E6%B4%BE%E4%B8%8Exbmc/">树莓派与XBMC</a></h1>
+        <span class="post-date">Nov 6 2014</span>
+        <p>Raspberry Pi刚开卖的时候，我就买了，那时候买来就是为了玩Linux，装了Raspbian，写写Python程序，玩玩GPIO什么的，很Geek范，然后就放在角落里落灰了。</p>
+
+<p>直到去年双11在淘宝抢了个天猫魔盒送给我姐，才发现原来在电视上看电影，看美剧真心比电脑爽多了。立马就买了个二手22寸显示器跟树莓派组合成网络电视。折腾了1年多这里总结我用XBMC的经验。</p>
+
+<h3 id="openelec">OpenELEC</h3>
+
+<p>支持Raspi的XBMC系统有OpenELEC，Raspbmc，XBian。一直以来都是用的OpenELEC，在支持XBMC的几个发行版中，OpenELEC是最快的。</p>
+
+<p>OpenELEC 当前版本为6.0.6，下载：
+&gt; <a href="http://mirror.overthewire.com.au/openelec/OpenELEC-RPi.arm-6.0.3.tar">http://mirror.overthewire.com.au/openelec/OpenELEC-RPi.arm-6.0.3.tar</a>
+</p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2014/10/02/%E4%BD%BF%E7%94%A8mongodb/">使用MongoDB</a></h1>
@@ -147,23 +163,6 @@
 </ol>
 
 <p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/21/http-cookie/">HTTP Cookie</a></h1>
-        <span class="post-date">Sep 21 2014</span>
-        <h3 id="什么是cookie">什么是Cookie</h3>
-
-<p>Cookie用于存储http请求中的用户认证信息，用户在通过登录认证后，服务器在response header中设置Cookie，用户浏览器自动带Cookie访问该网站。</p>
-
-<h3 id="response-中的-cookie">response 中的 Cookie</h3>
-
-<p>response header 中添加 <code>Set-Cookie</code>信息，cookie是一组key，value值。</p>
-
-<pre><code>Set-Cookie: &lt;name&gt;=&lt;value&gt;[; &lt;name&gt;=&lt;value&gt;]...
-            [; expires=&lt;date&gt;][; domain=&lt;domain_name&gt;]
-            [; path=&lt;some_path&gt;][; secure][; httponly]
-</code></pre>
     </div>
   
 </div>

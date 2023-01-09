@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      使用pyproject.toml保证代码质量 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2023. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">使用pyproject.toml保证代码质量</h1>
+  <span class="post-date">Jan 9 2023</span>
+  <h3 id="1-pyproject-toml是什么">1. pyproject.toml是什么</h3>
+
+<blockquote>
+<p><a href="https://python.freelycode.com/contribution/detail/1910">https://python.freelycode.com/contribution/detail/1910</a></p>
+</blockquote>
+
+<p>在使用<code>pyproject.toml</code>前, 我们的Python项目根目录下会存在很多项目相关的配置文件, 比如:</p>
+
+<ul>
+<li>requirements.txt</li>
+<li>requirements_dev.txt</li>
+<li>.flake8</li>
+<li>mypy.ini</li>
+<li>.isort.cfg</li>
+<li>.bandit</li>
+</ul>
+
+<p>我们的项目代码中充斥这这些与代码无关的配置, <code>pyproject.toml</code>就是用来统一纳管Python项目的所有这些配置的东西, 得到了以上大部分工具的支持.</p>
+
+<p></p>
+
+<h3 id="2-poetry">2. poetry</h3>
+
+<p>pip还不支持<code>pyproject.toml</code>, 所有我们需要使用poetry这个工具来实现项目的依赖管理.</p>
+
+<blockquote>
+<p><a href="https://python-poetry.org/docs/basic-usage/">https://python-poetry.org/docs/basic-usage/</a></p>
+</blockquote>
+
+<p>如文档所示, 我们只需要执行:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">poetry init</code></pre></div>
+<p>就会在项目的根目录下自动生成一个<code>pyproject.toml</code>, 通过poetry添加的依赖项会自动写入<code>pyproject.toml</code>, 一般情况下, 项目下的<code>requirements.txt</code>, <code>requirements_dev.txt</code>就可以删除了.</p>
+
+<h3 id="3-format">3. Format</h3>
+
+<p>写完代码后, 我们希望不同项目成员提交的代码都能有统一个代码格式规范, 所用我们使用以下工具来保证代码风格的一致:</p>
+
+<ul>
+<li>black 用于格式化代码</li>
+<li>isort 用于对Python import代码行自动排序</li>
+</ul>
+
+<p>安装:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">poetry add black --dev
+poetry add isort --dev</code></pre></div>
+<p>配置:</p>
+
+<pre><code># FILE: pyproject.toml
+
+[tool.black]
+line-length = 119
+target-version = ['py36']
+exclude = '''
+(
+  /(
+      \.mypy_cache
+    | \.git
+    | migrations
+  )/
+)
+'''
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = 'true'
+force_grid_wrap = 0
+use_parentheses = 'true'
+line_length = 119
+skip = [&quot;.mypy_cache&quot;, &quot;.git&quot;, &quot;*/migrations&quot;]
+</code></pre>
+
+<p>使用:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">isort --settings-path<span class="o">=</span>./pyproject.toml .
+black --config<span class="o">=</span>./pyproject.toml .</code></pre></div>
+<h3 id="4-lint">4. Lint</h3>
+
+<p>代码静态检查是保证项目代码质量必不可的步骤, 一些现代的静态检查工具, 能够在我们的代码被提交之前就能检查出代码缺陷, 以下是一些建议:</p>
+
+<h4 id="4-1-flake8">4.1 flake8</h4>
+
+<p>除了flake8本身支持的检查规则以外, flake8还支持插件来扩展规则, 这里推荐安装<code>flake8-bugbear</code>, 以下是使用参考:</p>
+
+<p>安装:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">poetry add flake8 --dev
+poetry add flake8-bugbear --dev
+poetry add pyproject-flake8 --dev</code></pre></div>
+<p>配置:</p>
+
+<pre><code># FILE: pyproject.toml
+
+[tool.flake8]
+ignore = &quot;C901,E203,W503,B010,B009&quot;
+max-line-length=119
+max-complexity=12
+format = &quot;pylint&quot;
+show_source = &quot;true&quot;
+statistics = &quot;true&quot;
+count = &quot;true&quot;
+exclude = &quot;*migrations*,*.pyc,.git,__pycache__,node_modules/*,*/templates_module*,*/bin/*,*/settings/*,config,tests/unittest_settings.py&quot;
+</code></pre>
+
+<p>使用:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">pflake8 --config<span class="o">=</span>./pyproject.toml .</code></pre></div>
+<h4 id="4-2-mypy">4.2 mypy</h4>
+
+<p>随着python3支持type hitting, Python代码的可读性与编辑器支持都得到了大幅提升, 所以建议在项目中强制使用type hitting, mypy用于对代码中类型标注做检查, 以下为参考配置:</p>
+
+<p>安装:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">poetry add mypy --dev</code></pre></div>
+<p>配置:</p>
+
+<pre><code># FILE: pyproject.toml
+
+[tool.mypy]
+files=[&quot;.&quot;]
+python_version = 3.6
+ignore_missing_imports=true
+follow_imports=&quot;skip&quot;
+strict_optional=true
+pretty=true
+show_error_codes=true
+</code></pre>
+
+<p>使用:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">mypy --config-file<span class="o">=</span>./pyproject.toml .</code></pre></div>
+<h4 id="4-3-bandit">4.3 bandit</h4>
+
+<p>bandit用于检查Python代码中可能出现的安全问题, 但是检查耗时比较长, 推荐在CI工具中使用</p>
+
+<p>安装:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">poetry add bandit --dev</code></pre></div>
+<p>配置:</p>
+
+<pre><code># FILE: pyproject.toml
+
+[tool.bandit]
+exclude_dirs = [&quot;tests&quot;]
+tests = []
+skips = [&quot;B101&quot;, &quot;B110&quot;, &quot;B311&quot;, &quot;B303&quot;]
+</code></pre>
+
+<p>使用:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">bandit -c ./pyproject.toml -r .</code></pre></div>
+<h3 id="5-unittest">5. unittest</h3>
+
+<p>单元测试是保证代码质量的重要步骤, 在每次提交代码前运行单元测试是一个好的习惯, 现代的Python项目推荐使用pytest框架实现单元测试</p>
+
+<p>安装:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">poetry add pytest --dev
+poetry add pytest-cov --dev</code></pre></div>
+<p>配置:</p>
+
+<pre><code># FILE: pyproject.toml
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = &quot;tests.unittest_settings&quot;
+addopts = &quot;--disable-pytest-warnings --reuse-db --nomigrations -s&quot;
+python_files = &quot;*_tests.py&quot;
+testpaths = [
+    &quot;tests&quot;
+]
+</code></pre>
+
+<p>使用:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">pytest -c ./pyproject.toml .
+
+<span class="c1"># 生成代码测试覆盖率报告
+</span><span class="c1"></span>pytest --cov-report html --cov<span class="o">=</span>backend -c ./pyproject.toml .</code></pre></div>
+<h3 id="6-自动化">6. 自动化</h3>
+
+<p>我们希望以上<code>Format</code>, <code>Lint</code>, <code>Test</code>在每次代码提交时都能自动执行, 而不是每次手动去跑, 所以我们在git提交前使用pre-commit触发以上环节, 在代码在Github上被合并前使用github actions触发以上环节</p>
+
+<h4 id="6-1-pre-commit">6.1 pre-commit</h4>
+
+<blockquote>
+<p><a href="https://pre-commit.com/">https://pre-commit.com/</a></p>
+</blockquote>
+
+<p>推荐配置<code>.pre-commit-config.yaml</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># See https://pre-pre-commit --versioncommit.com for more information</span><span class="w">
+</span><span class="w"></span><span class="c"># See https://pre-commit.com/hooks.html for more hooks</span><span class="w">
+</span><span class="w"></span>repos<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>repo<span class="p">:</span><span class="w"> </span>https<span class="p">:</span>//github.com/pre-commit/pre-commit-hooks<span class="w">
+</span><span class="w">    </span>rev<span class="p">:</span><span class="w"> </span>v2.<span class="m">3.0</span><span class="w">
+</span><span class="w">    </span>hooks<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>check-added-large-files<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>check-ast<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>check-byte-order-marker<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>check-case-conflict<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>check-executables-have-shebangs<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>check-merge-conflict<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>debug-statements<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>detect-private-key<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>end-of-file-fixer<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>trailing-whitespace<span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>repo<span class="p">:</span><span class="w"> </span>local<span class="w">
+</span><span class="w">    </span>hooks<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>isort<span class="w">
+</span><span class="w">        </span>name<span class="p">:</span><span class="w"> </span>isort<span class="w">
+</span><span class="w">        </span>language<span class="p">:</span><span class="w"> </span>python<span class="w">
+</span><span class="w">        </span>pass_filenames<span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">        </span>entry<span class="p">:</span><span class="w"> </span>isort<span class="w"> </span>--settings-path=saas/pyproject.toml<span class="w"> </span>.<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>black<span class="w">
+</span><span class="w">        </span>name<span class="p">:</span><span class="w"> </span>black<span class="w">
+</span><span class="w">        </span>language<span class="p">:</span><span class="w"> </span>python<span class="w">
+</span><span class="w">        </span>pass_filenames<span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">        </span>entry<span class="p">:</span><span class="w"> </span>black<span class="w"> </span>--config=saas/pyproject.toml<span class="w"> </span>.<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>flake8<span class="w">
+</span><span class="w">        </span>name<span class="p">:</span><span class="w"> </span>flak8<span class="w">
+</span><span class="w">        </span>language<span class="p">:</span><span class="w"> </span>python<span class="w">
+</span><span class="w">        </span>pass_filenames<span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">        </span>entry<span class="p">:</span><span class="w"> </span>pflake8<span class="w"> </span>--config=saas/pyproject.toml<span class="w"> </span>.<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>mypy<span class="w">
+</span><span class="w">        </span>name<span class="p">:</span><span class="w"> </span>mypy<span class="w">
+</span><span class="w">        </span>language<span class="p">:</span><span class="w"> </span>python<span class="w">
+</span><span class="w">        </span>pass_filenames<span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">        </span>entry<span class="p">:</span><span class="w"> </span>mypy<span class="w"> </span>--config-file=saas/pyproject.toml<span class="w"> </span>.<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span>pytest<span class="w">
+</span><span class="w">        </span>name<span class="p">:</span><span class="w"> </span>pytest<span class="w">
+</span><span class="w">        </span>language<span class="p">:</span><span class="w"> </span>python<span class="w">
+</span><span class="w">        </span>pass_filenames<span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">        </span>entry<span class="p">:</span><span class="w"> </span>pytest<span class="w"> </span>-c<span class="w"> </span>saas/pyproject.toml<span class="w"> </span>.</code></pre></div>
+<h4 id="6-2-github-actions">6.2 github actions</h4>
+
+<p><code>.github/workflows/python.yml</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">name<span class="p">:</span><span class="w"> </span>Python<span class="w"> </span>CI<span class="w"> </span>Check<span class="w">
+</span><span class="w">
+</span><span class="w"></span>on<span class="p">:</span><span class="w">
+</span><span class="w">  </span>push<span class="p">:</span><span class="w">
+</span><span class="w">    </span>branches<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>master<span class="p">,</span><span class="w"> </span>develop<span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="w">  </span>pull_request<span class="p">:</span><span class="w">
+</span><span class="w">    </span>branches<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>master<span class="p">,</span><span class="w"> </span>develop<span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span>jobs<span class="p">:</span><span class="w">
+</span><span class="w">  </span>build<span class="p">:</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span>strategy<span class="p">:</span><span class="w">
+</span><span class="w">      </span>fail-fast<span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">      </span>matrix<span class="p">:</span><span class="w">
+</span><span class="w">        </span>python-version<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="m">3.6</span><span class="p">]</span><span class="w">
+</span><span class="w">        </span>poetry-version<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="m">1.1</span>.<span class="m">7</span><span class="p">]</span><span class="w">
+</span><span class="w">        </span>os<span class="p">:</span><span class="w"> </span><span class="p">[</span>ubuntu-<span class="m">18.04</span><span class="p">]</span><span class="w">
+</span><span class="w">    </span>runs-on<span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>matrix.os<span class="w"> </span>}}<span class="w">
+</span><span class="w">
+</span><span class="w">    </span>steps<span class="p">:</span><span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>uses<span class="p">:</span><span class="w"> </span>actions/checkout@v2<span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>Set<span class="w"> </span>up<span class="w"> </span>Python<span class="w">
+</span><span class="w">      </span>uses<span class="p">:</span><span class="w"> </span>actions/setup-python@v2<span class="w">
+</span><span class="w">      </span>with<span class="p">:</span><span class="w">
+</span><span class="w">        </span>python-version<span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>matrix.python-version<span class="w"> </span>}}<span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>uses<span class="p">:</span><span class="w"> </span>snok/install-poetry@v1<span class="w">
+</span><span class="w">      </span>with<span class="p">:</span><span class="w">
+</span><span class="w">        </span>version<span class="p">:</span><span class="w"> </span><span class="m">1.1</span>.<span class="m">12</span><span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>Install<span class="w"> </span>dependencies<span class="w">
+</span><span class="w">      </span>run<span class="p">:</span><span class="w"> </span>poetry<span class="w"> </span>install<span class="w"> </span>--no-interaction<span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>Lint<span class="w"> </span>with<span class="w"> </span>flake8<span class="w">
+</span><span class="w">      </span>run<span class="p">:</span><span class="w"> </span>pflake8<span class="w"> </span>--config=saas/pyproject.toml<span class="w"> </span>.<span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>Lint<span class="w"> </span>with<span class="w"> </span>bandit<span class="w">
+</span><span class="w">      </span>run<span class="p">:</span><span class="w"> </span>bandit<span class="w"> </span>-c<span class="w"> </span>saas/pyproject.toml<span class="w"> </span>-r<span class="w"> </span>.<span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>Lint<span class="w"> </span>with<span class="w"> </span>mypy<span class="w">
+</span><span class="w">      </span>run<span class="p">:</span><span class="w">  </span>mypy<span class="w"> </span>--config-file=saas/pyproject.toml<span class="w"> </span>.<span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>Test<span class="w"> </span>with<span class="w"> </span>pytest<span class="w">
+</span><span class="w">      </span>run<span class="p">:</span><span class="w"> </span>pytest<span class="w"> </span>-c<span class="w"> </span>saas/pyproject.toml<span class="w"> </span>.</code></pre></div>
+<h3 id="7-makefile">7. Makefile</h3>
+
+<p>有了以上这些配置后, 对于一个项目新人, 可能上手成本有点高, 这个时候用<code>make</code>命令就能帮助新同学快速熟悉项目</p>
+
+<p><code>Makefile</code></p>
+
+<pre><code>i18n_all: i18n_po i18n_mo
+
+# make messages of python file and django template file to django.po
+i18n_po:
+	python manage.py makemessages -d django -l en -e html,part -e py
+	python manage.py makemessages -d django -l zh_Hans -e html,part -e py
+
+# compile django.po and djangojs.po to django.mo and djangojs.mo
+i18n_mo:
+	python manage.py compilemessages
+
+init:
+	pip install -U pip setuptools
+	pip install poetry
+	poetry install
+	pip install pre-commit
+	pre-commit install
+
+lint:
+	pflake8 --config=./pyproject.toml .
+	bandit -c ./pyproject.toml -r .
+	mypy --config-file=./pyproject.toml .
+
+fmt:
+	isort --settings-path=./pyproject.toml .
+	black --config=./pyproject.toml .
+
+test:
+	pytest -c ./pyproject.toml .
+
+cov:
+	pytest --cov-report html --cov=backend -c ./pyproject.toml .
+
+serve:
+	python manage.py runserver 8000
+</code></pre>
+
+<h3 id="8-参考">8. 参考</h3>
+
+<p>以上项目配置来源于<a href="https://github.com/TencentBlueKing/bk-iam-saas">蓝鲸权限中心</a>, 参考了以下文章:</p>
+
+<blockquote>
+<p><a href="https://www.b-list.org/weblog/2022/dec/19/boring-python-code-quality/">https://www.b-list.org/weblog/2022/dec/19/boring-python-code-quality/</a></p>
+</blockquote>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

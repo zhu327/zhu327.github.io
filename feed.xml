@@ -7,7 +7,7 @@
     <language>zh-cn</language>
     
     
-    <updated>Wed, 30 Mar 2022 17:38:04 &#43;0800</updated>
+    <updated>Mon, 09 Jan 2023 15:53:52 &#43;0800</updated>
     
     <item>
       <title>About</title>
@@ -28,6 +28,327 @@
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>使用pyproject.toml保证代码质量</title>
+      <link>https://zhu327.github.io/2023/01/09/%E4%BD%BF%E7%94%A8pyproject.toml%E4%BF%9D%E8%AF%81%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/</link>
+      <pubDate>Mon, 09 Jan 2023 15:53:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2023/01/09/%E4%BD%BF%E7%94%A8pyproject.toml%E4%BF%9D%E8%AF%81%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/</guid>
+      <description>&lt;h3 id=&#34;1-pyproject-toml是什么&#34;&gt;1. pyproject.toml是什么&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://python.freelycode.com/contribution/detail/1910&#34;&gt;https://python.freelycode.com/contribution/detail/1910&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在使用&lt;code&gt;pyproject.toml&lt;/code&gt;前, 我们的Python项目根目录下会存在很多项目相关的配置文件, 比如:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;requirements.txt&lt;/li&gt;
+&lt;li&gt;requirements_dev.txt&lt;/li&gt;
+&lt;li&gt;.flake8&lt;/li&gt;
+&lt;li&gt;mypy.ini&lt;/li&gt;
+&lt;li&gt;.isort.cfg&lt;/li&gt;
+&lt;li&gt;.bandit&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们的项目代码中充斥这这些与代码无关的配置, &lt;code&gt;pyproject.toml&lt;/code&gt;就是用来统一纳管Python项目的所有这些配置的东西, 得到了以上大部分工具的支持.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;2-poetry&#34;&gt;2. poetry&lt;/h3&gt;
+
+&lt;p&gt;pip还不支持&lt;code&gt;pyproject.toml&lt;/code&gt;, 所有我们需要使用poetry这个工具来实现项目的依赖管理.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://python-poetry.org/docs/basic-usage/&#34;&gt;https://python-poetry.org/docs/basic-usage/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;如文档所示, 我们只需要执行:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;poetry init&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;就会在项目的根目录下自动生成一个&lt;code&gt;pyproject.toml&lt;/code&gt;, 通过poetry添加的依赖项会自动写入&lt;code&gt;pyproject.toml&lt;/code&gt;, 一般情况下, 项目下的&lt;code&gt;requirements.txt&lt;/code&gt;, &lt;code&gt;requirements_dev.txt&lt;/code&gt;就可以删除了.&lt;/p&gt;
+
+&lt;h3 id=&#34;3-format&#34;&gt;3. Format&lt;/h3&gt;
+
+&lt;p&gt;写完代码后, 我们希望不同项目成员提交的代码都能有统一个代码格式规范, 所用我们使用以下工具来保证代码风格的一致:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;black 用于格式化代码&lt;/li&gt;
+&lt;li&gt;isort 用于对Python import代码行自动排序&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;安装:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;poetry add black --dev
+poetry add isort --dev&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;配置:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# FILE: pyproject.toml
+
+[tool.black]
+line-length = 119
+target-version = [&#39;py36&#39;]
+exclude = &#39;&#39;&#39;
+(
+  /(
+      \.mypy_cache
+    | \.git
+    | migrations
+  )/
+)
+&#39;&#39;&#39;
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = &#39;true&#39;
+force_grid_wrap = 0
+use_parentheses = &#39;true&#39;
+line_length = 119
+skip = [&amp;quot;.mypy_cache&amp;quot;, &amp;quot;.git&amp;quot;, &amp;quot;*/migrations&amp;quot;]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;isort --settings-path&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;./pyproject.toml .
+black --config&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;./pyproject.toml .&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&#34;4-lint&#34;&gt;4. Lint&lt;/h3&gt;
+
+&lt;p&gt;代码静态检查是保证项目代码质量必不可的步骤, 一些现代的静态检查工具, 能够在我们的代码被提交之前就能检查出代码缺陷, 以下是一些建议:&lt;/p&gt;
+
+&lt;h4 id=&#34;4-1-flake8&#34;&gt;4.1 flake8&lt;/h4&gt;
+
+&lt;p&gt;除了flake8本身支持的检查规则以外, flake8还支持插件来扩展规则, 这里推荐安装&lt;code&gt;flake8-bugbear&lt;/code&gt;, 以下是使用参考:&lt;/p&gt;
+
+&lt;p&gt;安装:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;poetry add flake8 --dev
+poetry add flake8-bugbear --dev
+poetry add pyproject-flake8 --dev&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;配置:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# FILE: pyproject.toml
+
+[tool.flake8]
+ignore = &amp;quot;C901,E203,W503,B010,B009&amp;quot;
+max-line-length=119
+max-complexity=12
+format = &amp;quot;pylint&amp;quot;
+show_source = &amp;quot;true&amp;quot;
+statistics = &amp;quot;true&amp;quot;
+count = &amp;quot;true&amp;quot;
+exclude = &amp;quot;*migrations*,*.pyc,.git,__pycache__,node_modules/*,*/templates_module*,*/bin/*,*/settings/*,config,tests/unittest_settings.py&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;pflake8 --config&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;./pyproject.toml .&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&#34;4-2-mypy&#34;&gt;4.2 mypy&lt;/h4&gt;
+
+&lt;p&gt;随着python3支持type hitting, Python代码的可读性与编辑器支持都得到了大幅提升, 所以建议在项目中强制使用type hitting, mypy用于对代码中类型标注做检查, 以下为参考配置:&lt;/p&gt;
+
+&lt;p&gt;安装:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;poetry add mypy --dev&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;配置:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# FILE: pyproject.toml
+
+[tool.mypy]
+files=[&amp;quot;.&amp;quot;]
+python_version = 3.6
+ignore_missing_imports=true
+follow_imports=&amp;quot;skip&amp;quot;
+strict_optional=true
+pretty=true
+show_error_codes=true
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;mypy --config-file&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;./pyproject.toml .&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&#34;4-3-bandit&#34;&gt;4.3 bandit&lt;/h4&gt;
+
+&lt;p&gt;bandit用于检查Python代码中可能出现的安全问题, 但是检查耗时比较长, 推荐在CI工具中使用&lt;/p&gt;
+
+&lt;p&gt;安装:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;poetry add bandit --dev&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;配置:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# FILE: pyproject.toml
+
+[tool.bandit]
+exclude_dirs = [&amp;quot;tests&amp;quot;]
+tests = []
+skips = [&amp;quot;B101&amp;quot;, &amp;quot;B110&amp;quot;, &amp;quot;B311&amp;quot;, &amp;quot;B303&amp;quot;]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;bandit -c ./pyproject.toml -r .&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&#34;5-unittest&#34;&gt;5. unittest&lt;/h3&gt;
+
+&lt;p&gt;单元测试是保证代码质量的重要步骤, 在每次提交代码前运行单元测试是一个好的习惯, 现代的Python项目推荐使用pytest框架实现单元测试&lt;/p&gt;
+
+&lt;p&gt;安装:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;poetry add pytest --dev
+poetry add pytest-cov --dev&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;配置:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# FILE: pyproject.toml
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = &amp;quot;tests.unittest_settings&amp;quot;
+addopts = &amp;quot;--disable-pytest-warnings --reuse-db --nomigrations -s&amp;quot;
+python_files = &amp;quot;*_tests.py&amp;quot;
+testpaths = [
+    &amp;quot;tests&amp;quot;
+]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;pytest -c ./pyproject.toml .
+
+&lt;span class=&#34;c1&#34;&gt;# 生成代码测试覆盖率报告
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;pytest --cov-report html --cov&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;backend -c ./pyproject.toml .&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&#34;6-自动化&#34;&gt;6. 自动化&lt;/h3&gt;
+
+&lt;p&gt;我们希望以上&lt;code&gt;Format&lt;/code&gt;, &lt;code&gt;Lint&lt;/code&gt;, &lt;code&gt;Test&lt;/code&gt;在每次代码提交时都能自动执行, 而不是每次手动去跑, 所以我们在git提交前使用pre-commit触发以上环节, 在代码在Github上被合并前使用github actions触发以上环节&lt;/p&gt;
+
+&lt;h4 id=&#34;6-1-pre-commit&#34;&gt;6.1 pre-commit&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://pre-commit.com/&#34;&gt;https://pre-commit.com/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;推荐配置&lt;code&gt;.pre-commit-config.yaml&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;c&#34;&gt;# See https://pre-pre-commit --versioncommit.com for more information&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# See https://pre-commit.com/hooks.html for more hooks&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;repos&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;repo&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;https&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;//github.com/pre-commit/pre-commit-hooks&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;rev&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;v2.&lt;span class=&#34;m&#34;&gt;3.0&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;hooks&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;check-added-large-files&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;check-ast&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;check-byte-order-marker&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;check-case-conflict&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;check-executables-have-shebangs&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;check-merge-conflict&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;debug-statements&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;detect-private-key&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;end-of-file-fixer&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;trailing-whitespace&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;repo&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;local&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;hooks&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;isort&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;isort&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;language&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;python&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;pass_filenames&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;false&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;entry&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;isort&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;--settings-path=saas/pyproject.toml&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;.&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;black&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;black&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;language&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;python&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;pass_filenames&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;false&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;entry&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;black&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;--config=saas/pyproject.toml&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;.&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;flake8&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;flak8&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;language&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;python&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;pass_filenames&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;false&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;entry&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;pflake8&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;--config=saas/pyproject.toml&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;.&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;mypy&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;mypy&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;language&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;python&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;pass_filenames&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;false&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;entry&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;mypy&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;--config-file=saas/pyproject.toml&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;.&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;pytest&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;pytest&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;language&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;python&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;pass_filenames&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;false&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;entry&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;pytest&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-c&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;saas/pyproject.toml&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&#34;6-2-github-actions&#34;&gt;6.2 github actions&lt;/h4&gt;
+
+&lt;p&gt;&lt;code&gt;.github/workflows/python.yml&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;Python&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;CI&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;Check&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;on&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;push&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;branches&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;master&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;develop&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;pull_request&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;branches&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;master&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;develop&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;jobs&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;build&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;strategy&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;fail-fast&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;false&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;matrix&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;python-version&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;3.6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;poetry-version&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1.1&lt;/span&gt;.&lt;span class=&#34;m&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;os&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;ubuntu-&lt;span class=&#34;m&#34;&gt;18.04&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;runs-on&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;${{&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;matrix.os&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;}}&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;steps&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;uses&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;actions/checkout@v2&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;Set&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;up&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;Python&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;uses&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;actions/setup-python@v2&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;with&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;python-version&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;${{&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;matrix.python-version&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;}}&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;uses&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;snok/install-poetry@v1&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;with&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;version&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1.1&lt;/span&gt;.&lt;span class=&#34;m&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;Install&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;dependencies&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;run&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;poetry&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;install&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;--no-interaction&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;Lint&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;with&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;flake8&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;run&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;pflake8&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;--config=saas/pyproject.toml&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;.&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;Lint&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;with&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;bandit&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;run&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;bandit&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-c&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;saas/pyproject.toml&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-r&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;.&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;Lint&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;with&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;mypy&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;run&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;mypy&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;--config-file=saas/pyproject.toml&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;.&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;name&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;Test&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;with&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;pytest&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;run&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;pytest&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-c&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;saas/pyproject.toml&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&#34;7-makefile&#34;&gt;7. Makefile&lt;/h3&gt;
+
+&lt;p&gt;有了以上这些配置后, 对于一个项目新人, 可能上手成本有点高, 这个时候用&lt;code&gt;make&lt;/code&gt;命令就能帮助新同学快速熟悉项目&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Makefile&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;i18n_all: i18n_po i18n_mo
+
+# make messages of python file and django template file to django.po
+i18n_po:
+	python manage.py makemessages -d django -l en -e html,part -e py
+	python manage.py makemessages -d django -l zh_Hans -e html,part -e py
+
+# compile django.po and djangojs.po to django.mo and djangojs.mo
+i18n_mo:
+	python manage.py compilemessages
+
+init:
+	pip install -U pip setuptools
+	pip install poetry
+	poetry install
+	pip install pre-commit
+	pre-commit install
+
+lint:
+	pflake8 --config=./pyproject.toml .
+	bandit -c ./pyproject.toml -r .
+	mypy --config-file=./pyproject.toml .
+
+fmt:
+	isort --settings-path=./pyproject.toml .
+	black --config=./pyproject.toml .
+
+test:
+	pytest -c ./pyproject.toml .
+
+cov:
+	pytest --cov-report html --cov=backend -c ./pyproject.toml .
+
+serve:
+	python manage.py runserver 8000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;8-参考&#34;&gt;8. 参考&lt;/h3&gt;
+
+&lt;p&gt;以上项目配置来源于&lt;a href=&#34;https://github.com/TencentBlueKing/bk-iam-saas&#34;&gt;蓝鲸权限中心&lt;/a&gt;, 参考了以下文章:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.b-list.org/weblog/2022/dec/19/boring-python-code-quality/&#34;&gt;https://www.b-list.org/weblog/2022/dec/19/boring-python-code-quality/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
     </item>
     
     <item>
@@ -1800,112 +2121,6 @@
         &lt;span class=&#34;n&#34;&gt;method&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;:&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;([&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_prefix&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_prefix&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;
         &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;lambda&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;重写下Client,实例化时添加可选的prefix参数来指定调用的Resources,通过&lt;code&gt;set_prefix&lt;/code&gt;方法来修改调用的Resources.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Django 优化杂谈</title>
-      <link>https://zhu327.github.io/2017/04/21/django-%E4%BC%98%E5%8C%96%E6%9D%82%E8%B0%88/</link>
-      <pubDate>Fri, 21 Apr 2017 11:19:30 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2017/04/21/django-%E4%BC%98%E5%8C%96%E6%9D%82%E8%B0%88/</guid>
-      <description>&lt;p&gt;总结下最近看过的一些文章,然后想到的一些优化点,整理一下.&lt;/p&gt;
-
-&lt;h3 id=&#34;数据库连接池&#34;&gt;数据库连接池&lt;/h3&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;http://mt.dbanotes.net/arch/instagram.html&#34;&gt;http://mt.dbanotes.net/arch/instagram.html&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Django 默认DB配置提供了选项&lt;code&gt;CONN_MAX_AGE&lt;/code&gt;用于配置在同一个thread/greenlet里面DB connection的最大存活时间,便于连接的复用,在实践中发现如果使用gunicorn+gevent的方式来启动WSGI服务,由于gunicorn会创建一个很大的gevent pool,导致数据库连接数会暴涨.所以这个选项被放弃了,另外的方式是使用connection pool.&lt;/p&gt;
-
-&lt;p&gt;instagram 使用 PostGreSQL 并且使用 Pgbouncer 这个中间件来管理连接池,MySQL也有Proxy这种中间件但是比较重,所以考虑在django mysql backend的基础上自己实现一个连接池.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38&#34;&gt;https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;主要参考了Connector/Python的pool实现.&lt;/p&gt;
-
-&lt;p&gt;数据库连接池也不是&amp;rdquo;银弹&amp;rdquo;,在应用层做数据库连接池也不值得推荐,随着业务的扩展,使用一主多备搭建集群,通过读写分类中间件来做连接池管理,推荐&lt;a href=&#34;https://github.com/sysown/proxysql&#34;&gt;ProxySQL&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;缓存一切&#34;&gt;缓存一切&lt;/h3&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;https://mozillazg.github.io/2015/09/high-performance-django-note-1.html&#34;&gt;https://mozillazg.github.io/2015/09/high-performance-django-note-1.html&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;从服务器的角度来看,我们可以用Nginx cache/Varnish来缓存响应.这里我们只讨论django cache framework.&lt;/p&gt;
-
-&lt;p&gt;我们的系统中使用redis作为缓存服务器,使用redis-py与django-redis作为cache backend.&lt;/p&gt;
-
-&lt;p&gt;redis-py是纯python实现的,查看了文档后发现它也支持使用一个C客户端的python绑定,只需要安装&lt;a href=&#34;https://github.com/redis/hiredis-py&#34;&gt;hiredis-py&lt;/a&gt;即可使用C解析器提升redis性能.&lt;/p&gt;
-
-&lt;p&gt;redis-py是自带connection pool支持的,默认使用&lt;code&gt;redis.connection.ConnectionPool&lt;/code&gt;,连接数较多的情况下可能导致连接不够用抛出异常,可以考虑用&lt;code&gt;redis.connection.BlockingConnectionPool&lt;/code&gt;替换,无连接可用时阻塞.&lt;/p&gt;
-
-&lt;h4 id=&#34;session&#34;&gt;Session&lt;/h4&gt;
-
-&lt;p&gt;Django 默认的 Session Engine 用的是数据库,因为Session中间件的缘故,每个请求进来都会首先访问Session表.我们可以用缓存来替代这个数据库访问的过程,推荐配置&lt;code&gt;SESSION_ENGINE = &#39;django.contrib.sessions.backends.cached_db&#39;&lt;/code&gt;即用了缓存,又保存到db保证数据不丢失.&lt;/p&gt;
-
-&lt;p&gt;Django 的 session 表在一段时间以后会数据会变得很大,需要定时执行&lt;code&gt;python manage.py clearsessions&lt;/code&gt;来清理过期session.&lt;/p&gt;
-
-&lt;h4 id=&#34;缓存model&#34;&gt;缓存Model&lt;/h4&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/rosarior/awesome-django&#34;&gt;https://github.com/rosarior/awesome-django&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;awesome-django有一些用户缓存的工具,翻过一些文档后决定引入&lt;a href=&#34;https://github.com/django-cache-machine/django-cache-machine&#34;&gt;django-cache-machine&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;访问频繁读多写少的Model要缓存&lt;/li&gt;
-&lt;li&gt;写多读少的Model酌情缓存(写的时候更新缓存开销大)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;日志&#34;&gt;日志&lt;/h3&gt;
-
-&lt;p&gt;Python的日志是同步的,所以如果直接把日志写入文件,也会有文件系统I/O的开销,更快的方式是把日志记录到&lt;code&gt;sys.stderr&lt;/code&gt;或&lt;code&gt;sys.stdout&lt;/code&gt;,然后用gunicorn把标准输出的日志重定向到文件.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 日志配置&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;logging&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;logging.config&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;sys&lt;/span&gt;
-
-&lt;span class=&#34;n&#34;&gt;LOGGING&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-    &lt;span class=&#34;s1&#34;&gt;&amp;#39;version&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-    &lt;span class=&#34;s1&#34;&gt;&amp;#39;handlers&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;s1&#34;&gt;&amp;#39;console&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-            &lt;span class=&#34;s1&#34;&gt;&amp;#39;class&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;logging.StreamHandler&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-            &lt;span class=&#34;s1&#34;&gt;&amp;#39;stream&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sys&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;stdout&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-    &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
-    &lt;span class=&#34;s1&#34;&gt;&amp;#39;root&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;s1&#34;&gt;&amp;#39;handlers&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;console&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt;
-        &lt;span class=&#34;s1&#34;&gt;&amp;#39;level&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;INFO&amp;#39;&lt;/span&gt;
-    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;gunicorn选项:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;http://docs.gunicorn.org/en/stable/settings.html#capture-output&#34;&gt;http://docs.gunicorn.org/en/stable/settings.html#capture-output&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&#34;celery&#34;&gt;Celery&lt;/h3&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;http://docs.jinkan.org/docs/celery/userguide/optimizing.html&#34;&gt;http://docs.jinkan.org/docs/celery/userguide/optimizing.html&lt;/a&gt;
-&lt;a href=&#34;https://blog.balthazar-rouberol.com/celery-best-practices&#34;&gt;https://blog.balthazar-rouberol.com/celery-best-practices&lt;/a&gt;
-&lt;a href=&#34;http://orangleliu.info/2014/08/09/celery-best-practice/&#34;&gt;http://orangleliu.info/2014/08/09/celery-best-practice/&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;安装 librabbitmq 提升amqp访问速度,路由长任务与短任务到不同的Queue,并配置不同的预取策略.使用&lt;a href=&#34;https://github.com/msgpack/msgpack-python&#34;&gt;msgpack&lt;/a&gt;来序列化消息,性能优于json.&lt;/p&gt;
-
-&lt;h3 id=&#34;gevent-与-mysqldb&#34;&gt;gevent 与 MySQLdb&lt;/h3&gt;
-
-&lt;p&gt;因为redis最够快,所以在gunicorn+gevent的服务器下使用redis C客户端绑定也没什么问题,但是MySQL就不一样了,为了让MySQLdb也能在gevent/greenlet下切换引入Douban的greenify库.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/douban/greenify&#34;&gt;https://github.com/douban/greenify&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;</description>
     </item>
     
   </channel>
