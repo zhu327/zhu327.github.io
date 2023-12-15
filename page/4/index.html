@@ -78,6 +78,32 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2017/04/21/django-%E4%BC%98%E5%8C%96%E6%9D%82%E8%B0%88/">Django 优化杂谈</a></h1>
+        <span class="post-date">Apr 21 2017</span>
+        <p>总结下最近看过的一些文章,然后想到的一些优化点,整理一下.</p>
+
+<h3 id="数据库连接池">数据库连接池</h3>
+
+<blockquote>
+<p><a href="http://mt.dbanotes.net/arch/instagram.html">http://mt.dbanotes.net/arch/instagram.html</a></p>
+</blockquote>
+
+<p>Django 默认DB配置提供了选项<code>CONN_MAX_AGE</code>用于配置在同一个thread/greenlet里面DB connection的最大存活时间,便于连接的复用,在实践中发现如果使用gunicorn+gevent的方式来启动WSGI服务,由于gunicorn会创建一个很大的gevent pool,导致数据库连接数会暴涨.所以这个选项被放弃了,另外的方式是使用connection pool.</p>
+
+<p>instagram 使用 PostGreSQL 并且使用 Pgbouncer 这个中间件来管理连接池,MySQL也有Proxy这种中间件但是比较重,所以考虑在django mysql backend的基础上自己实现一个连接池.</p>
+
+<blockquote>
+<p><a href="https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38">https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38</a></p>
+</blockquote>
+
+<p>主要参考了Connector/Python的pool实现.</p>
+
+<p>数据库连接池也不是&rdquo;银弹&rdquo;,在应用层做数据库连接池也不值得推荐,随着业务的扩展,使用一主多备搭建集群,通过读写分类中间件来做连接池管理,推荐<a href="https://github.com/sysown/proxysql">ProxySQL</a>.</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/">在Django中使用zerorpc</a></h1>
         <span class="post-date">Mar 31 2017</span>
         <h3 id="前言">前言</h3>
@@ -152,20 +178,6 @@
 <p>在上一篇<a href="https://zhu327.github.io/2016/09/25/greentor-mysql连接池实现/">greentor MySQL连接池实现</a>中已经实现了MySQL连接池，只需要重写Django MySQL backend以支持连接池，就能达到连接复用的目的，减少socket 3次握手的开销，提高性能。</p>
 
 <p><a href="https://github.com/zhu327/greentor/blob/master/demo/core/base.py">https://github.com/zhu327/greentor/blob/master/demo/core/base.py</a></p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/09/25/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0/">greentor MySQL连接池实现</a></h1>
-        <span class="post-date">Sep 25 2016</span>
-        <blockquote>
-<p><a href="https://en.wikipedia.org/wiki/Connection_pool">https://en.wikipedia.org/wiki/Connection_pool</a></p>
-</blockquote>
-
-<p>通过<a href="https://github.com/zhu327/greentor">greentor</a>实现了pymysql在Tornado上异步调用的过程后发现，每次建立数据库连接都会经过socket 3次握手，而每一次socket读写都会伴随着greenlet的切换，以及ioloop的callback过程，虽然是异步了，但是IO性能并没有提升，所以在研究了<a href="https://github.com/snower/TorMySQL">TorMySQL</a>连接池的实现后，实现了greentor自己的连接池。</p>
-
-<p><a href="https://github.com/zhu327/greentor/blob/master/greentor/green.py">https://github.com/zhu327/greentor/blob/master/greentor/green.py</a></p>
 
 <p></p>
     </div>

@@ -7,7 +7,7 @@
     <language>zh-cn</language>
     
     
-    <updated>Mon, 09 Jan 2023 15:53:52 &#43;0800</updated>
+    <updated>Fri, 15 Dec 2023 14:32:52 &#43;0800</updated>
     
     <item>
       <title>About</title>
@@ -28,6 +28,247 @@
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>RSS文艺复兴</title>
+      <link>https://zhu327.github.io/2023/12/15/rss%E6%96%87%E8%89%BA%E5%A4%8D%E5%85%B4/</link>
+      <pubDate>Fri, 15 Dec 2023 14:32:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2023/12/15/rss%E6%96%87%E8%89%BA%E5%A4%8D%E5%85%B4/</guid>
+      <description>&lt;h3 id=&#34;1-rss是什么&#34;&gt;1. RSS是什么&lt;/h3&gt;
+
+&lt;p&gt;RSS（Really Simple Syndication）是一种用于发布经常更新的工作的XML格式的文件的标准。这些文件通常包含新闻摘要、文章标题、链接和发布日期等信息。RSS提供了一种订阅机制，使用户能够轻松地跟踪他们关注的多个网站的最新更新，而无需定期访问这些网站。&lt;/p&gt;
+
+&lt;p&gt;尽管RSS在其创立初期非常受欢迎，但它逐渐失去了流行度。一些原因包括：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;社交媒体的兴起：&lt;/strong&gt; 随着社交媒体平台的发展，用户开始转向使用平台内的订阅和分享功能来获取和分享信息。社交媒体提供了更直观和交互性的方式来发现和分享内容。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;个性化推荐算法：&lt;/strong&gt; 许多网站和应用采用了个性化推荐算法，通过分析用户的行为和兴趣，推荐相关内容。这减少了用户需要手动订阅和管理的需求。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;信息过载：&lt;/strong&gt; 随着互联网上可用信息的不断增长，用户面临信息过载的问题。RSS的线性列表形式可能无法有效地处理大量信息，而个性化推荐算法能够更好地适应用户需求。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;移动应用的普及：&lt;/strong&gt; 移动应用的兴起使用户更倾向于使用专门的应用程序，而不是传统的RSS阅读器。这些应用通常提供更好的用户体验和功能。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;网站设计的变化：&lt;/strong&gt; 许多现代网站设计更加动态和交互式，而不仅仅是提供简单的文章列表。这样的设计可能使得传统的RSS阅读方式显得过时。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;需要注意的是，虽然RSS在一些领域可能不再是主流，但它仍然是一种强大的工具，特别是对于那些喜欢通过订阅方式跟踪特定网站更新的用户。一些应用和服务仍然提供对RSS的支持。流行度的变化可能因用户群体和使用场景而异。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;2-为什么我会重启rss&#34;&gt;2. 为什么我会重启RSS&lt;/h3&gt;
+
+&lt;p&gt;自从Google Reader关闭以来，我就放弃了使用RSS相关的应用。那时我开始关注知乎，早期的知乎回答质量还相当不错，而且没有推荐系统的干扰。过了一段时间，我接触到了即刻，这是一个非常出色的信息订阅工具，尤其是其机器人订阅功能，我甚至在即刻上创建了一些自定义机器人。然而，随着即刻的封禁，我一直未能找到类似的替代平台。&lt;/p&gt;
+
+&lt;p&gt;随着时间推移，我对知乎的推荐系统感到不满，它似乎越来越无法满足我的兴趣点。同时，我对机器推荐可能导致信息茧房效应的抵触也逐渐增强。因此，我开始考虑重新拾起RSS，重新探索这种传统的信息获取方式。重新回归RSS，我期望能够更自主地管理我所关注的内容，摆脱推荐算法的限制，以更自由和个性化的方式获取信息。&lt;/p&gt;
+
+&lt;p&gt;尽管RSS在一段时间内逐渐式微，但一些新的开源项目让我重新关注了这一技术。首先是 &lt;a href=&#34;https://github.com/DIYgod/RSSHub&#34;&gt;RSSHub&lt;/a&gt;，这是一个强大的RSS转换代理工具，可以将各种网站的信息转换成RSS格式，便于订阅。更令人兴奋的是，它提供了一个强大而易用的RSS开发框架，使懂编程的用户甚至可以轻松地创建自己的RSS订阅源。&lt;/p&gt;
+
+&lt;p&gt;其次是 &lt;a href=&#34;https://github.com/miniflux/v2&#34;&gt;Miniflux&lt;/a&gt;，这是一个专注于RSS源订阅的工具。它定时从订阅源获取数据，并通过Google Reader API将数据提供给RSS阅读器。除了基本的订阅功能外，Miniflux还支持自定义文章全文爬取，解决了一些RSS源无法提供全文阅读的问题。&lt;/p&gt;
+
+&lt;p&gt;这些开源项目为重新探索RSS提供了新的可能性，使得我们可以更加灵活和个性化地管理和获取我们关注的信息。虽然RSS在一度被边缘化，但这些项目的出现为其注入了新的活力。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-部署rsshub与miniflux&#34;&gt;3. 部署RSSHub与Miniflux&lt;/h3&gt;
+
+&lt;h4 id=&#34;rsshub&#34;&gt;RSSHub&lt;/h4&gt;
+
+&lt;p&gt;在&lt;a href=&#34;https://vercel.com&#34;&gt;Vercel&lt;/a&gt;上部署RSSHub是相对简单的任务，有许多相关的教程可供参考，这里不再详细赘述。你可以查阅这篇博客文章作为参考: &lt;a href=&#34;https://www.cnblogs.com/QiuSYan/p/RssHub.html&#34;&gt;《在Vercel上部署RSSHub》&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&#34;miniflux&#34;&gt;Miniflux&lt;/h4&gt;
+
+&lt;p&gt;相比之下，部署Miniflux稍微复杂一些，因为它依赖于Postgres数据库。推荐使用&lt;a href=&#34;https://supabase.com&#34;&gt;Supabase&lt;/a&gt;提供的Postgres数据库，它提供了最大500MB的免费数据库，足够我们正常使用。你可以参考这篇文章来创建Supabase数据库: &lt;a href=&#34;https://blog.cysi.me/2022/05/build-miniflux-rss-on-railway.html&#34;&gt;《在Railway上搭建Miniflux RSS阅读器》&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;Miniflux推荐部署在&lt;a href=&#34;https://fly.io&#34;&gt;fly.io&lt;/a&gt;，这是一个提供免费额度的应用部署平台。具体部署步骤可以参考官方文档。以下是一个示例的&lt;code&gt;fly.toml&lt;/code&gt;文件供参考：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span class=&#34;nx&#34;&gt;app&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;your_app_name&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;primary_region&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;sea&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;kill_signal&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;SIGINT&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;kill_timeout&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;5s&amp;#34;&lt;/span&gt;
+
+&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;experimental&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;auto_rollback&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;
+
+&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;build&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;image&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;miniflux/miniflux:latest&amp;#34;&lt;/span&gt;
+
+&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;BASE_URL&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://your_app_name.fly.dev&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;CLEANUP_ARCHIVE_READ_DAYS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;15&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;CLEANUP_ARCHIVE_UNREAD_DAYS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;30&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;DATABASE_URL&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;your_supabase_postgres_url&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;HTTPS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;true&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;POLLING_FREQUENCY&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;30&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;POLLING_PARSING_ERROR_LIMIT&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;POLLING_SCHEDULER&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;entry_frequency&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;PORT&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;8080&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;RUN_MIGRATIONS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;true&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;SCHEDULER_ENTRY_FREQUENCY_MAX_INTERVAL&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;60&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;c&#34;&gt;# 以下配置在初次部署时填写, 第二次部署时需要删除&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;CREATE_ADMIN&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;ADMIN_PASSWORD&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;your_admin_password&amp;#34;&lt;/span&gt;
+
+&lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;protocol&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;tcp&amp;#34;&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;internal_port&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8080&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;processes&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;app&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+
+  &lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ports&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;80&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;handlers&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;http&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+
+  &lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ports&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;443&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;handlers&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;tls&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;http&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;concurrency&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;connections&amp;#34;&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;hard_limit&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;25&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;soft_limit&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;20&lt;/span&gt;
+
+  &lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;tcp_checks&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;interval&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;15s&amp;#34;&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;timeout&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;2s&amp;#34;&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;grace_period&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;1s&amp;#34;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;至此，我们零成本拥有了自己的RSS订阅平台。Miniflux本身非常适合在浏览器上访问，在手机端推荐使用&lt;a href=&#34;https://apps.apple.com/us/app/reeder-5/id1529445840&#34;&gt;Reedr&lt;/a&gt;，提供了完美的阅读体验。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-我的订阅源分享&#34;&gt;4. 我的订阅源分享&lt;/h3&gt;
+
+&lt;p&gt;我的订阅源大致可分为几个主要类别：新闻、日报、深度阅读、科技和娱乐。这些分类涵盖了中外各种媒体的新闻报道、每日热点事件、高质量文章、科技趋势和娱乐评论。&lt;/p&gt;
+
+&lt;h4 id=&#34;新闻&#34;&gt;新闻&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;华尔街日报&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;美国主流叙事媒体&lt;/li&gt;
+&lt;li&gt;数据来源: &lt;a href=&#34;https://agora0.gitlab.io/news/wsj/&#34;&gt;零新闻&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;RSSHub路由: &lt;code&gt;/agora0/wsj&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;在Miniflux设置抓取全文，抓取规则 &lt;code&gt;div.post-content&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以支持该路由&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;联合早报&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;新加坡相对中立媒体&lt;/li&gt;
+&lt;li&gt;RSSHub路由: &lt;code&gt;/zaobao/znews/china&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;竹新社&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;24小时提供中外媒体中国新闻，相对中立&lt;/li&gt;
+&lt;li&gt;RSSHub路由: &lt;code&gt;/telegram/channel/tnews365&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;抽屉新热榜&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;国内热点事件，相对符合我的兴趣点&lt;/li&gt;
+&lt;li&gt;RSSHub路由: &lt;code&gt;/chouti/hot&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;日报&#34;&gt;日报&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;即刻资讯台&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;每天早上发布前一点的热点新闻和即刻热文&lt;/li&gt;
+&lt;li&gt;RSSHub路由: &lt;code&gt;/jike/user/wenhao1996&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以获取更完整的数据&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;喷嚏图卦&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;每天下午发布当天的国内热点事件&lt;/li&gt;
+&lt;li&gt;RSSHub路由: &lt;code&gt;/dapenti/tugua&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以获取更及时的数据&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;iDaily 每日环球视野&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;每天傍晚发布当天环球热点新闻图&lt;/li&gt;
+&lt;li&gt;RSSHub路由: &lt;code&gt;/jike/user/wenhao1996&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以获取更美观的排版&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;深度阅读&#34;&gt;深度阅读&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;虎嗅网热榜&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;虎扑每日热门文章&lt;/li&gt;
+&lt;li&gt;RSSHub路由: &lt;code&gt;/huxiu/tophub?limit=10&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以支持该路由&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;晚点LatePost&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;深度科技报道&lt;/li&gt;
+&lt;li&gt;RSSHub路由: &lt;code&gt;/latepost&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;腾讯新闻深网&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;深度科技报道&lt;/li&gt;
+&lt;li&gt;RSSHub路由: &lt;code&gt;/tencent/news/author/5157372&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;互联网怪盗团&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;深度科技报道&lt;/li&gt;
+&lt;li&gt;RSSHub路由: &lt;code&gt;/tencent/news/author/16802833&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;科技&#34;&gt;科技&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Hack News&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://hnrss.github.io&#34;&gt;Hack News RSS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;使用 &lt;a href=&#34;https://www.rsstranslator.com&#34;&gt;RSSTranslator&lt;/a&gt; 工具将标题翻译为中文，最终订阅地址: &lt;a href=&#34;https://rsstranslator.com/rss/6531a79e107aa592d8fa&#34;&gt;Hack News 中文翻译&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;娱乐&#34;&gt;娱乐&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;豆瓣最受欢迎的书评&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.douban.com/feed/review/book&#34;&gt;豆瓣最受欢迎的书评&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;在Miniflux设置中覆盖默认的用户代理，并抓取全文，抓取规则 &lt;code&gt;div.main-bd&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;豆瓣最受欢迎的影评&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.douban.com/feed/review/movie&#34;&gt;豆瓣最受欢迎的影评&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;在Miniflux设置中覆盖默认的用户代理，并抓取全文，抓取规则 &lt;code&gt;div.main-bd&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;通过这些订阅源，我能够获得来自各个领域的精选内容，确保我的信息获取更加多元化和个性化。如果你对其中任何一个订阅感兴趣，可以根据提供的路由或链接添加到你的RSS阅读器中。&lt;/p&gt;
+
+&lt;h3 id=&#34;5-总结&#34;&gt;5. 总结&lt;/h3&gt;
+
+&lt;p&gt;RSS是一种用于发布经常更新的工作的XML格式的文件的标准，它提供了一种订阅机制，使用户能够轻松地跟踪他们关注的多个网站的最新更新。近年来，随着社交媒体的兴起和个性化推荐算法的发展，RSS逐渐失去了流行度。然而，一些新的开源项目为RSS注入了新的活力，使其又重新受到关注。&lt;/p&gt;
+
+&lt;p&gt;本文介绍了RSSHub和Miniflux这两个开源项目，并提供了它们的部署步骤和我的订阅源分享。希望这篇文章能够帮助读者重新了解RSS，并找到适合自己的RSS阅读方式。&lt;/p&gt;
+
+&lt;p&gt;注: 这基本上就是一篇由ChatGPT帮忙写的文章!&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2053,74 +2294,6 @@ serve:
 &lt;h3 id=&#34;生活&#34;&gt;生活&lt;/h3&gt;
 
 &lt;p&gt;嗯,在七夕之前脱单了,从此过上没羞没臊的生活(大雾).&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>zerorpc api设计指南</title>
-      <link>https://zhu327.github.io/2017/05/08/zerorpc-api%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97/</link>
-      <pubDate>Mon, 08 May 2017 15:19:58 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2017/05/08/zerorpc-api%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;http://tailnode.tk/2017/03/google-api-design-guide/contents/&#34;&gt;Google API 设计指南&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&#34;https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/&#34;&gt;在Django中使用zerorpc&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;之前实现了在Django环境下使用zerorpc的封装,api的组织单位是function.受到Google API 设计指南的启发,重新设计了一种基于Resources的api组织风格,并且约定Resource的方法名与Django Rest Framework的ViewSets中实现的action名称一致.&lt;/p&gt;
-
-&lt;p&gt;zerorpc默认只能在同一个Server上面注册一个对象,而我们需要注册多个类(一个类表示一Resources),在阅读zerorpc Server的代码后,想到一个简单的方式来注册Resources.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;zerorpc&lt;/span&gt;
-
-&lt;span class=&#34;n&#34;&gt;_methods&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
-
-
-&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;register&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;cls&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;obj&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;cls&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;prefix&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;cls&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;vm&#34;&gt;__name__&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;_methods&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;update&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;({&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;{}:{}&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;format&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;prefix&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;k&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;getattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;obj&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;k&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-                     &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;k&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;dir&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;obj&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-                     &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;k&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;startswith&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;callable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;getattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;obj&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;k&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))})&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;cls&lt;/span&gt;
-
-&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;vm&#34;&gt;__name__&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-    &lt;span class=&#34;nd&#34;&gt;@register&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Test&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;add&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;
-
-    &lt;span class=&#34;n&#34;&gt;server&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;zerorpc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Server&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_methods&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;heartbeat&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;30&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;server&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;tcp://{0}:{1}&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;format&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;127.0.0.1&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;4242&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;server&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;通过在方法名前增加类名称前缀在Server的&lt;code&gt;_methods&lt;/code&gt;字典里面增加了&lt;code&gt;Class:method&lt;/code&gt;格式的调用方法.这样就实现了注册多个类到zerorpc Server.&lt;/p&gt;
-
-&lt;h4 id=&#34;约定&#34;&gt;约定&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;每个类代表一个Resources&lt;/li&gt;
-&lt;li&gt;方法名称&lt;strong&gt;create,list,retrieve,update,destroy&lt;/strong&gt;分别对应于创建,列表,详情,更新,删除操作&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;约定尽量切合DRF已有的风格,不需要暴露的方法以&lt;code&gt;_&lt;/code&gt;开头.&lt;/p&gt;
-
-&lt;h4 id=&#34;调用&#34;&gt;调用&lt;/h4&gt;
-
-&lt;p&gt;还需要改造下Client端,因为默认的Client不能直接使用&lt;code&gt;class:method&lt;/code&gt;的方法名来调用rpc api&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;zerorpc&lt;/span&gt;
-
-&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Client&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;zerorpc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Client&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__init__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_prefix&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;prefix&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-        &lt;span class=&#34;nb&#34;&gt;super&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Client&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;fm&#34;&gt;__init__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;set_prefix&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;prefix&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_prefix&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;prefix&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__getattr__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;method&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;:&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;([&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_prefix&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_prefix&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;lambda&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;重写下Client,实例化时添加可选的prefix参数来指定调用的Resources,通过&lt;code&gt;set_prefix&lt;/code&gt;方法来修改调用的Resources.&lt;/p&gt;</description>
     </item>
     
   </channel>
