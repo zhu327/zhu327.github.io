@@ -12,6 +12,7 @@ ChatGPT已经发布了一年有余，成为有史以来用户增长最快的互�
 一些影响我ChatGPT之旅的值得一提的资源包括[OpenAI官方指南：如何提高ChatGPT的输出质量](https://www.huxiu.com/article/2440157.html)，一篇关于[2023年OpenAI GPT-3最热门应用案例的文章](https://blog.wordbot.io/ai-artificial-intelligence/openai-gpt-3-top-22-trending-use-case-ideas-in-2022/)，以及GitHub上的[GPT提示列表](https://github.com/linexjlin/GPTs)。
 
 在我的日常工作中，我利用ChatGPT做了很多事情：
+
 - 它成为我在编写代码过程中查找相关文档的首选工具，替代了传统搜索引擎的需求。
 - 它轻松帮助我进行中英文翻译，充分发挥了其语言处理能力。
 - 在数据分析中，它高效地协助我处理复杂的SQL查询。
