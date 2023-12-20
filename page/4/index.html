@@ -78,6 +78,21 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2017/05/08/zerorpc-api%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97/">zerorpc api设计指南</a></h1>
+        <span class="post-date">May 8 2017</span>
+        <blockquote>
+<p><a href="http://tailnode.tk/2017/03/google-api-design-guide/contents/">Google API 设计指南</a><br />
+<a href="https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/">在Django中使用zerorpc</a></p>
+</blockquote>
+
+<p>之前实现了在Django环境下使用zerorpc的封装,api的组织单位是function.受到Google API 设计指南的启发,重新设计了一种基于Resources的api组织风格,并且约定Resource的方法名与Django Rest Framework的ViewSets中实现的action名称一致.</p>
+
+<p>zerorpc默认只能在同一个Server上面注册一个对象,而我们需要注册多个类(一个类表示一Resources),在阅读zerorpc Server的代码后,想到一个简单的方式来注册Resources.</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2017/04/21/django-%E4%BC%98%E5%8C%96%E6%9D%82%E8%B0%88/">Django 优化杂谈</a></h1>
         <span class="post-date">Apr 21 2017</span>
         <p>总结下最近看过的一些文章,然后想到的一些优化点,整理一下.</p>
@@ -166,18 +181,6 @@
 
 <p>董明伟基于自己实践讲的知乎live为Python新人提供了很多实用建议，他推荐的<a href="http://open.163.com/movie/2015/7/B/M/MATL76APV_MATL8FCBM.html">罗子雄：如何成为一名优秀设计师</a>的演讲讲的非常好，总结了设计师从入门到提高的优秀实践。<br />
 罗子雄的演讲我看了三遍，再结合自己的程序员生涯，我想我也可以为Python新人提供一些建议，开了<strong>如何成为一名优秀的程序员</strong>一题，讲讲我的Python工程师之路。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/09/25/django-db%E4%BD%BF%E7%94%A8mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/">Django db使用MySQL连接池</a></h1>
-        <span class="post-date">Sep 25 2016</span>
-        <p>Django db模块本身不支持MySQL连接池，只有一个配置<code>CONN_MAX_AGE</code>连接最大存活时间，如果WSGI服务器使用了线程池技术，会达到连接复用的效果。但是如果WSGI服务如果是每个请求都创建新的线程，那么这个配置没有任何效果，因为连接保存在<code>Thread.local()</code>名称空间中，在不同的线程中不能复用。</p>
-
-<p>在上一篇<a href="https://zhu327.github.io/2016/09/25/greentor-mysql连接池实现/">greentor MySQL连接池实现</a>中已经实现了MySQL连接池，只需要重写Django MySQL backend以支持连接池，就能达到连接复用的目的，减少socket 3次握手的开销，提高性能。</p>
-
-<p><a href="https://github.com/zhu327/greentor/blob/master/demo/core/base.py">https://github.com/zhu327/greentor/blob/master/demo/core/base.py</a></p>
 
 <p></p>
     </div>

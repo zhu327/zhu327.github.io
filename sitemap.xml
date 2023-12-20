@@ -7,6 +7,11 @@
   </url>
   
   <url>
+    <loc>https://zhu327.github.io/2023/12/20/%E9%9B%B6%E6%88%90%E6%9C%AC%E4%BD%BF%E7%94%A8openai-api/</loc>
+    <lastmod>2023-12-20T15:25:52+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://zhu327.github.io/2023/12/15/rss%E6%96%87%E8%89%BA%E5%A4%8D%E5%85%B4/</loc>
     <lastmod>2023-12-15T14:32:52+08:00</lastmod>
   </url>
@@ -378,7 +383,7 @@
   
   <url>
     <loc>https://zhu327.github.io/</loc>
-    <lastmod>2023-12-15T14:32:52+08:00</lastmod>
+    <lastmod>2023-12-20T15:25:52+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -478,8 +483,14 @@
   </url>
   
   <url>
+    <loc>https://zhu327.github.io/tags/openai/</loc>
+    <lastmod>2023-12-20T15:25:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://zhu327.github.io/post/</loc>
-    <lastmod>2023-12-15T14:32:52+08:00</lastmod>
+    <lastmod>2023-12-20T15:25:52+08:00</lastmod>
     <priority>0</priority>
   </url>
   

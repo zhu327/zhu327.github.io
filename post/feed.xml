@@ -6,10 +6,32 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 15 Dec 2023 14:32:52 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 20 Dec 2023 15:25:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>零成本使用OpenAI API</title>
+      <link>https://zhu327.github.io/2023/12/20/%E9%9B%B6%E6%88%90%E6%9C%AC%E4%BD%BF%E7%94%A8openai-api/</link>
+      <pubDate>Wed, 20 Dec 2023 15:25:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2023/12/20/%E9%9B%B6%E6%88%90%E6%9C%AC%E4%BD%BF%E7%94%A8openai-api/</guid>
+      <description>&lt;h3 id=&#34;1-openai-chatgpt&#34;&gt;1. OpenAI ChatGPT&lt;/h3&gt;
+
+&lt;p&gt;ChatGPT已经发布了一年有余，成为有史以来用户增长最快的互联网产品。如果到了2023年你还没有使用过ChatGPT，可能你已经远离了互联网的中心。ChatGPT的发布与更新深刻改变了我的工作方式。我学到了如何撰写高效的提示，发现了ChatGPT的最佳应用场景，并在GitHub上探索了最佳实践。&lt;/p&gt;
+
+&lt;p&gt;一些影响我ChatGPT之旅的值得一提的资源包括&lt;a href=&#34;https://www.huxiu.com/article/2440157.html&#34;&gt;OpenAI官方指南：如何提高ChatGPT的输出质量&lt;/a&gt;，一篇关于&lt;a href=&#34;https://blog.wordbot.io/ai-artificial-intelligence/openai-gpt-3-top-22-trending-use-case-ideas-in-2022/&#34;&gt;2023年OpenAI GPT-3最热门应用案例的文章&lt;/a&gt;，以及GitHub上的&lt;a href=&#34;https://github.com/linexjlin/GPTs&#34;&gt;GPT提示列表&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;在我的日常工作中，我利用ChatGPT做了很多事情：
+- 它成为我在编写代码过程中查找相关文档的首选工具，替代了传统搜索引擎的需求。
+- 它轻松帮助我进行中英文翻译，充分发挥了其语言处理能力。
+- 在数据分析中，它高效地协助我处理复杂的SQL查询。&lt;/p&gt;
+
+&lt;p&gt;尽管我已经是一个长时间的用户，但我仍然保持在免费计划上，没有选择Plus，也没有使用OpenAI API。由于ChatGPT的充值的限制，我尚未探索基于OpenAI API构建的众多AI工具和插件。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>RSS文艺复兴</title>
