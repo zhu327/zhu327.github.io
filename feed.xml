@@ -42,10 +42,13 @@
 
 &lt;p&gt;一些影响我ChatGPT之旅的值得一提的资源包括&lt;a href=&#34;https://www.huxiu.com/article/2440157.html&#34;&gt;OpenAI官方指南：如何提高ChatGPT的输出质量&lt;/a&gt;，一篇关于&lt;a href=&#34;https://blog.wordbot.io/ai-artificial-intelligence/openai-gpt-3-top-22-trending-use-case-ideas-in-2022/&#34;&gt;2023年OpenAI GPT-3最热门应用案例的文章&lt;/a&gt;，以及GitHub上的&lt;a href=&#34;https://github.com/linexjlin/GPTs&#34;&gt;GPT提示列表&lt;/a&gt;。&lt;/p&gt;
 
-&lt;p&gt;在我的日常工作中，我利用ChatGPT做了很多事情：
-- 它成为我在编写代码过程中查找相关文档的首选工具，替代了传统搜索引擎的需求。
-- 它轻松帮助我进行中英文翻译，充分发挥了其语言处理能力。
-- 在数据分析中，它高效地协助我处理复杂的SQL查询。&lt;/p&gt;
+&lt;p&gt;在我的日常工作中，我利用ChatGPT做了很多事情：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;它成为我在编写代码过程中查找相关文档的首选工具，替代了传统搜索引擎的需求。&lt;/li&gt;
+&lt;li&gt;它轻松帮助我进行中英文翻译，充分发挥了其语言处理能力。&lt;/li&gt;
+&lt;li&gt;在数据分析中，它高效地协助我处理复杂的SQL查询。&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;尽管我已经是一个长时间的用户，但我仍然保持在免费计划上，没有选择Plus，也没有使用OpenAI API。由于ChatGPT的充值的限制，我尚未探索基于OpenAI API构建的众多AI工具和插件。&lt;/p&gt;
 
