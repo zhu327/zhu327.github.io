@@ -29,7 +29,7 @@ Gemini Pro是最近由Google发布的大型语言模型，作为ChatGPT的竞争
 
 鉴于OpenAI API已经成为事实上大型模型API协议的标准，市面上许多AI工具和插件仅支持OpenAI API。然而，作为新兴竞品，Gemini Pro API尚未得到众多AI工具的支持。因此，我开发了Gemini-OpenAI-Proxy这个协议转换代理，以帮助各种AI工具能够使用Gemini Pro API。
 
-GitHub链接：[Gemini-OpenAI-Proxy](https://github.com/Coderbaobao/gemini-openai-proxy)
+GitHub链接：[Gemini-OpenAI-Proxy](https://github.com/zhu327/gemini-openai-proxy)
 
 这个工具具备优秀的OpenAI API兼容性，只需在[Google AI平台](https://ai.google.dev/)上申请一个API KEY，就可以像使用OpenAI API一样轻松使用Gemini Pro API。
 
