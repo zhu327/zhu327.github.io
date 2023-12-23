@@ -6,10 +6,59 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 20 Dec 2023 15:25:52 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 23 Dec 2023 15:25:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>透明代理实践：技术小结与方案演进</title>
+      <link>https://zhu327.github.io/2023/12/23/%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86%E5%AE%9E%E8%B7%B5%E6%8A%80%E6%9C%AF%E5%B0%8F%E7%BB%93%E4%B8%8E%E6%96%B9%E6%A1%88%E6%BC%94%E8%BF%9B/</link>
+      <pubDate>Sat, 23 Dec 2023 15:25:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2023/12/23/%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86%E5%AE%9E%E8%B7%B5%E6%8A%80%E6%9C%AF%E5%B0%8F%E7%BB%93%E4%B8%8E%E6%96%B9%E6%A1%88%E6%BC%94%E8%BF%9B/</guid>
+      <description>&lt;h3 id=&#34;1-路由拓扑&#34;&gt;1. 路由拓扑&lt;/h3&gt;
+
+&lt;p&gt;在家中，我们采用了中国移动提供的千兆宽带服务，通过移动自带的光猫进行拨号连接。紧随其后是一台搭载OpenWRT系统的路由器，负责管理Wi-Fi以及局域网的网络地址转换（NAT）。由于光猫已占用了192.168.1.1网段，我们将路由器配置为192.168.2.1，以便更好地管理IPv4流量。在IPv4网络中，数据流经过光猫和路由器的双层NAT进行处理。&lt;/p&gt;
+
+&lt;p&gt;对于IPv6网络，由于路由器无法直接获取地址前缀，我们配置了IPv6 DHCP Relay功能，确保局域网内的每个设备都能够获取IPv6地址。&lt;/p&gt;
+
+&lt;p&gt;以下是我们在OpenWRT路由器上的相关配置：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# cat /etc/config/network
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;config interface &lt;span class=&#34;s1&#34;&gt;&amp;#39;lan&amp;#39;&lt;/span&gt;
+	option &lt;span class=&#34;nb&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;bridge&amp;#39;&lt;/span&gt;
+	option ifname &lt;span class=&#34;s1&#34;&gt;&amp;#39;eth0 ra0 ra1 rai0 rai1&amp;#39;&lt;/span&gt;
+	option proto &lt;span class=&#34;s1&#34;&gt;&amp;#39;static&amp;#39;&lt;/span&gt;
+	option netmask &lt;span class=&#34;s1&#34;&gt;&amp;#39;255.255.255.0&amp;#39;&lt;/span&gt;
+	option ipaddr &lt;span class=&#34;s1&#34;&gt;&amp;#39;192.168.2.1&amp;#39;&lt;/span&gt;
+	option macaddr &lt;span class=&#34;s1&#34;&gt;&amp;#39;C8:BF:4C:87:EE:68&amp;#39;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在这里，我们通过将LAN口的MAC地址固定设置，以避免LAN IPv6地址的变化。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# cat /etc/config/dhcp
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;config dhcp &lt;span class=&#34;s1&#34;&gt;&amp;#39;lan&amp;#39;&lt;/span&gt;
+	option interface &lt;span class=&#34;s1&#34;&gt;&amp;#39;lan&amp;#39;&lt;/span&gt;
+	option start &lt;span class=&#34;s1&#34;&gt;&amp;#39;100&amp;#39;&lt;/span&gt;
+	option limit &lt;span class=&#34;s1&#34;&gt;&amp;#39;150&amp;#39;&lt;/span&gt;
+	option leasetime &lt;span class=&#34;s1&#34;&gt;&amp;#39;12h&amp;#39;&lt;/span&gt;
+	option ra_slaac &lt;span class=&#34;s1&#34;&gt;&amp;#39;1&amp;#39;&lt;/span&gt;
+	list ra_flags &lt;span class=&#34;s1&#34;&gt;&amp;#39;managed-config&amp;#39;&lt;/span&gt;
+	list ra_flags &lt;span class=&#34;s1&#34;&gt;&amp;#39;other-config&amp;#39;&lt;/span&gt;
+	option ra &lt;span class=&#34;s1&#34;&gt;&amp;#39;relay&amp;#39;&lt;/span&gt;
+	option ndp &lt;span class=&#34;s1&#34;&gt;&amp;#39;relay&amp;#39;&lt;/span&gt;
+	option dhcpv6 &lt;span class=&#34;s1&#34;&gt;&amp;#39;relay&amp;#39;&lt;/span&gt;
+	option force &lt;span class=&#34;s1&#34;&gt;&amp;#39;1&amp;#39;&lt;/span&gt;
+	list dns &lt;span class=&#34;s1&#34;&gt;&amp;#39;fe80::cabf:4cff:fe87:ee68&amp;#39;&lt;/span&gt;
+
+config dhcp &lt;span class=&#34;s1&#34;&gt;&amp;#39;wan&amp;#39;&lt;/span&gt;
+	option interface &lt;span class=&#34;s1&#34;&gt;&amp;#39;wan&amp;#39;&lt;/span&gt;
+	option ignore &lt;span class=&#34;s1&#34;&gt;&amp;#39;1&amp;#39;&lt;/span&gt;
+	option dhcpv6 &lt;span class=&#34;s1&#34;&gt;&amp;#39;relay&amp;#39;&lt;/span&gt;
+	option ra &lt;span class=&#34;s1&#34;&gt;&amp;#39;relay&amp;#39;&lt;/span&gt;
+	option ndp &lt;span class=&#34;s1&#34;&gt;&amp;#39;relay&amp;#39;&lt;/span&gt;
+	option master &lt;span class=&#34;s1&#34;&gt;&amp;#39;1&amp;#39;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;此处，我们配置了IPv6 DHCP Relay功能，直接从光猫获取IPv6地址，并指定LAN口IPv6地址作为IPv6 DNS通告，以确保局域网内的设备的DNS配置无论是IPv4还是IPv6地址都是OpenWRT路由器。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>零成本使用OpenAI API</title>
