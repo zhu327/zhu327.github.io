@@ -17,14 +17,9 @@
       <pubDate>Wed, 10 Jan 2024 10:55:52 +0800</pubDate>
       
       <guid>https://zhu327.github.io/2024/01/10/2023%E5%B9%B4%E9%98%85%E8%AF%BB%E5%88%86%E4%BA%AB%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98%E7%BC%96%E7%A8%8B%E4%B9%8B%E9%81%93/</guid>
-      <description>2023年阅读分享：深度挖掘编程之道 作为一个热衷于技术的程序员博主，我在2023年迎来了全新的阅读体验，将RSS作为我的主要信息源，并通过订阅Hacker News热门主题，持续深入英文技术文章的阅读。在这个过程中，我发现了一些真正精彩的文章，这些不仅仅是知识的积累，更是对编程之路的深刻思考。在这里，我将其中一些我认为值得分享的文章整理出来，推荐给各位看官，希望你们在学习中找到灵感，不断进步。
-基础篇  Database Fundamentals
- 在这篇文章中，作者深入浅出地介绍了数据库基础知识，对于构建稳健的数据存储系统至关重要。  How does Linux start a process
- 深入理解Linux启动过程，从操作系统的角度探究进程的创建机制，对于理解底层原理有着重要的启发。  How Container Networking Works - Building a Linux Bridge Network From Scratch
- 这篇教程详细讲解了如何从零开始构建一个Linux桥接网络，深入了解容器网络背后的原理。  有关 TLS/SSL 证书的一切
- 对于网络安全至关重要的TLS/SSL证书，本文涵盖了与之相关的方方面面，是一份权威的参考资料。  Learning Async Rust With Entirely Too Many Web Servers
- Rust语言异步编程的学习之旅，通过构建多个Web服务器的过程，帮助读者更好地理解异步编程的精髓。   技巧篇  Supercharge Your Django App: 7 Sneaky Tricks to Crush Slow Database Queries
- Django应用性能优化的七个技巧，解决慢查询问题，提升应用的响应速度。  Kraken Technologies: How we organize our very large Python monolith</description>
+      <description>&lt;p&gt;作为一个热衷于技术的程序员博主，我在2023年迎来了全新的阅读体验，将RSS作为我的主要信息源，并通过订阅Hacker News热门主题，持续深入英文技术文章的阅读。在这个过程中，我发现了一些真正精彩的文章，这些不仅仅是知识的积累，更是对编程之路的深刻思考。在这里，我将其中一些我认为值得分享的文章整理出来，推荐给各位看官，希望你们在学习中找到灵感，不断进步。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
