@@ -7,7 +7,7 @@
     <language>zh-cn</language>
     
     
-    <updated>Wed, 10 Jan 2024 10:55:52 &#43;0800</updated>
+    <updated>Wed, 10 Apr 2024 10:55:52 &#43;0800</updated>
     
     <item>
       <title>About</title>
@@ -28,6 +28,23 @@
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>玩转 HackNews：如何正确订阅科技新闻</title>
+      <link>https://zhu327.github.io/2024/04/10/%E7%8E%A9%E8%BD%AC-hacknews%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%A2%E9%98%85%E7%A7%91%E6%8A%80%E6%96%B0%E9%97%BB/</link>
+      <pubDate>Wed, 10 Apr 2024 10:55:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/04/10/%E7%8E%A9%E8%BD%AC-hacknews%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%A2%E9%98%85%E7%A7%91%E6%8A%80%E6%96%B0%E9%97%BB/</guid>
+      <description>&lt;p&gt;近日，我在探索 HackNews 的过程中，收获了大量的新知识。然而，我发现自动订阅的 HackNews RSS 源并没有对热门话题进行筛选，导致我的 RSS 阅读器里充斥着我不感兴趣的话题。于是，我开始寻找适合自己的 HackNews RSS 订阅源。在众多选择中，我发现了 &lt;a href=&#34;https://hnrss.org/newest?points=100&#34;&gt;https://hnrss.org/newest?points=100&lt;/a&gt;，这个源只推送热门话题，非常适合我。然而，由于全英文阅读有些繁琐，我又找到了 &lt;a href=&#34;https://rsstranslator.com/&#34;&gt;https://rsstranslator.com/&lt;/a&gt; 这个提供翻译服务的网站，能将 HackNews 翻译成中文标题，非常便捷。但不幸的是，由于访问量过大，该网站已关闭服务并开源代码。在尝试了各种工具后未果，我决定自己动手解决这个问题。然而，我又不希望维护独立的服务，而刚好 &lt;a href=&#34;https://blog.cloudflare.com/python-workers&#34;&gt;Cloudflare Workers 开始支持 Python&lt;/a&gt;，于是我决定使用 Cloudflare Workers 来实现这个服务。在评估了各种翻译 API 后，我选择了 Microsoft Azure 翻译 API，实现了免费翻译的功能。最终，我完成了这个项目 &lt;a href=&#34;https://github.com/zhu327/workers-hnrss&#34;&gt;workers-hnrss&lt;/a&gt;，并且完全零成本部署。但在部署过程中，我发现 Cloudflare Workers 还不支持 &lt;code&gt;requirements.txt&lt;/code&gt;，不过据他们的文档称，再过几周就会支持，所以我决定再等等，然后就可以在我的 RSS 阅读器上读到中文标题的 HackNews 了。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;在寻找 HackNews RSS 的过程中，我还发现了 &lt;a href=&#34;https://hackernewsrecap.buzzsprout.com/&#34;&gt;https://hackernewsrecap.buzzsprout.com/&lt;/a&gt;，这是一个由 AI 生成的每日 HackNews 语音摘要播客。然而，同样是全英文的，我曾考虑通过 TTS 将其转换为文本，然后使用 Gemini API 翻译成中文，并定时推送成 HackNews 中文摘要播客。但在评估了各种 TTS API 后，发现长语音转文本的成本有点大，并且工程难度也不小，所以我放弃了这个想法。然而，最近我发现有人已经实现了我想做的事，并且中文效果相当流畅。并且有伴随语音和图文内容，非常不错。而且 RSSHub 也支持将其转换为 RSS，所以我也在 RSS 阅读器上订阅了这个内容。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.xiaoyuzhoufm.com/podcast/6456fdfc0a8e51c73e68d0cd&#34;&gt;https://www.xiaoyuzhoufm.com/podcast/6456fdfc0a8e51c73e68d0cd&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;通过以上这些订阅，我能及时了解到国外各种热门科技话题，而且是在中文环境中。有时候，在网络上找不到解决方案时，我们应该动动自己的脑筋，写些代码来解决问题。现在的互联网有各种免费资源，我们完全可以充分利用，通过这些资源改善我们的生活。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2210,113 +2227,6 @@ serve:
 &lt;h3 id=&#34;关于zappa&#34;&gt;关于zappa&lt;/h3&gt;
 
 &lt;p&gt;从迁移过程的体验来看, 功能的开发还是很简单的, 只是部署的过程不是很友好, 如果能有一个类似于zappa这样的自动化部署框架来对接到腾讯云函数计算, 相信对开发者来说会更友好.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>像OpenResty一样使用Golang开发Web App</title>
-      <link>https://zhu327.github.io/2018/06/26/%E5%83%8Fopenresty%E4%B8%80%E6%A0%B7%E4%BD%BF%E7%94%A8golang%E5%BC%80%E5%8F%91web-app/</link>
-      <pubDate>Tue, 26 Jun 2018 21:35:01 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2018/06/26/%E5%83%8Fopenresty%E4%B8%80%E6%A0%B7%E4%BD%BF%E7%94%A8golang%E5%BC%80%E5%8F%91web-app/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/glualor&#34;&gt;https://github.com/zhu327/glualor&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;最近在公司内网读过一篇Gopher Lua的文章, 感觉在Golang中使用Lua VM的模式跟OpenResty是一样一样的. 在Github上找了一圈net/http的到Gopher Lua的绑定, 然而并没有. 造轮子的机会来了 ^_^&lt;/p&gt;
-
-&lt;h3 id=&#34;gluaweb&#34;&gt;gluaweb&lt;/h3&gt;
-
-&lt;p&gt;虽然看过几本Golang的书, 也读过几个开源项目的代码, 来腾讯后还上过两门Golang的课, 但是却没有写过一个Golang的项目, 从新读过net/http标准库的文档, 再看看Gopher Lua的例子就写了&lt;a href=&#34;https://github.com/zhu327/gluaweb&#34;&gt;gluaweb&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
-	&lt;span class=&#34;s&#34;&gt;&amp;#34;github.com/yuin/gopher-lua&amp;#34;&lt;/span&gt;
-	&lt;span class=&#34;s&#34;&gt;&amp;#34;github.com/zhu327/gluaweb&amp;#34;&lt;/span&gt;
-	&lt;span class=&#34;s&#34;&gt;&amp;#34;net/http&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;helloHandler&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
-
-&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;h&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;helloHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ServeHTTP&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;w&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;http&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ResponseWriter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;r&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;http&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;lua&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;NewState&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-	&lt;span class=&#34;k&#34;&gt;defer&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;gluaweb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;NewWebContext&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;w&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;WebContext&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;SetGlobal&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;gluaweb&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-	&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;err&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;DoString&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;`
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;        gluaweb.Write(&amp;#34;hello world!&amp;#34;)
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;    `&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;err&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;nil&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-		&lt;span class=&#34;nb&#34;&gt;panic&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;err&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-
-&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;http&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Handle&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;helloHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{})&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;http&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ListenAndServe&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;:8080&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;nil&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;使用很简单, 每个请求进来启动一个Lua VM, 然后注入gluaweb上下文, 在lua里面调用gluaweb绑定的Request或者ResponseWriter的方法即可.&lt;/p&gt;
-
-&lt;p&gt;到这一步基本上跟OpenResty其实就差不多了, OpenResty里Request与Response相关的方法都在ngx下, 而在gluaweb里gluaweb就相当于OpenResty的ngx.&lt;/p&gt;
-
-&lt;h3 id=&#34;glualor&#34;&gt;glualor&lt;/h3&gt;
-
-&lt;p&gt;有了最基本的Request/Response的方法还不够, 还需要Web FrameWork, 就如同Gin之于net/http. 在OpenResty那边有一个&lt;a href=&#34;https://github.com/sumory/lor&#34;&gt;lor&lt;/a&gt;框架, 代码很简洁, 使用方式类似于Python的Flask. 同样是Lua写的, 只需要阅读代码, 把其中使用ngx相关的部分改写成gluaweb对应的方法即可. 包括request.lua respnse.lua cookie.lua.&lt;/p&gt;
-
-&lt;p&gt;lor还支持json编解码, 在OpenResty里使用的cjson, 在Github找到了&lt;a href=&#34;https://github.com/layeh/gopher-json&#34;&gt;gopher-json&lt;/a&gt;, 在main.go里面创建Lua VM时加载json module, 并且修改lor里面utils.lua json相关的代码从cjson改为gogher-json.&lt;/p&gt;
-
-&lt;p&gt;除了json还有template, lor使用了lua-resty-template这个库, 在Gopher Lua这边可以直接使用Golang html/template, 同样去Github上面搜索找到一个text/template到Gopher Lua的绑定, 由于text/template提供的接口与html/template是一样的所以fork到&lt;a href=&#34;https://github.com/zhu327/gluatemplate&#34;&gt;gluatemplate&lt;/a&gt;, 改import把text改为html. 再修改lor里面view.lua把lua-resty-template替换为gluatemplate.&lt;/p&gt;
-
-&lt;p&gt;main.go&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
-	&lt;span class=&#34;s&#34;&gt;&amp;#34;github.com/yuin/gopher-lua&amp;#34;&lt;/span&gt;
-	&lt;span class=&#34;s&#34;&gt;&amp;#34;github.com/zhu327/gluatemplate&amp;#34;&lt;/span&gt;
-	&lt;span class=&#34;s&#34;&gt;&amp;#34;github.com/zhu327/gluaweb&amp;#34;&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;luajson&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;layeh.com/gopher-json&amp;#34;&lt;/span&gt;
-	&lt;span class=&#34;s&#34;&gt;&amp;#34;net/http&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;helloHandler&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
-
-&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;h&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;helloHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ServeHTTP&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;w&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;http&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ResponseWriter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;r&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;http&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;lua&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;NewState&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;luajson&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Preload&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;PreloadModule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;template&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;gluatemplate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Loader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-	&lt;span class=&#34;k&#34;&gt;defer&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;gluaweb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;NewWebContext&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;w&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;WebContext&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;SetGlobal&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;gluaweb&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-	&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;err&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;DoFile&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;main.lua&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;err&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;nil&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 加载 lua 代码
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;		&lt;span class=&#34;nb&#34;&gt;panic&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;err&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-
-&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;http&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Handle&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;helloHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{})&lt;/span&gt;
-	&lt;span class=&#34;nx&#34;&gt;http&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ListenAndServe&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;:8080&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;nil&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;main.lua&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-lua&#34; data-lang=&#34;lua&#34;&gt;&lt;span class=&#34;kd&#34;&gt;local&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lor&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;require&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;lor.index&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-&lt;span class=&#34;kd&#34;&gt;local&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;app&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lor&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-
-&lt;span class=&#34;n&#34;&gt;app.get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kr&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;err&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;req&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-	&lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;send&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Hello world!&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;            
-&lt;span class=&#34;p&#34;&gt;})&lt;/span&gt;
-
-&lt;span class=&#34;n&#34;&gt;app.run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;经过以上改造, 已经能在Gopher Lua上愉快的使用lor快速开发web app了, 然后ab测试一下性能, 简直不忍直视, 继续改造.&lt;/p&gt;
-
-&lt;p&gt;每一个请求进来都新建一个Lua VM其实是没有必要的, 可以全局创建一个VM池, 每个请求进来从池里取出一个VM运行代码即可. Gopher Lua的README上也介绍了一个goroutine安全的pool实现直接拷贝过来用就好了. 除了VM复用还需要Lua代码的复用, 而不是每一次请求都Dofile加载一次所有的代码, 这样就需要把Lua中的某个函数暴露给Golang, 在Golang中调用已有的Lua函数来处理请求, 在lor里面就是app.run这个方法, 把app声明成全局变量就可以在Golang中调用app.run了.&lt;/p&gt;
-
-&lt;p&gt;再ab测一下, 性能相对于原生Golang的Hello world有大概17%的损失, 相对于开发的便利性, 还是可以接受的.&lt;/p&gt;
-
-&lt;p&gt;有了框架还要测试下到底能不能用, lor有一个官方的TODO示例, 直接用这个跑一下试试, 最终的完整实例就是&lt;a href=&#34;https://github.com/zhu327/glualor&#34;&gt;glualor&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;扩展&#34;&gt;扩展&lt;/h3&gt;
-
-&lt;p&gt;Web开发当然不只是Web Framework, OpenResty提供了全套开发库, MySQL Redis一应俱全, 但是Gopher Lua的生态还不完善, Github搜一圈并没有找到MySQL与Redis的绑定, 其实自己写也是很简单的, 有空再扩展一下^_^&lt;/p&gt;</description>
     </item>
     
   </channel>

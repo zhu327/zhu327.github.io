@@ -78,6 +78,19 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/09/19/ifwechat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/">IFWechat使用说明</a></h1>
+        <span class="post-date">Sep 19 2015</span>
+        <h1 id="ifwechat">ifwechat</h1>
+
+<h3 id="①-ifwechat能做什么">①.IFWechat能做什么</h3>
+
+<p>IFWechat是一个能把微信连接到IFTTT的微信公众号,如果你还不知道IFTTT是什么,可以看看这里:<a href="http://www.zhihu.com/question/19739416">ifttt 是一个什么样的网站？</a>.<br />
+IFTTT = if this then that, IFWechat通过微信公众号实现了IFTTT中this的功能,通过微信发送到IFWechat的消息都会触发用户定义的IFTTT Recipes.</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/08/14/flask-jinja2-i18n%E5%9B%BD%E9%99%85%E5%8C%96%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/">flask jinja2 i18n国际化简单实现</a></h1>
         <span class="post-date">Aug 14 2015</span>
         <p>前两个星期,公司有需求要实现APP内嵌网页的英文版,因为要急着上线,所有就没有折腾i18n国际化,直接出了英文的模板,在view函数里面判断语言选择模板来实现.这周有空下来重新整了一下项目的国际化,使用通用的<code>gettext</code>来实现.</p>
@@ -135,22 +148,6 @@
 <p>通过<code>python -V</code>看到系统已预装<code>python 2.6.6</code>，直接在<code>$OPENSHIFT_DATA_DIR</code>下安装2.7.10可以正常使用，但需要注意其调用路径为<code>$OPENSHIFT_DATA_DIR/bin/python</code>。</p>
 
 <p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/06/04/%E9%82%AE%E4%BB%B6%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">邮件密码找回功能实现</a></h1>
-        <span class="post-date">Jun 4 2015</span>
-        <h3 id="思路">思路</h3>
-
-<p>公司做项目,有用到注册,登录,密码找回等功能,以前自己写的论坛也实现了邮件密码找回,不过比较简单,直接生成随机密码,把新密码发送到用户邮箱.比较不安全,要实现一般网站的用链接找回的功能.</p>
-
-<p>对链接的要求有如下:</p>
-
-<ol>
-<li>每次生成的链接都必须不一样;</li>
-<li>链接要有过期时间,过期以后无效;</li>
-<li>后台在链接被请求时,必须验证链接是否有效.</li>
-</ol>
     </div>
   
 </div>

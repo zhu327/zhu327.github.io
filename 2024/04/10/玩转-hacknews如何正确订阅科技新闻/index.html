@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      玩转 HackNews：如何正确订阅科技新闻 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2024. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">玩转 HackNews：如何正确订阅科技新闻</h1>
+  <span class="post-date">Apr 10 2024</span>
+  <p>近日，我在探索 HackNews 的过程中，收获了大量的新知识。然而，我发现自动订阅的 HackNews RSS 源并没有对热门话题进行筛选，导致我的 RSS 阅读器里充斥着我不感兴趣的话题。于是，我开始寻找适合自己的 HackNews RSS 订阅源。在众多选择中，我发现了 <a href="https://hnrss.org/newest?points=100">https://hnrss.org/newest?points=100</a>，这个源只推送热门话题，非常适合我。然而，由于全英文阅读有些繁琐，我又找到了 <a href="https://rsstranslator.com/">https://rsstranslator.com/</a> 这个提供翻译服务的网站，能将 HackNews 翻译成中文标题，非常便捷。但不幸的是，由于访问量过大，该网站已关闭服务并开源代码。在尝试了各种工具后未果，我决定自己动手解决这个问题。然而，我又不希望维护独立的服务，而刚好 <a href="https://blog.cloudflare.com/python-workers">Cloudflare Workers 开始支持 Python</a>，于是我决定使用 Cloudflare Workers 来实现这个服务。在评估了各种翻译 API 后，我选择了 Microsoft Azure 翻译 API，实现了免费翻译的功能。最终，我完成了这个项目 <a href="https://github.com/zhu327/workers-hnrss">workers-hnrss</a>，并且完全零成本部署。但在部署过程中，我发现 Cloudflare Workers 还不支持 <code>requirements.txt</code>，不过据他们的文档称，再过几周就会支持，所以我决定再等等，然后就可以在我的 RSS 阅读器上读到中文标题的 HackNews 了。</p>
+
+<p></p>
+
+<p>在寻找 HackNews RSS 的过程中，我还发现了 <a href="https://hackernewsrecap.buzzsprout.com/">https://hackernewsrecap.buzzsprout.com/</a>，这是一个由 AI 生成的每日 HackNews 语音摘要播客。然而，同样是全英文的，我曾考虑通过 TTS 将其转换为文本，然后使用 Gemini API 翻译成中文，并定时推送成 HackNews 中文摘要播客。但在评估了各种 TTS API 后，发现长语音转文本的成本有点大，并且工程难度也不小，所以我放弃了这个想法。然而，最近我发现有人已经实现了我想做的事，并且中文效果相当流畅。并且有伴随语音和图文内容，非常不错。而且 RSSHub 也支持将其转换为 RSS，所以我也在 RSS 阅读器上订阅了这个内容。</p>
+
+<p><a href="https://www.xiaoyuzhoufm.com/podcast/6456fdfc0a8e51c73e68d0cd">https://www.xiaoyuzhoufm.com/podcast/6456fdfc0a8e51c73e68d0cd</a></p>
+
+<p>通过以上这些订阅，我能及时了解到国外各种热门科技话题，而且是在中文环境中。有时候，在网络上找不到解决方案时，我们应该动动自己的脑筋，写些代码来解决问题。现在的互联网有各种免费资源，我们完全可以充分利用，通过这些资源改善我们的生活。</p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+
