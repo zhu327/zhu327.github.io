@@ -78,6 +78,21 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/09/29/gunicorn%E8%BF%90%E8%A1%8Cdjango%E6%97%B6%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/">Gunicorn运行Django时静态文件处理</a></h1>
+        <span class="post-date">Sep 29 2015</span>
+        <h3 id="问题">问题</h3>
+
+<p>在用Gunicorn跑Django的时候,比较郁闷的是静态文件的处理,即使在settings设置DEBUG=True,静态文件也不会正常显示.生产环境下一般不会裸跑Gunicorn,一般都会在前面放一个Nginx反代到Gunicorn,而静态文件直接交给Nginx处理.</p>
+
+<p>但是如heroku,coding.net的演示平台这种PaaS就不能自己配置反向代理,怎么样设置wsgi才能正常处理静态文件呢.这里总结下处理这个问题的经验.</p>
+
+<h3 id="方法1">方法1</h3>
+
+<p>强制使用Django的静态文件处理器,通过<code>python manage.py runserver</code>的时候,如果DEBUG=True,Django会自动加载自带的静态文件处理器,但是在Gunicorn下,这个设置会失效,我们可以强制使用Django自带的静态文件处理器.
+</p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/09/19/ifwechat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/">IFWechat使用说明</a></h1>
         <span class="post-date">Sep 19 2015</span>
         <h1 id="ifwechat">ifwechat</h1>
@@ -131,23 +146,6 @@ IFTTT = if this then that, IFWechat通过微信公众号实现了IFTTT中this的
 
 <p>发送请求:</p>
 <div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;http://server2.example.com/RetrieveUser?UserId=1823&amp;jsonp=parseResponse&#34;</span><span class="p">&gt;</span> <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></code></pre></div>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/07/02/openshift%E5%B9%B3%E5%8F%B0diy%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AEtornado/">openshift平台DIY环境配置Tornado</a></h1>
-        <span class="post-date">Jul 2 2015</span>
-        <blockquote>
-<p>openshift官方和社区提供不少配置好的环境，也包括python2.7和python3.3下的tornado套件。<br />
-一方面希望拥有更高的使用自由，另一方面希望熟悉一下openshift的DIY环境，本着这个目的，自行创建一个DIY环境，在上面安装运行python 2.7.10和Tornado 3.2。</p>
-</blockquote>
-
-<p>【Step1、创建DIY环境】</p>
-
-<p>【Step2、安装python 2.7.10】</p>
-
-<p>通过<code>python -V</code>看到系统已预装<code>python 2.6.6</code>，直接在<code>$OPENSHIFT_DATA_DIR</code>下安装2.7.10可以正常使用，但需要注意其调用路径为<code>$OPENSHIFT_DATA_DIR/bin/python</code>。</p>
-
-<p></p>
     </div>
   
 </div>

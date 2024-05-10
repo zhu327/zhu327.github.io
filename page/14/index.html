@@ -78,6 +78,20 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/12/26/wsgi%E4%B8%8Etornado%E6%83%B3%E5%88%B0%E7%9A%84/">WSGI与Tornado想到的</a></h1>
+        <span class="post-date">Dec 26 2014</span>
+        <h3 id="tornado">Tornado</h3>
+
+<p>上周用tornado实现了<a href="https://github.com/zhu327/rss">RSS Factory</a>，又从新学了下Tornado下的使用，再次看<a href="http://demo.pythoner.com/itt2zh/index.html">introduce to tornado</a>发现以前看的只学到了Tornado的MVC，使用Tornado也只停留在表面，没有学到Tornado的精髓。这次又学到了不少，这里总结下。</p>
+
+<h3 id="长连接-websocket与异步事件循环">长连接,WebSocket与异步事件循环</h3>
+
+<p>Web2.0时代产生了很多的实时通知需求，也就是Ajax请求特别多，最初是用轮询实现，但是对服务器的开销很大，所以产生了长连接轮询。</p>
+
+<p>客户的也就是浏览器请求一个api，Tornado不会立即返回，而是等到有变化的时候返回，浏览器获取响应后，循环再请求api，这样就省掉了很多请求，而且实现了实时通知。</p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2014/11/06/%E6%A0%91%E8%8E%93%E6%B4%BE%E4%B8%8Exbmc/">树莓派与XBMC</a></h1>
         <span class="post-date">Nov 6 2014</span>
         <p>Raspberry Pi刚开卖的时候，我就买了，那时候买来就是为了玩Linux，装了Raspbian，写写Python程序，玩玩GPIO什么的，很Geek范，然后就放在角落里落灰了。</p>
@@ -139,29 +153,6 @@
 <h3 id="api">API</h3>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">jinja2</span> <span class="kn">import</span> <span class="n">Environment</span><span class="p">,</span> <span class="n">FileSystemLoader</span>
 <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">templ_dir</span><span class="p">))</span></code></pre></div>
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/24/python-web-farmwork/">Python Web farmwork</a></h1>
-        <span class="post-date">Sep 24 2014</span>
-        <h3 id="简介">简介</h3>
-
-<ul>
-<li><a href="http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/0014023080708565bc89d6ab886481fb25a16cdc3b773f0000">编写Web框架</a></li>
-<li><a href="https://github.com/zhu327/blog/blob/master/www/transwarp/web.py">web.py</a></li>
-</ul>
-
-<p><a href="http://bozpy.sinaapp.com/blog/7">上一节</a>写了WSGI与Cookie相关的内容，为了方便的实现Web App，需要编写一个简单的Web框架，需要实现以下功能:</p>
-
-<ol>
-<li>处理request；</li>
-<li>生成response header；</li>
-<li>根据request URI找到对应处理的函数，即URL路由；</li>
-<li>定制模版引擎；</li>
-<li>拦截器，在处理函数产生响应前，做预处理，相当于WSGI中middlware的概念，比如处理Cookie等。</li>
-</ol>
-
 <p></p>
     </div>
   

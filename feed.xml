@@ -7,7 +7,7 @@
     <language>zh-cn</language>
     
     
-    <updated>Wed, 10 Apr 2024 10:55:52 &#43;0800</updated>
+    <updated>Fri, 10 May 2024 10:55:52 &#43;0800</updated>
     
     <item>
       <title>About</title>
@@ -28,6 +28,97 @@
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>从鹅厂大佬身上学技术</title>
+      <link>https://zhu327.github.io/2024/05/10/%E4%BB%8E%E9%B9%85%E5%8E%82%E5%A4%A7%E4%BD%AC%E8%BA%AB%E4%B8%8A%E5%AD%A6%E6%8A%80%E6%9C%AF/</link>
+      <pubDate>Fri, 10 May 2024 10:55:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/05/10/%E4%BB%8E%E9%B9%85%E5%8E%82%E5%A4%A7%E4%BD%AC%E8%BA%AB%E4%B8%8A%E5%AD%A6%E6%8A%80%E6%9C%AF/</guid>
+      <description>&lt;p&gt;2018下半年年我加入鹅厂，2019年调岗到现在的组，一直跟着鹅厂11级大佬做事，为了提升自己能力，我开始学习大佬的做事方式，我发现大佬的能力往往体现在他的思维的层次上，简单的说就是解决某个问题的时候，我当时可能只看到第2层，但是大佬已经想到第4层上去了，这期间我也找大佬聊过天，也有一些收获，在这里通过一些具体的事例来分析一下大佬的技术能力。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;重复琐碎的工作&#34;&gt;重复琐碎的工作&lt;/h3&gt;
+
+&lt;p&gt;我所在的项目是一个公共的平台项目，对外提供api对接服务，不可避免的就一直有些OnCall的工作，在项目初期，也是各种app对接的高峰期，我每天的工作时间基本上都被各种咨询，各种问题所占用，文档也写了，各种FAQ也说明了。但是由于平台本身模型的复杂性，问题总是在重复。考核周期一盘点，发现实际产出相比以往有所降低，复盘我处理这些OnCall工作的方式：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;写文档，持续更新文档&lt;/li&gt;
+&lt;li&gt;写FAQ，持续整体并更新&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;那么问题出现在哪里呢，从大佬开始参与项目开始，这些OnCall的事项成了项目重点需要解决的问题，大佬首先要求我学习业界优秀的开源项目文档写作方式，整理平台项目文档的最佳实践。我在阅读了相关文档，以及文档写作经验后，找到了平台项目写文档的最佳实践：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;QuickStart：这部分内容写一个简短的demo来为读者提供一个快速启动的导览&lt;/li&gt;
+&lt;li&gt;HowTo：以用户的角度他可能碰到的一些问题的场景来说明如何进行&lt;/li&gt;
+&lt;li&gt;Explanation：一些约定的名词概念，为什么要这么做的说明&lt;/li&gt;
+&lt;li&gt;Reference：最后是一些关联的文档，api的docs，性能测试报告，FAQ等等&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在基于以上文档结构重新整理的文档后，用户反馈接入流程清晰了很多，不同需求的用户都能在QuickStart的基础上结合HowTo来实现自己的需求。&lt;/p&gt;
+
+&lt;p&gt;针对用户的各种疑难问题，大佬要求我除了整理FAQ以外还要分析FAQ中的一些问题是否能通过自动化来解决，是否能让用户自行通过工具解决，在分析了一些共性的问题后，我找了2个可以实现工具的点：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;针对接口逻辑难以调试的点，在用户调用接口的入口点增加debug开关，在api的执行逻辑中如果开启debug，就一路收集相关信息，直接把调试信息返回给用户，使得用户可以自行调试&lt;/li&gt;
+&lt;li&gt;针对又一些需要手动修改数据的操作，整理相关操作，写个一个简单的助手app，使得用户能自助处理问题&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;通过以上措施，原本的OnCall工作所占用的时间减少了60%，那么是不是就完美了呢，大佬说不是，大佬要求我想一想为什么总是会有这么多的咨询量，是不是项目本身的设计的模型就是有问题，就算没有问题，有没有什么方式能让用户减少咨询。&lt;/p&gt;
+
+&lt;p&gt;然后我开始重新复盘项目的功能。咨询量大的根因在于项目本身需求的复杂度，用户对接的时候是有很高的理解成本的，造成了咨询量很大，但是需求的复杂度暂时是没有办法降低的，只能和产品同学一起想办法，最后我推动产品一起做了一个可视化接入的app，帮助用户组在可视化接入流程中理解接入流程，生成数据。虽然这个app不能覆盖100%的场景，但是对于70%以上的简单需求足以覆盖。&lt;/p&gt;
+
+&lt;p&gt;到这里OnCall的工作终于不再占用我太多的时间了，让我们来总结下我当时的思维层次:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;第一层：用户问什么解决什么&lt;/li&gt;
+&lt;li&gt;第二层：总结文档，FAQ避免重复回答&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;大佬的思维层次：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;第三层：抽象工具来解决问题&lt;/li&gt;
+&lt;li&gt;第四层：识别业务本身的问题，推动业务改进&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;能想到第几层实际就体现了技术能力哪里，技术能力是一种以解决某种问题为目标的思路、方法与执行手段，其本质就是解决问题的能力。在编程领域，就是对遇到的业务问题进行抽象、提炼以及逻辑的构建，通过研发工具以提升解决问题的效能，减低人工低效的重复工作。&lt;/p&gt;
+
+&lt;h3 id=&#34;抽象复杂的工作&#34;&gt;抽象复杂的工作&lt;/h3&gt;
+
+&lt;p&gt;随着业务的发展，我们的项目对接的app也越来越多，我们是一个公共平台，需求的推进往往以通用需求为主，但是对接的app有各种各样，需求各不相同，导致用户虽然对接了，但是很多特有的需求又要自己实现，为了满足这类用户的诉求，我开始专项访谈抱怨的用户，了解他们的需求，针对性的解决。&lt;/p&gt;
+
+&lt;p&gt;但是大佬提示我，有一些用户虽然没有抱怨，不代表没有需求，应该做一个问卷广泛收集意见，安排专人处理。&lt;/p&gt;
+
+&lt;p&gt;进一步要从收集的意见中提炼需求，提炼价值，从架构与产品的角度寻找原因，拆解任务，制定实施计划。&lt;/p&gt;
+
+&lt;p&gt;到这里是不是完了呢，大佬说其实更应该从组织架构，从年度目标上从收益最大化的角度，从培养团队的角度全局思考这些收集的意见，综合考量。当然这里就比较高层次了，需要更多的思考。&lt;/p&gt;
+
+&lt;p&gt;总结下这里工作的思考层次：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;第一层：有什么问题解决什么问题&lt;/li&gt;
+&lt;li&gt;第二层：广泛收集，专人跟进解决问题&lt;/li&gt;
+&lt;li&gt;第三层：抽象业务需求，改进产品与架构&lt;/li&gt;
+&lt;li&gt;第四层：从业务发展，个人发展，组织发展的角度思考业务演进的方向&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们需要从业务发展与自我发展与组织发展的角度来思考如何处理各种复杂抽象的工作，避免只知道接需求，成为一个项目经理，只知道通过任务来跟踪进度。&lt;/p&gt;
+
+&lt;h3 id=&#34;关键决策&#34;&gt;关键决策&lt;/h3&gt;
+
+&lt;p&gt;在与大佬的合作过程中我一直有一个疑问，就是项目推进的过程中，有一些关键的决策是怎么确定的，比如在某个时间点大佬要求我们必须重新整理代码层次，抽象新的代码编码规范，但是这个事情其实短期来看并不会看到有收益，可能从老板的角度来看这都不算产出。在一次聊天中，我提出了我的疑问，大佬从3个角度帮我解了惑：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;有所坚持：有一些原则自己必须坚持，比如对代码的架构，代码的整洁&lt;/li&gt;
+&lt;li&gt;长期主义：项目可能会长时间的在自己手里维护，所以需要看远一点，否则坑的还是自己&lt;/li&gt;
+&lt;li&gt;向上汇报：要让leader知道你在做什么以及这么做的必要性，获取leader的支持&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在与大佬合作的这几年中，通过观察大佬的工作方式，我学到了很多。编程能力是程序员的核心基础能力，但是只是能力的一部份，我们还要提高我们的思维层次，提高效率，增加产出。软技能也很重要，表达能力，沟通能力，项目管理能力都是程序员需要关注的技能点。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1202,11 +1293,11 @@ serve:
     </item>
     
     <item>
-      <title>工作对话集</title>
-      <link>https://zhu327.github.io/2022/03/28/%E5%B7%A5%E4%BD%9C%E5%AF%B9%E8%AF%9D%E9%9B%86/</link>
+      <title>项目管理对话集</title>
+      <link>https://zhu327.github.io/2022/03/28/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%AF%B9%E8%AF%9D%E9%9B%86/</link>
       <pubDate>Mon, 28 Mar 2022 17:38:04 &#43;0800</pubDate>
       
-      <guid>https://zhu327.github.io/2022/03/28/%E5%B7%A5%E4%BD%9C%E5%AF%B9%E8%AF%9D%E9%9B%86/</guid>
+      <guid>https://zhu327.github.io/2022/03/28/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%AF%B9%E8%AF%9D%E9%9B%86/</guid>
       <description>&lt;p&gt;老婆是一名具有4年工作经验的产品经理, 上一份工作聚焦在人力资源SaaS上, 现在的工作刚刚开始不到半年, 行业转向了智能家居跨境电商的内部ERP系统, 面对新的行业, 新的公司的工作流程上的一些问题, 有了以下这些对话. 通过这些对话我也回顾了一些自己工作中感悟, 这里总结一下.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;
@@ -2127,106 +2218,6 @@ serve:
 &lt;p&gt;架构的设计, 技术的选型, 不能完全按照流行的技术走, 最终还是服务于产品, 服务于客户的需求. 设计过程中由于团队, 人员的结构问题, 有很多的妥协之处, 如何在妥协中找到最优解才是最大的挑战.&lt;/p&gt;
 
 &lt;p&gt;Service Mesh这种新一代的微服务架构正在成为主流, 虽然现在的工作与微服务无关了, 但是也还会继续关注学习.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>微信公众号迁移Serverless详解</title>
-      <link>https://zhu327.github.io/2018/07/17/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3/</link>
-      <pubDate>Tue, 17 Jul 2018 00:12:12 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2018/07/17/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3/</guid>
-      <description>&lt;p&gt;3月腾讯云函数计算开放测试, 看到的第一反应是这种Serverless太适合做微信公众号的后端来实现自动应答了, 尝试把我服务了3年的一个公众号迁移到腾讯云函数计算, 结果因为API gateway的一个功能缺失搁置了, 这周腾讯云API gateway终于补上了集成响应的能力, 能正常服务我的公众号, 这里记录下实现过程.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;改造werobot&#34;&gt;改造werobot&lt;/h3&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/ifwechat&#34;&gt;https://github.com/zhu327/ifwechat&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;ifwechat这个公众号是基于&lt;a href=&#34;https://github.com/offu/WeRoBot&#34;&gt;werobot&lt;/a&gt;实现的, 之前以WSGI的方式部署在&lt;a href=&#34;https://sae.sina.com.cn/&#34;&gt;SAE&lt;/a&gt;上, 而不同于WSGI, 函数计算从API gateway触发的事件是一个Python的字典, 需要从这个事件字典里面获取http request的信息来调用werobot的方法. API gateway的触发事件参考: &lt;a href=&#34;https://cloud.tencent.com/document/product/583/13197&#34;&gt;https://cloud.tencent.com/document/product/583/13197&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;需要实现一个从http request事件到werobot的message的wrapper handler:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# coding: utf-8&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;handlers&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;robot&lt;/span&gt;
-
-&lt;span class=&#34;n&#34;&gt;robot&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;config&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;from_pyfile&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;configs.py&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-
-&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;werobot_handler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;timestamp&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;queryString&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;timestamp&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;nonce&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;queryString&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;nonce&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;signature&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;queryString&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;signature&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;robot&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;check_signature&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;timestamp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;timestamp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-                                 &lt;span class=&#34;n&#34;&gt;nonce&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;nonce&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-                                 &lt;span class=&#34;n&#34;&gt;signature&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;signature&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;error: wrong wechat signature&amp;#34;&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;requestContext&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;httpMethod&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;GET&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;queryString&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;echostr&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;elif&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;requestContext&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;httpMethod&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;POST&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;body&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;body&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;body&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;replace&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;\\&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;u003c&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;lt;&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;replace&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;\\&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;u003e&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;decode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;utf8&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;message&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;robot&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;parse_message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;body&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;timestamp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;timestamp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;nonce&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;nonce&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;msg_signature&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;queryString&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;msg_signature&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;robot&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_encrypted_reply&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;在API gateway上创建API时需要勾选集成响应功能, 并且在函数入口返回的格式如下:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# coding: utf-8&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;scf_werobot&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;werobot_handler&lt;/span&gt;
-
-
-&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main_handler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;requestContext&amp;#34;&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;keys&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;error: event is not come from api gateway&amp;#34;&lt;/span&gt;
-
-    &lt;span class=&#34;n&#34;&gt;content&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;werobot_handler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;s2&#34;&gt;&amp;#34;statusCode&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;200&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
-        &lt;span class=&#34;s2&#34;&gt;&amp;#34;headers&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Content-Type&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;application/xml&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
-        &lt;span class=&#34;s2&#34;&gt;&amp;#34;body&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;content&lt;/span&gt;
-    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&#34;通过cos实现werobot的session&#34;&gt;通过cos实现werobot的session&lt;/h3&gt;
-
-&lt;p&gt;除了计算外, ifwechat还用到了werobot的session来存微信用户与ifttt用户之间的对应关系, 在SAE上部署session数据是存在SAE的kvdb里的, 但是在腾讯云这里就没有免费的Redis或者MySQL来用了. 在研究zappa这个serverless框架的时候, 发现他们用AWS S3实现了一个NoDB的库可用用来做kvdb, 而腾讯云对标S3存储的就是cos, 把NoDB fork修改S3代码改成cos sdk调用, 就有了这个&lt;a href=&#34;https://github.com/zhu327/NoDB&#34;&gt;NoDB for Tencent Cloud COS&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;继承werobot的SessionStorage实现用NoDB来做session backend:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# coding: utf-8&lt;/span&gt;
-
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;werobot.session&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SessionStorage&lt;/span&gt;
-&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;nodb&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NoDB&lt;/span&gt;
-
-
-&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;NoDBStorage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SessionStorage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__init__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;secret_id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;secret_key&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;region&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bucket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;nodb&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NoDB&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;secret_id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;secret_key&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;region&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;nodb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bucket&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bucket&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;nodb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;load&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;or&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;nodb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;save&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;delete&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;nodb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;delete&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__getitem__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__setitem__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;session&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;session&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__delitem__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;delete&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;打包所有代码为zip文件, 并发布到scf就完成了这个迁移过程.&lt;/p&gt;
-
-&lt;h3 id=&#34;关于zappa&#34;&gt;关于zappa&lt;/h3&gt;
-
-&lt;p&gt;从迁移过程的体验来看, 功能的开发还是很简单的, 只是部署的过程不是很友好, 如果能有一个类似于zappa这样的自动化部署框架来对接到腾讯云函数计算, 相信对开发者来说会更友好.&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -78,6 +78,14 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2024/05/10/%E4%BB%8E%E9%B9%85%E5%8E%82%E5%A4%A7%E4%BD%AC%E8%BA%AB%E4%B8%8A%E5%AD%A6%E6%8A%80%E6%9C%AF/">从鹅厂大佬身上学技术</a></h1>
+        <span class="post-date">May 10 2024</span>
+        <p>2018下半年年我加入鹅厂，2019年调岗到现在的组，一直跟着鹅厂11级大佬做事，为了提升自己能力，我开始学习大佬的做事方式，我发现大佬的能力往往体现在他的思维的层次上，简单的说就是解决某个问题的时候，我当时可能只看到第2层，但是大佬已经想到第4层上去了，这期间我也找大佬聊过天，也有一些收获，在这里通过一些具体的事例来分析一下大佬的技术能力。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2024/04/10/%E7%8E%A9%E8%BD%AC-hacknews%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%A2%E9%98%85%E7%A7%91%E6%8A%80%E6%96%B0%E9%97%BB/">玩转 HackNews：如何正确订阅科技新闻</a></h1>
         <span class="post-date">Apr 10 2024</span>
         <p>近日，我在探索 HackNews 的过程中，收获了大量的新知识。然而，我发现自动订阅的 HackNews RSS 源并没有对热门话题进行筛选，导致我的 RSS 阅读器里充斥着我不感兴趣的话题。于是，我开始寻找适合自己的 HackNews RSS 订阅源。在众多选择中，我发现了 <a href="https://hnrss.org/newest?points=100">https://hnrss.org/newest?points=100</a>，这个源只推送热门话题，非常适合我。然而，由于全英文阅读有些繁琐，我又找到了 <a href="https://rsstranslator.com/">https://rsstranslator.com/</a> 这个提供翻译服务的网站，能将 HackNews 翻译成中文标题，非常便捷。但不幸的是，由于访问量过大，该网站已关闭服务并开源代码。在尝试了各种工具后未果，我决定自己动手解决这个问题。然而，我又不希望维护独立的服务，而刚好 <a href="https://blog.cloudflare.com/python-workers">Cloudflare Workers 开始支持 Python</a>，于是我决定使用 Cloudflare Workers 来实现这个服务。在评估了各种翻译 API 后，我选择了 Microsoft Azure 翻译 API，实现了免费翻译的功能。最终，我完成了这个项目 <a href="https://github.com/zhu327/workers-hnrss">workers-hnrss</a>，并且完全零成本部署。但在部署过程中，我发现 Cloudflare Workers 还不支持 <code>requirements.txt</code>，不过据他们的文档称，再过几周就会支持，所以我决定再等等，然后就可以在我的 RSS 阅读器上读到中文标题的 HackNews 了。</p>
@@ -157,32 +165,6 @@ config dhcp <span class="s1">&#39;wan&#39;</span>
 </ul>
 
 <p>尽管我已经是一个长时间的用户，但我仍然保持在免费计划上，没有选择Plus，也没有使用OpenAI API。由于ChatGPT的充值的限制，我尚未探索基于OpenAI API构建的众多AI工具和插件。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2023/12/15/rss%E6%96%87%E8%89%BA%E5%A4%8D%E5%85%B4/">RSS文艺复兴</a></h1>
-        <span class="post-date">Dec 15 2023</span>
-        <h3 id="1-rss是什么">1. RSS是什么</h3>
-
-<p>RSS（Really Simple Syndication）是一种用于发布经常更新的工作的XML格式的文件的标准。这些文件通常包含新闻摘要、文章标题、链接和发布日期等信息。RSS提供了一种订阅机制，使用户能够轻松地跟踪他们关注的多个网站的最新更新，而无需定期访问这些网站。</p>
-
-<p>尽管RSS在其创立初期非常受欢迎，但它逐渐失去了流行度。一些原因包括：</p>
-
-<ol>
-<li><p><strong>社交媒体的兴起：</strong> 随着社交媒体平台的发展，用户开始转向使用平台内的订阅和分享功能来获取和分享信息。社交媒体提供了更直观和交互性的方式来发现和分享内容。</p></li>
-
-<li><p><strong>个性化推荐算法：</strong> 许多网站和应用采用了个性化推荐算法，通过分析用户的行为和兴趣，推荐相关内容。这减少了用户需要手动订阅和管理的需求。</p></li>
-
-<li><p><strong>信息过载：</strong> 随着互联网上可用信息的不断增长，用户面临信息过载的问题。RSS的线性列表形式可能无法有效地处理大量信息，而个性化推荐算法能够更好地适应用户需求。</p></li>
-
-<li><p><strong>移动应用的普及：</strong> 移动应用的兴起使用户更倾向于使用专门的应用程序，而不是传统的RSS阅读器。这些应用通常提供更好的用户体验和功能。</p></li>
-
-<li><p><strong>网站设计的变化：</strong> 许多现代网站设计更加动态和交互式，而不仅仅是提供简单的文章列表。这样的设计可能使得传统的RSS阅读方式显得过时。</p></li>
-</ol>
-
-<p>需要注意的是，虽然RSS在一些领域可能不再是主流，但它仍然是一种强大的工具，特别是对于那些喜欢通过订阅方式跟踪特定网站更新的用户。一些应用和服务仍然提供对RSS的支持。流行度的变化可能因用户群体和使用场景而异。</p>
 
 <p></p>
     </div>

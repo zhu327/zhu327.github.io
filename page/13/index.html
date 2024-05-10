@@ -78,6 +78,24 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/10/django%E5%AE%9E%E7%8E%B0join%E6%9F%A5%E8%AF%A2/">Django实现JOIN查询</a></h1>
+        <span class="post-date">Jan 10 2015</span>
+        <p>在写Django Model的Manager面临的一大问题是怎么样才能实现Django Model的复杂查询，比如LEFT JOIN语句的使用，Google用了不少时间，基本上了解大概，总结下，大概有3种方式。</p>
+
+<h3 id="参考">参考</h3>
+
+<blockquote>
+<p><a href="http://wing2south.com/post/django-raw-sql/">闲话 Django Raw SQL</a><br />
+<a href="http://blog.jobbole.com/74881/">实例详解Django的 select_related 和 prefetch_related 函数对 QuerySet 查询的优化</a></p>
+</blockquote>
+
+<h3 id="想法">想法</h3>
+
+<p>写Model的时候参考<a href="http://f2m.im">http://f2m.im</a>的表结构，发现它大量使用了JOIN查询，而且在多个表上都没有使用外键，我想不用外键也是为了方便修改，删除时产生不必要的约束。Django Model实现了ForeignKey，很方便的能查询到外键所在的实例，进一步能查询的更多，但是查询一次相当于执行一次SQL语句，这就造成了性能开销。所以F2E才会使用JOIN语句把计算的过程都交给MySQL。
+</p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/09/django%E8%87%AA%E5%AE%9A%E4%B9%89user%E7%B1%BB/">Django自定义User类</a></h1>
         <span class="post-date">Jan 9 2015</span>
         <h3 id="参考">参考</h3>
@@ -140,20 +158,6 @@
 <p>为了让自己的开发工具都能得到统一，所以想着以后不管是用Tornado也好，Bottle也好，模版引擎都开始用jinja2，所以更新了<a href="https://github.com/zhu327/rss">RSS Factory</a>使用的模版引擎。</p>
 
 <p>Google了下Tornado使用jinja2的方法，发现大部分人的实现方法都是重写<code>ReaquestHandle</code>的<code>render</code>方法，这样的虽然比较简单但是不利于保持Tornado的完整性，所以我使用参考文章中的方法。</p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2014/12/26/wsgi%E4%B8%8Etornado%E6%83%B3%E5%88%B0%E7%9A%84/">WSGI与Tornado想到的</a></h1>
-        <span class="post-date">Dec 26 2014</span>
-        <h3 id="tornado">Tornado</h3>
-
-<p>上周用tornado实现了<a href="https://github.com/zhu327/rss">RSS Factory</a>，又从新学了下Tornado下的使用，再次看<a href="http://demo.pythoner.com/itt2zh/index.html">introduce to tornado</a>发现以前看的只学到了Tornado的MVC，使用Tornado也只停留在表面，没有学到Tornado的精髓。这次又学到了不少，这里总结下。</p>
-
-<h3 id="长连接-websocket与异步事件循环">长连接,WebSocket与异步事件循环</h3>
-
-<p>Web2.0时代产生了很多的实时通知需求，也就是Ajax请求特别多，最初是用轮询实现，但是对服务器的开销很大，所以产生了长连接轮询。</p>
-
-<p>客户的也就是浏览器请求一个api，Tornado不会立即返回，而是等到有变化的时候返回，浏览器获取响应后，循环再请求api，这样就省掉了很多请求，而且实现了实时通知。</p>
     </div>
   
 </div>
