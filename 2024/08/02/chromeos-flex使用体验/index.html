@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      ChromeOS Flex使用体验 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2024. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">ChromeOS Flex使用体验</h1>
+  <span class="post-date">Aug 2 2024</span>
+  <h3 id="前言">前言</h3>
+
+<p>由于MacBook带到新公司作为办公本使用，又因为不喜欢带电脑上下班，所以在家里就只好启用6年前在前公司领用的第一台笔记本ThinkPad X1 Carbon (6th Gen)，这是一台 i5 8250u/8G Ram/256G SSD/2K14‘ 配置的笔记本，默认使用Windows 10操作系统。这台电脑已经很老了，肉眼可见的在浏览网页时会卡，所以想看看有什么可以拯救一下老电脑的方法，要么直接上Linux，然后各种折腾配置，各种可能面对的问题，高分屏之类的。然后另外一个选择就是Chrome OS Flex，Google官方支持，与其说这是个操作系统，还不如说除了浏览器，这个系统就啥也没有了，当然还可以跑一个lxc容器的Debian。</p>
+
+<p><a href="https://support.google.com/chromeosflex/answer/11513094?hl=zh-Hans">Google认证设备列表</a></p>
+
+<p>可以看到这台ThinkPad X1 Carbon (6th Gen)可以官方支持到2028年，非常不错，所以就可以开始折腾了。</p>
+
+<p></p>
+
+<h3 id="安装">安装</h3>
+
+<p><a href="https://support.google.com/chromeosflex/answer/11541904?hl=zh-Hans&amp;ref_topic=11551271&amp;sjid=9842639522054919015-AP">ChromeOS Flex安装指南</a></p>
+
+<p>首先要保证有一个能可靠的访问Google的网络环境，建议从以上安装指南的下半部分开始，直接下载<a href="https://dl.google.com/chromeos-flex/images/latest.bin.zip">最新的 ChromeOS Flex 安装程序映像</a>，然后使用<a href="https://rufus.ie/zh/">Refus 工具</a>刷写镜像到U盘中。</p>
+
+<p>通过U盘启动电脑，很快就可以安装好ChromeOS Flex了，然后你会发现你得到了一个只有Chrome浏览器的电脑，是的只有浏览器，别的啥也没有了，可以说是安装Chrome浏览器送了一个空壳操作系统。当然轻量化的操作系统带来的好处就是Chrome浏览网页的体验是真的丝滑，完全不像一台6年前的电脑。除了Chrome浏览器，这个操作系统还可以通过lxc容器的方式启动一个Debian虚拟容器，进而可以在这个Debian环境下安装各种Linux App。</p>
+
+<h3 id="debian">Debian</h3>
+
+<p>在ChromeOS Flex下的设置中启用Debian后就可以开始在Debian环境下折腾了，我的目标其实很简单，安装vscode写代码，安装视频播放器偶尔看看电影，如何能安装Linux原生的微信就更好了，然后就进入了折腾模式。</p>
+
+<p>参考文章：<a href="https://blog.skihome.xyz/archives/5/">打造一台适合生产的Chromebook</a></p>
+
+<h4 id="更换国内镜像源">更换国内镜像源</h4>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo vim /etc/apt/sources.list</code></pre></div>
+<p>把<code>http://deb.debian.org/</code>替换成<code>https://mirrors.cloud.tencent.com/</code>，然后更新</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo apt update <span class="o">&amp;&amp;</span> sudo apt upgrade</code></pre></div>
+<h4 id="linux本地化之中文环境">Linux本地化之中文环境</h4>
+
+<p>给Linux安排一个中文环境可以帮助我们更加优雅地使用Linux程序。</p>
+
+<p>首先，点开终端程序，执行以下指令进行中文字体的安装：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo apt install fonts-noto-cjk fonts-wqy-microhei fonts-wqy-zenhei</code></pre></div>
+<p>接下来需要配置默认locale，输入如下指令并选择zh_CN.UTF-8。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo dpkg-reconfigure locales</code></pre></div>
+<p>在终端上关闭Linux，然后重新打开，即可看到程序默认使用中文显示。</p>
+
+<h4 id="gtk下的中文显示">GTK下的中文显示</h4>
+
+<p>在我们使用一些gtk的程序时，可能会感觉中文字体非常奇怪，看起来非常不舒服。此时我们需要调整gtk默认字体，使程序显示更加优雅。</p>
+
+<p>首先，我们需要gnome-tweaks这个程序，可以控制gtk的显示效果。</p>
+
+<p>安装gnome-tweaks：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo apt install gnome-tweaks</code></pre></div>
+<p>安装后，输入gnome-tweaks启动该程序。在&rdquo;字体&rdquo;选项中，设置&rdquo;界面文本&rdquo;与&rdquo;文档文本&rdquo;分别为&rdquo;Noto Sans CJK SC Regular&rdquo; 和 &ldquo;Noto Sans Regular&rdquo;。其他选项无需修改(修改后可能会导致莫名其妙的后果)。</p>
+
+<p>自此，大多数GTK程序的中文显示都不会非常奇怪。设置完毕后，也可以将其卸载，以便留出更多空间。</p>
+
+<h4 id="中文输入法">中文输入法</h4>
+
+<p>ChromeOS自带的Linux环境是Debian 11，默认使用的是Wayland协议。在这里我们可以使用fcitx5来作为输入法引擎。</p>
+
+<p>使用如下指令安装fcitx5：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo apt install fcitx5 fcitx5-chinese-addons fcitx5-frontend-gtk4 fcitx5-frontend-gtk3 fcitx5-frontend-gtk2 fcitx5-frontend-qt5</code></pre></div>
+<p>然后编辑/etc/profile，将下述内容写入配置文件：</p>
+
+<pre><code>export XMODIFIERS=@im=fcitx  
+export GTK_IM_MODULE=fcitx  
+export QT_IM_MODULE=fcitx
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo vim /etc/environment</code></pre></div>
+<pre><code>XIM=fcitx
+XIM_PROGRAM=fcitx
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+SDL_IM_MODULE=fcitx
+GLFW_IM_MODULE=fcitx
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo vim /etc/environment.d/wechat.conf</code></pre></div>
+<pre><code>GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+</code></pre>
+
+<p>接下来输入 fcitx5-configtool，进入fcitx5的配置页面。</p>
+
+<p>将 拼音 移到已左侧，激活拼音输入。点击中间的扳手图标，进入拼音的设置。开启云拼音，并选择Baidu。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo vim ~/.bashrc</code></pre></div>
+<pre><code># fcitx5
+if ! pgrep -x &quot;fcitx5&quot; &gt; /dev/null; then
+    fcitx5 --disable=wayland -d --verbose '*'=0 &amp;
+fi
+</code></pre>
+
+<p>这样在每次打开终端都会启动fcitx5。输入皮肤推荐用<a href="https://github.com/catppuccin/fcitx5">catppuccin-mocha</a>。</p>
+
+<p>网上的资料中会推荐把启动命令放到<code>.sommelierrc</code>，但是我在使用中发现放到这个文件下，会导致使用输入法时会产生一些奇怪的跳动，所以最终选择放到<code>~/.bashrc</code>来启动。</p>
+
+<h4 id="视频播放器-mpv">视频播放器 mpv</h4>
+
+<p>在MacOS是我已经习惯使用IINA播放器，这是一个基于mpv的套壳播放器，在Windows上我们一般使用PotPlayer，然而在Debian上我没有找到特别合适的播放器，试过了几个以后还是选择直接使用mpv，由于在Debian容器中，没有很好的GPU支持，查找了很多资料，最后发现了这个<a href="https://wiki.archlinuxcn.org/wiki/Chrome_OS_devices/Crostini#%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE">https://wiki.archlinuxcn.org/wiki/Chrome_OS_devices/Crostini#%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE</a>，然后在参考了一些mpv的配置最后有了一下配置：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">mkdir -p ~/.config/mpv
+vim ~/.config/mpv/mpv.conf</code></pre></div>
+<pre><code>#设置置顶播放
+ontop=yes
+
+# 设定程序启动后的默认音量
+volume=100
+
+# 使字幕输出在黑边上
+sub-ass-force-margins=yes
+
+# 开启色彩管理
+blend-subtitles=video
+
+# 硬件渲染
+vo=gpu
+ao=alsa
+
+# 记忆上次播放的位置
+save-position-on-quit
+
+# 音轨配置
+audio-file-auto=fuzzy
+sub-auto=fuzzy
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">vim ~/.config/mpv/input.conf</code></pre></div>
+<pre><code># 全屏切换(回车键及小键盘确认键)
+Enter    cycle fullscreen
+KP_ENTER  cycle fullscreen
+
+# 双击左键 播放/暂停
+MBTN_LEFT_DBL  cycle pause
+
+# 滚轮上下滑动调节音量
+WHEEL_UP      add volume 5
+WHEEL_DOWN    add volume -5
+
+# 空格键 播放/暂停
+SPACE cycle pause
+
+# 静音
+m cycle mute
+
+# 查看文件信息
+TAB script-binding stats/display-stats
+</code></pre>
+
+<p>在系统的文件管理器下可以直接使用系统自带的影音播放器播放视频，这时候会使用系统的硬件解码，非常省电，但是在有些不支持的格式，以及需要加载外挂字幕的情况下可以选择使用mpv播放，经过以上设置，4K电影也能正常播放。</p>
+
+<h4 id="微信">微信</h4>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo apt install libatomic1</code></pre></div>
+<p>从<a href="https://github.com/lovechoudoufu/wechat_for_linux/releases">https://github.com/lovechoudoufu/wechat_for_linux/releases</a>下载最新的微信deb包</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo dpkg -i wechat-beta_1.0.0.238_amd64_login.deb</code></pre></div>
+<p>因为之前已经配置了输入法，安装完就可以完美使用了。</p>
+
+<h4 id="vscode">VSCode</h4>
+
+<p><a href="https://code.visualstudio.com/blogs/2020/12/03/chromebook-get-started">https://code.visualstudio.com/blogs/2020/12/03/chromebook-get-started</a></p>
+
+<p>按以上指引安装即可，输入法支持正常。</p>
+
+<h3 id="其它">其它</h3>
+
+<p>ChromeOS Flex内置的输入法其实也是可以在Linux App上使用的，可以参考这篇文章<a href="https://zonble.medium.com/%E5%9C%A8-crostini-%E4%BD%BF%E7%94%A8-chrome-os-%E7%9A%84%E8%BC%B8%E5%85%A5%E6%B3%95-fb1d226de273">在 Crostini 當中使用 Chrome OS 的輸入法</a>，但是我配置了之后发现只能在VSCode上使用，支持不了微信，所以还是选择使用fctix5。</p>
+
+<p>另外还有一些<code>chrome://flags</code>可以选择配置：</p>
+
+<p>开启超线程：</p>
+
+<pre><code>#scheduler-configuration
+</code></pre>
+
+<p>开启多线程下载：</p>
+
+<pre><code>#enable-parallel-downloading
+</code></pre>
+
+<p>开启Debian的GPU支持</p>
+
+<pre><code>#crostini-gpu-support
+</code></pre>
+
+<h3 id="总结">总结</h3>
+
+<p>回顾一下我在家里使用电脑的情况，其实90%以上的时间都是在使用网页浏览器，其它偶尔看看电影啥的，在家里也不存在需要生产力的问题，现在这台老电脑足以提供Chrome浏览器下丝滑的体验。偶尔要写写代码，看看电影，也可以使用Linux App来实现。ChromeOS Flex提供对老电脑支持的一个相比其它Linux发行版不是那么折腾的选项。</p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

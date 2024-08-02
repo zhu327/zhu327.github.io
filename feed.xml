@@ -7,7 +7,7 @@
     <language>zh-cn</language>
     
     
-    <updated>Fri, 10 May 2024 10:55:52 &#43;0800</updated>
+    <updated>Fri, 02 Aug 2024 10:55:52 &#43;0800</updated>
     
     <item>
       <title>About</title>
@@ -28,6 +28,193 @@
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>ChromeOS Flex使用体验</title>
+      <link>https://zhu327.github.io/2024/08/02/chromeos-flex%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/</link>
+      <pubDate>Fri, 02 Aug 2024 10:55:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/08/02/chromeos-flex%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;由于MacBook带到新公司作为办公本使用，又因为不喜欢带电脑上下班，所以在家里就只好启用6年前在前公司领用的第一台笔记本ThinkPad X1 Carbon (6th Gen)，这是一台 i5 8250u/8G Ram/256G SSD/2K14‘ 配置的笔记本，默认使用Windows 10操作系统。这台电脑已经很老了，肉眼可见的在浏览网页时会卡，所以想看看有什么可以拯救一下老电脑的方法，要么直接上Linux，然后各种折腾配置，各种可能面对的问题，高分屏之类的。然后另外一个选择就是Chrome OS Flex，Google官方支持，与其说这是个操作系统，还不如说除了浏览器，这个系统就啥也没有了，当然还可以跑一个lxc容器的Debian。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://support.google.com/chromeosflex/answer/11513094?hl=zh-Hans&#34;&gt;Google认证设备列表&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到这台ThinkPad X1 Carbon (6th Gen)可以官方支持到2028年，非常不错，所以就可以开始折腾了。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;安装&#34;&gt;安装&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://support.google.com/chromeosflex/answer/11541904?hl=zh-Hans&amp;amp;ref_topic=11551271&amp;amp;sjid=9842639522054919015-AP&#34;&gt;ChromeOS Flex安装指南&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;首先要保证有一个能可靠的访问Google的网络环境，建议从以上安装指南的下半部分开始，直接下载&lt;a href=&#34;https://dl.google.com/chromeos-flex/images/latest.bin.zip&#34;&gt;最新的 ChromeOS Flex 安装程序映像&lt;/a&gt;，然后使用&lt;a href=&#34;https://rufus.ie/zh/&#34;&gt;Refus 工具&lt;/a&gt;刷写镜像到U盘中。&lt;/p&gt;
+
+&lt;p&gt;通过U盘启动电脑，很快就可以安装好ChromeOS Flex了，然后你会发现你得到了一个只有Chrome浏览器的电脑，是的只有浏览器，别的啥也没有了，可以说是安装Chrome浏览器送了一个空壳操作系统。当然轻量化的操作系统带来的好处就是Chrome浏览网页的体验是真的丝滑，完全不像一台6年前的电脑。除了Chrome浏览器，这个操作系统还可以通过lxc容器的方式启动一个Debian虚拟容器，进而可以在这个Debian环境下安装各种Linux App。&lt;/p&gt;
+
+&lt;h3 id=&#34;debian&#34;&gt;Debian&lt;/h3&gt;
+
+&lt;p&gt;在ChromeOS Flex下的设置中启用Debian后就可以开始在Debian环境下折腾了，我的目标其实很简单，安装vscode写代码，安装视频播放器偶尔看看电影，如何能安装Linux原生的微信就更好了，然后就进入了折腾模式。&lt;/p&gt;
+
+&lt;p&gt;参考文章：&lt;a href=&#34;https://blog.skihome.xyz/archives/5/&#34;&gt;打造一台适合生产的Chromebook&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;更换国内镜像源&#34;&gt;更换国内镜像源&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo vim /etc/apt/sources.list&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;把&lt;code&gt;http://deb.debian.org/&lt;/code&gt;替换成&lt;code&gt;https://mirrors.cloud.tencent.com/&lt;/code&gt;，然后更新&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo apt update &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; sudo apt upgrade&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&#34;linux本地化之中文环境&#34;&gt;Linux本地化之中文环境&lt;/h4&gt;
+
+&lt;p&gt;给Linux安排一个中文环境可以帮助我们更加优雅地使用Linux程序。&lt;/p&gt;
+
+&lt;p&gt;首先，点开终端程序，执行以下指令进行中文字体的安装：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo apt install fonts-noto-cjk fonts-wqy-microhei fonts-wqy-zenhei&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接下来需要配置默认locale，输入如下指令并选择zh_CN.UTF-8。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo dpkg-reconfigure locales&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在终端上关闭Linux，然后重新打开，即可看到程序默认使用中文显示。&lt;/p&gt;
+
+&lt;h4 id=&#34;gtk下的中文显示&#34;&gt;GTK下的中文显示&lt;/h4&gt;
+
+&lt;p&gt;在我们使用一些gtk的程序时，可能会感觉中文字体非常奇怪，看起来非常不舒服。此时我们需要调整gtk默认字体，使程序显示更加优雅。&lt;/p&gt;
+
+&lt;p&gt;首先，我们需要gnome-tweaks这个程序，可以控制gtk的显示效果。&lt;/p&gt;
+
+&lt;p&gt;安装gnome-tweaks：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo apt install gnome-tweaks&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;安装后，输入gnome-tweaks启动该程序。在&amp;rdquo;字体&amp;rdquo;选项中，设置&amp;rdquo;界面文本&amp;rdquo;与&amp;rdquo;文档文本&amp;rdquo;分别为&amp;rdquo;Noto Sans CJK SC Regular&amp;rdquo; 和 &amp;ldquo;Noto Sans Regular&amp;rdquo;。其他选项无需修改(修改后可能会导致莫名其妙的后果)。&lt;/p&gt;
+
+&lt;p&gt;自此，大多数GTK程序的中文显示都不会非常奇怪。设置完毕后，也可以将其卸载，以便留出更多空间。&lt;/p&gt;
+
+&lt;h4 id=&#34;中文输入法&#34;&gt;中文输入法&lt;/h4&gt;
+
+&lt;p&gt;ChromeOS自带的Linux环境是Debian 11，默认使用的是Wayland协议。在这里我们可以使用fcitx5来作为输入法引擎。&lt;/p&gt;
+
+&lt;p&gt;使用如下指令安装fcitx5：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo apt install fcitx5 fcitx5-chinese-addons fcitx5-frontend-gtk4 fcitx5-frontend-gtk3 fcitx5-frontend-gtk2 fcitx5-frontend-qt5&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后编辑/etc/profile，将下述内容写入配置文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export XMODIFIERS=@im=fcitx  
+export GTK_IM_MODULE=fcitx  
+export QT_IM_MODULE=fcitx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo vim /etc/environment&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code&gt;XIM=fcitx
+XIM_PROGRAM=fcitx
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+SDL_IM_MODULE=fcitx
+GLFW_IM_MODULE=fcitx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo vim /etc/environment.d/wechat.conf&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code&gt;GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来输入 fcitx5-configtool，进入fcitx5的配置页面。&lt;/p&gt;
+
+&lt;p&gt;将 拼音 移到已左侧，激活拼音输入。点击中间的扳手图标，进入拼音的设置。开启云拼音，并选择Baidu。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo vim ~/.bashrc&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code&gt;# fcitx5
+if ! pgrep -x &amp;quot;fcitx5&amp;quot; &amp;gt; /dev/null; then
+    fcitx5 --disable=wayland -d --verbose &#39;*&#39;=0 &amp;amp;
+fi
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样在每次打开终端都会启动fcitx5。输入皮肤推荐用&lt;a href=&#34;https://github.com/catppuccin/fcitx5&#34;&gt;catppuccin-mocha&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;网上的资料中会推荐把启动命令放到&lt;code&gt;.sommelierrc&lt;/code&gt;，但是我在使用中发现放到这个文件下，会导致使用输入法时会产生一些奇怪的跳动，所以最终选择放到&lt;code&gt;~/.bashrc&lt;/code&gt;来启动。&lt;/p&gt;
+
+&lt;h4 id=&#34;视频播放器-mpv&#34;&gt;视频播放器 mpv&lt;/h4&gt;
+
+&lt;p&gt;在MacOS是我已经习惯使用IINA播放器，这是一个基于mpv的套壳播放器，在Windows上我们一般使用PotPlayer，然而在Debian上我没有找到特别合适的播放器，试过了几个以后还是选择直接使用mpv，由于在Debian容器中，没有很好的GPU支持，查找了很多资料，最后发现了这个&lt;a href=&#34;https://wiki.archlinuxcn.org/wiki/Chrome_OS_devices/Crostini#%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE&#34;&gt;https://wiki.archlinuxcn.org/wiki/Chrome_OS_devices/Crostini#%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE&lt;/a&gt;，然后在参考了一些mpv的配置最后有了一下配置：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;mkdir -p ~/.config/mpv
+vim ~/.config/mpv/mpv.conf&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code&gt;#设置置顶播放
+ontop=yes
+
+# 设定程序启动后的默认音量
+volume=100
+
+# 使字幕输出在黑边上
+sub-ass-force-margins=yes
+
+# 开启色彩管理
+blend-subtitles=video
+
+# 硬件渲染
+vo=gpu
+ao=alsa
+
+# 记忆上次播放的位置
+save-position-on-quit
+
+# 音轨配置
+audio-file-auto=fuzzy
+sub-auto=fuzzy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;vim ~/.config/mpv/input.conf&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code&gt;# 全屏切换(回车键及小键盘确认键)
+Enter    cycle fullscreen
+KP_ENTER  cycle fullscreen
+
+# 双击左键 播放/暂停
+MBTN_LEFT_DBL  cycle pause
+
+# 滚轮上下滑动调节音量
+WHEEL_UP      add volume 5
+WHEEL_DOWN    add volume -5
+
+# 空格键 播放/暂停
+SPACE cycle pause
+
+# 静音
+m cycle mute
+
+# 查看文件信息
+TAB script-binding stats/display-stats
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在系统的文件管理器下可以直接使用系统自带的影音播放器播放视频，这时候会使用系统的硬件解码，非常省电，但是在有些不支持的格式，以及需要加载外挂字幕的情况下可以选择使用mpv播放，经过以上设置，4K电影也能正常播放。&lt;/p&gt;
+
+&lt;h4 id=&#34;微信&#34;&gt;微信&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo apt install libatomic1&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;从&lt;a href=&#34;https://github.com/lovechoudoufu/wechat_for_linux/releases&#34;&gt;https://github.com/lovechoudoufu/wechat_for_linux/releases&lt;/a&gt;下载最新的微信deb包&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo dpkg -i wechat-beta_1.0.0.238_amd64_login.deb&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;因为之前已经配置了输入法，安装完就可以完美使用了。&lt;/p&gt;
+
+&lt;h4 id=&#34;vscode&#34;&gt;VSCode&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://code.visualstudio.com/blogs/2020/12/03/chromebook-get-started&#34;&gt;https://code.visualstudio.com/blogs/2020/12/03/chromebook-get-started&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;按以上指引安装即可，输入法支持正常。&lt;/p&gt;
+
+&lt;h3 id=&#34;其它&#34;&gt;其它&lt;/h3&gt;
+
+&lt;p&gt;ChromeOS Flex内置的输入法其实也是可以在Linux App上使用的，可以参考这篇文章&lt;a href=&#34;https://zonble.medium.com/%E5%9C%A8-crostini-%E4%BD%BF%E7%94%A8-chrome-os-%E7%9A%84%E8%BC%B8%E5%85%A5%E6%B3%95-fb1d226de273&#34;&gt;在 Crostini 當中使用 Chrome OS 的輸入法&lt;/a&gt;，但是我配置了之后发现只能在VSCode上使用，支持不了微信，所以还是选择使用fctix5。&lt;/p&gt;
+
+&lt;p&gt;另外还有一些&lt;code&gt;chrome://flags&lt;/code&gt;可以选择配置：&lt;/p&gt;
+
+&lt;p&gt;开启超线程：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#scheduler-configuration
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;开启多线程下载：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#enable-parallel-downloading
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;开启Debian的GPU支持&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#crostini-gpu-support
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
+
+&lt;p&gt;回顾一下我在家里使用电脑的情况，其实90%以上的时间都是在使用网页浏览器，其它偶尔看看电影啥的，在家里也不存在需要生产力的问题，现在这台老电脑足以提供Chrome浏览器下丝滑的体验。偶尔要写写代码，看看电影，也可以使用Linux App来实现。ChromeOS Flex提供对老电脑支持的一个相比其它Linux发行版不是那么折腾的选项。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2142,82 +2329,6 @@ serve:
 &lt;p&gt;&lt;a href=&#34;https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/&#34;&gt;https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://www.zhihu.com/question/38528616&#34;&gt;https://www.zhihu.com/question/38528616&lt;/a&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Python后端架构演进</title>
-      <link>https://zhu327.github.io/2018/07/19/python%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B/</link>
-      <pubDate>Thu, 19 Jul 2018 00:15:07 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2018/07/19/python%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B/</guid>
-      <description>&lt;p&gt;来腾讯之前在前公司做了3年的后端开发, 经历一款SaaS产品从0到10(还没有到100, 哈哈哈)的过程, 3年间后端的架构逐步演变, 在微服务的实践过程中遇到的问题也越来越多, 在这里总结下.&lt;/p&gt;
-
-&lt;p&gt;产品是一款服务于人力资源的SaaS在线服务, 面向HR有Web Android/iOS 小程序多个客户端, 后端采用RESTful风格API来提供服务. 主要使用Python语言, 方便快速迭代.&lt;/p&gt;
-
-&lt;p&gt;架构的演进经历了4个大的阶段: 1. MVC 2. 服务拆分 3. 微服务架构 4. 领域驱动设计.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;1-mvc&#34;&gt;1. MVC&lt;/h3&gt;
-
-&lt;p&gt;项目刚开始的时候, 后端同事不超过5个, 这个阶段主要的工作是实现产品的原型, 没有太多的考虑架构, 使用Django来快速实现功能, DB的表结构设计好之后, 抽象出功能View, 由于产品设计也很不完善, 后端需要很多的预留设计, 避免产品逻辑的变更带来整个表结构的变动, 在这个阶段代码上最重要的是确定适合团队的代码规范, 代码检查规则.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/v2-8fec1c067dae33c7fcaeb95f5e3a3792_r.jpg&#34; width=&#34;720&#34;&gt;&lt;/p&gt;
-
-&lt;p&gt;整体上架构如上图, Nginx负责负载均衡, 分发流量到多个Django服务, Django处理逻辑, 需要异步任务就交给Celery, 然后数据量比较大的地方使用Redis做缓存. 同时还有实时消息通知的需要使用了Nginx Push Module.&lt;/p&gt;
-
-&lt;p&gt;问题与优化方式:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;Django并发性能差 使用uWSGI Master+Worker 配合 gevent 携程支持高并发&lt;/li&gt;
-&lt;li&gt;Redis连接数过多 使用redis-py自带的连接池来实现连接复用&lt;/li&gt;
-&lt;li&gt;MySQL连接数过多 使用&lt;a href=&#34;https://github.com/djangonauts/djorm-ext-pool&#34;&gt;djorm-ext-pool&lt;/a&gt;连接池复用连接&lt;/li&gt;
-&lt;li&gt;Celery配置gevent支持并发任务&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;随着开发的功能越来越多, Django下的app也越来越多, 这就带了发布上的不方便, 每次发布版本都需要重启所有的Django服务, 如果发布遇到问题, 只能加班解决了. 而且单个Django工程下的代码量也越来越多, 不好维护.&lt;/p&gt;
-
-&lt;h3 id=&#34;2-服务拆分&#34;&gt;2. 服务拆分&lt;/h3&gt;
-
-&lt;p&gt;随着后端团队的壮大, 分给每个同事的需求也越来越细, 如果继续在一个工程里面开发所有的代码, 维护起来的代价太高, 而我们的上一个架构中在Django里面已经按模块划分了一个个app, app内高类聚, app之间低耦合, 这就为服务的拆分带来了便利. 拆分的过程没有遇到太大的问题, 初期的拆分只是代码的分离, 把公用的代码抽离出来实现一个公用的Python库, 数据库, Redis还是共用, 随着负载的增加, 数据库也做了多实例.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/v2-501318fe25b9852cf72270a20c783db0_r.jpg&#34; width=&#34;720&#34;&gt;&lt;/p&gt;
-
-&lt;p&gt;如上图, 服务之间尽量避免相互调用, 需要交互的地方采用http请求的方式, 内网的调用使用hosts指向内网地址.&lt;/p&gt;
-
-&lt;p&gt;问题与优化方式:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Nginx Push Module由于长时间没有维护, 长连接最大数量不够, 使用Tornado + ZeroMQ实现了&lt;a href=&#34;https://github.com/zhu327/tormq&#34;&gt;tormq&lt;/a&gt;服务来支撑消息通知&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;服务之间的调用采用http的方式, 并且要求有依赖的服务主机配置hosts指向被调用的地址, 这样带来的维护上的不方便. 以及在调用链的过程中没有重试, 错误处理, 限流等等的策略, 导致服务可用性差. 随着业务拆分, 继续使用Nginx维护配置非常麻烦, 经常因为修改Nginx的配置引发调用错误. 每一个服务都有一个完整的认证过程, 认证又依赖于用户中心的数据库, 修改认证时需要重新发布多个服务.&lt;/p&gt;
-
-&lt;h3 id=&#34;3-微服务架构&#34;&gt;3. 微服务架构&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/v2-f6b57db532f92e1664b13702cd99ddda_r.jpg&#34; width=&#34;720&#34;&gt;&lt;/p&gt;
-
-&lt;p&gt;首先是在接入层引入了基于OpenResty的Kong API Gateway, 定制实现了认证, 限流等插件. 在接入层承接并剥离了应用层公共的认证, 限流等功能. 在发布新的服务时, 发布脚本中调用Kong admin api注册服务地址到Kong, 并加载api需要使用插件.&lt;/p&gt;
-
-&lt;p&gt;为了解决相互调用的问题, 维护了一个基于gevent+msgpack的RPC服务框架&lt;a href=&#34;https://github.com/zhu327/doge&#34;&gt;doge&lt;/a&gt;, 借助于etcd做服务治理, 并在rpc客户端实现了限流, 高可用, 负载均衡这些功能.&lt;/p&gt;
-
-&lt;p&gt;在这个阶段最难的技术选型, 开源的API网关大多用Golang与OpenResty(lua)实现, 为了应对我们业务的需要还要做定制. 前期花了1个月时间学习OpenResty与Golang, 并使用OpenResty实现了一个短网址服务&lt;a href=&#34;https://github.com/zhu327/shorturl&#34;&gt;shorturl&lt;/a&gt;用在业务中. 最终选择Kong是基于Lua发布的便利性, Kong的开箱即用以及插件开发比较容易. 性能的考量倒不是最重要的, 为了支撑更多的并发, 还使用了云平台提供的LB服务分发流量到2台Kong服务器组成的集群. 集群之间自动同步配置.&lt;/p&gt;
-
-&lt;p&gt;饿了么维护一个纯Python实现的thrift协议框架&lt;a href=&#34;https://github.com/eleme/thriftpy&#34;&gt;thriftpy&lt;/a&gt;, 并提供很多配套的工具, 如果团队足够大, 这一套RPC方案其实是合适的, 但是我们的团队人手不足, 水平参差不齐, 很难推广这一整套学习成本高昂的方案. 最终我们开发了类Duboo的RPC框架&lt;a href=&#34;https://github.com/zhu327/doge&#34;&gt;doge&lt;/a&gt;, 代码主要参考了weibo开源的motan.&lt;/p&gt;
-
-&lt;h3 id=&#34;4-领域驱动设计&#34;&gt;4. 领域驱动设计&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/v2-d2218f7f78615b7149a2fbdce7f11ab1_r.jpg&#34; width=&#34;720&#34;&gt;&lt;/p&gt;
-
-&lt;p&gt;在这一架构中我们尝试从应用服务中抽离出数据服务层, 每一个数据服务包含一个或多个界限上下文, 界限上下文类只有一个聚合根来暴露出RPC调用的方法. 数据服务不依赖于应用服务, 应用服务可以依赖多个数据服务. 有了数据服务层, 应用就解耦了相互之间的依赖, 高层服务只依赖于底层服务.&lt;/p&gt;
-
-&lt;p&gt;在我离职时领域驱动设计还在学习设计阶段, 还没有落地, 但是我相信前公司的后端架构一定会往这个方向继续演进.&lt;/p&gt;
-
-&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
-
-&lt;p&gt;架构的设计, 技术的选型, 不能完全按照流行的技术走, 最终还是服务于产品, 服务于客户的需求. 设计过程中由于团队, 人员的结构问题, 有很多的妥协之处, 如何在妥协中找到最优解才是最大的挑战.&lt;/p&gt;
-
-&lt;p&gt;Service Mesh这种新一代的微服务架构正在成为主流, 虽然现在的工作与微服务无关了, 但是也还会继续关注学习.&lt;/p&gt;</description>
     </item>
     
   </channel>

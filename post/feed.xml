@@ -6,10 +6,27 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 10 May 2024 10:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 02 Aug 2024 10:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ChromeOS Flex使用体验</title>
+      <link>https://zhu327.github.io/2024/08/02/chromeos-flex%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/</link>
+      <pubDate>Fri, 02 Aug 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/08/02/chromeos-flex%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;由于MacBook带到新公司作为办公本使用，又因为不喜欢带电脑上下班，所以在家里就只好启用6年前在前公司领用的第一台笔记本ThinkPad X1 Carbon (6th Gen)，这是一台 i5 8250u/8G Ram/256G SSD/2K14‘ 配置的笔记本，默认使用Windows 10操作系统。这台电脑已经很老了，肉眼可见的在浏览网页时会卡，所以想看看有什么可以拯救一下老电脑的方法，要么直接上Linux，然后各种折腾配置，各种可能面对的问题，高分屏之类的。然后另外一个选择就是Chrome OS Flex，Google官方支持，与其说这是个操作系统，还不如说除了浏览器，这个系统就啥也没有了，当然还可以跑一个lxc容器的Debian。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://support.google.com/chromeosflex/answer/11513094?hl=zh-Hans&#34;&gt;Google认证设备列表&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到这台ThinkPad X1 Carbon (6th Gen)可以官方支持到2028年，非常不错，所以就可以开始折腾了。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>从鹅厂大佬身上学技术</title>
