@@ -156,7 +156,7 @@ XMODIFIERS=@im=fcitx
 <p>将 拼音 移到已左侧，激活拼音输入。点击中间的扳手图标，进入拼音的设置。开启云拼音，并选择Baidu。</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo vim ~/.bashrc</code></pre></div>
 <pre><code># fcitx5
-if ! pgrep -x &quot;fcitx5&quot; &gt; /dev/null; then
+if [ -z $(pgrep -fo &quot;fcitx5&quot;) ]; then
     fcitx5 --disable=wayland -d --verbose '*'=0 &amp;
 fi
 </code></pre>
