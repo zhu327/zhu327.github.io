@@ -7,7 +7,7 @@
     <language>zh-cn</language>
     
     
-    <updated>Fri, 02 Aug 2024 10:55:52 &#43;0800</updated>
+    <updated>Fri, 30 Aug 2024 10:55:52 &#43;0800</updated>
     
     <item>
       <title>About</title>
@@ -28,6 +28,80 @@
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>自动化自己的生活：创造自己的小工具</title>
+      <link>https://zhu327.github.io/2024/08/30/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E6%B4%BB%E5%88%9B%E9%80%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B0%8F%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Fri, 30 Aug 2024 10:55:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/08/30/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E6%B4%BB%E5%88%9B%E9%80%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B0%8F%E5%B7%A5%E5%85%B7/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;作为一位程序员，我写的大部分当然都是用来赚钱生活的代码，赚钱的代码都是非常规范的，一般都是复杂业务逻辑在程序上映射，很多时候都只有在解决了复杂的业务问题，才能获得打怪升级的成就感。&lt;/p&gt;
+
+&lt;p&gt;但是我也会在业余时间学习一些工作无关的技术，比如最近半年我学习了Rust，每当我学习一门新的技术，我总是希望把之前实现的一些程序改用新技术来实现，这样就可以更快的上手。平常生活中也没什么用到Rust的场景，那就只能先把之前用Bash，Python写的小工具用Rust重写一遍。然后最近我也自己发掘了一些生活上的场景，这些场景很多时候都是重复的，手动的，如果能改成自动化能够节省很多时间。想起了不知道哪里看过的一个说法：懒惰是程序员的第一生产力，因为懒，我们会把各种重复手动的工作自动化。&lt;/p&gt;
+
+&lt;p&gt;下面的内容就是我在今年自动化生活的一部分，通过自己创造的这些小工具，我解决了自己生活中的一些小痛点。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;1-自动追番&#34;&gt;1. 自动追番&lt;/h3&gt;
+
+&lt;p&gt;早前我在家里的开发板上搭建了Jellyfin, Sonarr用来追美剧，效果还是不错的，自动下载自动整理文件，自动削刮海报。Sonarr依赖的Indexer服务是一个搭建在fly.io平台上的Prowlarr服务，把Prowlarr搭建在外网，可以避免国内网络访问的限制。&lt;/p&gt;
+
+&lt;p&gt;这套方案对于美剧来说已经非常完美了，但是我除了看美剧，还喜欢看日本动漫，由于Sonarr对于番组的中文支持不好，我在网络上也找了一些方案，都不是特别满意，所以我都是手动在蜜柑计划上找磁力链，然后手动下载。&lt;/p&gt;
+
+&lt;p&gt;因为我很懒，所以我就学习了一下Prowlarr的API，写了一个小工具，每小时自动从Prowlarr上搜索蜜柑计划的索引，通过我在配置中填写的关键字，找到符合条件的番组，然后触发自动下载，如果触发了下载还可以配置通过ntfy.sh发送通知到手机，这样就不会漏掉我订阅的番组。&lt;/p&gt;
+
+&lt;p&gt;代码地址：&lt;a href=&#34;https://github.com/zhu327/ani-sub&#34;&gt;https://github.com/zhu327/ani-sub&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;代码很逻辑很简单，只是一些API的调用，如果感兴趣可以自己看看。&lt;/p&gt;
+
+&lt;p&gt;为了方便没有自己服务器的朋友，我还开发一个可以部署在Cloudflare Workers的版本：&lt;a href=&#34;https://github.com/zhu327/ani-sub/tree/workers&#34;&gt;https://github.com/zhu327/ani-sub/tree/workers&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;这个版本由于没有配置文件，需要依赖Cloudflare D1数据库，可以在Cloudflare网站上编辑D1数据库的数据来添加修改自己订阅的番组关键字。&lt;/p&gt;
+
+&lt;h3 id=&#34;2-自动生成rss-ai摘要&#34;&gt;2. 自动生成RSS AI摘要&lt;/h3&gt;
+
+&lt;p&gt;我在fly.io平台上搭建了自己的RSS订阅服务Miniflux，并且还在Vercel平台上搭建了自己的RSSHub服务。随着订阅的RSS源越来越多，我一般在浏览器上使用ChatGPT总结助手来生成文章摘要来快速阅读。但是这样每次打开文章，都需要我自己手动点击一下来生成摘要，非常麻烦，所以在网络上找了Minifux与OpenAI相关的话题，但是并没有找到一个合适的方案。直到我在v2ex看到一个网友分享的他用Python实现的一个旁路服务，通过Miniflux的API遍历文章，然后通过OpenAI的API生成摘要，再保存到Miniflux中。那我也可以用Rust实现一个类似的服务，并且可以部署在Cloudflare Workers上。还可以利用到 Cloudflare Workers AI的免费模型来生成摘要。&lt;/p&gt;
+
+&lt;p&gt;代码地址：&lt;a href=&#34;https://github.com/zhu327/miniflux-ai&#34;&gt;https://github.com/zhu327/miniflux-ai&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;现在对于比较长的新闻，我一般都只看AI摘要了，只有有兴趣的文章才会阅读全文，并且在手机上也可以方便的阅读到AI摘要。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-自动翻译hacknews-rss&#34;&gt;3. 自动翻译HackNews RSS&lt;/h3&gt;
+
+&lt;p&gt;作为一位程序员，我建议每个程序员都应该关注HackNews，了解下每天的业界新闻。网络上已经有了HackNews RSS源&lt;a href=&#34;https://hnrss.github.io&#34;&gt;https://hnrss.github.io&lt;/a&gt;，但是每天的信息太多，我一般只看标题，英文的标题会影响我的阅读，所以我需要一个自动翻译的HackNews RSS源。正好前几个月Cloudflare Workers开始支持Python，所以我就用Python实现了一个利用微软azure翻译API自动翻译的HackNews RSS源。微软azure翻译API是有免费额度，每天可以翻译10万字符，对于HackNews来说已经足够了。&lt;/p&gt;
+
+&lt;p&gt;代码地址：&lt;a href=&#34;https://github.com/zhu327/workers-hnrss&#34;&gt;https://github.com/zhu327/workers-hnrss&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;4-自动检测aws-cloudfront-新加坡-ddns&#34;&gt;4. 自动检测AWS Cloudfront 新加坡 DDNS&lt;/h3&gt;
+
+&lt;p&gt;由于一些特殊的需求，我需要保证一个域名一直指向AWS Cloudfront的新加坡的IP上，但是Cloudfront的IP地址是动态的，一段时间可能失效，需要找新的IP地址。所以我就写了一个小工具，每小时检测一次Cloudfront的IP地址是否有效，如果不可达，则自动找到新的IP地址，并且更新DNS记录。&lt;/p&gt;
+
+&lt;p&gt;整个逻辑是这样的：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;查询DNSPod的DNS记录，获取老的IP地址&lt;/li&gt;
+&lt;li&gt;http 访问这个 IP地址，如果不可达&lt;/li&gt;
+&lt;li&gt;通过&lt;a href=&#34;https://sg-sin.doh.sb/dns-query这个DOH查询一个新的新加坡的IP地址&#34;&gt;https://sg-sin.doh.sb/dns-query这个DOH查询一个新的新加坡的IP地址&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;通过DNSPod的API更新DNS记录&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;刚开始这个小工具是用Bash写的并通过crontab运行在我的服务器上，后来为了练习Rust，我就用Rust重写了这个工具，并且部署在Cloudflare Workers上。&lt;/p&gt;
+
+&lt;h3 id=&#34;5-gemini-openai-proxy&#34;&gt;5. Gemini OpenAI Proxy&lt;/h3&gt;
+
+&lt;p&gt;去年我用Golang写了个一个Gemini的OpenAI代理服务&lt;a href=&#34;https://github.com/zhu327/gemini-openai-proxy&#34;&gt;https://github.com/zhu327/gemini-openai-proxy&lt;/a&gt;，并且部署在fly.io平台上。但是其实用的也挺少的，还占了fly.io的实例资源。所以我就想找一个serveless的版本来替代这个工具，然后就找了这个支持Cloudflare Workers的Gemini代理：&lt;a href=&#34;https://github.com/PublicAffairs/openai-gemini&#34;&gt;https://github.com/PublicAffairs/openai-gemini&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;但是呢Cloudflare Workers在国内是被屏蔽了的，所以我就把这个小工具部署到deno deploy上，国内可以无痛访问。&lt;/p&gt;
+
+&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
+
+&lt;p&gt;除了工作，我们在生活中也会有一些重复性的工作，如果能自动化，那么就可以节省很多时间。作为程序员我们可以利用现有的免费资源，来创造自己的小工具，让我们的生活更美好。&lt;/p&gt;
+
+&lt;p&gt;Cloudflare Workers, deno deploy，fly.io都有一些免费的资源可以利用，可以让我们零成本实现一些小工具。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2267,68 +2341,6 @@ serve:
 &lt;h3 id=&#34;最后&#34;&gt;最后&lt;/h3&gt;
 
 &lt;p&gt;从去年进入腾讯到现在已经1年半的时间, 从运维组调动到了开发组, 经历一次失败的答辩, 回过头来看, 不曾后悔自己做的所有决定. 看过很多书, 各方面对比去年确实提高了很多, 但是也清楚的认识到自己的短板, 再接再厉, 继续加油, 展望未来.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Gunicorn与uWSGI之我见</title>
-      <link>https://zhu327.github.io/2018/08/29/gunicorn%E4%B8%8Euwsgi%E4%B9%8B%E6%88%91%E8%A7%81/</link>
-      <pubDate>Wed, 29 Aug 2018 23:23:20 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2018/08/29/gunicorn%E4%B8%8Euwsgi%E4%B9%8B%E6%88%91%E8%A7%81/</guid>
-      <description>&lt;p&gt;昨天前同事问我&lt;a href=&#34;https://github.com/zhu327/doge&#34;&gt;doge&lt;/a&gt;的服务端怎么是单进程跑的, 其实在生产环境下我们参考&lt;a href=&#34;https://github.com/eleme/gunicorn_thrift&#34;&gt;gunicorn_thrift&lt;/a&gt;实现了一个定制的master/worker模型的Gunicorn服务器. 昨天也写了一个&lt;a href=&#34;https://github.com/zhu327/doge/tree/master/doge/gunicorn&#34;&gt;简化版本&lt;/a&gt;集成到doge, 实际代码不超过20行就能利用到Gunicorn的进程管理功能. 有感于Gunicorn简洁优雅的模型, 这里聊聊我理解的Gunicorn与uWSGI.&lt;/p&gt;
-
-&lt;h2 id=&#34;perfork&#34;&gt;perfork&lt;/h2&gt;
-
-&lt;p&gt;perfork是一种服务端编程模型, Nginx, Gunicorn, uWSGI都是这种模型的实现, 简单的说perfok就是master进程启动注册一堆信号处理函数, 创建listen socket fd, fork出多个worker子进程, 子进程执行accept循环处理请求(这里简化模型, 当然也可以用select, epoll多路复用), master进程只负责监控worker进程状态, 通过pipeline通信来控制worker进程.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;perfork模型使用master进程来监控worker进程状态, 避免了我们使用supervisor来监控进程, 还支持多种信号来控制worker的数量, 使得CPU能充分得到利用, 多个worker进程监听同一端口, 可以配置reuse_port参数在worker进程间负载均衡.&lt;/p&gt;
-
-&lt;p&gt;Gunicorn与uWSGI都是基于perfork模型的WSGI服务器, 下面我们就来聊聊他们的区别.&lt;/p&gt;
-
-&lt;h2 id=&#34;gunicorn&#34;&gt;Gunicorn&lt;/h2&gt;
-
-&lt;p&gt;Gunicorn是使用Python实现的WSGI服务器, 直接提供了http服务, 并且在woker上提供了多种选择, gevent, eventlet这些都支持, 在多worker最大化里用CPU的同时, 还可以使用协程来提供并发支撑, 对于网络IO密集的服务比较有利.&lt;/p&gt;
-
-&lt;p&gt;同时Gunicorn也很容易就改造成一个TCP的服务, 比如&lt;a href=&#34;https://github.com/zhu327/doge/tree/master/doge/gunicorn&#34;&gt;doge&lt;/a&gt;重写worker类, 在针对长连接的服务时, 最好开启reuse_port, 避免worker进程负载不均.&lt;/p&gt;
-
-&lt;h2 id=&#34;uwsgi&#34;&gt;uWSGI&lt;/h2&gt;
-
-&lt;p&gt;不同于Gunicorn, uWSGI是使用C写的, 它的socket fd创建, worker进程的启动都是使用C语言系统接口来实现的, 在worker进程处理循环中, 解析了http请求后, 使用python的C接口生成environ对象, 再把这个对象作为参数塞到暴露出来的WSGI application函数中调用. 而这一切都是在C程序中进行, 只是在处理请求的时候交给python虚拟机调用application. 完全使用C语言实现的好处是性能会好一些.&lt;/p&gt;
-
-&lt;p&gt;除了支持http协议, uWSGI还实现了uwsgi协议, 一般我们会在uWSGI服务器前面使用Nginx作为负载均衡, 如果使用http协议, 请求在转发到uWSGI前已经在Nginx这里解析了一遍, 转发到uWSGI又会重新解析一遍. uWSGI为了追求性能, 设计了uwsgi协议, 在Nginx解析完以后直接把解析好的结果通过uwsgi协议转发到uWSGI服务器, uWSGI拿到请求按格式生成environ对象, 不需要重复解析请求. 如果用Nginx配合uWSGI, 最好使用uwsgi协议来转发请求.&lt;/p&gt;
-
-&lt;p&gt;除了是一个WSGI服务器, uWSGI还是一个开发框架, 它提供了缓存, 队列, rpc等等功能, 在github找找就会发现有人用它的缓存写了一个Django cache backend, 用它的队列实现异步任务这些东西, 但是用了这些东西技术栈也就跟uWSGI绑定在一起, 所以一般也只是把uWSGI当作WSGI服务器来用.&lt;/p&gt;
-
-&lt;h2 id=&#34;nginx&#34;&gt;Nginx&lt;/h2&gt;
-
-&lt;p&gt;使用多个进程监听同一端口就绕不开惊群这个话题, fork子进程, 子进程共享listen socket fd, 多个子进程同时accept阻塞, 在请求到达时内核会唤醒所有accept的进程, 然而只有一个进程能accept成功, 其它进程accept失败再次阻塞, 影响系统性能, 这就是惊群. Linux 2.6内核更新以后多个进程accept只有一个进程会被唤醒, 但是如果使用epoll还是会产生惊群现象.&lt;/p&gt;
-
-&lt;p&gt;Nginx为了解决epoll惊群问题, 使用进程间互斥锁, 只有拿到锁的进程才能把listen fd加入到epoll中, 在accept完成后再释放锁.&lt;/p&gt;
-
-&lt;p&gt;但是在高并发情况下, 获取锁的开销也会影响性能, 一般会建议把锁配置关掉. 直到Nginx 1.9.1更新支持了socket的&lt;code&gt;SO_REUSEPORT&lt;/code&gt;选项, 惊群问题才算解决, listen socket fd不再是在master进程中创建, 而是每个worker进程创建一个通过&lt;code&gt;SO_REUSEPORT&lt;/code&gt; 选项来复用端口, 内核会自行选择一个fd来唤醒, 并且有负载均衡算法.&lt;/p&gt;
-
-&lt;p&gt;Gunicorn与uWSGI都支持reuse_port选项, 在使用时可以通过压测来评估一下reuse_port是否能提升性能.&lt;/p&gt;
-
-&lt;p&gt;一般我们会在Gunicorn/uWSGI前面再加一层Nginx, 这样做的原因有一下几点:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;做负载均衡&lt;/li&gt;
-&lt;li&gt;静态文件服务器&lt;/li&gt;
-&lt;li&gt;更安全&lt;/li&gt;
-&lt;li&gt;扛并发&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/Junnplus/blog/issues/9&#34;&gt;https://github.com/Junnplus/blog/issues/9&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://gunicorn.readthedocs.io/en/latest/index.html&#34;&gt;https://gunicorn.readthedocs.io/en/latest/index.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/&#34;&gt;https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://www.zhihu.com/question/38528616&#34;&gt;https://www.zhihu.com/question/38528616&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

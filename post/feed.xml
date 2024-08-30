@@ -6,10 +6,27 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 02 Aug 2024 10:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 30 Aug 2024 10:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>自动化自己的生活：创造自己的小工具</title>
+      <link>https://zhu327.github.io/2024/08/30/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E6%B4%BB%E5%88%9B%E9%80%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B0%8F%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Fri, 30 Aug 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/08/30/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E6%B4%BB%E5%88%9B%E9%80%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B0%8F%E5%B7%A5%E5%85%B7/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;作为一位程序员，我写的大部分当然都是用来赚钱生活的代码，赚钱的代码都是非常规范的，一般都是复杂业务逻辑在程序上映射，很多时候都只有在解决了复杂的业务问题，才能获得打怪升级的成就感。&lt;/p&gt;
+
+&lt;p&gt;但是我也会在业余时间学习一些工作无关的技术，比如最近半年我学习了Rust，每当我学习一门新的技术，我总是希望把之前实现的一些程序改用新技术来实现，这样就可以更快的上手。平常生活中也没什么用到Rust的场景，那就只能先把之前用Bash，Python写的小工具用Rust重写一遍。然后最近我也自己发掘了一些生活上的场景，这些场景很多时候都是重复的，手动的，如果能改成自动化能够节省很多时间。想起了不知道哪里看过的一个说法：懒惰是程序员的第一生产力，因为懒，我们会把各种重复手动的工作自动化。&lt;/p&gt;
+
+&lt;p&gt;下面的内容就是我在今年自动化生活的一部分，通过自己创造的这些小工具，我解决了自己生活中的一些小痛点。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>ChromeOS Flex使用体验</title>
