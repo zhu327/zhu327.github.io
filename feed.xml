@@ -85,7 +85,7 @@
 &lt;ol&gt;
 &lt;li&gt;查询DNSPod的DNS记录，获取老的IP地址&lt;/li&gt;
 &lt;li&gt;http 访问这个 IP地址，如果不可达&lt;/li&gt;
-&lt;li&gt;通过&lt;a href=&#34;https://sg-sin.doh.sb/dns-query这个DOH查询一个新的新加坡的IP地址&#34;&gt;https://sg-sin.doh.sb/dns-query这个DOH查询一个新的新加坡的IP地址&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;通过&lt;a href=&#34;https://sg-sin.doh.sb/dns-query&#34;&gt;https://sg-sin.doh.sb/dns-query&lt;/a&gt;这个DOH查询一个新的新加坡的IP地址&lt;/li&gt;
 &lt;li&gt;通过DNSPod的API更新DNS记录&lt;/li&gt;
 &lt;/ol&gt;
 
