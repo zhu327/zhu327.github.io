@@ -6,10 +6,25 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 30 Aug 2024 10:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 03 Sep 2024 10:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>以Vaultwarden为例使用SQLite Litestream实现无数据库服务</title>
+      <link>https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Tue, 03 Sep 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;Vaultwarden是一个非官方实现的Bitwarden Server，用于密码管理，支持Web端、桌面端和移动端。它支持多种数据来存储数据，包括SQLite、PostgreSQL和MySQL等。当我们想把它部署在一个容器服务平台时，如果容器服务本身没有提供持久挂载的卷，那我们就只能使用PostgreSQL或者MySQL外部数据来存储数据。&lt;/p&gt;
+
+&lt;p&gt;但是我们并不想额外再买资源来运行一个数据库，那我们就可以使用SQLite来存储数据，并且使用Litestream来实现容灾备份。这样虽然容器服务没有持久存储，但是数据还是安全的。下面以Vaultwarden为例，使用SQLite和Litestream来实现无数据库服务。其它可以使用SQLite的程序也可以使用这种方式来实现无数据库服务。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>自动化自己的生活：创造自己的小工具</title>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      以Vaultwarden为例使用SQLite Litestream实现无数据库服务 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2024. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">以Vaultwarden为例使用SQLite Litestream实现无数据库服务</h1>
+  <span class="post-date">Sep 3 2024</span>
+  <h3 id="前言">前言</h3>
+
+<p>Vaultwarden是一个非官方实现的Bitwarden Server，用于密码管理，支持Web端、桌面端和移动端。它支持多种数据来存储数据，包括SQLite、PostgreSQL和MySQL等。当我们想把它部署在一个容器服务平台时，如果容器服务本身没有提供持久挂载的卷，那我们就只能使用PostgreSQL或者MySQL外部数据来存储数据。</p>
+
+<p>但是我们并不想额外再买资源来运行一个数据库，那我们就可以使用SQLite来存储数据，并且使用Litestream来实现容灾备份。这样虽然容器服务没有持久存储，但是数据还是安全的。下面以Vaultwarden为例，使用SQLite和Litestream来实现无数据库服务。其它可以使用SQLite的程序也可以使用这种方式来实现无数据库服务。</p>
+
+<p></p>
+
+<h3 id="1-litestream-yml">1. litestream.yml</h3>
+
+<p>Litesream是一个开源的SQLite数据库备份工具，它使用Go语言开发。它可以监控一个SQLite数据库文件的变化，并且将变化记录到S3、MinIO等对象存储服务上。它巧妙的使用了SQLite的WAL（Write-Ahead Logging）机制，来记录数据库的变化，并流式地将这些变化记录到对象存储服务上，达到实时备份的目的。在服务启前，Litestream可以从对象存储服务上恢复数据到SQLite数据库文件中。它的实现原理可以参考<a href="https://litestream.io/how-it-works/">这篇文章</a>。</p>
+
+<p>在使用Litestream时，我们需要准备一个S3兼容的对象存储，这里以Cloudflare R2为例，我们需要准备一个<code>litestream.yml</code>的配置文件，内容如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">dbs<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>path<span class="p">:</span><span class="w"> </span>/data/db.sqlite3<span class="w">
+</span><span class="w">    </span>replicas<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>type<span class="p">:</span><span class="w"> </span>s3<span class="w">
+</span><span class="w">        </span>endpoint<span class="p">:</span><span class="w"> </span>${REPLICA_URL}<span class="w">
+</span><span class="w">        </span>bucket<span class="p">:</span><span class="w"> </span>sqlite</code></pre></div>
+<p><code>/data/db.sqlite3</code> 是Vaultwarden的SQLite数据库文件路径，<code>REPLICA_URL</code>是对象存储服务的地址，比如 <code>https://&lt;cloudflare-account-id&gt;.r2.cloudflarestorage.com</code>，我们需要在Cloudflare R2上创建一个<code>sqlite</code>的存储桶。</p>
+
+<h3 id="2-entrypoint-sh">2. entrypoint.sh</h3>
+
+<p>我们还需要准备一个<code>entrypoint.sh</code>的脚本文件，用于启动Liestream和Vaultwarden服务。内容如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="nb">set</span> -e
+
+<span class="c1"># Set the directory of the database in a variable
+</span><span class="c1"></span><span class="nv">DB_PATH</span><span class="o">=</span>/data/db.sqlite3
+
+<span class="c1"># Restore the database if it does not already exist.
+</span><span class="c1"></span><span class="k">if</span> <span class="o">[</span> -f <span class="nv">$DB_PATH</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+	<span class="nb">echo</span> <span class="s2">&#34;Database already exists, skipping restore&#34;</span>
+<span class="k">else</span>
+	<span class="nb">echo</span> <span class="s2">&#34;No database found, restoring from replica if exists&#34;</span>
+	litestream restore -if-replica-exists -config /etc/litestream.yml <span class="nv">$DB_PATH</span>
+<span class="k">fi</span>
+
+<span class="c1"># Litestream replicate database and start vaultwarden
+</span><span class="c1"></span><span class="nb">echo</span> <span class="s2">&#34;exec litestream&#34;</span>
+<span class="nb">exec</span> litestream replicate -exec <span class="s2">&#34;/start.sh&#34;</span> -config /etc/litestream.yml</code></pre></div>
+<p>在启动Vaultwarden服务前，我们首先检查SQLite数据库文件是否存在，如果不存在则从对象存储服务上恢复数据。</p>
+
+<h3 id="3-dockerfile">3. Dockerfile</h3>
+<div class="highlight"><pre class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="k">FROM</span><span class="s"> litestream/litestream:latest AS litestream</span><span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="k">FROM</span><span class="s"> vaultwarden/server:latest</span><span class="err">
+</span><span class="err">
+</span><span class="err"></span>COPY --from<span class="o">=</span>litestream /usr/local/bin/litestream /usr/local/bin/litestream<span class="err">
+</span><span class="err">
+</span><span class="err"></span>COPY --chmod<span class="o">=</span><span class="m">755</span> entrypoint.sh /usr/bin/entrypoint.sh<span class="err">
+</span><span class="err"></span>COPY litestream.yml /etc/litestream.yml<span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="k">CMD</span><span class="s"> [&#34;/usr/bin/entrypoint.sh&#34;]</span></code></pre></div>
+<p>这样会打一个新的镜像把Litestream和Vaultwarden服务一起打包，并且使用<code>entrypoint.sh</code>启动服务。</p>
+
+<h3 id="4-启动服务">4. 启动服务</h3>
+
+<p>我们还要准备一个.env文件，用于设置环境变量：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">LITESTREAM_ACCESS_KEY_ID</span><span class="o">=</span>&lt;cloudflare-r2-access-key-id&gt;
+<span class="nv">LITESTREAM_SECRET_ACCESS_KEY</span><span class="o">=</span>&lt;cloudflare-r2-access-key&gt;
+<span class="nv">PUSH_ENABLED</span><span class="o">=</span><span class="nb">true</span>
+<span class="nv">PUSH_INSTALLATION_ID</span><span class="o">=</span>&lt;push-installation-id&gt;
+<span class="nv">PUSH_INSTALLATION_KEY</span><span class="o">=</span>&lt;push-installation-key&gt;
+<span class="nv">PUSH_RELAY_BASE_URI</span><span class="o">=</span>https://push.bitwarden.com
+<span class="nv">REPLICA_URL</span><span class="o">=</span>https://&lt;cloudflare-account-id&gt;.r2.cloudflarestorage.com
+<span class="nv">SIGNUPS_ALLOWED</span><span class="o">=</span>true</code></pre></div>
+<p>vaulewarden的PUSH配置需要到<a href="https://bitwarden.com/host/">这里</a>申请。</p>
+
+<p>然后我们就可以使用Docker来启动服务了：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker run -d <span class="se">\
+</span><span class="se"></span>  --name bitwarden <span class="se">\
+</span><span class="se"></span>  -p <span class="m">80</span>:80 <span class="se">\
+</span><span class="se"></span>  --restart unless-stopped <span class="se">\
+</span><span class="se"></span>  --env-file .env <span class="se">\
+</span><span class="se"></span>  vaultwarden/server:latest</code></pre></div>
+<p>这样我们就可以在没有持久存储的容器服务上无数据库的运行Vaultwarden服务了，比如GCP Code Run，我们可以把实例数量scale到0，只有流量进来时才启动服务，真正做到只有使用时才付费。</p>
+
+<h3 id="总结">总结</h3>
+
+<p>我们使用Litestream实现了Vaultwarden的无数据库服务，并且使用Cloudflare R2作为对象存储服务。这样即使容器服务没有持久存储卷，数据也是安全的。类似的思路还可以推广到其它使用SQLite的程序上。比如我们自己开发了一个Django的程序，不依赖外部的数据库服务，也可以使用Litestream来实现容灾备份。</p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

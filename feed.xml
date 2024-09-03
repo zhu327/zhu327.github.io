@@ -7,7 +7,7 @@
     <language>zh-cn</language>
     
     
-    <updated>Fri, 30 Aug 2024 10:55:52 &#43;0800</updated>
+    <updated>Tue, 03 Sep 2024 10:55:52 &#43;0800</updated>
     
     <item>
       <title>About</title>
@@ -28,6 +28,95 @@
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>以Vaultwarden为例使用SQLite Litestream实现无数据库服务</title>
+      <link>https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Tue, 03 Sep 2024 10:55:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;Vaultwarden是一个非官方实现的Bitwarden Server，用于密码管理，支持Web端、桌面端和移动端。它支持多种数据来存储数据，包括SQLite、PostgreSQL和MySQL等。当我们想把它部署在一个容器服务平台时，如果容器服务本身没有提供持久挂载的卷，那我们就只能使用PostgreSQL或者MySQL外部数据来存储数据。&lt;/p&gt;
+
+&lt;p&gt;但是我们并不想额外再买资源来运行一个数据库，那我们就可以使用SQLite来存储数据，并且使用Litestream来实现容灾备份。这样虽然容器服务没有持久存储，但是数据还是安全的。下面以Vaultwarden为例，使用SQLite和Litestream来实现无数据库服务。其它可以使用SQLite的程序也可以使用这种方式来实现无数据库服务。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;1-litestream-yml&#34;&gt;1. litestream.yml&lt;/h3&gt;
+
+&lt;p&gt;Litesream是一个开源的SQLite数据库备份工具，它使用Go语言开发。它可以监控一个SQLite数据库文件的变化，并且将变化记录到S3、MinIO等对象存储服务上。它巧妙的使用了SQLite的WAL（Write-Ahead Logging）机制，来记录数据库的变化，并流式地将这些变化记录到对象存储服务上，达到实时备份的目的。在服务启前，Litestream可以从对象存储服务上恢复数据到SQLite数据库文件中。它的实现原理可以参考&lt;a href=&#34;https://litestream.io/how-it-works/&#34;&gt;这篇文章&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;在使用Litestream时，我们需要准备一个S3兼容的对象存储，这里以Cloudflare R2为例，我们需要准备一个&lt;code&gt;litestream.yml&lt;/code&gt;的配置文件，内容如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;dbs&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;path&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;/data/db.sqlite3&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;replicas&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;type&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;s3&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;endpoint&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;${REPLICA_URL}&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;bucket&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;sqlite&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;/data/db.sqlite3&lt;/code&gt; 是Vaultwarden的SQLite数据库文件路径，&lt;code&gt;REPLICA_URL&lt;/code&gt;是对象存储服务的地址，比如 &lt;code&gt;https://&amp;lt;cloudflare-account-id&amp;gt;.r2.cloudflarestorage.com&lt;/code&gt;，我们需要在Cloudflare R2上创建一个&lt;code&gt;sqlite&lt;/code&gt;的存储桶。&lt;/p&gt;
+
+&lt;h3 id=&#34;2-entrypoint-sh&#34;&gt;2. entrypoint.sh&lt;/h3&gt;
+
+&lt;p&gt;我们还需要准备一个&lt;code&gt;entrypoint.sh&lt;/code&gt;的脚本文件，用于启动Liestream和Vaultwarden服务。内容如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#!/bin/bash
+&lt;/span&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;set&lt;/span&gt; -e
+
+&lt;span class=&#34;c1&#34;&gt;# Set the directory of the database in a variable
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;DB_PATH&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/data/db.sqlite3
+
+&lt;span class=&#34;c1&#34;&gt;# Restore the database if it does not already exist.
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt; -f &lt;span class=&#34;nv&#34;&gt;$DB_PATH&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;then&lt;/span&gt;
+	&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Database already exists, skipping restore&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;
+	&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;No database found, restoring from replica if exists&amp;#34;&lt;/span&gt;
+	litestream restore -if-replica-exists -config /etc/litestream.yml &lt;span class=&#34;nv&#34;&gt;$DB_PATH&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;fi&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;# Litestream replicate database and start vaultwarden
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;exec litestream&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;exec&lt;/span&gt; litestream replicate -exec &lt;span class=&#34;s2&#34;&gt;&amp;#34;/start.sh&amp;#34;&lt;/span&gt; -config /etc/litestream.yml&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在启动Vaultwarden服务前，我们首先检查SQLite数据库文件是否存在，如果不存在则从对象存储服务上恢复数据。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-dockerfile&#34;&gt;3. Dockerfile&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-dockerfile&#34; data-lang=&#34;dockerfile&#34;&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; litestream/litestream:latest AS litestream&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; vaultwarden/server:latest&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;COPY --from&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;litestream /usr/local/bin/litestream /usr/local/bin/litestream&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;COPY --chmod&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;755&lt;/span&gt; entrypoint.sh /usr/bin/entrypoint.sh&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;COPY litestream.yml /etc/litestream.yml&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;CMD&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; [&amp;#34;/usr/bin/entrypoint.sh&amp;#34;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这样会打一个新的镜像把Litestream和Vaultwarden服务一起打包，并且使用&lt;code&gt;entrypoint.sh&lt;/code&gt;启动服务。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-启动服务&#34;&gt;4. 启动服务&lt;/h3&gt;
+
+&lt;p&gt;我们还要准备一个.env文件，用于设置环境变量：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;nv&#34;&gt;LITESTREAM_ACCESS_KEY_ID&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;lt;cloudflare-r2-access-key-id&amp;gt;
+&lt;span class=&#34;nv&#34;&gt;LITESTREAM_SECRET_ACCESS_KEY&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;lt;cloudflare-r2-access-key&amp;gt;
+&lt;span class=&#34;nv&#34;&gt;PUSH_ENABLED&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;true&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;PUSH_INSTALLATION_ID&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;lt;push-installation-id&amp;gt;
+&lt;span class=&#34;nv&#34;&gt;PUSH_INSTALLATION_KEY&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;lt;push-installation-key&amp;gt;
+&lt;span class=&#34;nv&#34;&gt;PUSH_RELAY_BASE_URI&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;https://push.bitwarden.com
+&lt;span class=&#34;nv&#34;&gt;REPLICA_URL&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;https://&amp;lt;cloudflare-account-id&amp;gt;.r2.cloudflarestorage.com
+&lt;span class=&#34;nv&#34;&gt;SIGNUPS_ALLOWED&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;true&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;vaulewarden的PUSH配置需要到&lt;a href=&#34;https://bitwarden.com/host/&#34;&gt;这里&lt;/a&gt;申请。&lt;/p&gt;
+
+&lt;p&gt;然后我们就可以使用Docker来启动服务了：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;docker run -d &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;  --name bitwarden &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;  -p &lt;span class=&#34;m&#34;&gt;80&lt;/span&gt;:80 &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;  --restart unless-stopped &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;  --env-file .env &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;  vaultwarden/server:latest&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这样我们就可以在没有持久存储的容器服务上无数据库的运行Vaultwarden服务了，比如GCP Code Run，我们可以把实例数量scale到0，只有流量进来时才启动服务，真正做到只有使用时才付费。&lt;/p&gt;
+
+&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
+
+&lt;p&gt;我们使用Litestream实现了Vaultwarden的无数据库服务，并且使用Cloudflare R2作为对象存储服务。这样即使容器服务没有持久存储卷，数据也是安全的。类似的思路还可以推广到其它使用SQLite的程序上。比如我们自己开发了一个Django的程序，不依赖外部的数据库服务，也可以使用Litestream来实现容灾备份。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2260,87 +2349,6 @@ serve:
 &lt;h3 id=&#34;知识管理&#34;&gt;知识管理&lt;/h3&gt;
 
 &lt;p&gt;碎片化时代的知识管理, 重点不是对承载知识的文档和文章进行管理, 而是对加工知识的大脑进行管理.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>从Python到Golang</title>
-      <link>https://zhu327.github.io/2019/12/22/%E4%BB%8Epython%E5%88%B0golang/</link>
-      <pubDate>Sun, 22 Dec 2019 18:45:08 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2019/12/22/%E4%BB%8Epython%E5%88%B0golang/</guid>
-      <description>&lt;p&gt;是的, 从去年底开始, 我差不多写Golang一年了, 从最开始的视频流处理, 到Websocket远程控制, 再到现在写的高性能鉴权中间件. 为什么不用Python? 因为Python满足不了长连接或者高性能的需求. 为什么不用其它语言? 大概是因为Golang足够&lt;code&gt;简单&lt;/code&gt;吧. 这里分享下这一年多写Golang相对于Python的一些感想.&lt;/p&gt;
-
-&lt;h3 id=&#34;强类型&#34;&gt;强类型&lt;/h3&gt;
-
-&lt;h4 id=&#34;代码检查&#34;&gt;代码检查&lt;/h4&gt;
-
-&lt;p&gt;Golang是强类型语言, 配合IDE, Lint, 编译工具, 一些常见的, 马马虎虎的写代码的低级错误在代码提交之前就能被检测出来. 虽然Python也有flak8, 但是相对于Golang犯低级错误的可能性更大些, 特别是对于没有单元测试的代码(是的, 单元测试不是每个团队都会做的).&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h4 id=&#34;代码提示&#34;&gt;代码提示&lt;/h4&gt;
-
-&lt;p&gt;写过Pyhon的人都知道, 无论是Pycharm也好还是VS Code也好, 代码提示对于多重继承的类总是不那么友好, 当然Pyhon3的type hint会稍好一些. 而Golang就没有这方面的困扰, 类型一目了然, 代码补全, 提示更高效一些.&lt;/p&gt;
-
-&lt;h4 id=&#34;像计算机科学家一样思考&#34;&gt;像计算机科学家一样思考&lt;/h4&gt;
-
-&lt;p&gt;有一本书叫《像计算机科学家一样思考Python》, 那么如何做到像计算科学家一样思考呢, 需要理解程序在计算机上是怎么运行的, 然后就会知道为什么有类型系统. Python在很大程度上隐藏了这些细节, 但是只是隐藏并不是没有, 要想写好Python依然需要学习计算机相关的基础知识. Golang与C一脉相承, 如果不了解程序运行的这些细节, 写出烂代码的可能性会更高.&lt;/p&gt;
-
-&lt;h3 id=&#34;程序设计&#34;&gt;程序设计&lt;/h3&gt;
-
-&lt;p&gt;写Python的时候会有种感觉, 由于框架比较完善, 在写业务的时候都是一把梭, 先把代码堆出来再说. 但是写Golang就是另一种感觉了, 你要设计一个好的结构才能方便的进行扩展, 设计出好的接口来减少耦合. 在写实现前就需要对于程序有一个详细的设计, 不能想到哪写到哪, 不然项目的后期改动就是灾难(是的, 我已经经历过2次这样的灾难了).&lt;/p&gt;
-
-&lt;h3 id=&#34;编写可测试的代码&#34;&gt;编写可测试的代码&lt;/h3&gt;
-
-&lt;p&gt;虽然不是每个团队都写单元测试, 但是想成为一名优秀的程序员, 单元测试必不可少. 特别是对于Python语言, 由于lint工具的薄弱, 保证代码质量不犯低级错误的方式就只能是测试了. Python写单元测试也是很简单了, Mock工具也很方便.&lt;/p&gt;
-
-&lt;p&gt;Golang就不一样, 接手过一个没有单元测试项目, 为了提高项目质量, 我从单元测试开始入手, 面临的是完全没法测试的代码, 各种依赖纠缠, 想Mock都没法动手, 这就是不可测试的代码. 为了测试, 我完全重构了整个模块, 抽象接口, 提取函数, 花了很大的精力才搞定单元测试. 所以在写Golang代码时还要考虑代码是不是能方便的测试, 最好能边写实现边写单元测试. 当然能做到测试驱动开发就更好了.&lt;/p&gt;
-
-&lt;h3 id=&#34;性能分析&#34;&gt;性能分析&lt;/h3&gt;
-
-&lt;p&gt;写Golang后接触到了性能分析, profile 火焰图都使用过, 也从算法上优化过程序性能. 那为啥之前写了好几年Python都没做过性能分析呢, 可能是因为对Python的性能预期更低吧. 本来就没想过Python性能好到哪里去, 所以就不考虑分析了, 做业务的过程中更多的是优化SQL查询性能.&lt;/p&gt;
-
-&lt;h3 id=&#34;问题的分析与解决&#34;&gt;问题的分析与解决&lt;/h3&gt;
-
-&lt;p&gt;这是与Golang无关的一个话题, 也是过去一年中我认识到的我的短板. 以往工作都是为了快速解决问题, 而忽略了很多需要思考的地方, 导致后续的一些事故, 以及难以扩展的问题. 在经历了一次失败的答辩, 以及上了《问题的分析与解决》这门课程, 然后在参与大佬同事的一些方案设计评审后才理清楚这些.&lt;/p&gt;
-
-&lt;h4 id=&#34;提问题&#34;&gt;提问题&lt;/h4&gt;
-
-&lt;p&gt;什么是问题, 问题的本质是什么? who what when where, 这就是问题, 先理清楚这个问题的本质, 什么人做了什么在哪里什么时间产生了什么. 然后是How/How Many, 是怎么发生的, 发生了多少次, 影响了什么.&lt;/p&gt;
-
-&lt;h4 id=&#34;分析问题&#34;&gt;分析问题&lt;/h4&gt;
-
-&lt;p&gt;分析产生问题的所有原因, 理清了原因才能针对性的输出解决方案.&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;对比法&lt;/p&gt;
-
-&lt;p&gt;对比问题产生的前后, 做了什么变化, 产生了什么效果, 找出问题的原因&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;鱼骨图&lt;/p&gt;
-
-&lt;p&gt;列出问题相关的所有因子, 从各个大的因子方面分析导致问题出现的原因&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;why why why&lt;/p&gt;
-
-&lt;p&gt;不停的问原因, 直到找到问题的根因&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;通过以上方式, 找出问题所有的原因, 一定要改掉以偏概全的毛病, 理性分析问题, 不要找到了一个原因就马上开始想解决办法, 只有找到所有的原因, 才能针对的提出解决方案.&lt;/p&gt;
-
-&lt;h4 id=&#34;解决方案&#34;&gt;解决方案&lt;/h4&gt;
-
-&lt;p&gt;由于问题可能是多个原因导致的, 所以解决方法可能不会完美的覆盖所有的原因, 这时候就需要对比多个解决方案. 根据经验从多个维度对比打分各个解决方案找出最优解.&lt;/p&gt;
-
-&lt;h4 id=&#34;风险管理&#34;&gt;风险管理&lt;/h4&gt;
-
-&lt;p&gt;选择的解决方案会不会带来什么风险, 有什么预防措施, 如果真的发生了这样的风险有什么应对措施.&lt;/p&gt;
-
-&lt;p&gt;通过以上一套问题的分析与解决方法论, 基本上在做架构设计, 出各种方案时都能做到有理有据, 引用小龙今年年会的主题: 思辨大于执行.&lt;/p&gt;
-
-&lt;h3 id=&#34;最后&#34;&gt;最后&lt;/h3&gt;
-
-&lt;p&gt;从去年进入腾讯到现在已经1年半的时间, 从运维组调动到了开发组, 经历一次失败的答辩, 回过头来看, 不曾后悔自己做的所有决定. 看过很多书, 各方面对比去年确实提高了很多, 但是也清楚的认识到自己的短板, 再接再厉, 继续加油, 展望未来.&lt;/p&gt;</description>
     </item>
     
   </channel>
