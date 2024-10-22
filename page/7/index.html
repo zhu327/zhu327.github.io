@@ -78,6 +78,24 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/24/greentor%E5%A1%AB%E5%9D%91%E8%AE%B0/">greentor填坑记</a></h1>
+        <span class="post-date">Jun 24 2016</span>
+        <p>经过2周的学习开发，Tornado + Django ORM的环境搭好了，这阶段的学习告一段落，虽然这个环境是一个玩具环境，没有经过生产的检验，但是在搭环境的过程中学习了Tornado，greenlet，Django数据库相关的姿势，感觉还是有不少提升。</p>
+
+<p>在这2天的调试中，暴露出了2个比较严重的问题，记录下填坑过程。</p>
+
+<h3 id="1-线程安全">1. 线程安全</h3>
+
+<p>WSGI服务器在接受到新的http请求时会开一个新线程来调用application进行处理，Django ORM在有数据库查询的时候，会在当前线程中创建一个新的数据库连接并保存到线程local空间中，在同一个线程中的连接是可以被复用的。不同的线程持有不同的连接，这样就保证Django ORM是线程安全的。</p>
+
+<p>Tornado是单线程的，在Tornado中使用Django ORM无论处理多少请求，都会用同一个保存在当前local()中的连接，这样就必然会产生连接使用的冲突。比如同时并发的2个请求，第一个请求关闭了连接，第二个请求还在继续使用这个连接就会抛出异常。</p>
+
+<p>在greentor的配合下，Tornado涉及数据库连接的请求都运行在greenlet中，如果有一个greenlet local来对每个请求的数据库连接进行隔离，就能避免线程安全问题，在这里的greenlet协程完全可以类比为线程。然而greenlet并没有local，那我们就造一个local出来。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/21/greentor-tornado%E5%BC%82%E6%AD%A5%E6%96%B9%E6%A1%88/">greentor Tornado异步方案</a></h1>
         <span class="post-date">Jun 21 2016</span>
         <blockquote>
@@ -201,49 +219,6 @@
 
 <p>之前会使用elasticstack与haystack2.4配合，发现问题比较多，所以删掉elasticstack，升级haystack为github上的最新版本</p>
 
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/30/django-elasticsearch%E5%AE%9E%E7%8E%B0%E6%90%9C%E7%B4%A2%E5%8A%9F%E8%83%BD/">Django-Elasticsearch实现搜索功能</a></h1>
-        <span class="post-date">May 30 2016</span>
-        <p>在项目中实现了资讯搜索功能，用到了Django Tastypie haystack Elasticsearch ik分词，覆盖了我对搜索了解的所有姿势。其实也就了解一些简单的概念，不过haystack+elasticsearch并不需要太多搜索基础，只要看看haystack文档就就能实现简单的搜索需求了。</p>
-
-<h3 id="搭建elasticsearch环境">搭建Elasticsearch环境</h3>
-
-<blockquote>
-<p><a href="http://www.sojson.com/blog/81">http://www.sojson.com/blog/81</a></p>
-</blockquote>
-
-<p>参考以上文档搭建了自己的ES环境，然后再安装Django实现搜索的相关库:</p>
-
-<pre><code>django-haystack==2.4.1
-elasticsearch==2.3.0
-elasticstack==0.4.1
-</code></pre>
-
-<p>haystack不用说，在Django中实现搜索基本上都会用到，因为要用到Elasticsearch的BackEnds，所以要装elasticsearch，最后elasticstack会在下面说到。</p>
-
-<h3 id="haystack使用ik分词">haystack使用ik分词</h3>
-
-<p>在elasticsearch中可以在创建了indexs后可以在settings中自定义analyzer，在创建types时可以设置各个field使用的analyzer，但是在haystack中就比较麻烦了。</p>
-
-<blockquote>
-<p><a href="https://github.com/django-haystack/django-haystack/issues/639">https://github.com/django-haystack/django-haystack/issues/639</a></p>
-</blockquote>
-
-<p>从上面的issues中可以看出，如果需要解决这个问题，需要重写elasticsearch backends中相关设置，在查看了<a href="https://github.com/django-haystack/django-haystack/blob/master/haystack/backends/elasticsearch_backend.py">elasticsearch backends</a>代码后，发现除了<code>DEFAULT_SETTINGS</code>中配置自定义analyzer，<code>DEFAULT_FIELD_MAPPING</code>与<code>FIELD_MAPPINGS</code>分别用于设置field在mapping中analyzer，重写相关配置与方法可达到定义不同字段的分词器。</p>
-
-<p><del>但是重写配置方法还是太麻烦了，能不能更简单点呢，所以找到了elasticstack，用上了这个工具后，配置默认的analyzer就非常简单了。</del></p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">HAYSTACK_CONNECTIONS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;ENGINE&#39;</span><span class="p">:</span> <span class="s1">&#39;elasticstack.backends.ConfigurableElasticSearchEngine&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;URL&#39;</span><span class="p">:</span> <span class="s1">&#39;http://127.0.0.1:9200/&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;INDEX_NAME&#39;</span><span class="p">:</span> <span class="s1">&#39;haystack&#39;</span><span class="p">,</span>
-    <span class="p">},</span>
-<span class="p">}</span>
-
-<span class="n">ELASTICSEARCH_DEFAULT_ANALYZER</span> <span class="o">=</span> <span class="s1">&#39;ik&#39;</span> <span class="c1"># 设置默认分词器为ik</span></code></pre></div>
 <p></p>
     </div>
   

@@ -6,10 +6,27 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 03 Sep 2024 10:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 22 Oct 2024 10:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>k8s云原生程序实现CRD的搜索查询分页</title>
+      <link>https://zhu327.github.io/2024/10/22/k8s%E4%BA%91%E5%8E%9F%E7%94%9F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0crd%E7%9A%84%E6%90%9C%E7%B4%A2%E6%9F%A5%E8%AF%A2%E5%88%86%E9%A1%B5/</link>
+      <pubDate>Tue, 22 Oct 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/10/22/k8s%E4%BA%91%E5%8E%9F%E7%94%9F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0crd%E7%9A%84%E6%90%9C%E7%B4%A2%E6%9F%A5%E8%AF%A2%E5%88%86%E9%A1%B5/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;来新公司还是在做云原生平台的开发，基本的业务逻辑就是通过一系列的CRD资源，走Operator的模式来实现平台的各种业务部署。但是CRD在apiserver中是以key-value的形式存储在etcd中，虽然labels可以实现简单的查询，但是并不能满足复杂的查询条件。在我来之前CRD资源的列表查询都是直接全量返回由前端自行筛选，随着业务量的增加，查询的效率越来越低。&lt;/p&gt;
+
+&lt;p&gt;本来这个项目的前任开发者决策使用MySQL来双写CRD资源，来实现辅助查询，代码也写了很多了，双写带来了一些代码结构上的耦合，但是其实也不是个问题。更恶心的问题是有一个客户由于信创方面的政治问题，要求我们不能引入MySQL！虽然客户有建议用他们自己的数据库，但是从我们的角度来说，我们不希望自己的服务依赖外部客户组件，所以就必须考虑下其它的方案了，比如不用数据库服务。&lt;/p&gt;
+
+&lt;p&gt;基于以往在SQLite上的学习经验，以当前CRD资源的体量完全可以使用SQLite来实现CRD资源的辅助查询，那么是不是要引入持久存储呢？其实还是不用，因为CRD本身已经存储在etcd中了，我们只需要在程序启动时通过k8s的List-Watch的方式将CRD资源同步到SQLite中，这样就可以实现CRD资源的辅助查询了。具体到实现上完全可以使用k8s client中的informer来实现CRD资源的同步，这样可以使用到informer的缓存机制减少apiserver的查询压力。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>以Vaultwarden为例使用SQLite Litestream实现无数据库服务</title>

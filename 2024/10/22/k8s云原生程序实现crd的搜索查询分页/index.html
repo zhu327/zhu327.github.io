@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      k8s云原生程序实现CRD的搜索查询分页 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2024. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">k8s云原生程序实现CRD的搜索查询分页</h1>
+  <span class="post-date">Oct 22 2024</span>
+  <h3 id="前言">前言</h3>
+
+<p>来新公司还是在做云原生平台的开发，基本的业务逻辑就是通过一系列的CRD资源，走Operator的模式来实现平台的各种业务部署。但是CRD在apiserver中是以key-value的形式存储在etcd中，虽然labels可以实现简单的查询，但是并不能满足复杂的查询条件。在我来之前CRD资源的列表查询都是直接全量返回由前端自行筛选，随着业务量的增加，查询的效率越来越低。</p>
+
+<p>本来这个项目的前任开发者决策使用MySQL来双写CRD资源，来实现辅助查询，代码也写了很多了，双写带来了一些代码结构上的耦合，但是其实也不是个问题。更恶心的问题是有一个客户由于信创方面的政治问题，要求我们不能引入MySQL！虽然客户有建议用他们自己的数据库，但是从我们的角度来说，我们不希望自己的服务依赖外部客户组件，所以就必须考虑下其它的方案了，比如不用数据库服务。</p>
+
+<p>基于以往在SQLite上的学习经验，以当前CRD资源的体量完全可以使用SQLite来实现CRD资源的辅助查询，那么是不是要引入持久存储呢？其实还是不用，因为CRD本身已经存储在etcd中了，我们只需要在程序启动时通过k8s的List-Watch的方式将CRD资源同步到SQLite中，这样就可以实现CRD资源的辅助查询了。具体到实现上完全可以使用k8s client中的informer来实现CRD资源的同步，这样可以使用到informer的缓存机制减少apiserver的查询压力。</p>
+
+<p></p>
+
+<h3 id="实现">实现</h3>
+
+<h4 id="synchronizer的接口定义">synchronizer的接口定义</h4>
+
+<p>首先我们定一个synchronizer接口，针对每种需要同步的CRD资源，需要实现synchronizer接口。这个接口会处理informer的add、update、delete事件，将CRD资源同步到SQLite中。每一个资源可以创建一张在SQLite中创建的表，将CRD资源同步到表中。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;k8s.io/apimachinery/pkg/runtime/schema&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span> <span class="nx">synchronizer</span> <span class="kd">interface</span> <span class="p">{</span>
+	<span class="nx">gvr</span><span class="p">()</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">GroupVersionResource</span>
+
+	<span class="nx">add</span><span class="p">(</span><span class="nx">obj</span> <span class="kd">interface</span><span class="p">{})</span>
+	<span class="nx">update</span><span class="p">(</span><span class="nx">oldObj</span><span class="p">,</span> <span class="nx">newObj</span> <span class="kd">interface</span><span class="p">{})</span>
+	<span class="nb">delete</span><span class="p">(</span><span class="nx">obj</span> <span class="kd">interface</span><span class="p">{})</span>
+<span class="p">}</span>
+
+<span class="c1">// 以下是一个实现接口的例子
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">templateSynchronizerImpl</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">manager</span> <span class="nx">dao</span><span class="p">.</span><span class="nx">TemplateManager</span> <span class="c1">// SQLite数据库操作
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">templateSynchronizerImpl</span><span class="p">)</span> <span class="nx">gvr</span><span class="p">()</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">GroupVersionResource</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">GroupVersionResource</span><span class="p">{</span>
+		<span class="nx">Group</span><span class="p">:</span>    <span class="s">&#34;apps.titanide.cn&#34;</span><span class="p">,</span>
+		<span class="nx">Version</span><span class="p">:</span>  <span class="s">&#34;v1alpha1&#34;</span><span class="p">,</span>
+		<span class="nx">Resource</span><span class="p">:</span> <span class="s">&#34;templates&#34;</span><span class="p">,</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 分别处理informer的add、update、delete事件，把数据同步到SQLite的表中
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">templateSynchronizerImpl</span><span class="p">)</span> <span class="nx">add</span><span class="p">(</span><span class="nx">obj</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">templateSynchronizerImpl</span><span class="p">)</span> <span class="nx">update</span><span class="p">(</span><span class="nx">oldObj</span><span class="p">,</span> <span class="nx">newObj</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">templateSynchronizerImpl</span><span class="p">)</span> <span class="nb">delete</span><span class="p">(</span><span class="nx">obj</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+<span class="p">}</span></code></pre></div>
+<h4 id="同步逻辑实现">同步逻辑实现</h4>
+
+<p>然后我们使用k8s的dynamicclient的informer来实现CRD资源的同步，因为这段代码在项目中的层级比较低，没能直接创建带scheme的client，所以只能使用dynamicclient。如果你的项目代码层级比较高，可以直接使用带scheme的client。initSynchronizer函数必须在服务启动时调用，等待同步完成后再启动服务。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;os&#34;</span>
+	<span class="s">&#34;os/signal&#34;</span>
+	<span class="s">&#34;syscall&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+
+	<span class="s">&#34;github.com/pkg/errors&#34;</span>
+	<span class="s">&#34;k8s.io/apimachinery/pkg/apis/meta/v1/unstructured&#34;</span>
+	<span class="s">&#34;k8s.io/apimachinery/pkg/runtime&#34;</span>
+	<span class="s">&#34;k8s.io/apimachinery/pkg/runtime/schema&#34;</span>
+	<span class="s">&#34;k8s.io/client-go/dynamic&#34;</span>
+	<span class="s">&#34;k8s.io/client-go/dynamic/dynamicinformer&#34;</span>
+	<span class="s">&#34;k8s.io/client-go/rest&#34;</span>
+	<span class="s">&#34;k8s.io/client-go/tools/cache&#34;</span>
+
+	<span class="nx">appsv1alpha1</span> <span class="s">&#34;project/api/apis/apps/v1alpha1&#34;</span>
+	<span class="s">&#34;project/pkg/database&#34;</span>
+	<span class="s">&#34;project/pkg/database/dao&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nx">initSynchronizer</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">client</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">GetKubeDynamicClient</span><span class="p">()</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+
+  <span class="nx">sigCh</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Signal</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="nx">signal</span><span class="p">.</span><span class="nx">Notify</span><span class="p">(</span><span class="nx">sigCh</span><span class="p">,</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">SIGINT</span><span class="p">,</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">SIGTERM</span><span class="p">)</span>
+
+	<span class="nx">stopCh</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
+	<span class="c1">// 启动一个goroutine，等待接收信号
+</span><span class="c1"></span>	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="o">&lt;-</span><span class="nx">sigCh</span>
+		<span class="nb">close</span><span class="p">(</span><span class="nx">stopCh</span><span class="p">)</span>
+	<span class="p">}()</span>
+
+	<span class="c1">// 启动同步逻辑
+</span><span class="c1"></span>	<span class="nx">db</span> <span class="o">:=</span> <span class="nx">database</span><span class="p">.</span><span class="nx">GetDB</span><span class="p">()</span>
+
+  <span class="c1">// 初始化具体的同步对象
+</span><span class="c1"></span>	<span class="nx">templateSynchronizer</span> <span class="o">:=</span> <span class="nx">newTemplateSynchronizer</span><span class="p">(</span><span class="nx">dao</span><span class="p">.</span><span class="nx">NewTemplateManager</span><span class="p">(</span><span class="nx">db</span><span class="p">))</span>
+	<span class="nx">projectSynchronizer</span> <span class="o">:=</span> <span class="nx">newProjectSynchronizer</span><span class="p">(</span><span class="nx">dao</span><span class="p">.</span><span class="nx">NewProjectManager</span><span class="p">(</span><span class="nx">db</span><span class="p">))</span>
+	<span class="nx">pluginSynchronizer</span> <span class="o">:=</span> <span class="nx">newPluginSynchronizer</span><span class="p">(</span><span class="nx">dao</span><span class="p">.</span><span class="nx">NewPluginManager</span><span class="p">(</span><span class="nx">db</span><span class="p">))</span>
+
+	<span class="nx">err</span> <span class="p">=</span> <span class="nx">synchronize</span><span class="p">(</span><span class="nx">client</span><span class="p">,</span> <span class="p">[]</span><span class="nx">synchronizer</span><span class="p">{</span><span class="nx">templateSynchronizer</span><span class="p">,</span> <span class="nx">projectSynchronizer</span><span class="p">,</span> <span class="nx">pluginSynchronizer</span><span class="p">},</span> <span class="nx">stopCh</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">synchronize</span><span class="p">(</span><span class="nx">dynamicClient</span> <span class="nx">dynamic</span><span class="p">.</span><span class="nx">Interface</span><span class="p">,</span> <span class="nx">syncs</span> <span class="p">[]</span><span class="nx">synchronizer</span><span class="p">,</span> <span class="nx">stopCh</span> <span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="c1">// 创建 Informer 工厂, 10分钟全量同步一次
+</span><span class="c1"></span>	<span class="nx">factory</span> <span class="o">:=</span> <span class="nx">dynamicinformer</span><span class="p">.</span><span class="nx">NewDynamicSharedInformerFactory</span><span class="p">(</span><span class="nx">dynamicClient</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+
+	<span class="nx">hasSyncedFuncs</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="nx">cache</span><span class="p">.</span><span class="nx">InformerSynced</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">syncs</span><span class="p">))</span>
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">sync</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">syncs</span> <span class="p">{</span>
+		<span class="c1">// 创建 informer
+</span><span class="c1"></span>		<span class="nx">gvr</span> <span class="o">:=</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">gvr</span><span class="p">()</span>
+
+		<span class="nx">informer</span> <span class="o">:=</span> <span class="nx">factory</span><span class="p">.</span><span class="nx">ForResource</span><span class="p">(</span><span class="nx">gvr</span><span class="p">).</span><span class="nx">Informer</span><span class="p">()</span>
+
+		<span class="c1">// 设置事件处理程序
+</span><span class="c1"></span>		<span class="nx">informer</span><span class="p">.</span><span class="nx">AddEventHandler</span><span class="p">(</span><span class="nx">cache</span><span class="p">.</span><span class="nx">ResourceEventHandlerFuncs</span><span class="p">{</span>
+			<span class="nx">AddFunc</span><span class="p">:</span>    <span class="nx">sync</span><span class="p">.</span><span class="nx">add</span><span class="p">,</span>
+			<span class="nx">UpdateFunc</span><span class="p">:</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">update</span><span class="p">,</span>
+			<span class="nx">DeleteFunc</span><span class="p">:</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">delete</span><span class="p">,</span>
+		<span class="p">})</span>
+
+		<span class="c1">// 启动 informer
+</span><span class="c1"></span>		<span class="k">go</span> <span class="nx">informer</span><span class="p">.</span><span class="nx">Run</span><span class="p">(</span><span class="nx">stopCh</span><span class="p">)</span>
+
+		<span class="nx">hasSyncedFuncs</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">hasSyncedFuncs</span><span class="p">,</span> <span class="nx">informer</span><span class="p">.</span><span class="nx">HasSynced</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="c1">// 等待缓存同步
+</span><span class="c1"></span>	<span class="k">if</span> <span class="p">!</span><span class="nx">cache</span><span class="p">.</span><span class="nx">WaitForCacheSync</span><span class="p">(</span><span class="nx">stopCh</span><span class="p">,</span> <span class="nx">hasSyncedFuncs</span><span class="o">...</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&#34;failed to wait for cache sync&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="c1">// GetKubeDynamicClient 函数用于获取 Kubernetes 客户端集，返回一个指向 *kubernetes.Clientset 的指针和 error 对象
+</span><span class="c1"></span><span class="kd">func</span> <span class="nx">GetKubeDynamicClient</span><span class="p">()</span> <span class="p">(</span><span class="nx">dynamic</span><span class="p">.</span><span class="nx">Interface</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">cfg</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">rest</span><span class="p">.</span><span class="nx">InClusterConfig</span><span class="p">()</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">err</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nx">Wrap</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="s">&#34;failed to get cluster config&#34;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+	<span class="p">}</span>
+
+	<span class="nx">dynamicClient</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">dynamic</span><span class="p">.</span><span class="nx">NewForConfig</span><span class="p">(</span><span class="nx">cfg</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">err</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nx">Wrap</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="s">&#34;failed to create dynamicClient&#34;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+	<span class="p">}</span>
+
+	<span class="k">return</span> <span class="nx">dynamicClient</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="p">}</span></code></pre></div>
+<h3 id="其它">其它</h3>
+
+<p>通过以上机制，我们就可以实现CRD资源的辅助查询了。这种同步机制也摆脱了需要双写的复杂逻辑，在程序启动时List同步，启动后Watch动态更新，在查询时直接从SQLite中查询，写入时直接写CRD。从某种意义上来说，这种机制实现了读写分离，也解决了双写带来的耦合问题。</p>
+
+<p>在封装db的dao层时，基于以往项目的经验还是建议直接使用sqlx+squirrel来实现SQL的生成和执行，这样在代码结构上会更加清晰。没有引入ORM的原因是以前踩过坑。</p>
+
+<p>在使用SQLite时建议开启一些配置，来优化性能：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">db</span><span class="p">.</span><span class="nx">MustExec</span><span class="p">(</span><span class="s">&#34;PRAGMA journal_mode = WAL;&#34;</span><span class="p">)</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">MustExec</span><span class="p">(</span><span class="s">&#34;PRAGMA synchronous=NORMAL;&#34;</span><span class="p">)</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">MustExec</span><span class="p">(</span><span class="s">&#34;PRAGMA mmap_size = 134217728;&#34;</span><span class="p">)</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">MustExec</span><span class="p">(</span><span class="s">&#34;PRAGMA journal_size_limit = 27103364;&#34;</span><span class="p">)</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">MustExec</span><span class="p">(</span><span class="s">&#34;PRAGMA cache_size=2000;&#34;</span><span class="p">)</span></code></pre></div>
+<h3 id="总结">总结</h3>
+
+<p>在实际项目中我们会碰到各种问题，解决问题的思路和方法多种多样。需要根据项目的实际情况与项目未来的发展方向来决策使用什么方法来解决问题。以我当前的项目为例，客户的政治原因导致不能引入MySQL，只能考虑其它的方式来解决问题。在引入SQLite的同时还解决了需要双写带来的耦合问题，这里的代码不多，但是提供一种解决CRD资源通用查询的思路，有需要可以参考。</p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+
