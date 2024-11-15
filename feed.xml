@@ -7,7 +7,7 @@
     <language>zh-cn</language>
     
     
-    <updated>Tue, 22 Oct 2024 10:55:52 &#43;0800</updated>
+    <updated>Fri, 15 Nov 2024 10:55:52 &#43;0800</updated>
     
     <item>
       <title>About</title>
@@ -28,6 +28,241 @@
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>从Pingora到API网关：Rust项目pingsix实战1</title>
+      <link>https://zhu327.github.io/2024/11/15/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3rust%E9%A1%B9%E7%9B%AEpingsix%E5%AE%9E%E6%88%981/</link>
+      <pubDate>Fri, 15 Nov 2024 10:55:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/11/15/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3rust%E9%A1%B9%E7%9B%AEpingsix%E5%AE%9E%E6%88%981/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;在学习Rust的过程中，我主要进行了一些小工具的练习，对Rust的内存安全性和性能优势有了初步的体会，但始终没有实现过一个完整的大型项目。最近随着Rust在高性能计算领域的应用不断拓展，尤其是Pingora等项目的发布，让我看到了Rust在网络通信领域中的潜力，也激发了我用Rust来实现一个API网关的兴趣。&lt;/p&gt;
+
+&lt;p&gt;在加入腾讯之前，我曾使用OpenResty和Kong进行API网关的开发工作，后来在腾讯进一步深入参与了APISix的云原生网关项目，逐步积累了关于API网关设计、实现以及性能调优方面的经验。API网关是一个兼具架构复杂度与性能要求的系统，涉及请求路由、流量控制、身份验证等多个关键模块，恰好可以充分发挥Rust的优势。因此，我决定以Rust为基础开发一个API网关，这不仅是为了提升自己的Rust技术，更希望通过此项目进一步巩固和提升在API网关方面的知识。&lt;/p&gt;
+
+&lt;p&gt;在具体实现中，我计划基于Pingora的设计思路，打造一个APISix网关的子集功能。我已在GitHub上发布了该项目的初始版本 &lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;https://github.com/zhu327/pingsix&lt;/a&gt;，目前实现了基础的standalone模式，包括基本的路由与反向代理功能。接下来，我将扩展插件定义，逐步实现一些典型的功能插件，最终目标是支持基于etcd的动态配置加载，以便适应多场景的API网关需求。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;实现-配置&#34;&gt;实现：配置&lt;/h3&gt;
+
+&lt;p&gt;在设计 pingsix 的配置文件时，我参考了 APISix 和 Pingora 的配置文件结构，结合自身项目目标和功能，简化了部分复杂内容，同时保持了核心功能的灵活性。配置文件包含以下三个关键部分：&lt;strong&gt;基础配置&lt;/strong&gt;、&lt;strong&gt;Listener 配置&lt;/strong&gt; 和 &lt;strong&gt;资源配置&lt;/strong&gt;，以下是详细说明与完整 YAML 示例。&lt;/p&gt;
+
+&lt;h4 id=&#34;1-基础配置&#34;&gt;1. 基础配置&lt;/h4&gt;
+
+&lt;p&gt;基础配置部分直接沿用了 Pingora 的设计，用于定义网关的全局行为和运行参数。以下是完整配置示例：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;c&#34;&gt;# pingora config example from https://github.com/cloudflare/pingora/blob/main/docs/user_guide/conf.md&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;pingora&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;version&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;              &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 配置文件版本&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;threads&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;              &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 工作线程数量&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;pid_file&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;/run/pingora.pid&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 保存进程ID的文件路径&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;upgrade_sock&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;/tmp/pingora_upgrade.sock&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 热升级用的Unix socket文件&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;user&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;nobody&lt;span class=&#34;w&#34;&gt;            &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 运行网关的用户&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;group&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;webusers&lt;span class=&#34;w&#34;&gt;         &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 运行网关的用户组&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;设计思路&lt;/strong&gt;：这一部分配置是网关运行时的基础，保持简洁的同时，与 Pingora 配置完全兼容，降低了配置的学习成本。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&#34;2-listener-配置&#34;&gt;2. Listener 配置&lt;/h4&gt;
+
+&lt;p&gt;Listener 是 API 网关的入口，用于定义网关监听的地址、端口以及协议类型（HTTP/HTTPS）。以下是完整配置示例：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;listeners&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;address&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0.0&lt;/span&gt;.&lt;span class=&#34;m&#34;&gt;0.0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;8080&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# HTTP监听地址和端口&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# - address: &amp;#34;[::1]:443&amp;#34;  # 示例：IPv6地址监听&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;#   tls:                  # 配置HTTPS&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;#     cert_path: /etc/ssl/server.crt # SSL证书路径&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;#     key_path: /etc/ssl/server.key  # SSL私钥路径&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;#   offer_h2: true         # 是否支持HTTP/2&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;设计思路&lt;/strong&gt;：
+- 当前支持 HTTP 和 HTTPS 协议，通过配置 &lt;code&gt;tls&lt;/code&gt; 参数来开启 HTTPS。 未来可能加入类似 APISix 的 &lt;code&gt;Stream Proxy&lt;/code&gt; 功能，用于支持 TCP/UDP 流量代理。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&#34;3-资源配置&#34;&gt;3. 资源配置&lt;/h4&gt;
+
+&lt;p&gt;资源配置是网关的核心部分，主要定义路由规则（Router）和后端服务（Upstream）的负载均衡策略。目前 pingsix 支持的功能子集以实现反向代理为主，以下是完整示例：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;c&#34;&gt;# 参考APISix的Standalone模式配置示例：https://apisix.apache.org/zh/docs/apisix/3.1/stand-alone/&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 完整的Router，Upstream配置参考APISix的API文档：https://apisix.apache.org/zh/docs/apisix/admin-api/#route&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;routers&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;id&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;                     &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 路由唯一标识&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;uri&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;/&lt;span class=&#34;w&#34;&gt;                    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 路由匹配的URI&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;host&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;www.baidu.com&lt;span class=&#34;w&#34;&gt;       &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 匹配的主机&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 可选项：&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# uris: [&amp;#34;/&amp;#34;,&amp;#34;/test&amp;#34;]     # 支持多个URI匹配&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# hosts: [&amp;#34;www.baidu.com&amp;#34;,&amp;#34;www.taobao.com&amp;#34;] # 支持多个Host匹配&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# methods: [&amp;#34;GET&amp;#34;, &amp;#34;POST&amp;#34;] # 限制请求方法&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# timeout:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;#   connect: 2           # 连接超时时间（秒）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;#   send: 3              # 发送超时时间（秒）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;#   read: 5              # 读取超时时间（秒）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# priority: 10           # 路由优先级（数字越大，优先级越高）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;upstream&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;                &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 定义后端服务&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;nodes&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;www.baidu.com&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;   &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 后端服务地址及权重&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;type&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;roundrobin&lt;span class=&#34;w&#34;&gt;       &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 负载均衡类型（支持roundrobin、random等）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;checks&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;                &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 健康检查配置&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;active&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;              &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 主动健康检查&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;          &lt;/span&gt;type&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;https&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 检查类型（http/https）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;          &lt;/span&gt;timeout&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;         &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 健康检查超时时间（秒）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;          &lt;/span&gt;host&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;www.baidu.com&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 检查目标主机&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;          &lt;/span&gt;http_path&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;/&lt;span class=&#34;w&#34;&gt;       &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 健康检查路径&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;          &lt;/span&gt;https_verify_certificate&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 是否验证HTTPS证书&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;          &lt;/span&gt;req_headers&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;User-Agent: curl/7.29.0&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 请求头&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;          &lt;/span&gt;healthy&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;           &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 健康服务的标准&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;            &lt;/span&gt;interval&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 健康检查间隔时间（秒）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;            &lt;/span&gt;http_statuses&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;200&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;201&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 判断健康的HTTP状态码&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;            &lt;/span&gt;successes&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;     &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 连续成功次数&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;          &lt;/span&gt;unhealthy&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;         &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 不健康服务的标准&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;            &lt;/span&gt;http_failures&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 连续失败的HTTP请求次数&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;            &lt;/span&gt;tcp_failures&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 连续失败的TCP请求次数&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;pass_host&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;rewrite&lt;span class=&#34;w&#34;&gt;     &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 是否透传主机信息&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;upstream_host&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;www.baidu.com&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 传递给后端的Host&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;scheme&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;https&lt;span class=&#34;w&#34;&gt;          &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 使用的协议（http/https）&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;：
+- &lt;strong&gt;Router&lt;/strong&gt; 定义了请求的路由规则，目前支持 &lt;code&gt;uri&lt;/code&gt; 和 &lt;code&gt;host&lt;/code&gt; 的匹配，还可以扩展支持 &lt;code&gt;methods&lt;/code&gt;、&lt;code&gt;priority&lt;/code&gt; 等参数。
+- &lt;strong&gt;Upstream&lt;/strong&gt; 配置支持负载均衡和健康检查，支持配置各种复杂均衡算法，还支持主动健康检查。&lt;/p&gt;
+
+&lt;p&gt;可以在 &lt;a href=&#34;https://github.com/zhu327/pingsix/blob/main/config.yaml&#34;&gt;GitHub&lt;/a&gt; 查看完整的配置文件。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&#34;4-配置加载&#34;&gt;4. 配置加载&lt;/h4&gt;
+
+&lt;p&gt;在 pingsix 中，配置加载的实现方式与 Pingora 完全兼容，主要通过复用 Pingora 的命令行解析和配置加载代码来完成。这些代码大部分是直接借鉴了 Pingora 的实现，并根据 pingsix 的需求做了一些简单的调整和优化。&lt;/p&gt;
+
+&lt;h5 id=&#34;主要改进&#34;&gt;主要改进：&lt;/h5&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;使用 &lt;code&gt;serde&lt;/code&gt; 进行配置解析&lt;/strong&gt;：配置文件仍然采用 YAML 格式，使用 &lt;code&gt;serde_yaml&lt;/code&gt; 库进行解析。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;配置校验&lt;/strong&gt;：为了确保配置的正确性，我们引入了 &lt;code&gt;validator&lt;/code&gt; crate，对配置项进行简单的校验，确保它们符合预期。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;默认值和拷贝&lt;/strong&gt;：通过 &lt;code&gt;serde&lt;/code&gt; 的 &lt;code&gt;default&lt;/code&gt; 特性简化了默认值的处理，使用 &lt;code&gt;Clone&lt;/code&gt; derive 特性实现了配置的拷贝。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h5 id=&#34;配置加载实现&#34;&gt;配置加载实现&lt;/h5&gt;
+
+&lt;p&gt;配置的加载流程和 Pingora 基本一致，代码结构也与 Pingora 相似。我们首先读取 YAML 配置文件，然后通过 &lt;code&gt;serde_yaml&lt;/code&gt; 进行解析，最后使用 &lt;code&gt;validator&lt;/code&gt; 校验配置项的合法性。&lt;/p&gt;
+
+&lt;p&gt;具体的实现可以参考 &lt;a href=&#34;https://github.com/zhu327/pingsix/blob/main/src/config/mod.rs&#34;&gt;pingsix 的配置加载代码&lt;/a&gt;，该文件展示了配置解析、校验和默认值处理的实现方式。&lt;/p&gt;
+
+&lt;h3 id=&#34;实现-上游&#34;&gt;实现：上游&lt;/h3&gt;
+
+&lt;p&gt;从 APISix 的上游配置功能可以看出，网关的上游模块需要具备以下核心功能：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;DNS 解析&lt;/strong&gt;：支持上游服务的域名解析。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;负载均衡算法&lt;/strong&gt;：支持多种负载均衡算法和自定义 hash key。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;健康检查&lt;/strong&gt;：实现主动健康检查，确保上游服务的可用性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;超时与重试配置&lt;/strong&gt;：为连接、发送和读取设置超时时间，并在请求失败时进行重试。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;协议支持&lt;/strong&gt;：支持 HTTP 和 HTTPS 上游协议。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;上游模块实现结构&#34;&gt;上游模块实现结构&lt;/h4&gt;
+
+&lt;p&gt;根据 Pingora 的抽象设计，我们将上游处理拆分为两个主要模块，分别负责服务发现和负载均衡：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;服务发现模块&lt;/strong&gt;&lt;br /&gt;
+服务发现模块位于 &lt;code&gt;discovery.rs&lt;/code&gt;，支持静态 IP 配置、域名 DNS 解析，并允许 HTTP/HTTPS 混合配置。详情见 &lt;a href=&#34;https://github.com/zhu327/pingsix/blob/main/src/proxy/discovery.rs&#34;&gt;discovery.rs 源码&lt;/a&gt;。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;负载均衡模块&lt;/strong&gt;&lt;br /&gt;
+负载均衡模块位于 &lt;code&gt;lb.rs&lt;/code&gt;，支持 roundrobin、random、fnvhash 和 ketama 等算法，并按照 APISix 实现了部分基于 &lt;code&gt;vars&lt;/code&gt;、&lt;code&gt;header&lt;/code&gt; 和 &lt;code&gt;cookie&lt;/code&gt; 的 hash 计算。负载均衡模块可扩展不同的 hash key 类型。更多实现细节见 &lt;a href=&#34;https://github.com/zhu327/pingsix/blob/main/src/proxy/lb.rs&#34;&gt;lb.rs 源码&lt;/a&gt;。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;实现心得&#34;&gt;实现心得&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;多态设计&lt;/strong&gt;：通过 &lt;code&gt;enum&lt;/code&gt; 实现负载均衡算法的多态性，将不同算法的差异封装在模块内，便于调用和扩展。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;配置转换简化&lt;/strong&gt;：使用 &lt;code&gt;From&lt;/code&gt; trait 将配置结构转换为业务对象，简化代码，提高可读性。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;健康检查集成&lt;/strong&gt;：Pingora 的健康检查逻辑与上游绑定在一起，而健康检查后台服务需要在 server 启动时注入。因此，我们在上层结构中将上游和健康检查逻辑绑定，通过 &lt;code&gt;Option&lt;/code&gt; 灵活控制其生命周期。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;以上实现方法确保了代码结构的简洁性和模块的可复用性，建议阅读相关源码进一步了解实现细节。&lt;/p&gt;
+
+&lt;h3 id=&#34;实现-路由&#34;&gt;实现：路由&lt;/h3&gt;
+
+&lt;p&gt;路由模块参考了 &lt;a href=&#34;https://github.com/apache/apisix/tree/master/apisix/http/router&#34;&gt;APISix 的 radixtree_host_uri 路由方式&lt;/a&gt;，通过 &lt;code&gt;host&lt;/code&gt; 和 &lt;code&gt;uri&lt;/code&gt; 的组合实现高效的路由匹配。&lt;/p&gt;
+
+&lt;p&gt;在 pingsix 中，我们使用了 Rust 的 &lt;code&gt;matchit&lt;/code&gt; crate，这是一个高性能的 Radix Tree 路由库，用来实现与 APISix 相同的功能。&lt;code&gt;matchit&lt;/code&gt; 提供了灵活的路由匹配能力，支持精确匹配和通配符规则。&lt;/p&gt;
+
+&lt;p&gt;此外，路由逻辑还结合了负载均衡（lb）模块的方法，实现请求的精准路由，并支持通过路由的 &lt;code&gt;timeout&lt;/code&gt; 配置覆盖默认的上游超时设置。&lt;/p&gt;
+
+&lt;p&gt;完整实现可以参考 &lt;a href=&#34;https://github.com/zhu327/pingsix/blob/main/src/proxy/router.rs&#34;&gt;router.rs 源码&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h3 id=&#34;实现-pingora-service-与-server&#34;&gt;实现：Pingora Service 与 Server&lt;/h3&gt;
+
+&lt;h4 id=&#34;service-实现&#34;&gt;Service 实现&lt;/h4&gt;
+
+&lt;p&gt;Pingora 的 &lt;code&gt;Service&lt;/code&gt; 概念用于定义 HTTP 请求处理的各个阶段，其处理流程与 Nginx 的处理阶段类似（参考 &lt;a href=&#34;https://github.com/cloudflare/pingora/blob/main/docs/user_guide/phase.md&#34;&gt;Pingora 的阶段设计&lt;/a&gt;）。在 pingsix 中，通过实现 &lt;code&gt;ProxyService&lt;/code&gt; trait，可以构建一个完整的反向代理服务，并在以下阶段插入自定义逻辑：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;request&lt;/strong&gt;: 请求接收后可进行修改或校验。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;upstream_request&lt;/strong&gt;: 转发到上游前处理请求。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;upstream_response&lt;/strong&gt;: 接收上游响应后进行处理。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;response&lt;/strong&gt;: 返回客户端前对响应进行最终修改。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这种设计让我们可以通过插件灵活扩展功能，例如添加认证、流量控制等。核心代码实现可参考 &lt;a href=&#34;https://github.com/cloudflare/pingora/blob/main/src/mod.rs&#34;&gt;pingsix proxy 模块&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&#34;server-实现&#34;&gt;Server 实现&lt;/h4&gt;
+
+&lt;p&gt;Server 层负责协调配置、路由和服务启动等核心功能：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;加载配置与路由&lt;/strong&gt;&lt;br /&gt;
+从配置文件中加载路由规则和监听地址，并初始化所需的服务模块。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;启动监听器&lt;/strong&gt;&lt;br /&gt;
+支持多协议监听（如 HTTP/HTTPS），并动态绑定配置的监听端口。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Service 扩展&lt;/strong&gt;&lt;br /&gt;
+在 Server 中可以注册多种 &lt;code&gt;Service&lt;/code&gt; 实现：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ProxyService&lt;/code&gt;: 用于处理反向代理逻辑。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;BackgroundService&lt;/code&gt;: 如健康检查后台任务。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;自定义扩展 Service，例如自动申请证书等。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;通过这种设计，Server 可以灵活地管理多个服务实例，扩展功能变得简单且直观。完整的实现代码可参考 &lt;a href=&#34;https://github.com/zhu327/pingsix/blob/main/src/main.rs&#34;&gt;pingsix 的 main.rs&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h3 id=&#34;规划&#34;&gt;规划&lt;/h3&gt;
+
+&lt;p&gt;接下来，我们将基于当前的反向代理功能进一步完善 API 网关的核心扩展能力，规划包括：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;插件支持&lt;/strong&gt;&lt;br /&gt;
+引入插件机制，支持动态加载和执行，逐步实现 API 网关的关键插件（如认证、限流、日志等），提升功能的灵活性与可扩展性。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;动态配置管理&lt;/strong&gt;&lt;br /&gt;
+集成 etcd，实现配置的动态加载和更新，以便在无需重启服务的情况下动态调整路由、上游配置等。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;上游与服务的独立配置&lt;/strong&gt;&lt;br /&gt;
+提供上游（upstream）和服务（service）的单独配置抽象，使得复杂业务需求下的配置更清晰、模块化。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;经过以上设计，我们已经构建了一个完整的基础反向代理功能，但要实现 API 网关的核心价值，接下来的重点将聚焦在插件系统的设计与实现，以便支持更丰富的功能扩展。&lt;/p&gt;
+
+&lt;h3 id=&#34;参考&#34;&gt;参考&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/apache/apisix&#34;&gt;APISix&lt;/a&gt; - 开源、高性能的 API 网关，提供丰富的插件支持和灵活的配置管理。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/cloudflare/pingora&#34;&gt;Pingora&lt;/a&gt; - Cloudflare 开发的高性能反向代理，采用 Rust 实现，设计灵感来源于 Nginx。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;其他相关项目：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/vicanso/pingap&#34;&gt;pingap&lt;/a&gt; - 一个使用 Rust 实现的轻量级 API 网关，适合参考其架构和插件设计。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/memorysafety/river&#34;&gt;river&lt;/a&gt; - Rust 实现的分布式流量管理系统，支持动态路由和负载均衡功能。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/caibirdme/penguin&#34;&gt;penguin&lt;/a&gt; - Rust 编写的反向代理服务器，用于学习和参考其路由与负载均衡实现。&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -1960,448 +2195,6 @@ serve:
 &lt;p&gt;小伙伴们在工作中如果真的是自己的锅, 就得认, 回顾自己问题, 下次不要再犯, 但是如果被甩锅了, 一定要理性的对待, 找出证据, 说明不是自己的问题. 项目管理往往是对过程的管理, 所以我们的每个结论, 每个交接内容修需要有记录, 从而在划分责任时才能有理有据.&lt;/p&gt;
 
 &lt;p&gt;另外在如何定义事情是否做完上这个问题上, 每个人对事情做完的理解可能都不一样, 所以在项目相关的会议上我们要清楚的确认自己的责任, 自己需要做的事情, 产出物是什么, 做到&lt;strong&gt;事事有回应 件件有着落 凡事有交代&lt;/strong&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>领域驱动设计与微服务</title>
-      <link>https://zhu327.github.io/2020/10/22/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
-      <pubDate>Thu, 22 Oct 2020 17:38:04 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2020/10/22/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
-      <description>&lt;h3 id=&#34;drf的起手式&#34;&gt;DRF的起手式&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;CURD Boy的通常的工作模式&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/image-20201010162649717.png&#34; alt=&#34;image-20201010162649717&#34;  /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;先设计Serializer还是先设计Model?&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;问题是什么&#34;&gt;问题是什么&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/image-20201010162706372.png&#34; alt=&#34;image-20201010162706372&#34;  /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;框架捆绑
-
-&lt;ul&gt;
-&lt;li&gt;写框架无关的代码&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;复杂的逻辑会陷入职责不清晰, 交叉依赖
-
-&lt;ul&gt;
-&lt;li&gt;抽象一层&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;面向对象&#34;&gt;面向对象&lt;/h3&gt;
-
-&lt;p&gt;SOLID原则&lt;/p&gt;
-
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;-&lt;/th&gt;
-&lt;th&gt;-&lt;/th&gt;
-&lt;th&gt;-&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;SRP&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;The Single Responsibility Principle&lt;/td&gt;
-&lt;td&gt;单一责任原则&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;OCP&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;The Open Closed Principle&lt;/td&gt;
-&lt;td&gt;开放封闭原则&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;LSP&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;The Liskov Substitution Principle&lt;/td&gt;
-&lt;td&gt;里氏替换原则&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;DIP&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;The Dependency Inversion Principle&lt;/td&gt;
-&lt;td&gt;依赖倒置原则&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;ISP&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;The Interface Segregation Principle&lt;/td&gt;
-&lt;td&gt;接口分离原则&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&#34;clean-architecture&#34;&gt;clean Architecture&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/201507-CleanArchitecture.jpg&#34; alt=&#34; &#34; style=&#34;zoom:80%;&#34; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;实体: 模型, 比如权限中心的一条策略就是一个实体, 它具有唯一的ID
-
-&lt;ul&gt;
-&lt;li&gt;模型不是分散的, 与存储无关, 避免交叉依赖&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;用例: 业务的使用规则, 实例在某种场景下的使用方式, 一段实体的使用逻辑
-
-&lt;ul&gt;
-&lt;li&gt;与api无关, 只与业务逻辑相关&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;对外暴露接口与适配器
-
-&lt;ul&gt;
-&lt;li&gt;隐藏用例与实体, 只对外暴露接口&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;框架, 驱动
-
-&lt;ul&gt;
-&lt;li&gt;对接接口, 实现适配器接口&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;hr /&gt;
-
-&lt;ul&gt;
-&lt;li&gt;从业务出发, 以业务逻辑为核心构建系统&lt;/li&gt;
-&lt;li&gt;灵活的使用外部依赖, 扩展方便&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;六边形架构&#34;&gt;六边形架构&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/3-application.jpg&#34; alt=&#34;img&#34; style=&#34;zoom: 80%;&#34; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;以业务为核心, 外部依赖全部做成适配器, 方便替换&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;领域驱动设计&#34;&gt;领域驱动设计&lt;/h3&gt;
-
-&lt;p&gt;为解决复杂的现实问题的一种设计模式, 将数据和行为封装在一起，并与现实世界中的业务对象相映射。各类具备明确的职责划分，将领域逻辑分散到领域对象中。&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;业务架构——根据业务需求设计业务模块及其关系&lt;/li&gt;
-&lt;li&gt;系统架构——设计系统和子系统的模块&lt;/li&gt;
-&lt;li&gt;技术架构——决定采用的技术及框架&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;DDD的核心诉求就是将业务架构映射到系统架构上，在响应业务变化调整业务架构时，也随之变化系统架构。&lt;/p&gt;
-
-&lt;h3 id=&#34;什么是领域&#34;&gt;什么是领域&lt;/h3&gt;
-
-&lt;p&gt;在互联网兴起之前, 传统的软件行业, 做的软件都是在解决现实中已经存在的问题, 软件的意义在于提示现实问题处理的效率, 比如电子商务, 现实中的商务模式只怎样运转的, 电子商务就是怎样运转的, 软件系统的意义在于大大提升了商务模式的运转的效率, 所以要设计一个好的软件系统, 先要有足够的领域知识, 以现实中出现的问题为基础, 构建领域的模型&lt;/p&gt;
-
-&lt;p&gt;已订单模型为例, 同样是订单, 对于购买客户展示的订单与对商户展示的订单信息就不一样, 操作也不一样, 这就需要对模型进行域的划分, 分别分为客户域与商户域&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/image-20201010170636576.png&#34; alt=&#34;image-20201010170636576&#34;  /&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;领域语言&#34;&gt;领域语言&lt;/h3&gt;
-
-&lt;p&gt;定义术语, 识别出领域内的用例主谓宾, 主语: 实体, 谓语: 用例, 宾语: 值对象, 比如在权限中心, 管理员对用户授权了xx权限&lt;/p&gt;
-
-&lt;h3 id=&#34;领域模型-entry与valueobject&#34;&gt;领域模型 &amp;ndash; Entry与ValueObject&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://www.cosmicpython.com/book/images/apwp_0104.png&#34; alt=&#34;apwp 0104&#34; style=&#34;zoom: 50%;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;实体&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;当一个对象由其标识（而不是属性）区分时，这种对象称为实体（Entity）。&lt;/p&gt;
-
-&lt;p&gt;在权限中心, 用户, 管理员, 策略, 都有唯一的标志, 可以分门别类划分到各自域的实体&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;值对象&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;当一个对象用于对事务进行描述而没有唯一标识时，它被称作值对象（Value Object）。&lt;/p&gt;
-
-&lt;p&gt;权限中心中, 策略中的拓扑, 属性, 这些没有唯一标志的值, 就是值对象&lt;/p&gt;
-
-&lt;h3 id=&#34;repository&#34;&gt;Repository&lt;/h3&gt;
-
-&lt;p&gt;数据存储的adapter, 以Entry为参数, 保存实体信息到存储引擎, 从数据库中加载数据为实体对象&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://www.cosmicpython.com/book/images/apwp_0201.png&#34; alt=&#34;apwp 0201&#34; style=&#34;zoom:50%;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;好处:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;简单的接口, 解耦了对存储的依赖&lt;/li&gt;
-&lt;li&gt;方便进行单元测试, 通过Facke Repository&lt;/li&gt;
-&lt;li&gt;开考虑如何存储数据前, 专注于解决业务问题, 使得模型更加贴合实际问题&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;坏处:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;增加了额外的代码逻辑, 提高的维护的成本&lt;/li&gt;
-&lt;li&gt;有一些逻辑可能ORM框架就已经支持了&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;service&#34;&gt;Service&lt;/h3&gt;
-
-&lt;p&gt;服务层, 领域模型的使用用例, 一些重要的领域行为或操作，可以归类为领域服务。它既不是实体，也不是值对象的范畴。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://www.cosmicpython.com/book/images/apwp_0402.png&#34; alt=&#34;apwp 0402&#34; style=&#34;zoom: 50%;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;好处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;提供一个单一的地方放所以的用例&lt;/li&gt;
-&lt;li&gt;通过服务层来把领域模型隐藏在api后面, 方便对领域层做重构&lt;/li&gt;
-&lt;li&gt;把定制http相关的协议改变成了定制服务的协议, 接口只是服务层的派生&lt;/li&gt;
-&lt;li&gt;有了存储层后, 可以方便的使用Fake存储来做测试&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;坏处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;如果你的app是一个纯粹的web服务, MVC就可很好的处理用例了, 不需要增加多余复杂度&lt;/li&gt;
-&lt;li&gt;服务层是另外的一个抽象&lt;/li&gt;
-&lt;li&gt;服务层承载了太多的逻辑, 会导致领域层成为贫血模式&lt;/li&gt;
-&lt;li&gt;在采用服务层前, 需要理清控制面上的逻辑编排&lt;/li&gt;
-&lt;li&gt;把控制面的逻辑下沉到领域模型上, 可以得到胖模型, 瘦控制&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;unit-of-work&#34;&gt;Unit of Work&lt;/h3&gt;
-
-&lt;p&gt;service层中直接对接了Repository, 处理了太多事务相关的逻辑, 通过UOW来封装事务的处理&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://www.cosmicpython.com/book/images/apwp_0602.png&#34; alt=&#34;apwp 0602&#34; style=&#34;zoom: 50%;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;好处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;对于原子操作有一个更好的抽象, 通过上下文管理器直观的看到哪些逻辑组合在一起&lt;/li&gt;
-&lt;li&gt;对事务的开始与结束有了明确的定义&lt;/li&gt;
-&lt;li&gt;提供了实例化存储类的地方&lt;/li&gt;
-&lt;li&gt;帮助处理事件与消息总线&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;坏处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;可能ORM已经有类似的封装&lt;/li&gt;
-&lt;li&gt;看起来简单, 但是还要处理回滚, 多线程, 嵌条事务等情况&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;aggregate&#34;&gt;Aggregate&lt;/h3&gt;
-
-&lt;p&gt;Aggregate(聚合）是一组相关对象的集合，作为一个整体被外界访问，聚合根（Aggregate Root）是这个聚合的根节点。&lt;/p&gt;
-
-&lt;p&gt;有了Service与UOA后, 往往会导致Service的逻辑复杂, 而领域模型上的逻辑非常简单, 甚至于没有相关的方法, 这就是所谓的贫血模式/失血模式, 这时候就需要一种新的抽象来承载领域模型上的相关逻辑, Aggregate&lt;/p&gt;
-
-&lt;p&gt;以权限中心为例, 每次操作的Policy并不是一个, 而是一批, 这时候就可以定义PolicyAggregate, 来把批量的Policy操作的方法封装在聚合之中&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://www.cosmicpython.com/book/images/apwp_0701.png&#34; alt=&#34;apwp 0701&#34; style=&#34;zoom:50%;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;好处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;聚会可以定义出哪些模型是可以暴露, 那些不暴露&lt;/li&gt;
-&lt;li&gt;显示的定义界限上下文, 有助于提高ORM性能&lt;/li&gt;
-&lt;li&gt;由聚合来负责状态的变更, 更容易控制内部数据, 提供统一的出入口&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;坏处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;对于新开发者不友好, 需要多理解一个概念&lt;/li&gt;
-&lt;li&gt;严格定义聚合的单一职责, 对于思维的考研很大&lt;/li&gt;
-&lt;li&gt;不同聚合之间数据的最终一致可能很麻烦&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;event-drive&#34;&gt;Event Drive&lt;/h3&gt;
-
-&lt;p&gt;领域事件是对领域内发生的活动进行的建模。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://www.cosmicpython.com/book/images/apwp_0801.png&#34; alt=&#34;apwp 0801&#34; style=&#34;zoom:50%;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;好处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;消息总线解耦了不同逻辑之间的耦合, 通过响应消息实现多种逻辑的处理&lt;/li&gt;
-&lt;li&gt;时间响应的处理与核心的领域逻辑得到隔离&lt;/li&gt;
-&lt;li&gt;领域时间实际上是现实问题的一种抽象, 可以跟领域语言有机的结合到一起&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;坏处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;消息总线隔离各种逻辑, 不方便梳理整体逻辑&lt;/li&gt;
-&lt;li&gt;要小心消息的循环依赖&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;完全的事件驱动&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://www.cosmicpython.com/book/images/apwp_0902.png&#34; alt=&#34;apwp 0902&#34; style=&#34;zoom:50%;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;好处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;handler与service变成了一个, 架构简化&lt;/li&gt;
-&lt;li&gt;事件对于api与handle的参数传递提供统一的结构&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;坏处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;对于web服务来说, 消息总线不是一个可以感知的过程, 异步逻辑不知道什么时候完成&lt;/li&gt;
-&lt;li&gt;事件对象与模型对象存在大量相同的字段, 修改时也要同时修改&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;引入命令模式:&lt;/p&gt;
-
-&lt;p&gt;好处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;区分出命令与事件, 可以清晰的定义出哪些是必须完成的, 哪些是额外的逻辑&lt;/li&gt;
-&lt;li&gt;命令名称相对于事件更明确&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;坏处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;命令与事件语义上的差异可能很小, 要小心区分&lt;/li&gt;
-&lt;li&gt;明确的处理失败与异常, 使得影响变小, 逻辑更加难理解, 需要增加更多监控&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;事件驱动的微服务:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://www.cosmicpython.com/book/images/apwp_1101.png&#34; alt=&#34;apwp 1101&#34; style=&#34;zoom:50%;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;好处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;避免依赖大泥球&lt;/li&gt;
-&lt;li&gt;分离服务: 更新与新增单个服务更简单&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;坏处:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;整理流程的信息很难直观看出来&lt;/li&gt;
-&lt;li&gt;需要理解最终一致性&lt;/li&gt;
-&lt;li&gt;消息的可靠性需要权衡: 至少一次还是最多一次&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;cqrs&#34;&gt;CQRS&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://www.cosmicpython.com/book/images/apwp_1201.png&#34; alt=&#34;apwp 1201&#34; style=&#34;zoom:50%;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;命令于查询分离&lt;/p&gt;
-
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;&lt;/th&gt;
-&lt;th&gt;查询&lt;/th&gt;
-&lt;th&gt;命令&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;行为&lt;/td&gt;
-&lt;td&gt;简单&lt;/td&gt;
-&lt;td&gt;负责业务逻辑&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;缓存&lt;/td&gt;
-&lt;td&gt;可缓存&lt;/td&gt;
-&lt;td&gt;不可缓存&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;一致性&lt;/td&gt;
-&lt;td&gt;可能延迟&lt;/td&gt;
-&lt;td&gt;事务一致&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&#34;微服务&#34;&gt;微服务&lt;/h3&gt;
-
-&lt;h3 id=&#34;宏服务的问题&#34;&gt;宏服务的问题&lt;/h3&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;代码量变大: 模块之间没有严格的界限, 想要理解系统整体困难, 随着代码的增加复杂度增加, 变更的成本变高, 降低迭代速度&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;资源利用低效: 整体服务占用大量的内存, 不管其中模块是否被大量的使用, 占用所有的数据库连接, 不管有没有使用&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;带来可扩展的问题: 即使能实现横向的扩展, 但是开发的过程中由于团队的人员变多, 也会带来版本迭代上的冲突, 除非有很好的职责划分, 不同团队之间的沟通, 会带来效率的降低&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;部署困难: 每次部署都需要保证所有模块的正确性, 其中某个模块出问题, 会导致整个系统的崩溃&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;技术的限制: 在选定一种技术后, 整个系统的技术就被限制了, 比如Python, 想要更改会非常困难&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;bug影响: 一个模块的bug可能会影响到整个系统, 一个模块的资源占用过多, 也会影响到整个系统&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;微服务-1&#34;&gt;微服务&lt;/h3&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;模块之间松耦合&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;独立部署&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;每个微服务互相通信&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;为了提供整体的服务, 需要把微服务暴露成一个整体, 微服务隐藏在整体后面&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;优点:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;微服务之间使用统一的通信协议通信, http-json, 更加通用一些, rpc更加高效&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;更好的资源利用率, 每个服务都是可控的, 按需分配资源&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;每个微服务都很小, 代码量少更简单, 重构更方便, 可以选择不同的技术栈&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;某些服务可以隐藏在微服务后面, 不对外提供, 更加安全&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;由于系统的独立, 一个服务的崩溃不会导致整体的崩溃&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;每个服务都是独立维护, 提高团队的开发效率&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;缺点:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;迁移到微服务很困难, 需要付出大量的开发成本, 初期会带来很多混乱&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;微服务的会带来组织架构上的调整, 而一般公司的组织架构是很难改变的, 就会导致职责的分不清&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;学习曲线陡峭, 开发人员需要学习相关的开发模式, 需要开发运维相关的培训&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;调试更加困难&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;划分微服务本身很困难, 需要警惕多个独立服务合并到一个服务中, 这样就偏离的迁移微服务的初衷&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;违法对于团队配合会带来困难, 不同的团队会站在自己的角度思考, 沟通协调需要付出更多的成本&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;在整体功能与每个微服务的功能之间需要做平衡, 没有很好的配合, 团队之间会出现信息孤岛, 重复造轮子. 应该共享知识, 共享经验&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;敏捷开发的同时, 需要各个团队落地的文档就有要求了, 可以减少沟通, 但是增加额外的工作量&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;如果有对其它服务的依赖, 会增加请求的响应时间&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
-
-&lt;p&gt;没有银弹, 没有完美的技术, 只有合适的技术.&lt;/p&gt;</description>
     </item>
     
   </channel>
