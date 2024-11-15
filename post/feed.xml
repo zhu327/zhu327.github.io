@@ -12,11 +12,11 @@
     
     
     <item>
-      <title>从Pingora到API网关：Rust项目pingsix实战1</title>
-      <link>https://zhu327.github.io/2024/11/15/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3rust%E9%A1%B9%E7%9B%AEpingsix%E5%AE%9E%E6%88%981/</link>
+      <title>从Pingora到API网关：Rust实战</title>
+      <link>https://zhu327.github.io/2024/11/15/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3rust%E5%AE%9E%E6%88%98/</link>
       <pubDate>Fri, 15 Nov 2024 10:55:52 +0800</pubDate>
       
-      <guid>https://zhu327.github.io/2024/11/15/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3rust%E9%A1%B9%E7%9B%AEpingsix%E5%AE%9E%E6%88%981/</guid>
+      <guid>https://zhu327.github.io/2024/11/15/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3rust%E5%AE%9E%E6%88%98/</guid>
       <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
 
 &lt;p&gt;在学习Rust的过程中，我主要进行了一些小工具的练习，对Rust的内存安全性和性能优势有了初步的体会，但始终没有实现过一个完整的大型项目。最近随着Rust在高性能计算领域的应用不断拓展，尤其是Pingora等项目的发布，让我看到了Rust在网络通信领域中的潜力，也激发了我用Rust来实现一个API网关的兴趣。&lt;/p&gt;
