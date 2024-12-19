@@ -426,3 +426,5 @@ dynamic ssl：<https://github.com/cloudflare/pingora/blob/main/pingora/examples/
 cache：<https://github.com/cloudflare/pingora/blob/main/pingora-proxy/tests/utils/server_utils.rs#L393>
 
 这些都还没有文档，所以暂时先不提了。
+
+在开发这个项目的过程中，我频繁使用ChatGPT，深刻的感受到ChatGPT对于程序员的效率的提升，项目中的所有代码都经过了ChatGPT的Review，AI不会淘汰程序员，只会淘汰不会使用AI的程序员。
