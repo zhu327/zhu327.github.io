@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      从Pingora到API网关：总结 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2024. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">从Pingora到API网关：总结</h1>
+  <span class="post-date">Dec 19 2024</span>
+  <h3 id="前言">前言</h3>
+
+<blockquote>
+<p><a href="https://github.com/zhu327/pingisx">https://github.com/zhu327/pingisx</a></p>
+</blockquote>
+
+<p>经过一个多月的开发，终于完成了使用Rust实现一个API网关的目标，通过这个项目，我基本上把Pingora的核心功能都摸透了，然后也再次加深了对APISIX的理解。总的来说PingSIX基于Pingora实现了APISIX的核心功能，是APISIX功能的一个子集。</p>
+
+<p>开发这个项目本身也是为了学习Rust的使用，在开发的过程中确实也遇到了很多的问题，在ChatGPT的帮助下，这些问题得到了解决，也让我对Rust有了更深刻的理解。下面我通过4个方面来总结一下在这个项目中我的收获。</p>
+
+<p></p>
+
+<h3 id="1-生命周期">1. 生命周期</h3>
+
+<p>在Rust中，任何变量，对象都有它的生命周期与作用域，刚开始看Rust的书时，会想是不是只有<strong>指针</strong>需要标注，它才有生命周期，其实不是的，任何变量都有生命周期，在作用域闭合时，生命周期也就结束了，而内存也会被释放。这就是Rust通过生命周期来管理内存的机制。</p>
+
+<p>变量的作用域可以从前一个转移到后一个，也就是<code>move</code>, 转移后前一个作用域就不再持有这个变量，这就是所谓的所有权，这个变量是属于这个作用域，在作用域内就可以使用，而在<code>move</code>出作用域后就无法使用了。比如一个函数的调用，对象在传入后，对象的作用域就转移到新的函数作用域中。那我们如果希望在原来的作用域中继续使用这个变量，就涉及到<code>Copy</code> trait与<code>Clone</code> trait了，如果对象实现了<code>Copy</code> trait，那么这个变量就可以在原来的作用域中继续使用。如果对象实现了<code>Clone</code> trait，那么这个变量可以在新的作用域中通过clone方法来获取。无论是<code>Copy</code> trait还是<code>Clone</code> trait，相当于把对象复制了一份，在新的作用域中可以使用。</p>
+
+<p>有时候我们并不希望每次函数调用都把对象复制一份，并且在函数中也不需要持有对象的所有权，这个时候就可以通过<code>&amp;</code>来<strong>借用</strong>对象，通过<code>&amp;mut</code>来<strong>可变借用</strong>对象。初看Rust的书，我会觉得这不就是指针吗，哪个语言没有这个概念呀，但是真正理解了生命周期与所有权后，就会发现这确实就是<strong>借用</strong>，我不给你所有权，你必须在我的作用域内使用，这就是借用。</p>
+
+<p>然后再来理解下一个对象不能同时存在<strong>可变借用</strong>与<strong>不可变借用</strong>，也就比较好理解了，如果可变借用被修改了，那同时存在的不可以变借用到底是变了还是没变呢，如果都存在就是矛盾的。</p>
+
+<p>说完了借用，再来看看智能指针，我希望在多个作用域中使用对象，并且都有所有权，那就可以使用<code>Rc&lt;T&gt;</code>，它实现了引用计数，当对象被Rc所持有时，引用计数加1，当离开作用域后，引用计数减1，当引用计数为0时内存被释放。<code>Rc&lt;T&gt;</code>是不是线程安全的，所以我们往往使用<code>Arc&lt;T&gt;</code>，它实现了原子的引用计数，所以是线程安全的。这2个智能指针是通过 <code>Drop</code> trait来实现引用计数的变更。</p>
+
+<p><code>Rc&lt;T&gt;</code>与<code>Arc&lt;T&gt;</code>如果直接包裹对象，那对象就是不可变的，为了实现可变借用，需要使用<code>RefCell&lt;T&gt;</code>包裹对象，通过<code>borrow_mut()</code>来获取可变借用。然而<code>RefCell&lt;T&gt;</code>也不是线程安全的，所以需要使用<code>Mutex&lt;T&gt;</code>或者<code>RWLock&lt;T&gt;</code>来包裹对象，通过<code>lock()</code>获取可变借用。</p>
+
+<p>说完了生命周期，所有权，借用，智能指针，举几个我在PingSIX中的实际代码，来帮助理解一下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="sd">/// Proxy load balancer.
+</span><span class="sd">///
+</span><span class="sd">/// Manages the load balancing of requests to upstream servers.
+</span><span class="sd"></span><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">ProxyUpstream</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">inner</span>: <span class="nc">config</span>::<span class="n">Upstream</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">lb</span>: <span class="nc">SelectionLB</span><span class="p">,</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="n">runtime</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Runtime</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">watch</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">watch</span>::<span class="n">Sender</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">ProxyUpstream</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">new_with_health_check</span><span class="p">(</span><span class="n">upstream</span>: <span class="nc">config</span>::<span class="n">Upstream</span><span class="p">,</span><span class="w"> </span><span class="n">work_stealing</span>: <span class="kt">bool</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="n">Self</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">proxy_upstream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Self</span>::<span class="n">try_from</span><span class="p">(</span><span class="n">upstream</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span><span class="w">        </span><span class="n">proxy_upstream</span><span class="p">.</span><span class="n">start_health_check</span><span class="p">(</span><span class="n">work_stealing</span><span class="p">);</span><span class="w">
+</span><span class="w">        </span><span class="nb">Ok</span><span class="p">(</span><span class="n">proxy_upstream</span><span class="p">)</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="sd">/// Starts the health check service, runs only once.
+</span><span class="sd"></span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">start_health_check</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">work_stealing</span>: <span class="kt">bool</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="k">mut</span><span class="w"> </span><span class="n">service</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">take_background_service</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="c1">// Create a channel for watching the health check status
+</span><span class="c1"></span><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">watch_tx</span><span class="p">,</span><span class="w"> </span><span class="n">watch_rx</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">watch</span>::<span class="n">channel</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span><span class="w">            </span><span class="bp">self</span><span class="p">.</span><span class="n">watch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">watch_tx</span><span class="p">);</span><span class="w">
+</span><span class="w">
+</span><span class="w">            </span><span class="c1">// Determine the number of threads for the service
+</span><span class="c1"></span><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">threads</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">service</span><span class="p">.</span><span class="n">threads</span><span class="p">().</span><span class="n">unwrap_or</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w">
+</span><span class="w">
+</span><span class="w">            </span><span class="c1">// Create a runtime based on the work_stealing flag
+</span><span class="c1"></span><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">runtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">create_runtime</span><span class="p">(</span><span class="n">work_stealing</span><span class="p">,</span><span class="w"> </span><span class="n">threads</span><span class="p">,</span><span class="w"> </span><span class="n">service</span><span class="p">.</span><span class="n">name</span><span class="p">());</span><span class="w">
+</span><span class="w">
+</span><span class="w">            </span><span class="c1">// Spawn the service on the runtime
+</span><span class="c1"></span><span class="w">            </span><span class="n">runtime</span><span class="p">.</span><span class="n">get_handle</span><span class="p">().</span><span class="n">spawn</span><span class="p">(</span><span class="n">async</span><span class="w"> </span><span class="k">move</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="n">service</span><span class="p">.</span><span class="n">start_service</span><span class="p">(</span><span class="nb">None</span><span class="p">,</span><span class="w"> </span><span class="n">watch_rx</span><span class="p">).</span><span class="n">await</span><span class="p">;</span><span class="w">
+</span><span class="w">                </span><span class="n">info</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;Service exited.&#34;</span><span class="p">);</span><span class="w">
+</span><span class="w">            </span><span class="p">});</span><span class="w">
+</span><span class="w">
+</span><span class="w">            </span><span class="c1">// Set the runtime lifecycle with ProxyUpstream
+</span><span class="c1"></span><span class="w">            </span><span class="bp">self</span><span class="p">.</span><span class="n">runtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">runtime</span><span class="p">);</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">create_runtime</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">work_stealing</span>: <span class="kt">bool</span><span class="p">,</span><span class="w"> </span><span class="n">threads</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="n">service_name</span>: <span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Runtime</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">work_stealing</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="n">Runtime</span>::<span class="n">new_steal</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span><span class="w"> </span><span class="n">service_name</span><span class="p">)</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="n">Runtime</span>::<span class="n">new_no_steal</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span><span class="w"> </span><span class="n">service_name</span><span class="p">)</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">stop_health_check</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">tx</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">watch</span><span class="p">.</span><span class="n">take</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tx</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="p">...</span><span class="w">
+</span><span class="w"></span><span class="p">}</span></code></pre></div>
+<p><code>ProxyUpstream</code>是反向代理的上游对象，在new这个对象的同时会创建一个后台任务来执行健康检查，可以看到健康检查在这里是通过<code>tokio</code>的<code>Runtime</code>来执行的。在Golang中我可能会通过<code>go</code>关键字来创建一个goroutine来执行后台任务就不管了，然而在Rust这里我必须在<code>spawn</code>后台任务后让<code>ProxyUpstream</code>持有<code>Runtime</code>的生命周期，否则后台任务会因为作用域结束而提前退出。在<code>ProxyUpstream</code>持有<code>Runtime</code>后，只有当<code>ProxyUpstream</code>对象被drop后，后台任务才会结束。</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">impl</span><span class="w"> </span><span class="nb">Drop</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">ProxyUpstream</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="sd">/// Stops the health check service if it exists.
+</span><span class="sd"></span><span class="w">    </span><span class="k">fn</span> <span class="nf">drop</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="bp">self</span><span class="p">.</span><span class="n">stop_health_check</span><span class="p">();</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="c1">// 确保其他资源如 runtime 被释放
+</span><span class="c1"></span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">runtime</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="n">take</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="c1">// 获取 runtime 的 handle
+</span><span class="c1"></span><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">handler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runtime</span><span class="p">.</span><span class="n">get_handle</span><span class="p">().</span><span class="n">clone</span><span class="p">();</span><span class="w">
+</span><span class="w">
+</span><span class="w">            </span><span class="c1">// 使用 handler 执行关闭逻辑
+</span><span class="c1"></span><span class="w">            </span><span class="n">handler</span><span class="p">.</span><span class="n">spawn_blocking</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="n">runtime</span><span class="p">.</span><span class="n">shutdown_timeout</span><span class="p">(</span><span class="n">Duration</span>::<span class="n">from_secs</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span><span class="w">
+</span><span class="w">            </span><span class="p">});</span><span class="w">
+</span><span class="w">
+</span><span class="w">            </span><span class="n">info</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;Runtime shutdown successfully.&#34;</span><span class="p">);</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span></code></pre></div>
+<p>再来看看<code>Drop</code> trait的实现，在<code>ProxyUpstream</code>对象被释放的同时我们希望停止健康检查，这个时候还需要主动关闭<code>Runtime</code>，否则运行中的<code>Runtime</code>会因为作用域结束而panic。</p>
+
+<p>再来看一个可变借用与不可变借用冲突的例子：</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="cp">#[async_trait]</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">ServeHttp</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">AdminHttpApp</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">response</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">http_session</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">ServerSession</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Response</span><span class="o">&lt;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">u8</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="n">http_session</span><span class="p">.</span><span class="n">set_keepalive</span><span class="p">(</span><span class="nb">None</span><span class="p">);</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">validate_api_key</span><span class="p">(</span><span class="n">http_session</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">.</span><span class="n">config</span><span class="p">.</span><span class="n">api_key</span><span class="p">).</span><span class="n">is_err</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span>::<span class="n">builder</span><span class="p">()</span><span class="w">
+</span><span class="w">                </span><span class="p">.</span><span class="n">status</span><span class="p">(</span><span class="n">StatusCode</span>::<span class="n">FORBIDDEN</span><span class="p">)</span><span class="w">
+</span><span class="w">                </span><span class="p">.</span><span class="n">body</span><span class="p">(</span><span class="nb">Vec</span>::<span class="n">new</span><span class="p">())</span><span class="w">
+</span><span class="w">                </span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">req_header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">http_session</span><span class="p">.</span><span class="n">req_header</span><span class="p">();</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req_header</span><span class="p">.</span><span class="n">uri</span><span class="p">.</span><span class="n">path</span><span class="p">().</span><span class="n">to_string</span><span class="p">();</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req_header</span><span class="p">.</span><span class="n">method</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="c1">//   let (path, method) = {
+</span><span class="c1"></span><span class="w">        </span><span class="c1">//       let req_header = http_session.req_header();
+</span><span class="c1"></span><span class="w">        </span><span class="c1">//       (req_header.uri.path().to_string(), req_header.method.clone())
+</span><span class="c1"></span><span class="w">        </span><span class="c1">//   };
+</span><span class="c1"></span><span class="w">
+</span><span class="w">        </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">router</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="o">&amp;</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="nb">Ok</span><span class="p">(</span><span class="n">Match</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">params</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">method</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="nb">Some</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                    </span><span class="kd">let</span><span class="w"> </span><span class="n">params</span>: <span class="nc">BTreeMap</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="nb">String</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">params</span><span class="w">
+</span><span class="w">                        </span><span class="p">.</span><span class="n">iter</span><span class="p">()</span><span class="w">
+</span><span class="w">                        </span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">k</span><span class="p">.</span><span class="n">to_string</span><span class="p">(),</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">to_string</span><span class="p">()))</span><span class="w">
+</span><span class="w">                        </span><span class="p">.</span><span class="n">collect</span><span class="p">();</span><span class="w">
+</span><span class="w">                    </span><span class="k">match</span><span class="w"> </span><span class="n">handler</span><span class="p">.</span><span class="n">handle</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">.</span><span class="n">etcd</span><span class="p">,</span><span class="w"> </span><span class="n">http_session</span><span class="p">,</span><span class="w"> </span><span class="n">params</span><span class="p">).</span><span class="n">await</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                        </span><span class="nb">Ok</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">resp</span><span class="p">,</span><span class="w">
+</span><span class="w">                        </span><span class="nb">Err</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Response</span>::<span class="n">builder</span><span class="p">()</span><span class="w">
+</span><span class="w">                            </span><span class="p">.</span><span class="n">status</span><span class="p">(</span><span class="n">StatusCode</span>::<span class="n">BAD_REQUEST</span><span class="p">)</span><span class="w">
+</span><span class="w">                            </span><span class="p">.</span><span class="n">body</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">to_string</span><span class="p">().</span><span class="n">into_bytes</span><span class="p">())</span><span class="w">
+</span><span class="w">                            </span><span class="p">.</span><span class="n">unwrap</span><span class="p">(),</span><span class="w">
+</span><span class="w">                    </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="nb">None</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Response</span>::<span class="n">builder</span><span class="p">()</span><span class="w">
+</span><span class="w">                    </span><span class="p">.</span><span class="n">status</span><span class="p">(</span><span class="n">StatusCode</span>::<span class="n">METHOD_NOT_ALLOWED</span><span class="p">)</span><span class="w">
+</span><span class="w">                    </span><span class="p">.</span><span class="n">body</span><span class="p">(</span><span class="nb">Vec</span>::<span class="n">new</span><span class="p">())</span><span class="w">
+</span><span class="w">                    </span><span class="p">.</span><span class="n">unwrap</span><span class="p">(),</span><span class="w">
+</span><span class="w">            </span><span class="p">},</span><span class="w">
+</span><span class="w">            </span><span class="nb">Err</span><span class="p">(</span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Response</span>::<span class="n">builder</span><span class="p">()</span><span class="w">
+</span><span class="w">                </span><span class="p">.</span><span class="n">status</span><span class="p">(</span><span class="n">StatusCode</span>::<span class="n">NOT_FOUND</span><span class="p">)</span><span class="w">
+</span><span class="w">                </span><span class="p">.</span><span class="n">body</span><span class="p">(</span><span class="s">b&#34;Not Found&#34;</span><span class="p">.</span><span class="n">to_vec</span><span class="p">())</span><span class="w">
+</span><span class="w">                </span><span class="p">.</span><span class="n">unwrap</span><span class="p">(),</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span></code></pre></div>
+<p><code>http_session</code>是一个可变借用，然后在获取<code>path</code>与<code>method</code>时，<code>http_session</code>会变成不可变借用来调用<code>req_header()</code>，然而在获取<code>path</code>与<code>method</code>后，<code>http_session</code>又需要被修改，所以这里同时存在了可变借用与不可变借用，Rust编译器会提示错误。那怎么修改呢？</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="cp">#[async_trait]</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">ServeHttp</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">AdminHttpApp</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">response</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">http_session</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">ServerSession</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Response</span><span class="o">&lt;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">u8</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="p">...</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 创建一个单独的作用域
+</span><span class="c1"></span><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">req_header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">http_session</span><span class="p">.</span><span class="n">req_header</span><span class="p">();</span><span class="w">
+</span><span class="w">            </span><span class="p">(</span><span class="n">req_header</span><span class="p">.</span><span class="n">uri</span><span class="p">.</span><span class="n">path</span><span class="p">().</span><span class="n">to_string</span><span class="p">(),</span><span class="w"> </span><span class="n">req_header</span><span class="p">.</span><span class="n">method</span><span class="p">.</span><span class="n">clone</span><span class="p">())</span><span class="w">
+</span><span class="w">        </span><span class="p">};</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="p">...</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span></code></pre></div>
+<p>我们给<code>req_header</code>创建一个单独的作用域，这样<code>http_session</code>就变成不可变借用，在作用域结束时，<code>req_header</code>也跟着释放了。这用就不会同时存在可变借用与不可变借用冲突了。</p>
+
+<h3 id="2-函数式编程">2. 函数式编程</h3>
+
+<p>以往在写Python或Golang的过程中基本上没怎么用到函数式编程，Python中虽然有map、filter等函数，但是也只是在简单的场景下使用。而Rust中函数式编程是必不可少的，它让代码更简洁、更优雅。在写PingSIX的过程中，刚开始我也没怎么用到函数式编程，一直就式老老实实的if else，match等等。这样代码其实也没问题，但是会让代码看起来很长，所以我就把我的代码帖到ChatGPT问问它如何能让代码更加简洁，就有了下面的这些代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">impl</span><span class="w"> </span><span class="n">Upstream</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">validate_upstream_host</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="n">ValidationError</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">pass_host</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">UpstreamPassHost</span>::<span class="n">REWRITE</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="bp">self</span><span class="p">.</span><span class="n">upstream_host</span><span class="p">.</span><span class="n">as_ref</span><span class="p">().</span><span class="n">map_or_else</span><span class="p">(</span><span class="w">
+</span><span class="w">                </span><span class="o">||</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">ValidationError</span>::<span class="n">new</span><span class="p">(</span><span class="s">&#34;upstream_host_required_for_rewrite&#34;</span><span class="p">)),</span><span class="w">
+</span><span class="w">                </span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(()),</span><span class="w">
+</span><span class="w">            </span><span class="p">)</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="nb">Ok</span><span class="p">(())</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span></code></pre></div>
+<p>这是一个简单是否为<code>Option</code>的判断，如果为<code>None</code>则返回错误，否则返回<code>Ok(())</code>。</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="cp">#[async_trait]</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">ServiceDiscovery</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">DnsDiscovery</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="sd">/// Discovers backends by resolving DNS names to IP addresses.
+</span><span class="sd"></span><span class="w">    </span><span class="n">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">discover</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(</span><span class="n">BTreeSet</span><span class="o">&lt;</span><span class="n">Backend</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">HashMap</span><span class="o">&lt;</span><span class="kt">u64</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="n">as_str</span><span class="p">();</span><span class="w">
+</span><span class="w">        </span><span class="n">log</span>::<span class="n">debug</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;Resolving DNS for domain: {}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">);</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">backends</span>: <span class="nc">BTreeSet</span><span class="o">&lt;</span><span class="n">Backend</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">resolver</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">lookup_ip</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">await</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">or_err_with</span><span class="p">(</span><span class="n">InternalError</span><span class="p">,</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="n">format</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;DNS discovery failed for domain: {}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w">
+</span><span class="w">            </span><span class="p">})</span><span class="o">?</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">iter</span><span class="p">()</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">ip</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="n">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SocketAddr</span>::<span class="n">new</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">port</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">u16</span><span class="p">).</span><span class="n">to_string</span><span class="p">();</span><span class="w">
+</span><span class="w">
+</span><span class="w">                </span><span class="c1">// Creating backend
+</span><span class="c1"></span><span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Backend</span>::<span class="n">new_with_weight</span><span class="p">(</span><span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">weight</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">usize</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span><span class="w">
+</span><span class="w">                </span><span class="c1">// Determine if TLS is needed
+</span><span class="c1"></span><span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="n">tls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matches</span><span class="o">!</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">scheme</span><span class="p">,</span><span class="w"> </span><span class="n">UpstreamScheme</span>::<span class="n">HTTPS</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">UpstreamScheme</span>::<span class="n">GRPCS</span><span class="p">);</span><span class="w">
+</span><span class="w">
+</span><span class="w">                </span><span class="c1">// Create HttpPeer
+</span><span class="c1"></span><span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HttpPeer</span>::<span class="n">new</span><span class="p">(</span><span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span><span class="w"> </span><span class="n">tls</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="n">clone</span><span class="p">());</span><span class="w">
+</span><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="n">matches</span><span class="o">!</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">scheme</span><span class="p">,</span><span class="w"> </span><span class="n">UpstreamScheme</span>::<span class="n">GRPC</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">UpstreamScheme</span>::<span class="n">GRPCS</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                    </span><span class="n">peer</span><span class="p">.</span><span class="n">options</span><span class="p">.</span><span class="n">alpn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ALPN</span>::<span class="n">H2</span><span class="p">;</span><span class="w">
+</span><span class="w">                </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">                </span><span class="c1">// Insert HttpPeer into the backend
+</span><span class="c1"></span><span class="w">                </span><span class="n">assert</span><span class="o">!</span><span class="p">(</span><span class="n">backend</span><span class="p">.</span><span class="n">ext</span><span class="p">.</span><span class="n">insert</span>::<span class="o">&lt;</span><span class="n">HttpPeer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">peer</span><span class="p">).</span><span class="n">is_none</span><span class="p">());</span><span class="w">
+</span><span class="w">
+</span><span class="w">                </span><span class="n">backend</span><span class="w">
+</span><span class="w">            </span><span class="p">})</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">collect</span><span class="p">();</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="c1">// Return backends and an empty HashMap for now
+</span><span class="c1"></span><span class="w">        </span><span class="nb">Ok</span><span class="p">((</span><span class="n">backends</span><span class="p">,</span><span class="w"> </span><span class="n">HashMap</span>::<span class="n">new</span><span class="p">()))</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span></code></pre></div>
+<p>这是一串DNS解析与转换的代码，说实话我的脑子里还没形成这种函数式编程的定式思维，虽然我看的懂，但是真正写的时候我还是不会直接想到这么写，幸好有ChatGPT帮我解决了这个问题。我想写的越多也就越熟悉了吧。</p>
+
+<h3 id="3-多态">3. 多态</h3>
+
+<p>在Rust里面写多态有2中选择，一种使用trait，一种是用enum，我们分别来看下。</p>
+
+<h4 id="enum">enum</h4>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">enum</span> <span class="nc">SelectionLB</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">RoundRobin</span><span class="p">(</span><span class="n">LB</span><span class="o">&lt;</span><span class="n">RoundRobin</span><span class="o">&gt;</span><span class="p">),</span><span class="w">
+</span><span class="w">    </span><span class="n">Random</span><span class="p">(</span><span class="n">LB</span><span class="o">&lt;</span><span class="n">Random</span><span class="o">&gt;</span><span class="p">),</span><span class="w">
+</span><span class="w">    </span><span class="n">Fnv</span><span class="p">(</span><span class="n">LB</span><span class="o">&lt;</span><span class="n">FVNHash</span><span class="o">&gt;</span><span class="p">),</span><span class="w">
+</span><span class="w">    </span><span class="n">Ketama</span><span class="p">(</span><span class="n">LB</span><span class="o">&lt;</span><span class="n">KetamaHashing</span><span class="o">&gt;</span><span class="p">),</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">TryFrom</span><span class="o">&lt;</span><span class="n">config</span>::<span class="n">Upstream</span><span class="o">&gt;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">SelectionLB</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">type</span> <span class="nc">Error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="n">Error</span><span class="o">&gt;</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">try_from</span><span class="p">(</span><span class="n">value</span>: <span class="nc">config</span>::<span class="n">Upstream</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="n">Self</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="k">match</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="n">r</span><span class="err">#</span><span class="k">type</span> <span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="n">config</span>::<span class="n">SelectionType</span>::<span class="n">RoundRobin</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="nb">Ok</span><span class="p">(</span><span class="n">SelectionLB</span>::<span class="n">RoundRobin</span><span class="p">(</span><span class="n">LB</span>::<span class="o">&lt;</span><span class="n">RoundRobin</span><span class="o">&gt;</span>::<span class="n">try_from</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">?</span><span class="p">))</span><span class="w">
+</span><span class="w">            </span><span class="p">}</span><span class="w">
+</span><span class="w">            </span><span class="n">config</span>::<span class="n">SelectionType</span>::<span class="n">Random</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="nb">Ok</span><span class="p">(</span><span class="n">SelectionLB</span>::<span class="n">Random</span><span class="p">(</span><span class="n">LB</span>::<span class="o">&lt;</span><span class="n">Random</span><span class="o">&gt;</span>::<span class="n">try_from</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">?</span><span class="p">))</span><span class="w">
+</span><span class="w">            </span><span class="p">}</span><span class="w">
+</span><span class="w">            </span><span class="n">config</span>::<span class="n">SelectionType</span>::<span class="n">Fnv</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="n">SelectionLB</span>::<span class="n">Fnv</span><span class="p">(</span><span class="n">LB</span>::<span class="o">&lt;</span><span class="n">FVNHash</span><span class="o">&gt;</span>::<span class="n">try_from</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">?</span><span class="p">)),</span><span class="w">
+</span><span class="w">            </span><span class="n">config</span>::<span class="n">SelectionType</span>::<span class="n">Ketama</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="nb">Ok</span><span class="p">(</span><span class="n">SelectionLB</span>::<span class="n">Ketama</span><span class="p">(</span><span class="n">LB</span>::<span class="o">&lt;</span><span class="n">KetamaHashing</span><span class="o">&gt;</span>::<span class="n">try_from</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">?</span><span class="p">))</span><span class="w">
+</span><span class="w">            </span><span class="p">}</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span></code></pre></div>
+<p>这是一个包装了多种负载均衡算法的枚举，在<code>try_from()</code>方法中根据不同的类型创建对应的负载均衡算法。在使用时，我需要根据不同enum的variant进行match，然后调用对应的负载均衡算法。</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">impl</span><span class="w"> </span><span class="n">ProxyUpstream</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="sd">/// Selects a backend server for a given session.
+</span><span class="sd"></span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">select_backend</span><span class="o">&lt;</span><span class="na">&#39;a</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="na">&#39;a</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">session</span>: <span class="kp">&amp;</span><span class="na">&#39;a</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">Session</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Backend</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request_selector_key</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">hash_on</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">key</span><span class="p">.</span><span class="n">as_str</span><span class="p">());</span><span class="w">
+</span><span class="w">        </span><span class="n">log</span>::<span class="n">debug</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;proxy lb key: {}&#34;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">key</span><span class="p">);</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">.</span><span class="n">lb</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="n">SelectionLB</span>::<span class="n">RoundRobin</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">lb</span><span class="p">.</span><span class="n">upstreams</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="n">key</span><span class="p">.</span><span class="n">as_bytes</span><span class="p">(),</span><span class="w"> </span><span class="mi">256</span><span class="p">),</span><span class="w">
+</span><span class="w">            </span><span class="n">SelectionLB</span>::<span class="n">Random</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">lb</span><span class="p">.</span><span class="n">upstreams</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="n">key</span><span class="p">.</span><span class="n">as_bytes</span><span class="p">(),</span><span class="w"> </span><span class="mi">256</span><span class="p">),</span><span class="w">
+</span><span class="w">            </span><span class="n">SelectionLB</span>::<span class="n">Fnv</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">lb</span><span class="p">.</span><span class="n">upstreams</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="n">key</span><span class="p">.</span><span class="n">as_bytes</span><span class="p">(),</span><span class="w"> </span><span class="mi">256</span><span class="p">),</span><span class="w">
+</span><span class="w">            </span><span class="n">SelectionLB</span>::<span class="n">Ketama</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">lb</span><span class="p">.</span><span class="n">upstreams</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="n">key</span><span class="p">.</span><span class="n">as_bytes</span><span class="p">(),</span><span class="w"> </span><span class="mi">256</span><span class="p">),</span><span class="w">
+</span><span class="w">        </span><span class="p">};</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">backend</span><span class="p">.</span><span class="n">as_mut</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">peer</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">backend</span><span class="p">.</span><span class="n">ext</span><span class="p">.</span><span class="n">get_mut</span>::<span class="o">&lt;</span><span class="n">HttpPeer</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="bp">self</span><span class="p">.</span><span class="n">set_timeout</span><span class="p">(</span><span class="n">peer</span><span class="p">);</span><span class="w">
+</span><span class="w">            </span><span class="p">}</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="n">backend</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span></code></pre></div>
+<p>这样我们就可以隐藏不同负载均衡算法的细节，对外提供统一的调用入口来实现多态。</p>
+
+<p>在Pingora中处理http1与http2的差异时也使用enum来实现多态。</p>
+
+<h4 id="trait">trait</h4>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="sd">/// Hybrid service discovery.
+</span><span class="sd">///
+</span><span class="sd">/// Combines static and DNS-based service discovery.
+</span><span class="sd"></span><span class="cp">#[derive(Default)]</span><span class="w">
+</span><span class="w"></span><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">HybridDiscovery</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">discoveries</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">Box</span><span class="o">&lt;</span><span class="n">dyn</span><span class="w"> </span><span class="n">ServiceDiscovery</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Send</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Sync</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span></code></pre></div>
+<p>为了包装DNS的服务发现与静态服务发现，我定义了<code>HybridDiscovery</code>同时处理这两种服务发现，它持有一个<code>Vec&lt;Box&lt;dyn ServiceDiscovery + Send + Sync&gt;&gt;</code>的成员变量。这里通过Box包裹的trait object来实现多态。当然为了支持async trait，还要加上<code>Send + Sync</code>。</p>
+
+<h3 id="4-局部可变性">4. 局部可变性</h3>
+
+<p>在我使用etcd来实现PingSix的资源实时加载时，遇到了这样的问题，对etcd client的使用必须是mut的，但是持有etcd client的对象又是不可变的，所以这里就必须包装出局部可变的etcd client，代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">EtcdClientWrapper</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">config</span>: <span class="nc">Etcd</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">client</span>: <span class="nc">Arc</span><span class="o">&lt;</span><span class="n">Mutex</span><span class="o">&lt;</span><span class="nb">Option</span><span class="o">&lt;</span><span class="n">Client</span><span class="o">&gt;&gt;&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">EtcdClientWrapper</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">new</span><span class="p">(</span><span class="n">cfg</span>: <span class="nc">Etcd</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="n">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="n">config</span>: <span class="nc">cfg</span><span class="p">,</span><span class="w">
+</span><span class="w">            </span><span class="n">client</span>: <span class="nc">Arc</span>::<span class="n">new</span><span class="p">(</span><span class="n">Mutex</span>::<span class="n">new</span><span class="p">(</span><span class="nb">None</span><span class="p">)),</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="n">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">ensure_connected</span><span class="p">(</span><span class="w">
+</span><span class="w">        </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="n">Arc</span><span class="o">&lt;</span><span class="n">Mutex</span><span class="o">&lt;</span><span class="nb">Option</span><span class="o">&lt;</span><span class="n">Client</span><span class="o">&gt;&gt;&gt;</span><span class="p">,</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="n">dyn</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Send</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Sync</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">client_guard</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">client</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">await</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">client_guard</span><span class="p">.</span><span class="n">is_none</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="n">log</span>::<span class="n">info</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;Creating new etcd client...&#34;</span><span class="p">);</span><span class="w">
+</span><span class="w">            </span><span class="o">*</span><span class="n">client_guard</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">create_client</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">.</span><span class="n">config</span><span class="p">).</span><span class="n">await</span><span class="o">?</span><span class="p">);</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="nb">Ok</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">client</span><span class="p">.</span><span class="n">clone</span><span class="p">())</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">get</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">key</span>: <span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="nb">Option</span><span class="o">&lt;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">u8</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="n">dyn</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Send</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Sync</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">client_arc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">ensure_connected</span><span class="p">().</span><span class="n">await</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">client_guard</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client_arc</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">await</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client_guard</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">as_mut</span><span class="p">()</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">ok_or</span><span class="p">(</span><span class="s">&#34;Etcd client is not initialized&#34;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">resp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">with_prefix</span><span class="p">(</span><span class="n">key</span><span class="p">),</span><span class="w"> </span><span class="nb">None</span><span class="p">).</span><span class="n">await</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span><span class="w">        </span><span class="nb">Ok</span><span class="p">(</span><span class="n">resp</span><span class="p">.</span><span class="n">kvs</span><span class="p">().</span><span class="n">first</span><span class="p">().</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">kv</span><span class="o">|</span><span class="w"> </span><span class="n">kv</span><span class="p">.</span><span class="n">value</span><span class="p">().</span><span class="n">to_vec</span><span class="p">()))</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">put</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">key</span>: <span class="kp">&amp;</span><span class="kt">str</span><span class="p">,</span><span class="w"> </span><span class="n">value</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">u8</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="n">dyn</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Send</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Sync</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">client_arc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">ensure_connected</span><span class="p">().</span><span class="n">await</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">client_guard</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client_arc</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">await</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client_guard</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">as_mut</span><span class="p">()</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">ok_or</span><span class="p">(</span><span class="s">&#34;Etcd client is not initialized&#34;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="n">client</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">with_prefix</span><span class="p">(</span><span class="n">key</span><span class="p">),</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="nb">None</span><span class="p">).</span><span class="n">await</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span><span class="w">        </span><span class="nb">Ok</span><span class="p">(())</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">delete</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">key</span>: <span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="n">dyn</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Send</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Sync</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">client_arc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">ensure_connected</span><span class="p">().</span><span class="n">await</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">client_guard</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client_arc</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">await</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client_guard</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">as_mut</span><span class="p">()</span><span class="w">
+</span><span class="w">            </span><span class="p">.</span><span class="n">ok_or</span><span class="p">(</span><span class="s">&#34;Etcd client is not initialized&#34;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="n">client</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">with_prefix</span><span class="p">(</span><span class="n">key</span><span class="p">),</span><span class="w"> </span><span class="nb">None</span><span class="p">).</span><span class="n">await</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span><span class="w">        </span><span class="nb">Ok</span><span class="p">(())</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">with_prefix</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">key</span>: <span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">String</span> <span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="n">format</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;{}/{}&#34;</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">config</span><span class="p">.</span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span></code></pre></div>
+<p>就如我在第一节的生命周期中所说的，为了局部可变，我们必须使用Arc<Mutex>包裹，这样在任何地方都可以通过lock()来获取可变引用。</p>
+
+<h3 id="总结">总结</h3>
+
+<p>在写PingSIX之前，我写过一些Rust的小项目，比如一些http接口的调用，比如一些TCP协议的解析。但是都没有系统性的来使用Rust，所以一直有计划用Rust来写一个API网关，然后这一个多月下来，我对Rust可以说有了一定的理解吧，虽然像<code>Send + Sync</code>这种东西还是不太理解，但是至少知道怎么用了。在比如像<code>FnOnce</code>，还有<code>Pin</code>这些也都还不太了解，但是可以说现在用Rust写点项目还是可以的。</p>
+
+<p>PingSIX虽然只实现了APISIX的一个子集，有很多功能的缺失，比如被动的健康检查，动态的TLS支持，还有很多插件等，但是大的框架其实已经搭好了，剩下的其实都是体力活了。所以暂时先告一段落吧。</p>
+
+<p>通过这个项目我对Pingora的各个crate都有了深度使用，当然还有一些功能也是没有覆盖到，比如下面的这些：</p>
+
+<p>dynamic ssl：<a href="https://github.com/cloudflare/pingora/blob/main/pingora/examples/server.rs#L77">https://github.com/cloudflare/pingora/blob/main/pingora/examples/server.rs#L77</a></p>
+
+<p>cache：<a href="https://github.com/cloudflare/pingora/blob/main/pingora-proxy/tests/utils/server_utils.rs#L393">https://github.com/cloudflare/pingora/blob/main/pingora-proxy/tests/utils/server_utils.rs#L393</a></p>
+
+<p>这些都还没有文档，所以暂时先不提了。</p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

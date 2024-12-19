@@ -78,6 +78,20 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2024/08/02/chromeos-flex%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/">ChromeOS Flex使用体验</a></h1>
+        <span class="post-date">Aug 2 2024</span>
+        <h3 id="前言">前言</h3>
+
+<p>由于MacBook带到新公司作为办公本使用，又因为不喜欢带电脑上下班，所以在家里就只好启用6年前在前公司领用的第一台笔记本ThinkPad X1 Carbon (6th Gen)，这是一台 i5 8250u/8G Ram/256G SSD/2K14‘ 配置的笔记本，默认使用Windows 10操作系统。这台电脑已经很老了，肉眼可见的在浏览网页时会卡，所以想看看有什么可以拯救一下老电脑的方法，要么直接上Linux，然后各种折腾配置，各种可能面对的问题，高分屏之类的。然后另外一个选择就是Chrome OS Flex，Google官方支持，与其说这是个操作系统，还不如说除了浏览器，这个系统就啥也没有了，当然还可以跑一个lxc容器的Debian。</p>
+
+<p><a href="https://support.google.com/chromeosflex/answer/11513094?hl=zh-Hans">Google认证设备列表</a></p>
+
+<p>可以看到这台ThinkPad X1 Carbon (6th Gen)可以官方支持到2028年，非常不错，所以就可以开始折腾了。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2024/05/10/%E4%BB%8E%E9%B9%85%E5%8E%82%E5%A4%A7%E4%BD%AC%E8%BA%AB%E4%B8%8A%E5%AD%A6%E6%8A%80%E6%9C%AF/">从鹅厂大佬身上学技术</a></h1>
         <span class="post-date">May 10 2024</span>
         <p>2018下半年我加入鹅厂，2019年调岗到现在的组，一直跟着鹅厂11级大佬做事，为了提升自己能力，我开始学习大佬的做事方式，我发现大佬的能力往往体现在他的思维的层次上，简单的说就是解决某个问题的时候，我当时可能只看到第2层，但是大佬已经想到第4层上去了，这期间我也找大佬聊过天，也有一些收获，在这里通过一些具体的事例来分析一下大佬的技术能力。</p>
@@ -143,28 +157,6 @@ config dhcp <span class="s1">&#39;wan&#39;</span>
 	option ndp <span class="s1">&#39;relay&#39;</span>
 	option master <span class="s1">&#39;1&#39;</span></code></pre></div>
 <p>此处，我们配置了IPv6 DHCP Relay功能，直接从光猫获取IPv6地址，并指定LAN口IPv6地址作为IPv6 DNS通告，以确保局域网内的设备的DNS配置无论是IPv4还是IPv6地址都是OpenWRT路由器。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2023/12/20/%E9%9B%B6%E6%88%90%E6%9C%AC%E4%BD%BF%E7%94%A8openai-api/">零成本使用OpenAI API</a></h1>
-        <span class="post-date">Dec 20 2023</span>
-        <h3 id="1-openai-chatgpt">1. OpenAI ChatGPT</h3>
-
-<p>ChatGPT已经发布了一年有余，成为有史以来用户增长最快的互联网产品。如果到了2023年你还没有使用过ChatGPT，可能你已经远离了互联网的中心。ChatGPT的发布与更新深刻改变了我的工作方式。我学到了如何撰写高效的提示，发现了ChatGPT的最佳应用场景，并在GitHub上探索了最佳实践。</p>
-
-<p>一些影响我ChatGPT之旅的值得一提的资源包括<a href="https://www.huxiu.com/article/2440157.html">OpenAI官方指南：如何提高ChatGPT的输出质量</a>，一篇关于<a href="https://blog.wordbot.io/ai-artificial-intelligence/openai-gpt-3-top-22-trending-use-case-ideas-in-2022/">2023年OpenAI GPT-3最热门应用案例的文章</a>，以及GitHub上的<a href="https://github.com/linexjlin/GPTs">GPT提示列表</a>。</p>
-
-<p>在我的日常工作中，我利用ChatGPT做了很多事情：</p>
-
-<ul>
-<li>它成为我在编写代码过程中查找相关文档的首选工具，替代了传统搜索引擎的需求。</li>
-<li>它轻松帮助我进行中英文翻译，充分发挥了其语言处理能力。</li>
-<li>在数据分析中，它高效地协助我处理复杂的SQL查询。</li>
-</ul>
-
-<p>尽管我已经是一个长时间的用户，但我仍然保持在免费计划上，没有选择Plus，也没有使用OpenAI API。由于ChatGPT的充值的限制，我尚未探索基于OpenAI API构建的众多AI工具和插件。</p>
 
 <p></p>
     </div>

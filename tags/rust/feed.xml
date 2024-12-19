@@ -6,10 +6,29 @@
     <description>Recent content in Rust on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 15 Nov 2024 10:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 19 Dec 2024 10:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/tags/rust/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>从Pingora到API网关：总结</title>
+      <link>https://zhu327.github.io/2024/12/19/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Thu, 19 Dec 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/12/19/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3%E6%80%BB%E7%BB%93/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/pingisx&#34;&gt;https://github.com/zhu327/pingisx&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;经过一个多月的开发，终于完成了使用Rust实现一个API网关的目标，通过这个项目，我基本上把Pingora的核心功能都摸透了，然后也再次加深了对APISIX的理解。总的来说PingSIX基于Pingora实现了APISIX的核心功能，是APISIX功能的一个子集。&lt;/p&gt;
+
+&lt;p&gt;开发这个项目本身也是为了学习Rust的使用，在开发的过程中确实也遇到了很多的问题，在ChatGPT的帮助下，这些问题得到了解决，也让我对Rust有了更深刻的理解。下面我通过4个方面来总结一下在这个项目中我的收获。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>从Pingora到API网关：Rust实战</title>
