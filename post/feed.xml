@@ -6,10 +6,31 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 19 Dec 2024 10:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 31 Dec 2024 10:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>我的2024</title>
+      <link>https://zhu327.github.io/2024/12/31/%E6%88%91%E7%9A%842024/</link>
+      <pubDate>Tue, 31 Dec 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/12/31/%E6%88%91%E7%9A%842024/</guid>
+      <description>&lt;p&gt;今天是2024年的最后一天，我有这一下午的空闲时间，所以就让我来絮絮叨叨的写写我这神奇的2024年吧。&lt;/p&gt;
+
+&lt;p&gt;我是龙年出生的，所以2024年是我的本命年，年初的时候，老婆还有姐姐就给我准备了红内裤，红袜子。由于红袜子太过显眼了，所以这一年我的内裤都是红色的，哈哈。本命年，犯太岁，这一年工作上，心态上，都有一些变化，就让我在本命年的最后一天瞎写写吧。&lt;/p&gt;
+
+&lt;h3 id=&#34;我自己&#34;&gt;我自己&lt;/h3&gt;
+
+&lt;p&gt;我是80年代末生人，出生在一个小镇，是标准的小镇做题家。从高中开始基本就不怎么回家了，然后上大学，跑去了云南，双非一本，学的是热能与动力工程。我的同学大都找到了水电厂，火电厂的工作。工作好的去了三峡，一般就去了云南一些比较偏僻的电厂。而我呢毕业就失业了，后来找到一个海南的小电厂。工作2年后，我就来到了深圳，在躺了好几个月后，经一个亲戚的介绍到一个华为的软件外包公司学习做软件测试。&lt;/p&gt;
+
+&lt;p&gt;软件测试本身是没什么门槛的，然后我自认为还有点小聪明，也由于亲戚的安排，我所在的项目并不是纯粹的手工测试。而是偏向自动化的TCP/IP协议栈的测试，这个测试需要我写一些Lua脚本来模拟发送一些数据包来做测试。虽然这不是一个开发的工作，但是在这个过程中我还是学到不少东西，基本的协议栈，socket，还有一些基础的编程语言方面的知识。&lt;/p&gt;
+
+&lt;p&gt;后来又换了别的项目，做GUI跟网页的功能测试，我接手这个项目的测试的时候，里面还维护了一堆Java写的基于一个IBM的测试框架的自动化测试用例。这可难倒我了，以至于大半年的时间我都没跑过这个自动化的测试，一直都是手动测试。想想不是办法，还是搞搞自动化的测试吧，Java是一时半会学不会的，不如自己学一学Python自动化吧，就这样我接触到Python编程。我依然记得在某一天我用Python写了一个自动匹配关键字的工具用来做安全检查后，获得了华为的持续集成奖。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>从Pingora到API网关：总结</title>

@@ -78,6 +78,22 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/17/urllib2-%E4%BD%BF%E7%94%A8/">urllib2 使用</a></h1>
+        <span class="post-date">Sep 17 2014</span>
+        <h3 id="基础用法">基础用法</h3>
+
+<p><code>urllib2</code>是用来发送http请求，获取响应数据的库。基础用法:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">urllib2</span>
+
+<span class="c1"># urlopen返回类文件对象，可选参数data与请求头header</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s1">&#39;http://bozpy.sinaapp.com&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="n">header</span><span class="p">]])</span>
+<span class="n">body</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># 类文件对象有与文件对象类似的方法，read，readline等</span>
+<span class="n">heade</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">info</span><span class="p">()</span> <span class="c1"># 获取响应的头，字典</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">geturl</span><span class="p">()</span> <span class="c1"># 获取响应的真实url，如果有重定向，url会改变</span></code></pre></div>
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/16/orm-%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%84/">ORM 对象关系映射</a></h1>
         <span class="post-date">Sep 16 2014</span>
         <h3 id="orm概念">ORM概念</h3>
@@ -175,27 +191,11 @@ with语句可以方便的取代<code>try:/except:</code>语句达到在运行函
 <p></p>
     </div>
   
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/13/about-blog/">About Blog</a></h1>
-        <span class="post-date">Sep 13 2014</span>
-        <p>开源:<a href="https://github.com/zhu327/blog">https://github.com/zhu327/blog</a><br />
-Boz是一个用Python实现的轻量级Blog程序。<br />
-这是一个练习作品，开始于<a href="http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/001397616003925a3d157284cd24bc0952d6c4a7c9d8c55000">廖雪峰的Python教程实战篇</a>。<br />
-感谢廖雪峰提供的教程，让我从这个程序中收获良多。</p>
-
-<p>Blog现有2个分支：</p>
-
-<ol>
-<li><a href="https://github.com/zhu327/boz/tree/awesome">awesome</a>：廖雪峰教程的标准实现</li>
-<li>master：: 部署在SAE(Sina App Engine)的版本</li>
-</ol>
-    </div>
-  
 </div>
 
 <div class="pagination">
   
-  <span class="pagination-item older">Older</span>
+  <a class="pagination-item older" href="https://zhu327.github.io/page/18/">Older</a>
   
 
   

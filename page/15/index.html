@@ -78,6 +78,22 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/02/%E4%BD%BF%E7%94%A8lxml%E5%A4%84%E7%90%86dom/">使用lxml处理DOM</a></h1>
+        <span class="post-date">Jan 2 2015</span>
+        <h3 id="参考">参考</h3>
+
+<ul>
+<li><a href="http://www.cnblogs.com/bluescorpio/archive/2013/06/09/3127957.html">lxml.etree 教程</a></li>
+<li><a href="http://www.cnblogs.com/ifantastic/tag/XPath/">[XPath] XPath 与 lxml</a></li>
+<li><a href="http://www.ibm.com/developerworks/cn/xml/x-hiperfparse/">使用由 Python 编写的 lxml 实现高性能 XML 解析</a></li>
+</ul>
+
+<h3 id="前言">前言</h3>
+
+<p><a href="https://github.com/zhu327/rss">RSS Factory</a>本来使用BeautifulSoup来解析xml，html。但是发现还有更好的第三份库lxml性能更好，使用更方便。</p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/02/%E5%9C%A8tornado%E4%B8%AD%E4%BD%BF%E7%94%A8jinja2%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E%E7%9A%84%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95/">在Tornado中使用jinja2模版引擎的简单方法</a></h1>
         <span class="post-date">Jan 2 2015</span>
         <h3 id="参考">参考</h3>
@@ -136,22 +152,6 @@
 <h3 id="简介">简介</h3>
 
 <p>MongoDB是一个流行的NoSQL数据库程序，MongoDB使用起来比较像关系数据库，比较容易上手，由于使用BSON(一种二进制的json)格式数据，所以能使用python原生的字典数据类型来存储，相比MySQL操作跟简单。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/24/memcached-%E4%BC%98%E5%8C%96-mysql-%E6%9F%A5%E8%AF%A2/">Memcached 优化 MySQL 查询</a></h1>
-        <span class="post-date">Sep 24 2014</span>
-        <h3 id="简介">简介</h3>
-
-<p><a href="http://bozpy.sinaapp.com">跬步</a>上线后，SAE后台显示云豆的消耗http与MySQL查询各占一半，正好SAE还支持Memcached，本着不用白不用的原则，为<a href="https://github.com/zhu327/blog/blob/memcached/www/transwarp/db.py">db.py</a>加上了Memcached的缓存支持。</p>
-
-<p>网站在并发不大的情况下，MySQL查询时间还感受不出来，但是如果并发大的化，MySQL会显著的降低响应速度，所以Memcached应运而生。</p>
-
-<p>Memcached是一个分布式的内存key-value存储系统，由于数据保存在内存中所以查询速度非常快，一般作为其它数据的中间缓存层来使用。</p>
-
-<p>对于SQL查询先以SQL语句为key查询Memcached，如果查到直接返回，如果没有再去查询MySQL，并把结果缓存到Memcached，下次再次查询时速度显著提升，因为Memcached的数据是保存在内存中的。</p>
 
 <p></p>
     </div>

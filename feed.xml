@@ -7,7 +7,7 @@
     <language>zh-cn</language>
     
     
-    <updated>Thu, 19 Dec 2024 10:55:52 &#43;0800</updated>
+    <updated>Tue, 31 Dec 2024 10:55:52 &#43;0800</updated>
     
     <item>
       <title>About</title>
@@ -28,6 +28,63 @@
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>我的2024</title>
+      <link>https://zhu327.github.io/2024/12/31/%E6%88%91%E7%9A%842024/</link>
+      <pubDate>Tue, 31 Dec 2024 10:55:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/12/31/%E6%88%91%E7%9A%842024/</guid>
+      <description>&lt;p&gt;今天是2024年的最后一天，我有这一下午的空闲时间，所以就让我来絮絮叨叨的写写我这神奇的2024年吧。&lt;/p&gt;
+
+&lt;p&gt;我是龙年出生的，所以2024年是我的本命年，年初的时候，老婆还有姐姐就给我准备了红内裤，红袜子。由于红袜子太过显眼了，所以这一年我的内裤都是红色的，哈哈。本命年，犯太岁，这一年工作上，心态上，都有一些变化，就让我在本命年的最后一天瞎写写吧。&lt;/p&gt;
+
+&lt;h3 id=&#34;我自己&#34;&gt;我自己&lt;/h3&gt;
+
+&lt;p&gt;我是80年代末生人，出生在一个小镇，是标准的小镇做题家。从高中开始基本就不怎么回家了，然后上大学，跑去了云南，双非一本，学的是热能与动力工程。我的同学大都找到了水电厂，火电厂的工作。工作好的去了三峡，一般就去了云南一些比较偏僻的电厂。而我呢毕业就失业了，后来找到一个海南的小电厂。工作2年后，我就来到了深圳，在躺了好几个月后，经一个亲戚的介绍到一个华为的软件外包公司学习做软件测试。&lt;/p&gt;
+
+&lt;p&gt;软件测试本身是没什么门槛的，然后我自认为还有点小聪明，也由于亲戚的安排，我所在的项目并不是纯粹的手工测试。而是偏向自动化的TCP/IP协议栈的测试，这个测试需要我写一些Lua脚本来模拟发送一些数据包来做测试。虽然这不是一个开发的工作，但是在这个过程中我还是学到不少东西，基本的协议栈，socket，还有一些基础的编程语言方面的知识。&lt;/p&gt;
+
+&lt;p&gt;后来又换了别的项目，做GUI跟网页的功能测试，我接手这个项目的测试的时候，里面还维护了一堆Java写的基于一个IBM的测试框架的自动化测试用例。这可难倒我了，以至于大半年的时间我都没跑过这个自动化的测试，一直都是手动测试。想想不是办法，还是搞搞自动化的测试吧，Java是一时半会学不会的，不如自己学一学Python自动化吧，就这样我接触到Python编程。我依然记得在某一天我用Python写了一个自动匹配关键字的工具用来做安全检查后，获得了华为的持续集成奖。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;就这样我在这个软件外包公司做测试做了4年，然后我决定还是找一份Python开发的工作吧，于是在学习了Django开发后，我就裸辞了。&lt;/p&gt;
+
+&lt;p&gt;在2015年的那个激荡的万众创业，万众创新的2015年，只要你会写点代码，就能找到工作。于是我入职了一家很小的公司做Python后端开发，然后半年之后，我就被优化了。这个时候我确实怀疑过自己，我是不是真的适合做开发呢，我能拿出手的项目只有我在github上写的一个Django的论坛。&lt;/p&gt;
+
+&lt;p&gt;然后就又开始找工作了，不是很顺利，直到2015年下半年的某一天，我收到了一封邮件，嗯，一家我没有投递的公司邀请我去面试。后来才从这家公司的CTO口中得知，他是在看到我的github才邀请我去面试的，然后我就入职了这家公司，继续做Python的后端开发。在这家公司我又找到了自信。然后在这里我发现我做测试的经历还是有用的，毕竟我的自测做的比较细致，以至于我的效率以及质量都远超其他同事。然后由于效率的提升，很快我就开始负责更基础的框架开发，引入了DRF框架，还尝试做了RPC框架，然后又引入了API网关，认识了Openresty，你看，Openresty又回到了我最初做测试的老本行Lua上面。&lt;/p&gt;
+
+&lt;p&gt;由于在github上面尝到了甜头，后续我又在github上写了一些Openresty的小项目，也有Python RPC相关的项目，然后也写了一些我觉得还行的博客文章。我感觉我的能力还是又比较大的提升的，我想我是不是再出去找找机会呢？所以我又开始面试了，不出意外的还是被打击到了，无非是因为非科班出生，然后基础很差。有一个比较nice的面试官推荐我去读一读深入理解计算机系统，然后我就买了这本书。年轻的时候还是比较要强的，不喜欢认输，所以花了好几个月死啃这本书，然后再回顾自己的在工作中点点滴滴，确实对编程这个工作有了更多的理解。再然后我就买了更多的书，在douban上找评分高的书，补齐了很多基础知识。&lt;/p&gt;
+
+&lt;p&gt;时间来到了2018年，很幸运的是我通过了腾讯的面试，这里面有我读书的能力提升，也有不停在github上写项目的努力，还有我那几年积累下来的工作经验。&lt;/p&gt;
+
+&lt;h3 id=&#34;腾讯&#34;&gt;腾讯&lt;/h3&gt;
+
+&lt;p&gt;初入腾讯，我是在一个运维组里的唯一的开发，我接的需求都是我的运维同事通过开发工具来改善他们的运维工作。这期间有一个直播推流相关的需求对我来说算是一个契机，促成了我从Python程序转向Golang程序员。在这个组里做了一年后，我觉得我做的的事情都不具备持久性，没有一个清晰的未来，所以我决定换一个组，于是我来到了蓝鲸的开发组。&lt;/p&gt;
+
+&lt;p&gt;在腾讯作为一个非科班出身的新人，我并没有觉得自己能做很久，我脑子里一直有一个念想就是做个几年，有了大厂光环，然后再出去作为一个架构师找一份新的工作。但是我在蓝鲸确实认识了一群nice的同事，然后这一做就是5年。这期间我一直专注在一个项目上，可以说成为了领域内的专家。持续的一直做一件事情有好处，也有坏处，好处是你可以在这个领域内做到极致，坏处是你很难跳出这个领域。&lt;/p&gt;
+
+&lt;p&gt;在大厂，每半年一次的考核，催促着我成长，沟通能力，项目管理能力，架构能力，规划能力等等，我都有实实在在的成长。然而在本命年的这一年，我还是觉得我可以离开了，毕竟互联网35岁的危机，年纪越大感受越深。&lt;/p&gt;
+
+&lt;h3 id=&#34;新工作&#34;&gt;新工作&lt;/h3&gt;
+
+&lt;p&gt;虽然顶着大厂光环，但是在2024年36岁的年纪，找工作还是很困难，面试了很多，只要涉及写算法什么的基本都挂了，然后我就降薪入职了现在的公司。我有了更多的时间，然后写了更多的文章，也学习了Rust编程，新的Rust的项目也都放到了github上。我不知道自己的职业生涯还能走多远，但是我觉得我依然热爱编程。&lt;/p&gt;
+
+&lt;p&gt;随着AI编程应用越来越多，我觉得对于头部的程序员来说，他们的优势会越来越大，因为AI会极大的提升他们的效率，这对中下部的程序员可能是一个灾难。可能会因为这个整个市场的行情会越来越差，所以我个人觉得持续学习，终身学习在这个时代是必须的。&lt;/p&gt;
+
+&lt;h3 id=&#34;生活&#34;&gt;生活&lt;/h3&gt;
+
+&lt;p&gt;3月的时候跟老婆来了一次广西自驾游，从深圳出发，开着我的电车第一次长途自驾，感谢老婆的辛苦做了攻略，在广西边境看了大瀑布，也第一次体验了溶洞速降，还看到了美丽梦幻的三门海。也去了一些小众的景点。在广西的山间小路悬崖边小心的开着车，在溶洞里面听着水流的声音，看着头顶的灯光，那种感觉真的很棒。&lt;/p&gt;
+
+&lt;p&gt;7月的时候，正式从腾讯离职了，然后也没找到工作，就在家里躺平静静的思考了，关于工作不焦虑是假的，但是生活也是要继续的。新的工作开始后，我有了更多的时间陪小孩，看着小孩的成长，确实又感觉生活不一样了，小孩的需求没那么多，更多是我都是作为一个捧哏的角色，看着她玩耍，配合她的各种需求。&lt;/p&gt;
+
+&lt;p&gt;关于未来，世界变化很快，我也不知道未来会怎么样，在深圳还没有买房，没啥压力，在广西游的过程中有个小小的种子种在了心里，什么时候能在广西找个山好水好的地方过上慢生活呢。&lt;/p&gt;
+
+&lt;h3 id=&#34;结尾&#34;&gt;结尾&lt;/h3&gt;
+
+&lt;p&gt;回头看2024年，这一年过得挺特别的，有变化也有成长。无论是工作上的转折，还是生活中的点滴，我都在慢慢适应、慢慢调整。虽然未来会怎样还不好说，但我想继续保持学习的习惯，保持对生活的热情，也尽量多陪陪家人。生活总是这样，充满未知，但也正因为如此，每一天都值得认真过好。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2218,228 +2275,6 @@ serve:
 &lt;blockquote&gt;
 &lt;p&gt;&lt;a href=&#34;https://www.b-list.org/weblog/2022/dec/19/boring-python-code-quality/&#34;&gt;https://www.b-list.org/weblog/2022/dec/19/boring-python-code-quality/&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;</description>
-    </item>
-    
-    <item>
-      <title>编程语言漫谈</title>
-      <link>https://zhu327.github.io/2022/03/30/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%BC%AB%E8%B0%88/</link>
-      <pubDate>Wed, 30 Mar 2022 17:38:04 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2022/03/30/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%BC%AB%E8%B0%88/</guid>
-      <description>&lt;p&gt;半年前还是2021年春节的时候, 在家休假的我, 在B站上发现了一门叫&lt;a href=&#34;https://www.bilibili.com/video/BV1hp4y1k7SV&#34;&gt;RUST语言的课程&lt;/a&gt;, 学习的过程中, 发现RUST语言为了绝对的安全性, 在语法本身上做了很多的妥协, 所以想着等我学完这门课, 再基于自己以往编程语言的学习经历, 写一篇&amp;lt;如何学习一门新的编程语言&amp;gt;的文章. 但是时过境迁, 我并没有学完这门RUST课, 所以&amp;lt;如何学习一门新的编程语言&amp;gt;也就无疾而终了. 回过头来再思考下以往我学习的那些编程语言, 就有了这篇文章&amp;lt;编程语言漫谈&amp;gt;. 我希望以一种比较轻松的散文的形式来阐述我过完学习的一些经验与思考.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://user-images.githubusercontent.com/873883/160806614-07709f0a-add6-464b-a76a-bbaffdeab727.jpg&#34; alt=&#34;rust&#34; width=&#34;720px&#34;&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;1-程序是如何运行的&#34;&gt;1. 程序是如何运行的&lt;/h3&gt;
-
-&lt;p&gt;关于程序是如何运行的是一个很大的话题, 我个人认为最好的教材是这本&lt;a href=&#34;https://book.douban.com/subject/26912767/&#34;&gt;深入理解计算机系统&lt;/a&gt;, 值得每个程序员深入的阅读, 这里我就不再对这本书的内容做详细的总结, 只提2个点, CPU与内存.&lt;/p&gt;
-
-&lt;h4 id=&#34;cpu&#34;&gt;CPU&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://pic2.zhimg.com/v2-8b5b6ff186ebb7deef6905aa71c48261_r.jpg&#34; alt=&#34;preview&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;说到CPU就绕不过冯诺依曼结构, 在这个体系中, CPU就是一个非常傻的元器件, 它只做3件事:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;获取输入指令&lt;/li&gt;
-&lt;li&gt;执行指令&lt;/li&gt;
-&lt;li&gt;输出结果&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;然后循环做以上三件事, 只要不断电, 永不停歇.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://static001.geekbang.org/infoq/f5/f51fe88175b096a4cb3cbf6bd233fac3.png&#34; alt=&#34;img&#34; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;1．取指令阶段&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;取指令（Instruction Fetch，IF）阶段是将一条指令从主存中取到指令寄存器的过程。&lt;/p&gt;
-
-&lt;p&gt;程序计数器PC中的数值，用来指示当前指令在主存中的位置。当一条指令被取出后，PC中的数值将根据指令字长度而自动递增。若为单字长指令，则(PC)+1PC，若为双字长指令，则(PC)+2PC，依此类推。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;2．指令译码阶段&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;取出指令后，计算机立即进入指令译码（Instruction Decode，ID）阶段。&lt;/p&gt;
-
-&lt;p&gt;在指令译码阶段，指令译码器按照预定的指令格式，对取回的指令进行拆分和解释，识别和区分出不同的指令类别及各种获取操作数的方法。&lt;/p&gt;
-
-&lt;p&gt;在组合逻辑控制的计算机中，指令译码器对不同的指令操作码产生不同的控制电位，以形成不同的微操作序列；在微程序控制的计算机中，指令译码器用指令操作码找到执行该指令的微程序的入口，并从此入口开始执行。&lt;/p&gt;
-
-&lt;p&gt;在传统的设计里，CPU中负责指令译码的部分是无法改变的硬件。不过，在众多运用微程序控制技术的新型CPU中，微程序有时是可重写的，可以通过修改成品CPU来改变CPU的译码方式。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;3．执行指令阶段&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;在取指令和指令译码阶段之后，接着进入执行指令（Execute，EX）阶段。&lt;/p&gt;
-
-&lt;p&gt;此阶段的任务是完成指令所规定的各种操作，具体实现指令的功能。为此，CPU的不同部分被连接起来，以执行所需的操作。&lt;/p&gt;
-
-&lt;p&gt;例如，如果要求完成一个加法运算，算术逻辑单元（ALU）将被连接到一组输入和一组输出，输入端提供需要相加的数值，而输出端将含有最后的运算结果。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;4．访存取数阶段&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;根据指令需要，有可能要访问主存，读取操作数，这样就进入了访存取数（Memory，MEM）阶段。&lt;/p&gt;
-
-&lt;p&gt;此阶段的任务是：根据指令地址码，得到操作数在主存中的地址，并从主存中读取该操作数用于运算。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;5．结果写回阶段&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;作为最后一个阶段，结果写回（Writeback，WB）阶段把执行指令阶段的运行结果数据“写回”到某种存储形式。结果数据经常被写到CPU的内部寄存器中，以便被后续的指令快速地存取。在有些情况下，结果数据也可被写入相对较慢、但较廉价且容量较大的主存。许多指令还会改变程序状态字寄存器中标志位的状态，这些标志位标识着不同的操作结果，可被用来影响程序的动作。&lt;/p&gt;
-
-&lt;p&gt;在指令执行完毕、结果数据写回之后，若无意外事件（如结果溢出等）发生，计算机就接着从程序计数器PC中取得下一条指令地址，开始新一轮的循环，下一个指令周期将正常地顺序取出下一条指令。&lt;/p&gt;
-
-&lt;p&gt;许多新型CPU可以同时取出、译码和执行多条指令，体现出并行处理的特性。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;以上内容引用至&lt;a href=&#34;[CPU的工作过程 (intel.com)](https://software.intel.com/content/www/cn/zh/develop/articles/book-processor-architecture_cpu_work_process.html)&#34;&gt;CPU的工作过程&lt;/a&gt;, 虽然有5个阶段, 但是仔细看现代CPU还是脱离不了冯诺依曼体系结构, 仍然是在循环着取指令, 执行指令, 输出结果的过程.&lt;/p&gt;
-
-&lt;h4 id=&#34;内存&#34;&gt;内存&lt;/h4&gt;
-
-&lt;p&gt;从以上CPU结构, 我们可以看出无论是取指令还是输出结果, CPU都依赖于总线与外部存储, 也就是内存做交互. 那么程序是如何使用内存的呢, 这里以Linux的程序内存布局为例来说明.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://user-images.githubusercontent.com/873883/160808304-cffa5cad-f5d9-443d-9a52-eb565c25c3dd.png&#34; alt=&#34;memory&#34; width=&#34;720px&#34;&gt;&lt;/p&gt;
-
-&lt;p&gt;在Linux系统中, 每个程序在运行时, 都会由操作系统将自己的可执行二进制文件载入到内存中, 通过虚拟内存地址空间, 每个程序看到的自己的内存高地址与低地址都是一样的, 其中用于运行函数本地变量的地址空间叫栈, 而需要程序自行管理内存的空间叫堆. 每个函数运行时都会在栈上创建一块栈帧, 函数返回时pop出栈帧, 空间被回收. 在堆上的内存分配则需要手动管理, 程序自行申请空间, 回收空间.&lt;/p&gt;
-
-&lt;h4 id=&#34;汇编&#34;&gt;汇编&lt;/h4&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;汇编语言&lt;/strong&gt;（英语：&lt;strong&gt;assembly language&lt;/strong&gt;）[&lt;a href=&#34;https://zh.wikipedia.org/wiki/汇编语言#cite_note-1&#34;&gt;注 1]&lt;/a&gt;[&lt;a href=&#34;https://zh.wikipedia.org/wiki/汇编语言#cite_note-2&#34;&gt;1]&lt;/a&gt;是任何一种用于&lt;a href=&#34;https://zh.wikipedia.org/wiki/电子计算机&#34;&gt;电子计算机&lt;/a&gt;、&lt;a href=&#34;https://zh.wikipedia.org/wiki/微处理器&#34;&gt;微处理器&lt;/a&gt;、&lt;a href=&#34;https://zh.wikipedia.org/wiki/微控制器&#34;&gt;微控制器&lt;/a&gt;，或其他可编程器件的&lt;a href=&#34;https://zh.wikipedia.org/wiki/低级语言&#34;&gt;低级语言&lt;/a&gt;。在不同的设备中，汇编语言对应着不同的&lt;a href=&#34;https://zh.wikipedia.org/wiki/机器语言&#34;&gt;机器语言&lt;/a&gt;&lt;a href=&#34;https://zh.wikipedia.org/wiki/指令集架構&#34;&gt;指令集&lt;/a&gt;。一种汇编语言专用于某种&lt;a href=&#34;https://zh.wikipedia.org/wiki/计算机系统结构&#34;&gt;计算机系统结构&lt;/a&gt;，而不像许多&lt;a href=&#34;https://zh.wikipedia.org/wiki/高级语言&#34;&gt;高级语言&lt;/a&gt;，可以在不同系统平台之间移植。&lt;/p&gt;
-
-&lt;p&gt;使用汇编语言编写的源代码，然后通过相应的汇编程序将它们转换成可执行的机器代码。这一过程被称为&lt;strong&gt;汇编过程&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;汇编语言使用助记符（Mnemonics）来代替和表示特定低级机器语言的操作。特定的汇编目标指令集可能会包括特定的操作数。许多汇编程序可以识别代表地址和常量的标签（Label）和符号（Symbols），这样就可以用字符来代表操作数而无需采取&lt;a href=&#34;https://zh.wikipedia.org/wiki/寫死&#34;&gt;写死&lt;/a&gt;的方式。普遍地说，每一种特定的汇编语言和其特定的机器语言指令集是一一对应的。&lt;/p&gt;
-
-&lt;p&gt;许多汇编程序为程序开发、汇编控制、辅助&lt;a href=&#34;https://zh.wikipedia.org/wiki/调试工具&#34;&gt;调试&lt;/a&gt;提供了额外的支持机制。有的汇编语言编写工具经常会提供&lt;a href=&#34;https://zh.wikipedia.org/wiki/巨集&#34;&gt;宏&lt;/a&gt;，它们也被称为宏汇编器。&lt;/p&gt;
-
-&lt;p&gt;现在汇编语言已不像其他大多数的程序设计语言一样被广泛用于&lt;a href=&#34;https://zh.wikipedia.org/wiki/程序設計&#34;&gt;程序设计&lt;/a&gt;，在今天的实际应用中，它通常被应用在底层硬件操作和高要求的程序优化的场合。&lt;a href=&#34;https://zh.wikipedia.org/wiki/驅動程序&#34;&gt;驱动程序&lt;/a&gt;、嵌入式&lt;a href=&#34;https://zh.wikipedia.org/wiki/操作系统&#34;&gt;操作系统&lt;/a&gt;和实时运行程序中都会需要汇编语言。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;以上是维基百科对于汇编的解释, 简单的理解汇编就是对于特定的硬件的指令的一种符号表示, 每个汇编指令与二进制的CPU指令机器码是一一对应的, 是为了避免让程序员直接写二进制程序被发明出来的一种便捷方式. 从汇编语言转换成可执行的二进制文件需要执行汇编过程.&lt;/p&gt;
-
-&lt;p&gt;直接写汇编也不方便, 需要程序员了解整个CPU的结构, 了解所有CPU提供的指令, 了解每个寄存器的作用, 了解内存中每个地址该存什么, 而程序员通常并不想详细了解这些. 那怎么办呢:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;遇到问题不会解决的时候，多加一层就可以解决&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;这是计算机领域的一条金句, 为了解决汇编的上述问题, 通过抽象一门新的编程语言, 向程序员屏蔽掉以上细节, 可以大大的提高程序员的生产效率, 下面将介绍C语言来如何解决汇编带来的问题.&lt;/p&gt;
-
-&lt;h3 id=&#34;2-c语言&#34;&gt;2. C语言&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy85c053c1hjTjY4cjlIUkc4RUR5cjRxaWJXdVB1ZVROYURJd0tmaWJVdFBKeVQxV1FQWnpyWXVXMjJERWlhdDZOdkFDdWxvN1VUM3MzOHM0b1pORVZ0MTBydy82NDA?x-oss-process=image/format,png&#34; alt=&#34;C语言编译&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;C语言是计算机世界的基石级语言, 它通过抽象的函数, 循环, 分支语句使得程序员不需要了解计算中的底层实现细节, 向程序员屏蔽了不同计算机指令架构的差异, 通过不同的编译器实现, 只需要写一份代码就可以在多个不同指令架构的机器上执行相同的逻辑.&lt;/p&gt;
-
-&lt;p&gt;在Google有很多关于 Jeff Dean的笑话, 其中有一个关于编译器的:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Jeff Dean每次写完代码, 都会编译一遍, 不是为了检查自己写的程序是否正确, 而是检查编译器是否有BUG&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;C语言并不是一门完美的语言, 写C语言的程序员往往关注程序的性能, 这就需要程序员了解性能的瓶颈在哪里, 往往又需要了解到程序的每一条指令的执行细节, 这就造成了一个矛盾的点, C语言本身是想向程序员屏蔽计算机的实现细节, 但是想要用C语言写好程序又需要程序员充分了解C语言编译生成的每条汇编的细节.&lt;/p&gt;
-
-&lt;p&gt;同时C语言使用手动管理内存的方式, 或多或少会制造出各种内存的安全性问题, 比如空指针, 野指针等等问题, 对于程序员来说, 应付这些问题并不轻松.&lt;/p&gt;
-
-&lt;p&gt;随着计算机硬件性能的大幅提升, 使得程序员可以不再那么多的关注程序本身的运行性能, 更多的关注程序的逻辑实现, 互联网的兴起, 又导致IO密集的应用占比大幅提高, 为了解放生产力, 需要更高层次的语言, Python就是其中的一种.&lt;/p&gt;
-
-&lt;h3 id=&#34;3-python语言&#34;&gt;3. Python语言&lt;/h3&gt;
-
-&lt;p&gt;问: &lt;strong&gt;Python语言是解释型语言还是编译型语言?&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Python语言既是解释型语言又是编译型语言, 下面通过解释Python的运行过程来进一步说明&lt;/p&gt;
-
-&lt;h4 id=&#34;执行过程&#34;&gt;执行过程&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://pic3.zhimg.com/v2-7624126b628c655fad226c1d2cc57a0e_r.jpg&#34; alt=&#34;Python执行过程&#34; /&gt;&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;启动编译&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Python在启动时首先加载所有的&lt;code&gt;.py&lt;/code&gt;文件并编译成字节码&lt;code&gt;.pyc&lt;/code&gt;文件, &lt;code&gt;pyc&lt;/code&gt;文件保存的Python代码编译出来的PyCode对象, 所谓的字节码到底是什么东西呢, 其实是一系列的指令, 这些指令不同于机器码的指令集, 它是Python自己定义指令集, 运行在Python VM上&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;虚拟机翻译&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Python虚拟机就是用来执行Python虚拟指令的虚拟机, VM与实体CPU类似, 通过一个大循环, 不停的执行PyCode中的指令, 与实体CPU不同的是, 它是一个中间层, 它会把Python的指令翻译成对应的C代码的调用, 最终通过CPython解释器来完成Python指令到CPU指令的翻译&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;机器码执行&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;我们所写的Python代码最终还是会被CPython解释成机器码到CPU上执行, 这里可以思考一下, 增加了CPython这一层后, 带来的好处, 以及坏处是什么?&lt;/p&gt;
-
-&lt;p&gt;好处很明显, Python相对于C语言大大降低了编程的门槛, 实现同样的功能, Python代码量会比C代码少的多. 从上面的执行过程可以看出不同于C语言的可执行二进制直接加载到机器的虚拟内存空间中, Python代码需要启动时的编译过程, 执行时的VM翻译过程, 最终转换成机器码执行, 无论是VM的翻译过程, 还是最终执行机器码, 相对于C实现的机器指令的数量都会大大增加, 这个增加是千百倍的增加, 带来的差异就是同样的功能, Python的实现会比C实现慢得多.&lt;/p&gt;
-
-&lt;h4 id=&#34;自动内存管理-gc&#34;&gt;自动内存管理(GC)&lt;/h4&gt;
-
-&lt;p&gt;上面说完了Python的代码执行, 接下来进入内存管理, 首先问一个问题, &lt;strong&gt;Python对象是分配在堆还是栈上的?&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;在 Python 中，内存管理涉及到一个包含所有 Python 对象和数据结构的私有堆（heap）。这个私有堆的管理由内部的 &lt;em&gt;Python 内存管理器（Python memory manager）&lt;/em&gt; 保证。Python 内存管理器有不同的组件来处理各种动态存储管理方面的问题，如共享、分割、预分配或缓存。&lt;/p&gt;
-
-&lt;p&gt;在最底层，一个原始内存分配器通过与操作系统的内存管理器交互，确保私有堆中有足够的空间来存储所有与 Python 相关的数据。在原始内存分配器的基础上，几个对象特定的分配器在同一堆上运行，并根据每种对象类型的特点实现不同的内存管理策略。例如，整数对象在堆内的管理方式不同于字符串、元组或字典，因为整数需要不同的存储需求和速度与空间的权衡。因此，Python 内存管理器将一些工作分配给对象特定分配器，但确保后者在私有堆的范围内运行。&lt;/p&gt;
-
-&lt;p&gt;Python 堆内存的管理是由解释器来执行，用户对它没有控制权，即使他们经常操作指向堆内内存块的对象指针，理解这一点十分重要。Python 对象和其他内部缓冲区的堆空间分配是由 Python 内存管理器按需通过本文档中列出的 Python/C API 函数进行的。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h5 id=&#34;垃圾回收&#34;&gt;垃圾回收&lt;/h5&gt;
-
-&lt;ol&gt;
-&lt;li&gt;引用计数&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;最基本的垃圾回收方式, PyObject对象每增加一个引用, 引用计数+1, 减少一个引用, 引用计数-1, 引用计数更新为0时, 等待被回收, 但是循环引用的对象, 计数永远不会清零, 这就需要标记清楚来辅助处理&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;标记清除&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://user-images.githubusercontent.com/873883/160809972-6b6d53fc-a132-4cb3-8fc1-b68a1c0dc8d1.png&#34; alt=&#34;python&#34; width=&#34;720px&#34;&gt;&lt;/p&gt;
-
-&lt;p&gt;Python解释器隔一段时间会进行一次全对象的扫描, 对于隔离于ROOT节点的孤立引用, 执行回收, 没有被ROOT节点引用的孤立节点, 即使引用计数大于0, 也会被回收.&lt;/p&gt;
-
-&lt;p&gt;但是每次执行扫描, 都会产生STW, 影响程序的执行, 所以就有了内存分代&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;分代回收&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Python解释器将将对象分为三代:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;0代表幼年对象&lt;/li&gt;
-&lt;li&gt;1代表青年对象&lt;/li&gt;
-&lt;li&gt;2代表老年对象
-&lt;br /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;对象所在分代级别越低, GC回收的频率越低, 低级别的对象如果一直没有回收, 会被转移到高级别的代中, 这样就区分了不同活跃度的对象, 提高了GC回收的效率&lt;/p&gt;
-
-&lt;h4 id=&#34;小结&#34;&gt;小结&lt;/h4&gt;
-
-&lt;p&gt;从以上Python执行过程与内存管理中可以看出, Python并不适用于高性能需求的场景, 而GC带来延时也使Python不适用于实时性要求高的应用, 这些场景是C语言的主战场. 但是Python由于简单的语法, 高效的编码方式, 大大提高了程序员的生产效率, 在互联网时代, 要求快速实现, 快速实验的前提下, Python也越来越流行.&lt;/p&gt;
-
-&lt;p&gt;那么有没有一种性能够用, 又兼具开发效率的语言呢, Golang就提供了这样一种折中的选择.&lt;/p&gt;
-
-&lt;h3 id=&#34;4-golang&#34;&gt;4. Golang&lt;/h3&gt;
-
-&lt;p&gt;Golang是一门编译型的语言, 同C语言一样它也是通过编译器把代码直接编译为二进制的机器码来保证执行性能, 与C语言不同的时, 它在编译时会在二进制中插入一个Golang的Runtime, Runtime帮助做用户态的Goroutine的调度, 做自动内存管理. 可以说Golang继承了C语言的精华, 并对C语言程序容易出错的点, 提出了自己的改进方案.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://img.draveness.me/2020-02-02-15805792666151-golang-gmp.png&#34; alt=&#34;golang&#34; width=&#34;720px&#34;&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://qiankunli.github.io/public/upload/go/go_memory_layout.jpeg&#34; alt=&#34;Golang内存分配&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Golang语言也不是完美的, 它的性能还是比不上极致优化的C语言, GC带来的STW也导致不能应用于实时性领域. 但是在云原生时代, 它的原生支持并发, 优秀的自动内存管理, 在开发效率与性能之间的平衡性, 给程序员提供了一个新的选择.&lt;/p&gt;
-
-&lt;h3 id=&#34;5-总结&#34;&gt;5. 总结&lt;/h3&gt;
-
-&lt;p&gt;笔者主要使用的语言是Python与Golang, 对Python的运用更多一些, 原因是Python在Web后端开发的应用会更方便一些, 能够快速实现功能, 解决产品需求. Golang更多应用于一些对性能/并发要求比较高的场景, 当前我们会使用Golang构建的鉴权中间承载整个部门的健全需求.&lt;/p&gt;
-
-&lt;p&gt;没有银弹!!! 没有完美的技术, 没有完美的方案, 只有在某个时间点, 某个环境下合适的技术或方案, 如何在这些技术与方案中做抉择, 平衡各方需求, 是对程序员最大的挑战.&lt;/p&gt;</description>
     </item>
     
   </channel>
