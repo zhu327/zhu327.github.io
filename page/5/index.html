@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2024. All rights reserved.</p>
+    <p>&copy; 2025. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,18 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2018/08/29/gunicorn%E4%B8%8Euwsgi%E4%B9%8B%E6%88%91%E8%A7%81/">Gunicorn与uWSGI之我见</a></h1>
+        <span class="post-date">Aug 29 2018</span>
+        <p>昨天前同事问我<a href="https://github.com/zhu327/doge">doge</a>的服务端怎么是单进程跑的, 其实在生产环境下我们参考<a href="https://github.com/eleme/gunicorn_thrift">gunicorn_thrift</a>实现了一个定制的master/worker模型的Gunicorn服务器. 昨天也写了一个<a href="https://github.com/zhu327/doge/tree/master/doge/gunicorn">简化版本</a>集成到doge, 实际代码不超过20行就能利用到Gunicorn的进程管理功能. 有感于Gunicorn简洁优雅的模型, 这里聊聊我理解的Gunicorn与uWSGI.</p>
+
+<h2 id="perfork">perfork</h2>
+
+<p>perfork是一种服务端编程模型, Nginx, Gunicorn, uWSGI都是这种模型的实现, 简单的说perfok就是master进程启动注册一堆信号处理函数, 创建listen socket fd, fork出多个worker子进程, 子进程执行accept循环处理请求(这里简化模型, 当然也可以用select, epoll多路复用), master进程只负责监控worker进程状态, 通过pipeline通信来控制worker进程.</p>
+
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2018/07/19/python%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B/">Python后端架构演进</a></h1>
@@ -119,32 +131,6 @@
 <p>在Java的世界里，Spring Cloud全家桶覆盖了微服务的方方面面，专注于服务治理的框架也有阿里的Dubbo，微博的Motan。但是Python这边没有找到合适的轮子，甚至于好的RPC框架也没有，只有gRPC，Thrift这种跨语言的RPC框架。而这些跨语言的RPC框架基本上也是基于C/C++的Python port。</p>
 
 <p>在github上全局搜索Python rpc，找到一个原生支持gevent的<a href="https://github.com/studio-ousia/mprpc">MPRPC</a>，而且也找到了微博Motan的Golang版本，所以考虑读Motan-go的源码学习一下什么是服务治理，再基于MPRPC实现自己的轮子。这就有了<a href="https://github.com/zhu327/doge">doge</a>。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2017/11/27/openresty%E4%B8%8Eapi-gateway/">OpenResty与API Gateway</a></h1>
-        <span class="post-date">Nov 27 2017</span>
-        <p>公司业务向微服务方向迁移实践中, API Gateway成为接入层最重要的部分, 在完成开发的同时给同事做了一次OpenResty的分享, 以下是分享的内容整理.</p>
-
-<hr />
-
-<h3 id="当我谈论高性能时我们谈论什么">当我谈论高性能时我们谈论什么 ?</h3>
-
-<p>讨论时间, 大家自由发挥</p>
-
-<ul>
-<li>机器</li>
-<li>语言</li>
-<li>架构
-
-<ul>
-<li>reactor</li>
-<li>coroutine</li>
-<li>cache</li>
-</ul></li>
-</ul>
 
 <p></p>
     </div>

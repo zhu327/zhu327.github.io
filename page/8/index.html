@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2024. All rights reserved.</p>
+    <p>&copy; 2025. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,51 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/21/greentor-tornado%E5%BC%82%E6%AD%A5%E6%96%B9%E6%A1%88/">greentor Tornado异步方案</a></h1>
+        <span class="post-date">Jun 21 2016</span>
+        <blockquote>
+<p><a href="https://emptysqua.re/blog/motor-internals-how-i-asynchronized-a-synchronous-library/">https://emptysqua.re/blog/motor-internals-how-i-asynchronized-a-synchronous-library/</a></p>
+</blockquote>
+
+<p>这篇文章是Motor的作者介绍Motor如何通过Greenlet来实现PyMongo在Tornado中异步调用的原理，总结来说就一下几点。</p>
+
+<ol>
+<li>使用Torando的IOStream包装socket以实现异步调度</li>
+<li>把IOStream的读写操作放在greenlet中运行，并注册一个switch到当前greenlet的callback到IOStream的Futrue中</li>
+<li>在发生读写操作是switch到当前greenlet的父greenlet继续执行，挂起当前greenlet</li>
+<li>在IOStream的读写操作完成后调用callback switch到挂起的子greenlet中继续执行</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">tornado_motor_sock_method</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+    <span class="n">coro</span> <span class="o">=</span> <span class="n">gen</span><span class="o">.</span><span class="n">coroutine</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+
+    <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">#当前greenlet是一个子greenlet</span>
+        <span class="n">child_gr</span> <span class="o">=</span> <span class="n">greenlet</span><span class="o">.</span><span class="n">getcurrent</span><span class="p">()</span>
+        <span class="c1">#获取当前greenlet的父greenlet，即之前代码提到过的asynchronize所在的greenlet</span>
+        <span class="n">main</span> <span class="o">=</span> <span class="n">child_gr</span><span class="o">.</span><span class="n">parent</span>
+
+        <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">exc_info</span><span class="p">():</span>
+                <span class="n">child_gr</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span><span class="o">*</span><span class="n">future</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">future</span><span class="o">.</span><span class="n">exception</span><span class="p">():</span>
+                <span class="n">child_gr</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">exception</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#当future的结果到达，切换回挂起的子greenlet</span>
+                <span class="n">child_gr</span><span class="o">.</span><span class="n">switch</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
+
+        <span class="c1">#保证callback在当前greenlet的父greenlet中运行</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io_loop</span><span class="o">.</span><span class="n">add_future</span><span class="p">(</span><span class="n">coro</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">callback</span><span class="p">)</span>
+        <span class="c1">#return这句会暂时挂起当前greenlet，将控制权切换回父greenlet，</span>
+        <span class="c1">#在上面的callback执行时，才会切换回当前greenlet，return语句返回</span>
+        <span class="k">return</span> <span class="n">main</span><span class="o">.</span><span class="n">switch</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">wrapped</span></code></pre></div>
+<p>使用greenlet的好处是我们可以通过这个挂起，唤醒的过程来中断当前的同步代码，而不需要用Tornado自己实现协程，每次都要yield出来，然后回调。通过使用greenlet可以很方便的把同步的网络IO库修改为支持Tornado的异步库。</p>
+
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/16/python%E5%8D%8F%E7%A8%8B/">Python协程</a></h1>
@@ -199,21 +244,6 @@ elasticstack==0.4.1
 <span class="p">}</span>
 
 <span class="n">ELASTICSEARCH_DEFAULT_ANALYZER</span> <span class="o">=</span> <span class="s1">&#39;ik&#39;</span> <span class="c1"># 设置默认分词器为ik</span></code></pre></div>
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/16/django-save%E6%96%B9%E6%B3%95%E7%9A%84update_fields%E5%8F%82%E6%95%B0/">Django save方法的update_fields参数</a></h1>
-        <span class="post-date">May 16 2016</span>
-        <p>在Django中对Model对象的属性赋值，并使用save方法，save方法并不会检测Model对象变更了什么属性，而是会使用<code>update</code>语句set所有的field为当前的值，也就是说只修改了部分字段，也会update所有字段的值，这样会导致2个问题:</p>
-
-<ol>
-<li>SQL语句过大，导致SQL执行慢(一般也不会有什么影响)</li>
-<li>如果同时操作同一个Model对象，更新不同的字段，后save的操作会用老的值覆盖掉早点操作的值</li>
-</ol>
-
-<p>所以推荐在调用save方法的时候传<code>update_fields</code>参数，但是这样就要求我们必须对每次save的fields都在代码中记下来，不是很方便，所以开发一个通用的专门用来处理update_fields参数的Mixin类来解决这个问题。</p>
-
 <p></p>
     </div>
   

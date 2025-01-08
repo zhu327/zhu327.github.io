@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2024. All rights reserved.</p>
+    <p>&copy; 2025. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,27 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2017/03/14/%E7%94%A8python%E8%A7%A3%E5%86%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">用Python解决数据结构与算法问题</a></h1>
+        <span class="post-date">Mar 14 2017</span>
+        <blockquote>
+<p><a href="https://facert.gitbooks.io/python-data-structure-cn/">用Python解决数据结构与算法问题</a></p>
+</blockquote>
+
+<p>发现一本Python的好书被翻译了，利用下班时间学习了一下，把相关代码都实现了一遍，包括：</p>
+
+<ul>
+<li>栈，队列，双端队列</li>
+<li>无序链表，有序链表</li>
+<li>二叉树，堆，二叉搜索树，AVL树</li>
+<li>图</li>
+</ul>
+
+<p>以及一些算法</p>
+
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2017/01/01/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98/">如何成为一名优秀的程序员</a></h1>
@@ -134,51 +155,6 @@
 <p>Tornado是单线程的，在Tornado中使用Django ORM无论处理多少请求，都会用同一个保存在当前local()中的连接，这样就必然会产生连接使用的冲突。比如同时并发的2个请求，第一个请求关闭了连接，第二个请求还在继续使用这个连接就会抛出异常。</p>
 
 <p>在greentor的配合下，Tornado涉及数据库连接的请求都运行在greenlet中，如果有一个greenlet local来对每个请求的数据库连接进行隔离，就能避免线程安全问题，在这里的greenlet协程完全可以类比为线程。然而greenlet并没有local，那我们就造一个local出来。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/21/greentor-tornado%E5%BC%82%E6%AD%A5%E6%96%B9%E6%A1%88/">greentor Tornado异步方案</a></h1>
-        <span class="post-date">Jun 21 2016</span>
-        <blockquote>
-<p><a href="https://emptysqua.re/blog/motor-internals-how-i-asynchronized-a-synchronous-library/">https://emptysqua.re/blog/motor-internals-how-i-asynchronized-a-synchronous-library/</a></p>
-</blockquote>
-
-<p>这篇文章是Motor的作者介绍Motor如何通过Greenlet来实现PyMongo在Tornado中异步调用的原理，总结来说就一下几点。</p>
-
-<ol>
-<li>使用Torando的IOStream包装socket以实现异步调度</li>
-<li>把IOStream的读写操作放在greenlet中运行，并注册一个switch到当前greenlet的callback到IOStream的Futrue中</li>
-<li>在发生读写操作是switch到当前greenlet的父greenlet继续执行，挂起当前greenlet</li>
-<li>在IOStream的读写操作完成后调用callback switch到挂起的子greenlet中继续执行</li>
-</ol>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">tornado_motor_sock_method</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
-    <span class="n">coro</span> <span class="o">=</span> <span class="n">gen</span><span class="o">.</span><span class="n">coroutine</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
-
-    <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1">#当前greenlet是一个子greenlet</span>
-        <span class="n">child_gr</span> <span class="o">=</span> <span class="n">greenlet</span><span class="o">.</span><span class="n">getcurrent</span><span class="p">()</span>
-        <span class="c1">#获取当前greenlet的父greenlet，即之前代码提到过的asynchronize所在的greenlet</span>
-        <span class="n">main</span> <span class="o">=</span> <span class="n">child_gr</span><span class="o">.</span><span class="n">parent</span>
-
-        <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">exc_info</span><span class="p">():</span>
-                <span class="n">child_gr</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span><span class="o">*</span><span class="n">future</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
-            <span class="k">elif</span> <span class="n">future</span><span class="o">.</span><span class="n">exception</span><span class="p">():</span>
-                <span class="n">child_gr</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">exception</span><span class="p">())</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1">#当future的结果到达，切换回挂起的子greenlet</span>
-                <span class="n">child_gr</span><span class="o">.</span><span class="n">switch</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
-
-        <span class="c1">#保证callback在当前greenlet的父greenlet中运行</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">io_loop</span><span class="o">.</span><span class="n">add_future</span><span class="p">(</span><span class="n">coro</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">callback</span><span class="p">)</span>
-        <span class="c1">#return这句会暂时挂起当前greenlet，将控制权切换回父greenlet，</span>
-        <span class="c1">#在上面的callback执行时，才会切换回当前greenlet，return语句返回</span>
-        <span class="k">return</span> <span class="n">main</span><span class="o">.</span><span class="n">switch</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">wrapped</span></code></pre></div>
-<p>使用greenlet的好处是我们可以通过这个挂起，唤醒的过程来中断当前的同步代码，而不需要用Tornado自己实现协程，每次都要yield出来，然后回调。通过使用greenlet可以很方便的把同步的网络IO库修改为支持Tornado的异步库。</p>
 
 <p></p>
     </div>

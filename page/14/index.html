@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2024. All rights reserved.</p>
+    <p>&copy; 2025. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,25 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/31/django-forum%E6%80%BB%E7%BB%93/">Django forum总结</a></h1>
+        <span class="post-date">Jan 31 2015</span>
+        <p><a href="https://github.com/zhu327/forum">https://github.com/zhu327/forum</a></p>
+
+<p>元旦的时候决定开始学习Django，学习最好的方式无非边学边做，所以把2年前没敢看的一个Tornado项目通过用Django实现了，这里总结下。</p>
+
+<h3 id="models">models</h3>
+
+<ol>
+<li><p>扩展默认User类</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">AbstractUser</span>
+<span class="c1"># 继承这个类即可</span>
+
+<span class="c1"># setting中设置</span>
+<span class="n">AUTH_USER_MODEL</span> <span class="o">=</span> <span class="s1">&#39;forum.ForumUser&#39;</span> <span class="c1"># 指定用户对象使用的类</span></code></pre></div>
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/31/cookie%E4%B8%8Esession/">Cookie与Session</a></h1>
@@ -139,21 +158,6 @@
 
 <p>在<code>settings.py</code>下新增自定义用户类:
 </p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/02/rss-factory%E7%9A%84%E5%9D%91/">RSS Factory的坑</a></h1>
-        <span class="post-date">Jan 2 2015</span>
-        <p>花了一天时间把<a href="https://github.com/zhu327/rss">RSS Factory</a>更新了下，把Tornado默认的模版引擎换为jinja2，解析html第三方库换为lxml。遇到了几个坑，纪录下。</p>
-
-<p><strong>自动转义</strong></p>
-
-<p>Tornado默认的模版引擎默认自动转义，Flask配置的jinja2也自动转义了，<a href="http://bozpy.sinaapp.com/blog/15">在Tornado中使用jinja2模版引擎的简单方法</a>，按照这个方法模版渲染的时候却没有自动转义，所以还需要进一步配置。</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">application</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">(</span>
-<span class="n">template_loader</span><span class="o">=</span><span class="n">JinjaLoader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;templates/&#39;</span><span class="p">),</span>
-    <span class="n">autoescape</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;jinja2.ext.autoescape&#39;</span><span class="p">]),</span>
-<span class="p">)</span></code></pre></div>
-<p></p>
     </div>
   
 </div>

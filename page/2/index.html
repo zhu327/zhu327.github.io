@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2024. All rights reserved.</p>
+    <p>&copy; 2025. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,18 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/">以Vaultwarden为例使用SQLite Litestream实现无数据库服务</a></h1>
+        <span class="post-date">Sep 3 2024</span>
+        <h3 id="前言">前言</h3>
+
+<p>Vaultwarden是一个非官方实现的Bitwarden Server，用于密码管理，支持Web端、桌面端和移动端。它支持多种数据来存储数据，包括SQLite、PostgreSQL和MySQL等。当我们想把它部署在一个容器服务平台时，如果容器服务本身没有提供持久挂载的卷，那我们就只能使用PostgreSQL或者MySQL外部数据来存储数据。</p>
+
+<p>但是我们并不想额外再买资源来运行一个数据库，那我们就可以使用SQLite来存储数据，并且使用Litestream来实现容灾备份。这样虽然容器服务没有持久存储，但是数据还是安全的。下面以Vaultwarden为例，使用SQLite和Litestream来实现无数据库服务。其它可以使用SQLite的程序也可以使用这种方式来实现无数据库服务。</p>
+
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2024/08/30/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E6%B4%BB%E5%88%9B%E9%80%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B0%8F%E5%B7%A5%E5%85%B7/">自动化自己的生活：创造自己的小工具</a></h1>
@@ -117,14 +129,6 @@
         <h1 class="post-title"><a href="https://zhu327.github.io/2024/04/10/%E7%8E%A9%E8%BD%AC-hacknews%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%A2%E9%98%85%E7%A7%91%E6%8A%80%E6%96%B0%E9%97%BB/">玩转 HackNews：如何正确订阅科技新闻</a></h1>
         <span class="post-date">Apr 10 2024</span>
         <p>近日，我在探索 HackNews 的过程中，收获了大量的新知识。然而，我发现自动订阅的 HackNews RSS 源并没有对热门话题进行筛选，导致我的 RSS 阅读器里充斥着我不感兴趣的话题。于是，我开始寻找适合自己的 HackNews RSS 订阅源。在众多选择中，我发现了 <a href="https://hnrss.org/newest?points=100">https://hnrss.org/newest?points=100</a>，这个源只推送热门话题，非常适合我。然而，由于全英文阅读有些繁琐，我又找到了 <a href="https://rsstranslator.com/">https://rsstranslator.com/</a> 这个提供翻译服务的网站，能将 HackNews 翻译成中文标题，非常便捷。但不幸的是，由于访问量过大，该网站已关闭服务并开源代码。在尝试了各种工具后未果，我决定自己动手解决这个问题。然而，我又不希望维护独立的服务，而刚好 <a href="https://blog.cloudflare.com/python-workers">Cloudflare Workers 开始支持 Python</a>，于是我决定使用 Cloudflare Workers 来实现这个服务。在评估了各种翻译 API 后，我选择了 Microsoft Azure 翻译 API，实现了免费翻译的功能。最终，我完成了这个项目 <a href="https://github.com/zhu327/workers-hnrss">workers-hnrss</a>，并且完全零成本部署。但在部署过程中，我发现 Cloudflare Workers 还不支持 <code>requirements.txt</code>，不过据他们的文档称，再过几周就会支持，所以我决定再等等，然后就可以在我的 RSS 阅读器上读到中文标题的 HackNews 了。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2024/01/10/2023%E5%B9%B4%E9%98%85%E8%AF%BB%E5%88%86%E4%BA%AB%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98%E7%BC%96%E7%A8%8B%E4%B9%8B%E9%81%93/">2023年阅读分享：深度挖掘编程之道</a></h1>
-        <span class="post-date">Jan 10 2024</span>
-        <p>作为一个热衷于技术的程序员博主，我在2023年迎来了全新的阅读体验，将RSS作为我的主要信息源，并通过订阅Hacker News热门主题，持续深入英文技术文章的阅读。在这个过程中，我发现了一些真正精彩的文章，这些不仅仅是知识的积累，更是对编程之路的深刻思考。在这里，我将其中一些我认为值得分享的文章整理出来，推荐给各位看官，希望你们在学习中找到灵感，不断进步。</p>
 
 <p></p>
     </div>

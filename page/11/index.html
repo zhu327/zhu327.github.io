@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2024. All rights reserved.</p>
+    <p>&copy; 2025. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,23 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/02/01/%E9%87%8D%E8%A3%85ubuntu%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%B0%E5%BD%95/">重装Ubuntu的一些记录</a></h1>
+        <span class="post-date">Feb 1 2016</span>
+        <p>** 手贱把工作电脑的Ubuntu搞挂了好像，不得已重装一下，这里记录一下过程</p>
+
+<p>工作中用到Ubuntu主要是做Python开发环境，在家习惯了用Mac，切换到Ubuntu还是很方便了，比较坑的，是经常莫名其妙的系统错误。</p>
+
+<h3 id="1-安装系统">1. 安装系统</h3>
+
+<p>必须是Ubuntu 14.04 64bit 选择不在线更新安装</p>
+
+<h3 id="2-更新系统">2. 更新系统</h3>
+
+<p>在系统设置中选择国内的源，我用的是163的
+</p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/02/01/elasticsearch-ik%E5%AE%89%E8%A3%85/">Elasticsearch IK安装</a></h1>
@@ -135,22 +152,6 @@ IK中文分词<br />
 IFTTT = if this then that, IFWechat通过微信公众号实现了IFTTT中this的功能,通过微信发送到IFWechat的消息都会触发用户定义的IFTTT Recipes.</p>
 
 <p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/08/14/flask-jinja2-i18n%E5%9B%BD%E9%99%85%E5%8C%96%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/">flask jinja2 i18n国际化简单实现</a></h1>
-        <span class="post-date">Aug 14 2015</span>
-        <p>前两个星期,公司有需求要实现APP内嵌网页的英文版,因为要急着上线,所有就没有折腾i18n国际化,直接出了英文的模板,在view函数里面判断语言选择模板来实现.这周有空下来重新整了一下项目的国际化,使用通用的<code>gettext</code>来实现.</p>
-
-<p>flask使用的是jinja2模板,jinja2自带了i18n扩展支持,但是需要Flask-Babel扩展的支持,有学习成本,所以没有使用,直接用了python内置的gettext来实现,而且jinja2引擎也提供了gettext的钩子来处理不同的语言.</p>
-
-<h2 id="gettext">gettext</h2>
-
-<p><code>gettext</code>是*nix下的标准i18n实现,Python的标准库内置<code>gettext</code>,简单的理解一下,就是通过已有的字典映射文件,然后获取环境的语言信息来判断当前使用哪一个语言映射,最终渲染出不同的语言文本,这里就不详细研究<code>gettext</code>了,提供我的参考文档:</p>
-
-<blockquote>
-<p><a href="http://underthehood.blog.51cto.com/2531780/1663604">http://underthehood.blog.51cto.com/2531780/1663604</a>
-</p>
     </div>
   
 </div>

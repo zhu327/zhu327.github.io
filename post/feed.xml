@@ -6,10 +6,46 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 31 Dec 2024 10:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 08 Jan 2025 10:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>如何快速上手项目</title>
+      <link>https://zhu327.github.io/2025/01/08/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E9%A1%B9%E7%9B%AE/</link>
+      <pubDate>Wed, 08 Jan 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/01/08/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E9%A1%B9%E7%9B%AE/</guid>
+      <description>&lt;p&gt;职业生涯中接手过很多项目了，各种项目都接触过，一个对新人友好的项目一般具备如下特征：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;完备的安装/功能文档&lt;/li&gt;
+&lt;li&gt;完备的技术方案，架构设计文档&lt;/li&gt;
+&lt;li&gt;合理的分层，清晰的代码目录结构&lt;/li&gt;
+&lt;li&gt;可读，可维护性高的代码&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;但是往往我们会忽略一个一个简单的指引性的文档：&lt;strong&gt;Quick Start&lt;/strong&gt;，这个文档不需要很详细，只需要说明，如何快速上手的过程，具体的步骤链接到对应的文档即可。一般我们会在Quick Start上写明：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;最简安装的步骤&lt;/li&gt;
+&lt;li&gt;主流程功能的使用&lt;/li&gt;
+&lt;li&gt;开发环境的搭建&lt;/li&gt;
+&lt;li&gt;开发注意事项
+
+&lt;ol&gt;
+&lt;li&gt;包含组件的架构图&lt;/li&gt;
+&lt;li&gt;包含代码的分层目录说明&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这个文档需要由项目的负责人编写，在后续由项目的新人实践的过程中逐步完善。&lt;/p&gt;
+
+&lt;p&gt;当然这都是比较理想的情况，实际情况中，我们可能遇到的项目可能根本就没有文档，然后只有一个代码仓库的情况，那怎么才能快速上手呢？其实还是按照Quick Start的思路，只不过需要自己来摸索来了。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>我的2024</title>

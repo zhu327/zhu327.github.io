@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2024. All rights reserved.</p>
+    <p>&copy; 2025. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,39 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2025/01/08/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E9%A1%B9%E7%9B%AE/">如何快速上手项目</a></h1>
+        <span class="post-date">Jan 8 2025</span>
+        <p>职业生涯中接手过很多项目了，各种项目都接触过，一个对新人友好的项目一般具备如下特征：</p>
+
+<ol>
+<li>完备的安装/功能文档</li>
+<li>完备的技术方案，架构设计文档</li>
+<li>合理的分层，清晰的代码目录结构</li>
+<li>可读，可维护性高的代码</li>
+</ol>
+
+<p>但是往往我们会忽略一个一个简单的指引性的文档：<strong>Quick Start</strong>，这个文档不需要很详细，只需要说明，如何快速上手的过程，具体的步骤链接到对应的文档即可。一般我们会在Quick Start上写明：</p>
+
+<ol>
+<li>最简安装的步骤</li>
+<li>主流程功能的使用</li>
+<li>开发环境的搭建</li>
+<li>开发注意事项
+
+<ol>
+<li>包含组件的架构图</li>
+<li>包含代码的分层目录说明</li>
+</ol></li>
+</ol>
+
+<p>这个文档需要由项目的负责人编写，在后续由项目的新人实践的过程中逐步完善。</p>
+
+<p>当然这都是比较理想的情况，实际情况中，我们可能遇到的项目可能根本就没有文档，然后只有一个代码仓库的情况，那怎么才能快速上手呢？其实还是按照Quick Start的思路，只不过需要自己来摸索来了。</p>
+
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2024/12/31/%E6%88%91%E7%9A%842024/">我的2024</a></h1>
@@ -131,18 +164,6 @@
 <p>本来这个项目的前任开发者决策使用MySQL来双写CRD资源，来实现辅助查询，代码也写了很多了，双写带来了一些代码结构上的耦合，但是其实也不是个问题。更恶心的问题是有一个客户由于信创方面的政治问题，要求我们不能引入MySQL！虽然客户有建议用他们自己的数据库，但是从我们的角度来说，我们不希望自己的服务依赖外部客户组件，所以就必须考虑下其它的方案了，比如不用数据库服务。</p>
 
 <p>基于以往在SQLite上的学习经验，以当前CRD资源的体量完全可以使用SQLite来实现CRD资源的辅助查询，那么是不是要引入持久存储呢？其实还是不用，因为CRD本身已经存储在etcd中了，我们只需要在程序启动时通过k8s的List-Watch的方式将CRD资源同步到SQLite中，这样就可以实现CRD资源的辅助查询了。具体到实现上完全可以使用k8s client中的informer来实现CRD资源的同步，这样可以使用到informer的缓存机制减少apiserver的查询压力。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/">以Vaultwarden为例使用SQLite Litestream实现无数据库服务</a></h1>
-        <span class="post-date">Sep 3 2024</span>
-        <h3 id="前言">前言</h3>
-
-<p>Vaultwarden是一个非官方实现的Bitwarden Server，用于密码管理，支持Web端、桌面端和移动端。它支持多种数据来存储数据，包括SQLite、PostgreSQL和MySQL等。当我们想把它部署在一个容器服务平台时，如果容器服务本身没有提供持久挂载的卷，那我们就只能使用PostgreSQL或者MySQL外部数据来存储数据。</p>
-
-<p>但是我们并不想额外再买资源来运行一个数据库，那我们就可以使用SQLite来存储数据，并且使用Litestream来实现容灾备份。这样虽然容器服务没有持久存储，但是数据还是安全的。下面以Vaultwarden为例，使用SQLite和Litestream来实现无数据库服务。其它可以使用SQLite的程序也可以使用这种方式来实现无数据库服务。</p>
 
 <p></p>
     </div>
