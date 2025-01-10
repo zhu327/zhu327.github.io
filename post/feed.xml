@@ -6,10 +6,34 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 08 Jan 2025 10:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 10 Jan 2025 10:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>从《软件设计的哲学》谈代码的复杂性与应对</title>
+      <link>https://zhu327.github.io/2025/01/10/%E4%BB%8E%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%93%B2%E5%AD%A6%E8%B0%88%E4%BB%A3%E7%A0%81%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E4%B8%8E%E5%BA%94%E5%AF%B9/</link>
+      <pubDate>Fri, 10 Jan 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/01/10/%E4%BB%8E%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%93%B2%E5%AD%A6%E8%B0%88%E4%BB%A3%E7%A0%81%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E4%B8%8E%E5%BA%94%E5%AF%B9/</guid>
+      <description>&lt;p&gt;几个月前读完了《软件设计的哲学》这本书，在结合自己多年的工作体会，对于代码的可读性，可维护性有了系统性的体会，然后基于我记录的读书笔记然后经过AI的润色，形成了这篇笔记。希望对你也有所帮助。&lt;/p&gt;
+
+&lt;p&gt;读完《软件设计的哲学》，感觉像经历了一次代码的“深度体检”。这本书没有讲解具体的编码技巧，而是从更高的维度帮助我们重新审视代码复杂性的问题，并提出了许多实用的建议。今天，我想结合自己的理解，分享这本书带来的启发。&lt;/p&gt;
+
+&lt;h3 id=&#34;什么是代码的复杂性&#34;&gt;什么是代码的复杂性？&lt;/h3&gt;
+
+&lt;p&gt;简单来说，复杂性就是那些让系统难以理解和修改的因素。它不仅仅指代码的行数或逻辑深度，还包括：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;难以理解&lt;/strong&gt;：即便是自己写的代码，过一段时间可能也看不懂，更别提其他人。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;修改成本高&lt;/strong&gt;：一个小改动需要改动多个地方，甚至引发新的问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模糊的改动范围&lt;/strong&gt;：不知道该修改哪些模块才能实现目标，或者不确定修改后是否会引发其他问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;难以修复的错误&lt;/strong&gt;：修复一个 bug 可能需要大量时间，还可能引入新的问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>如何快速上手项目</title>

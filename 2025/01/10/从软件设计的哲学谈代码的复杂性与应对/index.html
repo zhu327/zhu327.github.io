@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      从《软件设计的哲学》谈代码的复杂性与应对 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2025. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">从《软件设计的哲学》谈代码的复杂性与应对</h1>
+  <span class="post-date">Jan 10 2025</span>
+  <p>几个月前读完了《软件设计的哲学》这本书，在结合自己多年的工作体会，对于代码的可读性，可维护性有了系统性的体会，然后基于我记录的读书笔记然后经过AI的润色，形成了这篇笔记。希望对你也有所帮助。</p>
+
+<p>读完《软件设计的哲学》，感觉像经历了一次代码的“深度体检”。这本书没有讲解具体的编码技巧，而是从更高的维度帮助我们重新审视代码复杂性的问题，并提出了许多实用的建议。今天，我想结合自己的理解，分享这本书带来的启发。</p>
+
+<h3 id="什么是代码的复杂性">什么是代码的复杂性？</h3>
+
+<p>简单来说，复杂性就是那些让系统难以理解和修改的因素。它不仅仅指代码的行数或逻辑深度，还包括：</p>
+
+<ul>
+<li><strong>难以理解</strong>：即便是自己写的代码，过一段时间可能也看不懂，更别提其他人。</li>
+<li><strong>修改成本高</strong>：一个小改动需要改动多个地方，甚至引发新的问题。</li>
+<li><strong>模糊的改动范围</strong>：不知道该修改哪些模块才能实现目标，或者不确定修改后是否会引发其他问题。</li>
+<li><strong>难以修复的错误</strong>：修复一个 bug 可能需要大量时间，还可能引入新的问题。</li>
+</ul>
+
+<p></p>
+
+<h3 id="复杂性的表现形式">复杂性的表现形式</h3>
+
+<p>复杂性并非抽象概念，它常以以下形式体现：</p>
+
+<ul>
+<li><strong>变更放大</strong>：一个简单需求改动需要修改多个模块甚至代码库。</li>
+<li><strong>认知负荷</strong>：完成一个任务需要了解大量背景知识或复杂细节。</li>
+<li><strong>未知的未知</strong>：修改代码时，不确定是否会引入新的问题。</li>
+</ul>
+
+<h3 id="复杂性的来源">复杂性的来源</h3>
+
+<p>复杂性通常来源于以下几点：</p>
+
+<ul>
+<li><strong>模块之间的依赖</strong>：一个模块的改动可能需要同步修改依赖它的其他模块。</li>
+<li><strong>晦涩难懂的代码</strong>：不清晰的变量名、函数名以及缺乏注释的逻辑。</li>
+<li><strong>文档不足</strong>：缺乏解释代码意图和约束的文档。</li>
+</ul>
+
+<h3 id="面对复杂性的两大策略">面对复杂性的两大策略</h3>
+
+<p>书中提到了解决代码复杂性的两种核心策略：</p>
+
+<ol>
+<li><strong>让代码更简单、更直观</strong>
+
+<ul>
+<li>通过清晰的命名、简洁的逻辑、规范的实现，让代码易于理解。</li>
+</ul></li>
+<li><strong>封装复杂性</strong>
+
+<ul>
+<li>将复杂逻辑封装起来，通过简洁的接口暴露给外部，用户无需关心内部细节。</li>
+</ul></li>
+</ol>
+
+<h3 id="如何应对复杂性">如何应对复杂性？</h3>
+
+<p>以下是书中提到的一些有效方法：</p>
+
+<ol>
+<li><p><strong>模块化设计</strong></p>
+
+<ul>
+<li>将系统分解为独立模块，减少模块间的依赖。每个模块应只负责一个明确任务，提供清晰接口。</li>
+</ul></li>
+
+<li><p><strong>抽象</strong></p>
+
+<ul>
+<li>忽略不重要的细节，只暴露必要的信息。好的抽象能降低认知负荷并提高代码复用性。</li>
+</ul></li>
+
+<li><p><strong>信息隐藏</strong></p>
+
+<ul>
+<li>隐藏模块的内部实现细节，只暴露接口。这样能减少模块之间的耦合，降低修改风险。</li>
+</ul></li>
+
+<li><p><strong>设计通用接口</strong></p>
+
+<ul>
+<li>通用接口能隐藏细节并提高代码复用性。</li>
+</ul></li>
+
+<li><p><strong>专注于任务的知识</strong></p>
+
+<ul>
+<li>设计模块时，应关注任务所需的知识，而非任务发生的顺序。</li>
+</ul></li>
+
+<li><p><strong>注释代码</strong></p>
+
+<ul>
+<li>注释应解释代码的“为什么”，而非“是什么”。例如，描述变量单位、边界条件等。</li>
+</ul></li>
+
+<li><p><strong>清晰命名</strong></p>
+
+<ul>
+<li>使用准确且一致的命名，避免歧义。</li>
+</ul></li>
+
+<li><p><strong>先写注释，再写代码</strong></p>
+
+<ul>
+<li>先用注释明确表达代码意图，然后再实现。</li>
+</ul></li>
+
+<li><p><strong>设计两次</strong></p>
+
+<ul>
+<li>初步完成代码后，重新审视设计，思考是否有更好的接口和实现方式。</li>
+</ul></li>
+
+<li><p><strong>统一规范</strong></p>
+
+<ul>
+<li>制定团队代码规范，保持一致性，提高可读性。</li>
+</ul></li>
+
+<li><p><strong>显式代码优于隐式代码</strong></p>
+
+<ul>
+<li>代码应尽可能清晰易懂，避免晦涩技巧。</li>
+</ul></li>
+</ol>
+
+<h3 id="危险信号-什么时候该警惕复杂性">危险信号：什么时候该警惕复杂性？</h3>
+
+<p>以下是书中提到的一些“危险信号”，遇到这些情况时，需要考虑重构：</p>
+
+<ul>
+<li><strong>浅模块</strong>：接口与实现的复杂性相差无几。</li>
+<li><strong>信息泄漏</strong>：设计决策导致多个模块之间耦合。</li>
+<li><strong>时间分解</strong>：代码结构依赖操作执行顺序，而非基于信息隐藏。</li>
+<li><strong>过度暴露</strong>：API 暴露了不常用的功能。</li>
+<li><strong>重复代码</strong>：相同代码反复出现。</li>
+<li><strong>联合方法</strong>：两个方法间依赖性强，难以单独理解。</li>
+<li><strong>注释重复代码</strong>：注释仅重复代码内容。</li>
+<li><strong>含糊不清的名称</strong>：变量或方法名称传递不了有用信息。</li>
+<li><strong>难以描述</strong>：需要冗长文档解释变量或方法意图。</li>
+<li><strong>非显而易见的代码</strong>：代码行为或意图不直观。</li>
+</ul>
+
+<h3 id="软件设计的核心原则">软件设计的核心原则</h3>
+
+<p>书中总结了以下关键原则：</p>
+
+<ol>
+<li><strong>复杂性是逐步增加的</strong>：从小事做起，持续改进。</li>
+<li><strong>代码跑起来并不够</strong>：还需关注可读性和可维护性。</li>
+<li><strong>持续投入改善系统设计</strong>：不要忽视代码的长期维护成本。</li>
+<li><strong>模块应该足够深</strong>：接口要比实现简单得多。</li>
+<li><strong>简化接口</strong>：接口设计应尽可能简化最常见用法。</li>
+<li><strong>通用与专用分离</strong>：通用代码与专用代码应明确区分。</li>
+<li><strong>层次分明</strong>：不同层次应有不同抽象。</li>
+<li><strong>降低复杂性</strong>：始终关注减少认知负荷和模块耦合。</li>
+<li><strong>先设计，再实现</strong>：避免仓促决策，多次设计迭代。</li>
+<li><strong>注释不明显内容</strong>：好的注释可显著降低认知负荷。</li>
+<li><strong>代码是写给人看的</strong>：清晰性优先于实现技巧。</li>
+</ol>
+
+<h3 id="结语">结语</h3>
+
+<p>《软件设计的哲学》让我意识到，软件开发不仅是实现功能，更是一门需要深思熟虑的艺术。它提醒我们，代码的核心目标是<strong>易于理解和维护</strong>。毕竟，<strong>代码是写给人看的，其次才是给机器看的</strong>。希望这些心得对你有所启发，让我们一起写出更清晰、更优雅的代码！</p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

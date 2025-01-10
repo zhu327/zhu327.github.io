@@ -7,7 +7,7 @@
     <language>zh-cn</language>
     
     
-    <updated>Wed, 08 Jan 2025 10:55:52 &#43;0800</updated>
+    <updated>Fri, 10 Jan 2025 10:55:52 &#43;0800</updated>
     
     <item>
       <title>About</title>
@@ -28,6 +28,178 @@
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>从《软件设计的哲学》谈代码的复杂性与应对</title>
+      <link>https://zhu327.github.io/2025/01/10/%E4%BB%8E%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%93%B2%E5%AD%A6%E8%B0%88%E4%BB%A3%E7%A0%81%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E4%B8%8E%E5%BA%94%E5%AF%B9/</link>
+      <pubDate>Fri, 10 Jan 2025 10:55:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/01/10/%E4%BB%8E%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%93%B2%E5%AD%A6%E8%B0%88%E4%BB%A3%E7%A0%81%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E4%B8%8E%E5%BA%94%E5%AF%B9/</guid>
+      <description>&lt;p&gt;几个月前读完了《软件设计的哲学》这本书，在结合自己多年的工作体会，对于代码的可读性，可维护性有了系统性的体会，然后基于我记录的读书笔记然后经过AI的润色，形成了这篇笔记。希望对你也有所帮助。&lt;/p&gt;
+
+&lt;p&gt;读完《软件设计的哲学》，感觉像经历了一次代码的“深度体检”。这本书没有讲解具体的编码技巧，而是从更高的维度帮助我们重新审视代码复杂性的问题，并提出了许多实用的建议。今天，我想结合自己的理解，分享这本书带来的启发。&lt;/p&gt;
+
+&lt;h3 id=&#34;什么是代码的复杂性&#34;&gt;什么是代码的复杂性？&lt;/h3&gt;
+
+&lt;p&gt;简单来说，复杂性就是那些让系统难以理解和修改的因素。它不仅仅指代码的行数或逻辑深度，还包括：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;难以理解&lt;/strong&gt;：即便是自己写的代码，过一段时间可能也看不懂，更别提其他人。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;修改成本高&lt;/strong&gt;：一个小改动需要改动多个地方，甚至引发新的问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模糊的改动范围&lt;/strong&gt;：不知道该修改哪些模块才能实现目标，或者不确定修改后是否会引发其他问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;难以修复的错误&lt;/strong&gt;：修复一个 bug 可能需要大量时间，还可能引入新的问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;复杂性的表现形式&#34;&gt;复杂性的表现形式&lt;/h3&gt;
+
+&lt;p&gt;复杂性并非抽象概念，它常以以下形式体现：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;变更放大&lt;/strong&gt;：一个简单需求改动需要修改多个模块甚至代码库。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;认知负荷&lt;/strong&gt;：完成一个任务需要了解大量背景知识或复杂细节。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;未知的未知&lt;/strong&gt;：修改代码时，不确定是否会引入新的问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;复杂性的来源&#34;&gt;复杂性的来源&lt;/h3&gt;
+
+&lt;p&gt;复杂性通常来源于以下几点：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;模块之间的依赖&lt;/strong&gt;：一个模块的改动可能需要同步修改依赖它的其他模块。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;晦涩难懂的代码&lt;/strong&gt;：不清晰的变量名、函数名以及缺乏注释的逻辑。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;文档不足&lt;/strong&gt;：缺乏解释代码意图和约束的文档。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;面对复杂性的两大策略&#34;&gt;面对复杂性的两大策略&lt;/h3&gt;
+
+&lt;p&gt;书中提到了解决代码复杂性的两种核心策略：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;让代码更简单、更直观&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;通过清晰的命名、简洁的逻辑、规范的实现，让代码易于理解。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;封装复杂性&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;将复杂逻辑封装起来，通过简洁的接口暴露给外部，用户无需关心内部细节。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;如何应对复杂性&#34;&gt;如何应对复杂性？&lt;/h3&gt;
+
+&lt;p&gt;以下是书中提到的一些有效方法：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;模块化设计&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;将系统分解为独立模块，减少模块间的依赖。每个模块应只负责一个明确任务，提供清晰接口。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;抽象&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;忽略不重要的细节，只暴露必要的信息。好的抽象能降低认知负荷并提高代码复用性。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;信息隐藏&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;隐藏模块的内部实现细节，只暴露接口。这样能减少模块之间的耦合，降低修改风险。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;设计通用接口&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;通用接口能隐藏细节并提高代码复用性。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;专注于任务的知识&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;设计模块时，应关注任务所需的知识，而非任务发生的顺序。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;注释代码&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;注释应解释代码的“为什么”，而非“是什么”。例如，描述变量单位、边界条件等。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;清晰命名&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;使用准确且一致的命名，避免歧义。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;先写注释，再写代码&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;先用注释明确表达代码意图，然后再实现。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;设计两次&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;初步完成代码后，重新审视设计，思考是否有更好的接口和实现方式。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;统一规范&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;制定团队代码规范，保持一致性，提高可读性。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;显式代码优于隐式代码&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;代码应尽可能清晰易懂，避免晦涩技巧。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;危险信号-什么时候该警惕复杂性&#34;&gt;危险信号：什么时候该警惕复杂性？&lt;/h3&gt;
+
+&lt;p&gt;以下是书中提到的一些“危险信号”，遇到这些情况时，需要考虑重构：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;浅模块&lt;/strong&gt;：接口与实现的复杂性相差无几。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;信息泄漏&lt;/strong&gt;：设计决策导致多个模块之间耦合。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;时间分解&lt;/strong&gt;：代码结构依赖操作执行顺序，而非基于信息隐藏。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;过度暴露&lt;/strong&gt;：API 暴露了不常用的功能。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重复代码&lt;/strong&gt;：相同代码反复出现。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;联合方法&lt;/strong&gt;：两个方法间依赖性强，难以单独理解。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;注释重复代码&lt;/strong&gt;：注释仅重复代码内容。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;含糊不清的名称&lt;/strong&gt;：变量或方法名称传递不了有用信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;难以描述&lt;/strong&gt;：需要冗长文档解释变量或方法意图。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;非显而易见的代码&lt;/strong&gt;：代码行为或意图不直观。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;软件设计的核心原则&#34;&gt;软件设计的核心原则&lt;/h3&gt;
+
+&lt;p&gt;书中总结了以下关键原则：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;复杂性是逐步增加的&lt;/strong&gt;：从小事做起，持续改进。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;代码跑起来并不够&lt;/strong&gt;：还需关注可读性和可维护性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;持续投入改善系统设计&lt;/strong&gt;：不要忽视代码的长期维护成本。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模块应该足够深&lt;/strong&gt;：接口要比实现简单得多。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;简化接口&lt;/strong&gt;：接口设计应尽可能简化最常见用法。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;通用与专用分离&lt;/strong&gt;：通用代码与专用代码应明确区分。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;层次分明&lt;/strong&gt;：不同层次应有不同抽象。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;降低复杂性&lt;/strong&gt;：始终关注减少认知负荷和模块耦合。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;先设计，再实现&lt;/strong&gt;：避免仓促决策，多次设计迭代。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;注释不明显内容&lt;/strong&gt;：好的注释可显著降低认知负荷。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;代码是写给人看的&lt;/strong&gt;：清晰性优先于实现技巧。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;结语&#34;&gt;结语&lt;/h3&gt;
+
+&lt;p&gt;《软件设计的哲学》让我意识到，软件开发不仅是实现功能，更是一门需要深思熟虑的艺术。它提醒我们，代码的核心目标是&lt;strong&gt;易于理解和维护&lt;/strong&gt;。毕竟，&lt;strong&gt;代码是写给人看的，其次才是给机器看的&lt;/strong&gt;。希望这些心得对你有所启发，让我们一起写出更清晰、更优雅的代码！&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1808,247 +1980,6 @@ iptables -t nat -A OUTPUT -p tcp -j V2RAY&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;总的来说，以ChatGPT为代表的大型语言模型已经深刻地改变了我们的工作和生活方式，同时也对整个世界产生了深远的影响。这些先进的AI工具不仅提高了工作效率，还为创造性和创新性的任务提供了新的可能性。随着技术的不断进步，我们可以期待这些语言模型继续发挥更大的作用，推动着人工智能在各个领域的进一步发展。在这个语言驱动的时代，ChatGPT等大型语言模型正在引领着我们走向更加智能化、创新化的未来。&lt;/p&gt;
 
 &lt;p&gt;注: 这篇文章使用&lt;code&gt;gpt-3.5-turbo&lt;/code&gt;模型进行润色!&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>RSS文艺复兴</title>
-      <link>https://zhu327.github.io/2023/12/15/rss%E6%96%87%E8%89%BA%E5%A4%8D%E5%85%B4/</link>
-      <pubDate>Fri, 15 Dec 2023 14:32:52 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2023/12/15/rss%E6%96%87%E8%89%BA%E5%A4%8D%E5%85%B4/</guid>
-      <description>&lt;h3 id=&#34;1-rss是什么&#34;&gt;1. RSS是什么&lt;/h3&gt;
-
-&lt;p&gt;RSS（Really Simple Syndication）是一种用于发布经常更新的工作的XML格式的文件的标准。这些文件通常包含新闻摘要、文章标题、链接和发布日期等信息。RSS提供了一种订阅机制，使用户能够轻松地跟踪他们关注的多个网站的最新更新，而无需定期访问这些网站。&lt;/p&gt;
-
-&lt;p&gt;尽管RSS在其创立初期非常受欢迎，但它逐渐失去了流行度。一些原因包括：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;社交媒体的兴起：&lt;/strong&gt; 随着社交媒体平台的发展，用户开始转向使用平台内的订阅和分享功能来获取和分享信息。社交媒体提供了更直观和交互性的方式来发现和分享内容。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;个性化推荐算法：&lt;/strong&gt; 许多网站和应用采用了个性化推荐算法，通过分析用户的行为和兴趣，推荐相关内容。这减少了用户需要手动订阅和管理的需求。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;信息过载：&lt;/strong&gt; 随着互联网上可用信息的不断增长，用户面临信息过载的问题。RSS的线性列表形式可能无法有效地处理大量信息，而个性化推荐算法能够更好地适应用户需求。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;移动应用的普及：&lt;/strong&gt; 移动应用的兴起使用户更倾向于使用专门的应用程序，而不是传统的RSS阅读器。这些应用通常提供更好的用户体验和功能。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;网站设计的变化：&lt;/strong&gt; 许多现代网站设计更加动态和交互式，而不仅仅是提供简单的文章列表。这样的设计可能使得传统的RSS阅读方式显得过时。&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;需要注意的是，虽然RSS在一些领域可能不再是主流，但它仍然是一种强大的工具，特别是对于那些喜欢通过订阅方式跟踪特定网站更新的用户。一些应用和服务仍然提供对RSS的支持。流行度的变化可能因用户群体和使用场景而异。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;2-为什么我会重启rss&#34;&gt;2. 为什么我会重启RSS&lt;/h3&gt;
-
-&lt;p&gt;自从Google Reader关闭以来，我就放弃了使用RSS相关的应用。那时我开始关注知乎，早期的知乎回答质量还相当不错，而且没有推荐系统的干扰。过了一段时间，我接触到了即刻，这是一个非常出色的信息订阅工具，尤其是其机器人订阅功能，我甚至在即刻上创建了一些自定义机器人。然而，随着即刻的封禁，我一直未能找到类似的替代平台。&lt;/p&gt;
-
-&lt;p&gt;随着时间推移，我对知乎的推荐系统感到不满，它似乎越来越无法满足我的兴趣点。同时，我对机器推荐可能导致信息茧房效应的抵触也逐渐增强。因此，我开始考虑重新拾起RSS，重新探索这种传统的信息获取方式。重新回归RSS，我期望能够更自主地管理我所关注的内容，摆脱推荐算法的限制，以更自由和个性化的方式获取信息。&lt;/p&gt;
-
-&lt;p&gt;尽管RSS在一段时间内逐渐式微，但一些新的开源项目让我重新关注了这一技术。首先是 &lt;a href=&#34;https://github.com/DIYgod/RSSHub&#34;&gt;RSSHub&lt;/a&gt;，这是一个强大的RSS转换代理工具，可以将各种网站的信息转换成RSS格式，便于订阅。更令人兴奋的是，它提供了一个强大而易用的RSS开发框架，使懂编程的用户甚至可以轻松地创建自己的RSS订阅源。&lt;/p&gt;
-
-&lt;p&gt;其次是 &lt;a href=&#34;https://github.com/miniflux/v2&#34;&gt;Miniflux&lt;/a&gt;，这是一个专注于RSS源订阅的工具。它定时从订阅源获取数据，并通过Google Reader API将数据提供给RSS阅读器。除了基本的订阅功能外，Miniflux还支持自定义文章全文爬取，解决了一些RSS源无法提供全文阅读的问题。&lt;/p&gt;
-
-&lt;p&gt;这些开源项目为重新探索RSS提供了新的可能性，使得我们可以更加灵活和个性化地管理和获取我们关注的信息。虽然RSS在一度被边缘化，但这些项目的出现为其注入了新的活力。&lt;/p&gt;
-
-&lt;h3 id=&#34;3-部署rsshub与miniflux&#34;&gt;3. 部署RSSHub与Miniflux&lt;/h3&gt;
-
-&lt;h4 id=&#34;rsshub&#34;&gt;RSSHub&lt;/h4&gt;
-
-&lt;p&gt;在&lt;a href=&#34;https://vercel.com&#34;&gt;Vercel&lt;/a&gt;上部署RSSHub是相对简单的任务，有许多相关的教程可供参考，这里不再详细赘述。你可以查阅这篇博客文章作为参考: &lt;a href=&#34;https://www.cnblogs.com/QiuSYan/p/RssHub.html&#34;&gt;《在Vercel上部署RSSHub》&lt;/a&gt;。&lt;/p&gt;
-
-&lt;h4 id=&#34;miniflux&#34;&gt;Miniflux&lt;/h4&gt;
-
-&lt;p&gt;相比之下，部署Miniflux稍微复杂一些，因为它依赖于Postgres数据库。推荐使用&lt;a href=&#34;https://supabase.com&#34;&gt;Supabase&lt;/a&gt;提供的Postgres数据库，它提供了最大500MB的免费数据库，足够我们正常使用。你可以参考这篇文章来创建Supabase数据库: &lt;a href=&#34;https://blog.cysi.me/2022/05/build-miniflux-rss-on-railway.html&#34;&gt;《在Railway上搭建Miniflux RSS阅读器》&lt;/a&gt;。&lt;/p&gt;
-
-&lt;p&gt;Miniflux推荐部署在&lt;a href=&#34;https://fly.io&#34;&gt;fly.io&lt;/a&gt;，这是一个提供免费额度的应用部署平台。具体部署步骤可以参考官方文档。以下是一个示例的&lt;code&gt;fly.toml&lt;/code&gt;文件供参考：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span class=&#34;nx&#34;&gt;app&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;your_app_name&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nx&#34;&gt;primary_region&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;sea&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nx&#34;&gt;kill_signal&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;SIGINT&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nx&#34;&gt;kill_timeout&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;5s&amp;#34;&lt;/span&gt;
-
-&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;experimental&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;auto_rollback&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;
-
-&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;build&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;image&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;miniflux/miniflux:latest&amp;#34;&lt;/span&gt;
-
-&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;BASE_URL&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://your_app_name.fly.dev&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;CLEANUP_ARCHIVE_READ_DAYS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;15&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;CLEANUP_ARCHIVE_UNREAD_DAYS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;30&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;DATABASE_URL&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;your_supabase_postgres_url&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;HTTPS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;true&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;POLLING_FREQUENCY&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;30&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;POLLING_PARSING_ERROR_LIMIT&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;POLLING_SCHEDULER&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;entry_frequency&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;PORT&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;8080&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;RUN_MIGRATIONS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;true&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;SCHEDULER_ENTRY_FREQUENCY_MAX_INTERVAL&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;60&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;c&#34;&gt;# 以下配置在初次部署时填写, 第二次部署时需要删除&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;CREATE_ADMIN&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;ADMIN_PASSWORD&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;your_admin_password&amp;#34;&lt;/span&gt;
-
-&lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;protocol&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;tcp&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;internal_port&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8080&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;processes&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;app&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-
-  &lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ports&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;80&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;handlers&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;http&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-
-  &lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ports&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;443&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;handlers&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;tls&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;http&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-  &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;concurrency&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;connections&amp;#34;&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;hard_limit&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;25&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;soft_limit&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;20&lt;/span&gt;
-
-  &lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;tcp_checks&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;interval&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;15s&amp;#34;&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;timeout&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;2s&amp;#34;&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;grace_period&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;1s&amp;#34;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;至此，我们零成本拥有了自己的RSS订阅平台。Miniflux本身非常适合在浏览器上访问，在手机端推荐使用&lt;a href=&#34;https://apps.apple.com/us/app/reeder-5/id1529445840&#34;&gt;Reedr&lt;/a&gt;，提供了完美的阅读体验。&lt;/p&gt;
-
-&lt;h3 id=&#34;4-我的订阅源分享&#34;&gt;4. 我的订阅源分享&lt;/h3&gt;
-
-&lt;p&gt;我的订阅源大致可分为几个主要类别：新闻、日报、深度阅读、科技和娱乐。这些分类涵盖了中外各种媒体的新闻报道、每日热点事件、高质量文章、科技趋势和娱乐评论。&lt;/p&gt;
-
-&lt;h4 id=&#34;新闻&#34;&gt;新闻&lt;/h4&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;华尔街日报&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;美国主流叙事媒体&lt;/li&gt;
-&lt;li&gt;数据来源: &lt;a href=&#34;https://agora0.gitlab.io/news/wsj/&#34;&gt;零新闻&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/agora0/wsj&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;在Miniflux设置抓取全文，抓取规则 &lt;code&gt;div.post-content&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以支持该路由&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;联合早报&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;新加坡相对中立媒体&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/zaobao/znews/china&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;竹新社&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;24小时提供中外媒体中国新闻，相对中立&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/telegram/channel/tnews365&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;抽屉新热榜&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;国内热点事件，相对符合我的兴趣点&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/chouti/hot&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;日报&#34;&gt;日报&lt;/h4&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;即刻资讯台&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;每天早上发布前一点的热点新闻和即刻热文&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/jike/user/wenhao1996&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以获取更完整的数据&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;喷嚏图卦&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;每天下午发布当天的国内热点事件&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/dapenti/tugua&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以获取更及时的数据&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;iDaily 每日环球视野&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;每天傍晚发布当天环球热点新闻图&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/jike/user/wenhao1996&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以获取更美观的排版&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;深度阅读&#34;&gt;深度阅读&lt;/h4&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;虎嗅网热榜&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;虎扑每日热门文章&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/huxiu/tophub?limit=10&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以支持该路由&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;晚点LatePost&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;深度科技报道&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/latepost&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;腾讯新闻深网&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;深度科技报道&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/tencent/news/author/5157372&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;互联网怪盗团&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;深度科技报道&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/tencent/news/author/16802833&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;科技&#34;&gt;科技&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Hack News&lt;/strong&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://hnrss.github.io&#34;&gt;Hack News RSS&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;使用 &lt;a href=&#34;https://www.rsstranslator.com&#34;&gt;RSSTranslator&lt;/a&gt; 工具将标题翻译为中文，最终订阅地址: &lt;a href=&#34;https://rsstranslator.com/rss/6531a79e107aa592d8fa&#34;&gt;Hack News 中文翻译&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&#34;娱乐&#34;&gt;娱乐&lt;/h4&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;豆瓣最受欢迎的书评&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.douban.com/feed/review/book&#34;&gt;豆瓣最受欢迎的书评&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;在Miniflux设置中覆盖默认的用户代理，并抓取全文，抓取规则 &lt;code&gt;div.main-bd&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;豆瓣最受欢迎的影评&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.douban.com/feed/review/movie&#34;&gt;豆瓣最受欢迎的影评&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;在Miniflux设置中覆盖默认的用户代理，并抓取全文，抓取规则 &lt;code&gt;div.main-bd&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;通过这些订阅源，我能够获得来自各个领域的精选内容，确保我的信息获取更加多元化和个性化。如果你对其中任何一个订阅感兴趣，可以根据提供的路由或链接添加到你的RSS阅读器中。&lt;/p&gt;
-
-&lt;h3 id=&#34;5-总结&#34;&gt;5. 总结&lt;/h3&gt;
-
-&lt;p&gt;RSS是一种用于发布经常更新的工作的XML格式的文件的标准，它提供了一种订阅机制，使用户能够轻松地跟踪他们关注的多个网站的最新更新。近年来，随着社交媒体的兴起和个性化推荐算法的发展，RSS逐渐失去了流行度。然而，一些新的开源项目为RSS注入了新的活力，使其又重新受到关注。&lt;/p&gt;
-
-&lt;p&gt;本文介绍了RSSHub和Miniflux这两个开源项目，并提供了它们的部署步骤和我的订阅源分享。希望这篇文章能够帮助读者重新了解RSS，并找到适合自己的RSS阅读方式。&lt;/p&gt;
-
-&lt;p&gt;注: 这基本上就是一篇由ChatGPT帮忙写的文章!&lt;/p&gt;</description>
     </item>
     
   </channel>
