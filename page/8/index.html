@@ -78,6 +78,20 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/09/25/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0/">greentor MySQL连接池实现</a></h1>
+        <span class="post-date">Sep 25 2016</span>
+        <blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Connection_pool">https://en.wikipedia.org/wiki/Connection_pool</a></p>
+</blockquote>
+
+<p>通过<a href="https://github.com/zhu327/greentor">greentor</a>实现了pymysql在Tornado上异步调用的过程后发现，每次建立数据库连接都会经过socket 3次握手，而每一次socket读写都会伴随着greenlet的切换，以及ioloop的callback过程，虽然是异步了，但是IO性能并没有提升，所以在研究了<a href="https://github.com/snower/TorMySQL">TorMySQL</a>连接池的实现后，实现了greentor自己的连接池。</p>
+
+<p><a href="https://github.com/zhu327/greentor/blob/master/greentor/green.py">https://github.com/zhu327/greentor/blob/master/greentor/green.py</a></p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/24/greentor%E5%A1%AB%E5%9D%91%E8%AE%B0/">greentor填坑记</a></h1>
         <span class="post-date">Jun 24 2016</span>
         <p>经过2周的学习开发，Tornado + Django ORM的环境搭好了，这阶段的学习告一段落，虽然这个环境是一个玩具环境，没有经过生产的检验，但是在搭环境的过程中学习了Tornado，greenlet，Django数据库相关的姿势，感觉还是有不少提升。</p>
@@ -188,36 +202,6 @@
 <p>去年大概这个时候也硬着头皮读过Tornado的代码，当时没有经验，还不知道编程模型，在程序的理解上都是顺序执行的思路，所以看到Tornado的代码只会觉得特么的牛B，各种类，各种方法的调来调去。现在理解了Reactor模型以后，再回过头看Tornado，就比较容易理解了，所以在阅读代码前如果能在构架上先理解，读起来会快很多。</p>
 
 <p>Tornado的代码基于2.0版本，最新的4.3版本读起来比较绕，抽象的更加细化，阅读代码的目的在于学习编程思路，不求新。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/02/haystack-elasticsearch%E5%AE%9E%E7%8E%B0%E6%8B%BC%E9%9F%B3%E6%90%9C%E7%B4%A2/">haystack-Elasticsearch实现拼音搜索</a></h1>
-        <span class="post-date">Jun 2 2016</span>
-        <p>前一篇<a href="https://zhu327.github.io/2016/05/30/djangoelasticsearch%E5%AE%9E%E7%8E%B0%E6%90%9C%E7%B4%A2%E5%8A%9F%E8%83%BD/">Django+Elasticsearch实现搜索功能</a>已经实现了搜索的基本功能，但是其实还是有一些错误，这里先纠正一下。</p>
-
-<ol>
-<li>以为通过elsticstack实现了默认的分词器
-通过查看elasticsearch types的mapping发现string类型的根本就没有加载ik analyzer</li>
-<li>拼音分词方式设置错误
-拼音分词的尝试过程中，终于实现了全拼分词</li>
-</ol>
-
-<h3 id="环境搭建">环境搭建</h3>
-
-<p>Elasticsearch安装拼音分词:</p>
-
-<blockquote>
-<p><a href="http://my.oschina.net/UpBoy/blog/625014?fromerr=mRvT8rzk">http://my.oschina.net/UpBoy/blog/625014?fromerr=mRvT8rzk</a></p>
-</blockquote>
-
-<p>Django依赖安装:</p>
-
-<pre><code>django-haystack==2.5.dev1
-</code></pre>
-
-<p>之前会使用elasticstack与haystack2.4配合，发现问题比较多，所以删掉elasticstack，升级haystack为github上的最新版本</p>
 
 <p></p>
     </div>

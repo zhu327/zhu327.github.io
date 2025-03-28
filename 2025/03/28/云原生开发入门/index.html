@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      云原生开发入门 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2025. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">云原生开发入门</h1>
+  <span class="post-date">Mar 28 2025</span>
+  
+
+<p>欢迎进入云原生开发的精彩世界！作为一名云原生开发者，我深知初学者在面对 Kubernetes（简称 K8s）、容器技术以及云原生生态时可能会感到迷茫。这篇文章旨在为想要入门云原生开发的开发者提供一个清晰的指引，帮助你从零开始建立对云原生开发的认知，并推荐一些优质的学习资源，包括书籍、社区文章、代码示例以及运维实践指南，让你在学习和实践的道路上少走弯路。</p>
+
+<p>云原生开发的核心在于利用容器、微服务和声明式 API 等技术构建高可用、可扩展的分布式系统，而 Kubernetes 作为云原生生态的基石，是我们必须掌握的工具。本文将从基础概念入手，推荐两本经典书籍，分享一个社区文章合集、两个实用的代码示例项目，并新增 Kubernetes 运维实践的内容，帮助你全面掌握云原生开发的技能。</p>
+
+<hr />
+
+<h2 id="一-云原生开发基础-从容器到-kubernetes">一、云原生开发基础：从容器到 Kubernetes</h2>
+
+<h3 id="什么是云原生">什么是云原生？</h3>
+
+<p>云原生（Cloud Native）是一种现代应用程序开发和部署的方法论，旨在充分利用云计算的优势。根据 CNCF（云原生计算基金会）的定义，云原生技术包括容器、微服务、声明式 API 和 DevOps 等关键元素。它强调应用的弹性、可观测性和自动化管理。</p>
+
+<h3 id="为什么选择-kubernetes">为什么选择 Kubernetes？</h3>
+
+<p>Kubernetes 是一个开源的容器编排平台，最初由 Google 开发并捐赠给 CNCF。它解决了容器化应用在大规模部署中的诸多难题，例如自动扩展、服务发现、负载均衡和故障恢复。学习 Kubernetes 是进入云原生开发的第一步。</p>
+
+<h3 id="学习路径建议">学习路径建议</h3>
+
+<ol>
+<li><strong>掌握容器基础</strong>：了解 Docker 的基本概念，如镜像、容器和 Dockerfile。</li>
+<li><strong>深入 Kubernetes</strong>：学习 K8s 的核心组件（如 Pod、Service、Deployment）和工作原理。</li>
+<li><strong>实践与扩展</strong>：通过编写代码和部署应用，探索 K8s 的高级功能，如存储、网络和自定义控制器。</li>
+<li><strong>运维实践</strong>：掌握 K8s 集群的运维技巧，确保生产环境的稳定性和高可用性。</li>
+</ol>
+
+<p>接下来，我将推荐一些优质资源，帮助你循序渐进地学习。</p>
+
+<hr />
+
+<h2 id="二-推荐书籍">二、推荐书籍</h2>
+
+<p>以下两本书是我强烈推荐的云原生开发入门读物，它们从不同角度深入剖析了 Kubernetes，适合初学者和进阶开发者。</p>
+
+<h3 id="1-kubernetes-in-action-中文版">1. 《Kubernetes in Action》（中文版）</h3>
+
+<ul>
+<li><strong>评分</strong>：豆瓣 8.8 分<br /></li>
+<li><strong>内容概述</strong>：<br />
+这是一本专注于 Kubernetes 实践的经典书籍，作者 Marko Lukša 通过循序渐进的方式介绍了如何使用 K8s 部署和管理容器化应用。全书从基础的容器和 Pod 概念讲起，逐步深入到服务发现、存储、网络、配置管理以及高级调度等主题。<br /></li>
+<li><strong>推荐理由</strong>：<br />
+
+<ul>
+<li><strong>动手实践强</strong>：书中提供了大量示例代码和操作步骤，适合通过实践学习 K8s 的初学者。<br /></li>
+<li><strong>结构清晰</strong>：从基础到高级，逐步递进，涵盖了 K8s 的核心功能。<br /></li>
+<li><strong>适用场景</strong>：如果你想快速上手 K8s 并部署自己的应用，这本书是绝佳选择。<br /></li>
+</ul></li>
+<li><strong>核心章节</strong>：<br />
+
+<ul>
+<li><strong>第 2 章：开始使用 Kubernetes 和 Docker</strong>：通过创建并运行一个简单的 Node.js 应用，带你走进 K8s 的世界。<br /></li>
+<li><strong>第 5 章：服务</strong>：讲解如何让 Pod 之间以及外部客户端与 Pod 通信，是理解服务发现的关键。<br /></li>
+<li><strong>第 9 章：Deployment</strong>：介绍声明式升级应用的实践方法，帮助你掌握滚动更新和回滚。<br /></li>
+</ul></li>
+<li><strong>适合人群</strong>：Kubernetes 新手，尤其是希望通过实践快速上手的开发者。</li>
+</ul>
+
+<h3 id="2-深入剖析-kubernetes">2. 《深入剖析 Kubernetes》</h3>
+
+<ul>
+<li><strong>评分</strong>：豆瓣 9.3 分<br /></li>
+<li><strong>内容概述</strong>：<br />
+这本书由张磊撰写，是一本从架构和实现原理角度深入剖析 Kubernetes 的佳作。它不仅介绍了 K8s 的使用方法，还详细讲解了其背后的设计思想和技术细节，例如 Pod 的编排原理、存储实现、网络模型和调度机制。<br /></li>
+<li><strong>推荐理由</strong>：<br />
+
+<ul>
+<li><strong>深度解析</strong>：不仅告诉你“怎么做”，还解释“为什么这么做”，适合想理解 K8s 底层原理的开发者。<br /></li>
+<li><strong>贴近实战</strong>：结合大量实际案例，帮助你理解 K8s 在生产环境中的应用。<br /></li>
+<li><strong>视野开阔</strong>：从云原生历史到 K8s 开源社区，全面展示了云原生生态的演变。<br /></li>
+</ul></li>
+<li><strong>核心章节</strong>：<br />
+
+<ul>
+<li><strong>第 3 章：Kubernetes 设计与架构</strong>：剖析 K8s 的核心组件和设计理念，是理解系统全貌的入门篇。<br /></li>
+<li><strong>第 5 章：Kubernetes 编排原理</strong>：深入讲解 Pod、Controller 和 StatefulSet 的实现原理，适合进阶学习。<br /></li>
+<li><strong>第 7 章：Kubernetes 网络原理</strong>：详细介绍 CNI 插件和 Service 机制，帮助你掌握网络配置。<br /></li>
+</ul></li>
+<li><strong>适合人群</strong>：对 Kubernetes 有一定基础，想深入理解其工作原理并从事相关开发的开发者。</li>
+</ul>
+
+<h3 id="如何选择">如何选择？</h3>
+
+<ul>
+<li>如果你是<strong>初学者</strong>，建议从《Kubernetes in Action》入手，先掌握基本操作，再辅以《深入剖析 Kubernetes》加深理解。<br /></li>
+<li>如果你已经有一定容器基础，想直接深入 K8s 的核心原理，可以优先阅读《深入剖析 Kubernetes》。</li>
+</ul>
+
+<hr />
+
+<h2 id="三-社区文章合集-k8s-club">三、社区文章合集：K8s Club</h2>
+
+<p>除了书籍，社区资源也是学习云原生开发的重要途径。我推荐一个由云原生开发者维护的文章合集：<a href="https://github.com/k8s-club/k8s-club">K8s Club</a>。这个仓库包含了大量关于 Kubernetes 的技术文章，涵盖从基础知识到高级主题的内容。</p>
+
+<h3 id="推荐文章">推荐文章</h3>
+
+<ol>
+<li><strong>《QA to Understand K8s》</strong>：通过问答形式快速梳理 K8s 的核心概念，适合快速入门。<br /></li>
+<li><strong>《K8s 知识图谱》</strong>：提供了一张清晰的知识地图，帮助你规划学习路径。<br /></li>
+<li><strong>《Informer 机制 - 概述》</strong>：深入讲解 K8s 中 Informer 的工作原理，是理解客户端开发的必读内容。<br /></li>
+<li><strong>《K8s Pod 生命周期管理》</strong>：详细分析 Pod 从创建到销毁的过程，适合实践者参考。<br /></li>
+<li><strong>《从 0 到 1 手动搭建 K8s 集群》</strong>：手把手教你搭建 K8s 集群，动手能力强的开发者不容错过。</li>
+</ol>
+
+<h3 id="学习建议">学习建议</h3>
+
+<ul>
+<li><strong>按需阅读</strong>：根据你的兴趣和需求选择文章，例如想了解网络就看《K8s Service 网络机制》。<br /></li>
+<li><strong>结合实践</strong>：阅读后尝试在本地环境（如 Minikube）上验证文章中的概念。</li>
+</ul>
+
+<hr />
+
+<h2 id="四-代码示例项目">四、代码示例项目</h2>
+
+<p>理论学习固然重要，但云原生开发的精髓在于实践。以下两个 GitHub 仓库提供了丰富的代码示例，适合你在学习过程中动手操作。</p>
+
+<h3 id="1-kubernetes-learning-playground">1. Kubernetes Learning Playground</h3>
+
+<ul>
+<li><strong>地址</strong>：<a href="https://github.com/Kubernetes-Learning-Playground">https://github.com/Kubernetes-Learning-Playground</a><br /></li>
+<li><strong>项目简介</strong>：这是一个专注于 K8s 扩展学习的项目集合，包含多集群工具、自定义调度器、CRI/CNI/CSI 实践等内容。<br /></li>
+<li><strong>推荐项目</strong>：<br />
+
+<ul>
+<li><strong>multi-cluster-informer</strong>：实现对多集群的 Informer 功能，适合学习 K8s 客户端开发。<br /></li>
+<li><strong>kube-event-collector</strong>：基于事件通知的扩展实践，帮助你理解 K8s 事件机制。<br /></li>
+<li><strong>csi-interface-study</strong>：简易 CSI 插件示例，让你快速上手存储扩展开发。<br /></li>
+</ul></li>
+<li><strong>适用场景</strong>：适合对 K8s 扩展开发（如自定义控制器、插件）感兴趣的开发者。</li>
+</ul>
+
+<h3 id="2-operator-learning-playground">2. Operator Learning Playground</h3>
+
+<ul>
+<li><strong>地址</strong>：<a href="https://github.com/Operator-Learning-Playground">https://github.com/Operator-Learning-Playground</a><br /></li>
+<li><strong>项目简介</strong>：专注于 Kubernetes Operator 开发的练习项目，包含多种简易 Operator 示例。<br /></li>
+<li><strong>推荐项目</strong>：<br />
+
+<ul>
+<li><strong>proxy-operator</strong>：一个简单的网关控制器示例，适合初探 Operator 开发。<br /></li>
+<li><strong>podReStarter-operator</strong>：实现 Pod 原地重启的控制器，展示 Operator 的实际应用。<br /></li>
+</ul></li>
+<li><strong>适用场景</strong>：如果你对 Operator 模式（基于 CRD 的自定义资源管理）感兴趣，这个项目是不错的起点。</li>
+</ul>
+
+<h3 id="实践建议">实践建议</h3>
+
+<ul>
+<li><strong>环境准备</strong>：使用 Minikube 或 Kind 在本地搭建 K8s 集群，运行这些示例项目。<br /></li>
+<li><strong>逐步深入</strong>：从简单项目开始（如 kube-event-collector），逐步挑战复杂项目（如 multi-cluster-informer）。</li>
+</ul>
+
+<hr />
+
+<h2 id="五-学习建议与总结">五、学习建议与总结</h2>
+
+<h3 id="学习路线">学习路线</h3>
+
+<ol>
+<li><strong>第一阶段：基础入门</strong><br />
+
+<ul>
+<li>阅读《Kubernetes in Action》第 1-5 章，掌握容器、Pod 和 Service 的基本操作。<br /></li>
+<li>在本地部署一个简单的应用（如 Node.js），体验 K8s 的部署流程。<br /></li>
+</ul></li>
+<li><strong>第二阶段：深入理解</strong><br />
+
+<ul>
+<li>阅读《深入剖析 Kubernetes》第 3-7 章，理解 K8s 的架构、编排和网络原理。<br /></li>
+<li>参考 K8s Club 的文章，动手实现 Pod 生命周期管理和网络配置。<br /></li>
+</ul></li>
+<li><strong>第三阶段：实践与扩展</strong><br />
+
+<ul>
+<li>基于两个代码仓库，尝试运行和修改示例项目，例如实现一个简单的 CSI 插件或 Operator。<br /></li>
+<li>参与开源社区，阅读和贡献代码，提升实战能力。</li>
+</ul></li>
+</ol>
+
+<h3 id="小贴士">小贴士</h3>
+
+<ul>
+<li><strong>多动手</strong>：云原生开发重在实践，建议边学边做。<br /></li>
+<li><strong>加入社区</strong>：参与 CNCF 或 K8s Club 的讨论，与其他开发者交流经验。<br /></li>
+<li><strong>持续学习</strong>：云原生技术发展迅速，保持对新工具（如 Helm、Istio）的关注。</li>
+</ul>
+
+<hr />
+
+<h2 id="六-kubernetes-运维实践">六、Kubernetes 运维实践</h2>
+
+<p>在掌握了 Kubernetes 的开发技能后，运维能力是确保生产环境稳定运行的关键。以下内容基于腾讯云 K8s 运维开发工程师的实践指南（<a href="https://imroc.cc/kubernetes/best-practices">Kubernetes 实践指南</a>），为你提供一些运维相关的实用建议。</p>
+
+<h3 id="资源概览">资源概览</h3>
+
+<p>该实践指南由腾讯云的 K8s 运维开发工程师编写，涵盖了从集群搭建到最佳实践的多个主题，适合希望在生产环境中高效管理 K8s 集群的开发者。以下是目录的主要内容：
+- 集群搭建
+- 高效使用 kubectl
+- 镜像相关实践
+- 应用部署
+- GitOps
+- 证书发放
+- 用户与权限
+- 监控告警
+- 最佳实践
+- 开发指南
+- 实践案例
+- 附录</p>
+
+<h3 id="推荐内容">推荐内容</h3>
+
+<ol>
+<li><p><strong>高效使用 kubectl</strong></p>
+
+<ul>
+<li><strong>核心要点</strong>：kubectl 是与 K8s 集群交互的主要工具，熟练使用可以显著提升运维效率。<br /></li>
+<li><strong>建议</strong>：<br />
+
+<ul>
+<li>学会使用 <code>kubectl</code> 的快捷命令，例如 <code>kubectl get pod -A</code> 查看所有命名空间的 Pod。<br /></li>
+<li>配置命令补全和别名（如 <code>alias k=kubectl</code>），提高操作效率。<br /></li>
+<li>使用 <code>kubectl describe</code> 和 <code>kubectl logs</code> 快速排查问题。<br /></li>
+</ul></li>
+<li><strong>实践场景</strong>：通过 <code>kubectl</code> 管理 Pod 的生命周期，例如删除异常 Pod 或调整副本数量。</li>
+</ul></li>
+
+<li><p><strong>镜像相关实践</strong></p>
+
+<ul>
+<li><strong>核心要点</strong>：镜像管理直接影响应用的部署效率和安全性。<br /></li>
+<li><strong>建议</strong>：<br />
+
+<ul>
+<li>使用轻量化的基础镜像（如 <code>alpine</code>），减少镜像体积。<br /></li>
+<li>定期清理无用镜像，释放节点磁盘空间（<code>docker image prune</code>）。<br /></li>
+<li>配置私有镜像仓库（如 Harbor），确保镜像的安全性和可控性。<br /></li>
+</ul></li>
+<li><strong>实践场景</strong>：在 K8s 集群中部署一个应用时，指定私有镜像仓库地址并通过 Secret 拉取镜像。</li>
+</ul></li>
+
+<li><p><strong>监控告警</strong></p>
+
+<ul>
+<li><strong>核心要点</strong>：实时监控和告警是保障集群稳定的关键。<br /></li>
+<li><strong>建议</strong>：<br />
+
+<ul>
+<li>部署 Prometheus 和 Grafana，监控集群的 CPU、内存和网络使用情况。<br /></li>
+<li>配置告警规则，例如当 Pod 失败率超过 5% 时发送通知。<br /></li>
+<li>使用 K8s 的事件（Events）结合工具（如 kube-event-collector）进行故障排查。<br /></li>
+</ul></li>
+<li><strong>实践场景</strong>：设置一个告警，当节点的 CPU 使用率超过 80% 时通过邮件通知运维团队。</li>
+</ul></li>
+
+<li><p><strong>最佳实践</strong></p>
+
+<ul>
+<li><strong>核心要点</strong>：遵循最佳实践可以提升集群的稳定性和可维护性。<br /></li>
+<li><strong>建议</strong>：<br />
+
+<ul>
+<li>为 Pod 设置资源限制（<code>requests</code> 和 <code>limits</code>），避免资源竞争。<br /></li>
+<li>使用命名空间（Namespace）隔离不同环境（如开发、测试、生产）。<br /></li>
+<li>定期备份 etcd 数据，确保控制平面数据安全。<br /></li>
+</ul></li>
+<li><strong>实践场景</strong>：为一个生产环境的 Deployment 设置 CPU 和内存限制，并通过 <code>kubectl</code> 验证效果。</li>
+</ul></li>
+</ol>
+
+<h3 id="运维学习建议">运维学习建议</h3>
+
+<ul>
+<li><strong>从小规模开始</strong>：在本地使用 Minikube 搭建单节点集群，熟悉运维操作。<br /></li>
+<li><strong>模拟故障</strong>：故意制造 Pod 失败或节点宕机，练习排查和恢复流程。<br /></li>
+<li><strong>工具支持</strong>：学习使用 K9s 或 Lens 等可视化工具，简化集群管理。</li>
+</ul>
+
+<hr />
+
+<h2 id="七-总结与展望">七、总结与展望</h2>
+
+<p>云原生开发是一条充满挑战但回报丰厚的道路。通过《Kubernetes in Action》掌握实践技能，通过《深入剖析 Kubernetes》理解底层原理，结合 K8s Club 的文章和代码示例项目进行实践，再通过《Kubernetes 实践指南》提升运维能力，你将逐步成长为一名全面的云原生开发者。</p>
+
+<p>希望这篇文章能为你的学习之旅提供清晰的指引。无论是开发还是运维，Kubernetes 都为你打开了无限可能的大门。祝你在云原生的世界里乘风破浪！如果你有任何疑问或需要进一步帮助，欢迎随时交流。让我们一起探索云原生的未来吧！</p>
+
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

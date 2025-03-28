@@ -7,7 +7,301 @@
     <language>zh-cn</language>
     
     
-    <updated>Fri, 10 Jan 2025 10:55:52 &#43;0800</updated>
+    <updated>Fri, 28 Mar 2025 10:55:52 &#43;0800</updated>
+    
+    <item>
+      <title>云原生开发入门</title>
+      <link>https://zhu327.github.io/2025/03/28/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Fri, 28 Mar 2025 10:55:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/03/28/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8/</guid>
+      <description>
+
+&lt;p&gt;欢迎进入云原生开发的精彩世界！作为一名云原生开发者，我深知初学者在面对 Kubernetes（简称 K8s）、容器技术以及云原生生态时可能会感到迷茫。这篇文章旨在为想要入门云原生开发的开发者提供一个清晰的指引，帮助你从零开始建立对云原生开发的认知，并推荐一些优质的学习资源，包括书籍、社区文章、代码示例以及运维实践指南，让你在学习和实践的道路上少走弯路。&lt;/p&gt;
+
+&lt;p&gt;云原生开发的核心在于利用容器、微服务和声明式 API 等技术构建高可用、可扩展的分布式系统，而 Kubernetes 作为云原生生态的基石，是我们必须掌握的工具。本文将从基础概念入手，推荐两本经典书籍，分享一个社区文章合集、两个实用的代码示例项目，并新增 Kubernetes 运维实践的内容，帮助你全面掌握云原生开发的技能。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;一-云原生开发基础-从容器到-kubernetes&#34;&gt;一、云原生开发基础：从容器到 Kubernetes&lt;/h2&gt;
+
+&lt;h3 id=&#34;什么是云原生&#34;&gt;什么是云原生？&lt;/h3&gt;
+
+&lt;p&gt;云原生（Cloud Native）是一种现代应用程序开发和部署的方法论，旨在充分利用云计算的优势。根据 CNCF（云原生计算基金会）的定义，云原生技术包括容器、微服务、声明式 API 和 DevOps 等关键元素。它强调应用的弹性、可观测性和自动化管理。&lt;/p&gt;
+
+&lt;h3 id=&#34;为什么选择-kubernetes&#34;&gt;为什么选择 Kubernetes？&lt;/h3&gt;
+
+&lt;p&gt;Kubernetes 是一个开源的容器编排平台，最初由 Google 开发并捐赠给 CNCF。它解决了容器化应用在大规模部署中的诸多难题，例如自动扩展、服务发现、负载均衡和故障恢复。学习 Kubernetes 是进入云原生开发的第一步。&lt;/p&gt;
+
+&lt;h3 id=&#34;学习路径建议&#34;&gt;学习路径建议&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;掌握容器基础&lt;/strong&gt;：了解 Docker 的基本概念，如镜像、容器和 Dockerfile。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;深入 Kubernetes&lt;/strong&gt;：学习 K8s 的核心组件（如 Pod、Service、Deployment）和工作原理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实践与扩展&lt;/strong&gt;：通过编写代码和部署应用，探索 K8s 的高级功能，如存储、网络和自定义控制器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;运维实践&lt;/strong&gt;：掌握 K8s 集群的运维技巧，确保生产环境的稳定性和高可用性。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;接下来，我将推荐一些优质资源，帮助你循序渐进地学习。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;二-推荐书籍&#34;&gt;二、推荐书籍&lt;/h2&gt;
+
+&lt;p&gt;以下两本书是我强烈推荐的云原生开发入门读物，它们从不同角度深入剖析了 Kubernetes，适合初学者和进阶开发者。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-kubernetes-in-action-中文版&#34;&gt;1. 《Kubernetes in Action》（中文版）&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;评分&lt;/strong&gt;：豆瓣 8.8 分&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内容概述&lt;/strong&gt;：&lt;br /&gt;
+这是一本专注于 Kubernetes 实践的经典书籍，作者 Marko Lukša 通过循序渐进的方式介绍了如何使用 K8s 部署和管理容器化应用。全书从基础的容器和 Pod 概念讲起，逐步深入到服务发现、存储、网络、配置管理以及高级调度等主题。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;推荐理由&lt;/strong&gt;：&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;动手实践强&lt;/strong&gt;：书中提供了大量示例代码和操作步骤，适合通过实践学习 K8s 的初学者。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结构清晰&lt;/strong&gt;：从基础到高级，逐步递进，涵盖了 K8s 的核心功能。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;适用场景&lt;/strong&gt;：如果你想快速上手 K8s 并部署自己的应用，这本书是绝佳选择。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;核心章节&lt;/strong&gt;：&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;第 2 章：开始使用 Kubernetes 和 Docker&lt;/strong&gt;：通过创建并运行一个简单的 Node.js 应用，带你走进 K8s 的世界。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 5 章：服务&lt;/strong&gt;：讲解如何让 Pod 之间以及外部客户端与 Pod 通信，是理解服务发现的关键。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 9 章：Deployment&lt;/strong&gt;：介绍声明式升级应用的实践方法，帮助你掌握滚动更新和回滚。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;适合人群&lt;/strong&gt;：Kubernetes 新手，尤其是希望通过实践快速上手的开发者。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;2-深入剖析-kubernetes&#34;&gt;2. 《深入剖析 Kubernetes》&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;评分&lt;/strong&gt;：豆瓣 9.3 分&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内容概述&lt;/strong&gt;：&lt;br /&gt;
+这本书由张磊撰写，是一本从架构和实现原理角度深入剖析 Kubernetes 的佳作。它不仅介绍了 K8s 的使用方法，还详细讲解了其背后的设计思想和技术细节，例如 Pod 的编排原理、存储实现、网络模型和调度机制。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;推荐理由&lt;/strong&gt;：&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;深度解析&lt;/strong&gt;：不仅告诉你“怎么做”，还解释“为什么这么做”，适合想理解 K8s 底层原理的开发者。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;贴近实战&lt;/strong&gt;：结合大量实际案例，帮助你理解 K8s 在生产环境中的应用。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;视野开阔&lt;/strong&gt;：从云原生历史到 K8s 开源社区，全面展示了云原生生态的演变。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;核心章节&lt;/strong&gt;：&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;第 3 章：Kubernetes 设计与架构&lt;/strong&gt;：剖析 K8s 的核心组件和设计理念，是理解系统全貌的入门篇。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 5 章：Kubernetes 编排原理&lt;/strong&gt;：深入讲解 Pod、Controller 和 StatefulSet 的实现原理，适合进阶学习。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 7 章：Kubernetes 网络原理&lt;/strong&gt;：详细介绍 CNI 插件和 Service 机制，帮助你掌握网络配置。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;适合人群&lt;/strong&gt;：对 Kubernetes 有一定基础，想深入理解其工作原理并从事相关开发的开发者。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;如何选择&#34;&gt;如何选择？&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如果你是&lt;strong&gt;初学者&lt;/strong&gt;，建议从《Kubernetes in Action》入手，先掌握基本操作，再辅以《深入剖析 Kubernetes》加深理解。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;如果你已经有一定容器基础，想直接深入 K8s 的核心原理，可以优先阅读《深入剖析 Kubernetes》。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;三-社区文章合集-k8s-club&#34;&gt;三、社区文章合集：K8s Club&lt;/h2&gt;
+
+&lt;p&gt;除了书籍，社区资源也是学习云原生开发的重要途径。我推荐一个由云原生开发者维护的文章合集：&lt;a href=&#34;https://github.com/k8s-club/k8s-club&#34;&gt;K8s Club&lt;/a&gt;。这个仓库包含了大量关于 Kubernetes 的技术文章，涵盖从基础知识到高级主题的内容。&lt;/p&gt;
+
+&lt;h3 id=&#34;推荐文章&#34;&gt;推荐文章&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;《QA to Understand K8s》&lt;/strong&gt;：通过问答形式快速梳理 K8s 的核心概念，适合快速入门。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;《K8s 知识图谱》&lt;/strong&gt;：提供了一张清晰的知识地图，帮助你规划学习路径。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;《Informer 机制 - 概述》&lt;/strong&gt;：深入讲解 K8s 中 Informer 的工作原理，是理解客户端开发的必读内容。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;《K8s Pod 生命周期管理》&lt;/strong&gt;：详细分析 Pod 从创建到销毁的过程，适合实践者参考。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;《从 0 到 1 手动搭建 K8s 集群》&lt;/strong&gt;：手把手教你搭建 K8s 集群，动手能力强的开发者不容错过。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;学习建议&#34;&gt;学习建议&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;按需阅读&lt;/strong&gt;：根据你的兴趣和需求选择文章，例如想了解网络就看《K8s Service 网络机制》。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结合实践&lt;/strong&gt;：阅读后尝试在本地环境（如 Minikube）上验证文章中的概念。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;四-代码示例项目&#34;&gt;四、代码示例项目&lt;/h2&gt;
+
+&lt;p&gt;理论学习固然重要，但云原生开发的精髓在于实践。以下两个 GitHub 仓库提供了丰富的代码示例，适合你在学习过程中动手操作。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-kubernetes-learning-playground&#34;&gt;1. Kubernetes Learning Playground&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;地址&lt;/strong&gt;：&lt;a href=&#34;https://github.com/Kubernetes-Learning-Playground&#34;&gt;https://github.com/Kubernetes-Learning-Playground&lt;/a&gt;&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;项目简介&lt;/strong&gt;：这是一个专注于 K8s 扩展学习的项目集合，包含多集群工具、自定义调度器、CRI/CNI/CSI 实践等内容。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;推荐项目&lt;/strong&gt;：&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;multi-cluster-informer&lt;/strong&gt;：实现对多集群的 Informer 功能，适合学习 K8s 客户端开发。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;kube-event-collector&lt;/strong&gt;：基于事件通知的扩展实践，帮助你理解 K8s 事件机制。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;csi-interface-study&lt;/strong&gt;：简易 CSI 插件示例，让你快速上手存储扩展开发。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;适用场景&lt;/strong&gt;：适合对 K8s 扩展开发（如自定义控制器、插件）感兴趣的开发者。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;2-operator-learning-playground&#34;&gt;2. Operator Learning Playground&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;地址&lt;/strong&gt;：&lt;a href=&#34;https://github.com/Operator-Learning-Playground&#34;&gt;https://github.com/Operator-Learning-Playground&lt;/a&gt;&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;项目简介&lt;/strong&gt;：专注于 Kubernetes Operator 开发的练习项目，包含多种简易 Operator 示例。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;推荐项目&lt;/strong&gt;：&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;proxy-operator&lt;/strong&gt;：一个简单的网关控制器示例，适合初探 Operator 开发。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;podReStarter-operator&lt;/strong&gt;：实现 Pod 原地重启的控制器，展示 Operator 的实际应用。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;适用场景&lt;/strong&gt;：如果你对 Operator 模式（基于 CRD 的自定义资源管理）感兴趣，这个项目是不错的起点。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;实践建议&#34;&gt;实践建议&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;环境准备&lt;/strong&gt;：使用 Minikube 或 Kind 在本地搭建 K8s 集群，运行这些示例项目。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;逐步深入&lt;/strong&gt;：从简单项目开始（如 kube-event-collector），逐步挑战复杂项目（如 multi-cluster-informer）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;五-学习建议与总结&#34;&gt;五、学习建议与总结&lt;/h2&gt;
+
+&lt;h3 id=&#34;学习路线&#34;&gt;学习路线&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;第一阶段：基础入门&lt;/strong&gt;&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;阅读《Kubernetes in Action》第 1-5 章，掌握容器、Pod 和 Service 的基本操作。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;在本地部署一个简单的应用（如 Node.js），体验 K8s 的部署流程。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第二阶段：深入理解&lt;/strong&gt;&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;阅读《深入剖析 Kubernetes》第 3-7 章，理解 K8s 的架构、编排和网络原理。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;参考 K8s Club 的文章，动手实现 Pod 生命周期管理和网络配置。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第三阶段：实践与扩展&lt;/strong&gt;&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;基于两个代码仓库，尝试运行和修改示例项目，例如实现一个简单的 CSI 插件或 Operator。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;参与开源社区，阅读和贡献代码，提升实战能力。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;小贴士&#34;&gt;小贴士&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;多动手&lt;/strong&gt;：云原生开发重在实践，建议边学边做。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加入社区&lt;/strong&gt;：参与 CNCF 或 K8s Club 的讨论，与其他开发者交流经验。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;持续学习&lt;/strong&gt;：云原生技术发展迅速，保持对新工具（如 Helm、Istio）的关注。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;六-kubernetes-运维实践&#34;&gt;六、Kubernetes 运维实践&lt;/h2&gt;
+
+&lt;p&gt;在掌握了 Kubernetes 的开发技能后，运维能力是确保生产环境稳定运行的关键。以下内容基于腾讯云 K8s 运维开发工程师的实践指南（&lt;a href=&#34;https://imroc.cc/kubernetes/best-practices&#34;&gt;Kubernetes 实践指南&lt;/a&gt;），为你提供一些运维相关的实用建议。&lt;/p&gt;
+
+&lt;h3 id=&#34;资源概览&#34;&gt;资源概览&lt;/h3&gt;
+
+&lt;p&gt;该实践指南由腾讯云的 K8s 运维开发工程师编写，涵盖了从集群搭建到最佳实践的多个主题，适合希望在生产环境中高效管理 K8s 集群的开发者。以下是目录的主要内容：
+- 集群搭建
+- 高效使用 kubectl
+- 镜像相关实践
+- 应用部署
+- GitOps
+- 证书发放
+- 用户与权限
+- 监控告警
+- 最佳实践
+- 开发指南
+- 实践案例
+- 附录&lt;/p&gt;
+
+&lt;h3 id=&#34;推荐内容&#34;&gt;推荐内容&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;高效使用 kubectl&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心要点&lt;/strong&gt;：kubectl 是与 K8s 集群交互的主要工具，熟练使用可以显著提升运维效率。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;建议&lt;/strong&gt;：&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;学会使用 &lt;code&gt;kubectl&lt;/code&gt; 的快捷命令，例如 &lt;code&gt;kubectl get pod -A&lt;/code&gt; 查看所有命名空间的 Pod。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;配置命令补全和别名（如 &lt;code&gt;alias k=kubectl&lt;/code&gt;），提高操作效率。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;使用 &lt;code&gt;kubectl describe&lt;/code&gt; 和 &lt;code&gt;kubectl logs&lt;/code&gt; 快速排查问题。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实践场景&lt;/strong&gt;：通过 &lt;code&gt;kubectl&lt;/code&gt; 管理 Pod 的生命周期，例如删除异常 Pod 或调整副本数量。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;镜像相关实践&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心要点&lt;/strong&gt;：镜像管理直接影响应用的部署效率和安全性。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;建议&lt;/strong&gt;：&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;使用轻量化的基础镜像（如 &lt;code&gt;alpine&lt;/code&gt;），减少镜像体积。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;定期清理无用镜像，释放节点磁盘空间（&lt;code&gt;docker image prune&lt;/code&gt;）。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;配置私有镜像仓库（如 Harbor），确保镜像的安全性和可控性。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实践场景&lt;/strong&gt;：在 K8s 集群中部署一个应用时，指定私有镜像仓库地址并通过 Secret 拉取镜像。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;监控告警&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心要点&lt;/strong&gt;：实时监控和告警是保障集群稳定的关键。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;建议&lt;/strong&gt;：&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;部署 Prometheus 和 Grafana，监控集群的 CPU、内存和网络使用情况。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;配置告警规则，例如当 Pod 失败率超过 5% 时发送通知。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;使用 K8s 的事件（Events）结合工具（如 kube-event-collector）进行故障排查。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实践场景&lt;/strong&gt;：设置一个告警，当节点的 CPU 使用率超过 80% 时通过邮件通知运维团队。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;最佳实践&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心要点&lt;/strong&gt;：遵循最佳实践可以提升集群的稳定性和可维护性。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;建议&lt;/strong&gt;：&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;为 Pod 设置资源限制（&lt;code&gt;requests&lt;/code&gt; 和 &lt;code&gt;limits&lt;/code&gt;），避免资源竞争。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;使用命名空间（Namespace）隔离不同环境（如开发、测试、生产）。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;定期备份 etcd 数据，确保控制平面数据安全。&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实践场景&lt;/strong&gt;：为一个生产环境的 Deployment 设置 CPU 和内存限制，并通过 &lt;code&gt;kubectl&lt;/code&gt; 验证效果。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;运维学习建议&#34;&gt;运维学习建议&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;从小规模开始&lt;/strong&gt;：在本地使用 Minikube 搭建单节点集群，熟悉运维操作。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模拟故障&lt;/strong&gt;：故意制造 Pod 失败或节点宕机，练习排查和恢复流程。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工具支持&lt;/strong&gt;：学习使用 K9s 或 Lens 等可视化工具，简化集群管理。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;七-总结与展望&#34;&gt;七、总结与展望&lt;/h2&gt;
+
+&lt;p&gt;云原生开发是一条充满挑战但回报丰厚的道路。通过《Kubernetes in Action》掌握实践技能，通过《深入剖析 Kubernetes》理解底层原理，结合 K8s Club 的文章和代码示例项目进行实践，再通过《Kubernetes 实践指南》提升运维能力，你将逐步成长为一名全面的云原生开发者。&lt;/p&gt;
+
+&lt;p&gt;希望这篇文章能为你的学习之旅提供清晰的指引。无论是开发还是运维，Kubernetes 都为你打开了无限可能的大门。祝你在云原生的世界里乘风破浪！如果你有任何疑问或需要进一步帮助，欢迎随时交流。让我们一起探索云原生的未来吧！&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>从《软件设计的哲学》谈代码的复杂性与应对</title>
@@ -1959,247 +2253,6 @@ iptables -t nat -A OUTPUT -p tcp -j V2RAY&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;总的来说，以ChatGPT为代表的大型语言模型已经深刻地改变了我们的工作和生活方式，同时也对整个世界产生了深远的影响。这些先进的AI工具不仅提高了工作效率，还为创造性和创新性的任务提供了新的可能性。随着技术的不断进步，我们可以期待这些语言模型继续发挥更大的作用，推动着人工智能在各个领域的进一步发展。在这个语言驱动的时代，ChatGPT等大型语言模型正在引领着我们走向更加智能化、创新化的未来。&lt;/p&gt;
 
 &lt;p&gt;注: 这篇文章使用&lt;code&gt;gpt-3.5-turbo&lt;/code&gt;模型进行润色!&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>RSS文艺复兴</title>
-      <link>https://zhu327.github.io/2023/12/15/rss%E6%96%87%E8%89%BA%E5%A4%8D%E5%85%B4/</link>
-      <pubDate>Fri, 15 Dec 2023 14:32:52 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2023/12/15/rss%E6%96%87%E8%89%BA%E5%A4%8D%E5%85%B4/</guid>
-      <description>&lt;h3 id=&#34;1-rss是什么&#34;&gt;1. RSS是什么&lt;/h3&gt;
-
-&lt;p&gt;RSS（Really Simple Syndication）是一种用于发布经常更新的工作的XML格式的文件的标准。这些文件通常包含新闻摘要、文章标题、链接和发布日期等信息。RSS提供了一种订阅机制，使用户能够轻松地跟踪他们关注的多个网站的最新更新，而无需定期访问这些网站。&lt;/p&gt;
-
-&lt;p&gt;尽管RSS在其创立初期非常受欢迎，但它逐渐失去了流行度。一些原因包括：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;社交媒体的兴起：&lt;/strong&gt; 随着社交媒体平台的发展，用户开始转向使用平台内的订阅和分享功能来获取和分享信息。社交媒体提供了更直观和交互性的方式来发现和分享内容。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;个性化推荐算法：&lt;/strong&gt; 许多网站和应用采用了个性化推荐算法，通过分析用户的行为和兴趣，推荐相关内容。这减少了用户需要手动订阅和管理的需求。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;信息过载：&lt;/strong&gt; 随着互联网上可用信息的不断增长，用户面临信息过载的问题。RSS的线性列表形式可能无法有效地处理大量信息，而个性化推荐算法能够更好地适应用户需求。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;移动应用的普及：&lt;/strong&gt; 移动应用的兴起使用户更倾向于使用专门的应用程序，而不是传统的RSS阅读器。这些应用通常提供更好的用户体验和功能。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;网站设计的变化：&lt;/strong&gt; 许多现代网站设计更加动态和交互式，而不仅仅是提供简单的文章列表。这样的设计可能使得传统的RSS阅读方式显得过时。&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;需要注意的是，虽然RSS在一些领域可能不再是主流，但它仍然是一种强大的工具，特别是对于那些喜欢通过订阅方式跟踪特定网站更新的用户。一些应用和服务仍然提供对RSS的支持。流行度的变化可能因用户群体和使用场景而异。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;2-为什么我会重启rss&#34;&gt;2. 为什么我会重启RSS&lt;/h3&gt;
-
-&lt;p&gt;自从Google Reader关闭以来，我就放弃了使用RSS相关的应用。那时我开始关注知乎，早期的知乎回答质量还相当不错，而且没有推荐系统的干扰。过了一段时间，我接触到了即刻，这是一个非常出色的信息订阅工具，尤其是其机器人订阅功能，我甚至在即刻上创建了一些自定义机器人。然而，随着即刻的封禁，我一直未能找到类似的替代平台。&lt;/p&gt;
-
-&lt;p&gt;随着时间推移，我对知乎的推荐系统感到不满，它似乎越来越无法满足我的兴趣点。同时，我对机器推荐可能导致信息茧房效应的抵触也逐渐增强。因此，我开始考虑重新拾起RSS，重新探索这种传统的信息获取方式。重新回归RSS，我期望能够更自主地管理我所关注的内容，摆脱推荐算法的限制，以更自由和个性化的方式获取信息。&lt;/p&gt;
-
-&lt;p&gt;尽管RSS在一段时间内逐渐式微，但一些新的开源项目让我重新关注了这一技术。首先是 &lt;a href=&#34;https://github.com/DIYgod/RSSHub&#34;&gt;RSSHub&lt;/a&gt;，这是一个强大的RSS转换代理工具，可以将各种网站的信息转换成RSS格式，便于订阅。更令人兴奋的是，它提供了一个强大而易用的RSS开发框架，使懂编程的用户甚至可以轻松地创建自己的RSS订阅源。&lt;/p&gt;
-
-&lt;p&gt;其次是 &lt;a href=&#34;https://github.com/miniflux/v2&#34;&gt;Miniflux&lt;/a&gt;，这是一个专注于RSS源订阅的工具。它定时从订阅源获取数据，并通过Google Reader API将数据提供给RSS阅读器。除了基本的订阅功能外，Miniflux还支持自定义文章全文爬取，解决了一些RSS源无法提供全文阅读的问题。&lt;/p&gt;
-
-&lt;p&gt;这些开源项目为重新探索RSS提供了新的可能性，使得我们可以更加灵活和个性化地管理和获取我们关注的信息。虽然RSS在一度被边缘化，但这些项目的出现为其注入了新的活力。&lt;/p&gt;
-
-&lt;h3 id=&#34;3-部署rsshub与miniflux&#34;&gt;3. 部署RSSHub与Miniflux&lt;/h3&gt;
-
-&lt;h4 id=&#34;rsshub&#34;&gt;RSSHub&lt;/h4&gt;
-
-&lt;p&gt;在&lt;a href=&#34;https://vercel.com&#34;&gt;Vercel&lt;/a&gt;上部署RSSHub是相对简单的任务，有许多相关的教程可供参考，这里不再详细赘述。你可以查阅这篇博客文章作为参考: &lt;a href=&#34;https://www.cnblogs.com/QiuSYan/p/RssHub.html&#34;&gt;《在Vercel上部署RSSHub》&lt;/a&gt;。&lt;/p&gt;
-
-&lt;h4 id=&#34;miniflux&#34;&gt;Miniflux&lt;/h4&gt;
-
-&lt;p&gt;相比之下，部署Miniflux稍微复杂一些，因为它依赖于Postgres数据库。推荐使用&lt;a href=&#34;https://supabase.com&#34;&gt;Supabase&lt;/a&gt;提供的Postgres数据库，它提供了最大500MB的免费数据库，足够我们正常使用。你可以参考这篇文章来创建Supabase数据库: &lt;a href=&#34;https://blog.cysi.me/2022/05/build-miniflux-rss-on-railway.html&#34;&gt;《在Railway上搭建Miniflux RSS阅读器》&lt;/a&gt;。&lt;/p&gt;
-
-&lt;p&gt;Miniflux推荐部署在&lt;a href=&#34;https://fly.io&#34;&gt;fly.io&lt;/a&gt;，这是一个提供免费额度的应用部署平台。具体部署步骤可以参考官方文档。以下是一个示例的&lt;code&gt;fly.toml&lt;/code&gt;文件供参考：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span class=&#34;nx&#34;&gt;app&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;your_app_name&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nx&#34;&gt;primary_region&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;sea&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nx&#34;&gt;kill_signal&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;SIGINT&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nx&#34;&gt;kill_timeout&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;5s&amp;#34;&lt;/span&gt;
-
-&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;experimental&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;auto_rollback&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;
-
-&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;build&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;image&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;miniflux/miniflux:latest&amp;#34;&lt;/span&gt;
-
-&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;BASE_URL&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://your_app_name.fly.dev&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;CLEANUP_ARCHIVE_READ_DAYS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;15&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;CLEANUP_ARCHIVE_UNREAD_DAYS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;30&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;DATABASE_URL&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;your_supabase_postgres_url&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;HTTPS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;true&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;POLLING_FREQUENCY&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;30&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;POLLING_PARSING_ERROR_LIMIT&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;POLLING_SCHEDULER&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;entry_frequency&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;PORT&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;8080&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;RUN_MIGRATIONS&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;true&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;SCHEDULER_ENTRY_FREQUENCY_MAX_INTERVAL&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;60&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;c&#34;&gt;# 以下配置在初次部署时填写, 第二次部署时需要删除&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;CREATE_ADMIN&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;ADMIN_PASSWORD&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;your_admin_password&amp;#34;&lt;/span&gt;
-
-&lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;protocol&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;tcp&amp;#34;&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;internal_port&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8080&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;processes&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;app&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-
-  &lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ports&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;80&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;handlers&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;http&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-
-  &lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ports&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;443&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;handlers&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;tls&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;http&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-  &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;concurrency&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;connections&amp;#34;&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;hard_limit&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;25&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;soft_limit&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;20&lt;/span&gt;
-
-  &lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;services&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;tcp_checks&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;interval&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;15s&amp;#34;&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;timeout&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;2s&amp;#34;&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;grace_period&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;1s&amp;#34;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;至此，我们零成本拥有了自己的RSS订阅平台。Miniflux本身非常适合在浏览器上访问，在手机端推荐使用&lt;a href=&#34;https://apps.apple.com/us/app/reeder-5/id1529445840&#34;&gt;Reedr&lt;/a&gt;，提供了完美的阅读体验。&lt;/p&gt;
-
-&lt;h3 id=&#34;4-我的订阅源分享&#34;&gt;4. 我的订阅源分享&lt;/h3&gt;
-
-&lt;p&gt;我的订阅源大致可分为几个主要类别：新闻、日报、深度阅读、科技和娱乐。这些分类涵盖了中外各种媒体的新闻报道、每日热点事件、高质量文章、科技趋势和娱乐评论。&lt;/p&gt;
-
-&lt;h4 id=&#34;新闻&#34;&gt;新闻&lt;/h4&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;华尔街日报&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;美国主流叙事媒体&lt;/li&gt;
-&lt;li&gt;数据来源: &lt;a href=&#34;https://agora0.gitlab.io/news/wsj/&#34;&gt;零新闻&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/agora0/wsj&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;在Miniflux设置抓取全文，抓取规则 &lt;code&gt;div.post-content&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以支持该路由&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;联合早报&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;新加坡相对中立媒体&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/zaobao/znews/china&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;竹新社&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;24小时提供中外媒体中国新闻，相对中立&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/telegram/channel/tnews365&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;抽屉新热榜&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;国内热点事件，相对符合我的兴趣点&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/chouti/hot&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;日报&#34;&gt;日报&lt;/h4&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;即刻资讯台&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;每天早上发布前一点的热点新闻和即刻热文&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/jike/user/wenhao1996&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以获取更完整的数据&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;喷嚏图卦&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;每天下午发布当天的国内热点事件&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/dapenti/tugua&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以获取更及时的数据&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;iDaily 每日环球视野&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;每天傍晚发布当天环球热点新闻图&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/jike/user/wenhao1996&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以获取更美观的排版&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;深度阅读&#34;&gt;深度阅读&lt;/h4&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;虎嗅网热榜&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;虎扑每日热门文章&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/huxiu/tophub?limit=10&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;推荐fork我的 &lt;a href=&#34;https://github.com/zhu327/rsshub&#34;&gt;RSSHub&lt;/a&gt; 以支持该路由&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;晚点LatePost&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;深度科技报道&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/latepost&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;腾讯新闻深网&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;深度科技报道&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/tencent/news/author/5157372&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;互联网怪盗团&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;深度科技报道&lt;/li&gt;
-&lt;li&gt;RSSHub路由: &lt;code&gt;/tencent/news/author/16802833&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;科技&#34;&gt;科技&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Hack News&lt;/strong&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://hnrss.github.io&#34;&gt;Hack News RSS&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;使用 &lt;a href=&#34;https://www.rsstranslator.com&#34;&gt;RSSTranslator&lt;/a&gt; 工具将标题翻译为中文，最终订阅地址: &lt;a href=&#34;https://rsstranslator.com/rss/6531a79e107aa592d8fa&#34;&gt;Hack News 中文翻译&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&#34;娱乐&#34;&gt;娱乐&lt;/h4&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;豆瓣最受欢迎的书评&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.douban.com/feed/review/book&#34;&gt;豆瓣最受欢迎的书评&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;在Miniflux设置中覆盖默认的用户代理，并抓取全文，抓取规则 &lt;code&gt;div.main-bd&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;豆瓣最受欢迎的影评&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.douban.com/feed/review/movie&#34;&gt;豆瓣最受欢迎的影评&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;在Miniflux设置中覆盖默认的用户代理，并抓取全文，抓取规则 &lt;code&gt;div.main-bd&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;通过这些订阅源，我能够获得来自各个领域的精选内容，确保我的信息获取更加多元化和个性化。如果你对其中任何一个订阅感兴趣，可以根据提供的路由或链接添加到你的RSS阅读器中。&lt;/p&gt;
-
-&lt;h3 id=&#34;5-总结&#34;&gt;5. 总结&lt;/h3&gt;
-
-&lt;p&gt;RSS是一种用于发布经常更新的工作的XML格式的文件的标准，它提供了一种订阅机制，使用户能够轻松地跟踪他们关注的多个网站的最新更新。近年来，随着社交媒体的兴起和个性化推荐算法的发展，RSS逐渐失去了流行度。然而，一些新的开源项目为RSS注入了新的活力，使其又重新受到关注。&lt;/p&gt;
-
-&lt;p&gt;本文介绍了RSSHub和Miniflux这两个开源项目，并提供了它们的部署步骤和我的订阅源分享。希望这篇文章能够帮助读者重新了解RSS，并找到适合自己的RSS阅读方式。&lt;/p&gt;
-
-&lt;p&gt;注: 这基本上就是一篇由ChatGPT帮忙写的文章!&lt;/p&gt;</description>
     </item>
     
   </channel>
