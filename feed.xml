@@ -31,14 +31,17 @@
 
 &lt;p&gt;想法很美好，但LLM本质上还是一个&lt;strong&gt;文本补全&lt;/strong&gt;的模型。它能“思考”并告诉你计划是什么，但它自己并不能直接撸起袖子去调用那些具体的工具（API、函数等）来完成任务。为了解决这个问题，OpenAI在其API中引入了&lt;code&gt;tools&lt;/code&gt;（或称为 Function Calling）的概念。&lt;/p&gt;
 
-&lt;p&gt;这个流程大致是这样的：
-1.  我们的应用程序（可以称为Agent）调用LLM API时，在请求的上下文中详细描述可用的工具：每个工具是干嘛的、输入需要什么参数、输出是什么格式。
-2.  Agent把用户的自然语言指令（Prompt）发给LLM。
-3.  LLM根据用户的需求，结合它所知道的工具信息，判断是否需要以及需要调用哪个（或哪些）工具。
-4.  如果需要调用工具，LLM不会直接执行，而是&lt;strong&gt;返回一个包含调用指令的响应&lt;/strong&gt;，里面说明了要调用哪个工具以及需要传递的参数（通常是JSON格式）。
-5.  Agent收到这个响应后，解析出调用指令，&lt;strong&gt;在Agent自己的环境里执行&lt;/strong&gt;相应的工具（比如调用一个本地函数或一个外部API）。
-6.  Agent拿到工具的执行结果后，把这个结果再次作为上下文信息，传回给LLM。
-7.  LLM根据工具的执行结果，决定下一步是继续调用其他工具，还是生成最终的回复给用户。&lt;/p&gt;
+&lt;p&gt;这个流程大致是这样的：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;我们的应用程序（可以称为Agent）调用LLM API时，在请求的上下文中详细描述可用的工具：每个工具是干嘛的、输入需要什么参数、输出是什么格式。&lt;/li&gt;
+&lt;li&gt;Agent把用户的自然语言指令（Prompt）发给LLM。&lt;/li&gt;
+&lt;li&gt;LLM根据用户的需求，结合它所知道的工具信息，判断是否需要以及需要调用哪个（或哪些）工具。&lt;/li&gt;
+&lt;li&gt;如果需要调用工具，LLM不会直接执行，而是&lt;strong&gt;返回一个包含调用指令的响应&lt;/strong&gt;，里面说明了要调用哪个工具以及需要传递的参数（通常是JSON格式）。&lt;/li&gt;
+&lt;li&gt;Agent收到这个响应后，解析出调用指令，&lt;strong&gt;在Agent自己的环境里执行&lt;/strong&gt;相应的工具（比如调用一个本地函数或一个外部API）。&lt;/li&gt;
+&lt;li&gt;Agent拿到工具的执行结果后，把这个结果再次作为上下文信息，传回给LLM。&lt;/li&gt;
+&lt;li&gt;LLM根据工具的执行结果，决定下一步是继续调用其他工具，还是生成最终的回复给用户。&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;p&gt;这个基于&lt;code&gt;tools&lt;/code&gt;的交互模式，让LLM有了指挥“手脚”（工具）的能力。但这里也暴露了一个比较明显的&lt;strong&gt;弊端&lt;/strong&gt;：完成一个任务可能需要&lt;strong&gt;多次与LLM进行交互&lt;/strong&gt;（LLM决策 -&amp;gt; Agent执行 -&amp;gt; Agent反馈结果 -&amp;gt; LLM再决策&amp;hellip;），并且为了让LLM理解上下文，每次交互都需要传递越来越长的历史信息，这既&lt;strong&gt;增加了延迟&lt;/strong&gt;，也&lt;strong&gt;增加了API调用成本和Token消耗&lt;/strong&gt;。&lt;/p&gt;
 
