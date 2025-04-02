@@ -7,7 +7,157 @@
     <language>zh-cn</language>
     
     
-    <updated>Fri, 28 Mar 2025 10:55:52 &#43;0800</updated>
+    <updated>Wed, 02 Apr 2025 10:55:52 &#43;0800</updated>
+    
+    <item>
+      <title>我理解的AI Agent与MCP</title>
+      <link>https://zhu327.github.io/2025/04/02/%E6%88%91%E7%90%86%E8%A7%A3%E7%9A%84ai-agent%E4%B8%8Emcp/</link>
+      <pubDate>Wed, 02 Apr 2025 10:55:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/04/02/%E6%88%91%E7%90%86%E8%A7%A3%E7%9A%84ai-agent%E4%B8%8Emcp/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;最近AI圈子里Manus这个项目可以说是相当火了，连带着MCP（Model Context Protocol）这个概念也开始频繁出现在各种技术讨论区。作为一个程序员，自然也对这些新东西充满了好奇，于是花时间捣鼓了一下AI Agent和MCP相关的知识。这篇文章就是我学习和思考后，对这两个概念的一些个人理解和梳理。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-从workflow到ai-agent-大脑的进化&#34;&gt;1. 从Workflow到AI Agent：大脑的进化&lt;/h3&gt;
+
+&lt;p&gt;回顾我们以前做自动化任务，比如搞个自动抢票、自动下单之类的，思路基本都是围绕着一个固定的&lt;strong&gt;workflow&lt;/strong&gt;。我们会预先设定好一套流程逻辑：收到指令 -&amp;gt; 判断条件 -&amp;gt; 走对应分支 -&amp;gt; 调用特定工具（API、脚本等）。整个过程就像一个流程图，每个节点和路径都是我们程序员预先设计好的。在这个模式下，&lt;strong&gt;我们程序员就是这个workflow的“大脑”&lt;/strong&gt;，我们把执行计划通过代码逻辑，“硬编码”到系统里。比如预定机票这个场景，我们会写代码一步步调用查询接口、选择航班接口、填写乘机人信息接口、支付接口等等。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;2-llm登场-有了-大脑-但还缺-手脚&#34;&gt;2. LLM登场：有了“大脑”，但还缺“手脚”&lt;/h3&gt;
+
+&lt;p&gt;随着大语言模型（LLM）技术的突飞猛进，特别是像DeepSeek R1这样强大的推理模型出现，它们的推理和规划能力越来越接近人类大脑。这就让我们自然而然地想到：能不能让LLM来充当这个自动化流程的“大脑”，代替我们来制定执行计划呢？&lt;/p&gt;
+
+&lt;p&gt;想法很美好，但LLM本质上还是一个&lt;strong&gt;文本补全&lt;/strong&gt;的模型。它能“思考”并告诉你计划是什么，但它自己并不能直接撸起袖子去调用那些具体的工具（API、函数等）来完成任务。为了解决这个问题，OpenAI在其API中引入了&lt;code&gt;tools&lt;/code&gt;（或称为 Function Calling）的概念。&lt;/p&gt;
+
+&lt;p&gt;这个流程大致是这样的：
+1.  我们的应用程序（可以称为Agent）调用LLM API时，在请求的上下文中详细描述可用的工具：每个工具是干嘛的、输入需要什么参数、输出是什么格式。
+2.  Agent把用户的自然语言指令（Prompt）发给LLM。
+3.  LLM根据用户的需求，结合它所知道的工具信息，判断是否需要以及需要调用哪个（或哪些）工具。
+4.  如果需要调用工具，LLM不会直接执行，而是&lt;strong&gt;返回一个包含调用指令的响应&lt;/strong&gt;，里面说明了要调用哪个工具以及需要传递的参数（通常是JSON格式）。
+5.  Agent收到这个响应后，解析出调用指令，&lt;strong&gt;在Agent自己的环境里执行&lt;/strong&gt;相应的工具（比如调用一个本地函数或一个外部API）。
+6.  Agent拿到工具的执行结果后，把这个结果再次作为上下文信息，传回给LLM。
+7.  LLM根据工具的执行结果，决定下一步是继续调用其他工具，还是生成最终的回复给用户。&lt;/p&gt;
+
+&lt;p&gt;这个基于&lt;code&gt;tools&lt;/code&gt;的交互模式，让LLM有了指挥“手脚”（工具）的能力。但这里也暴露了一个比较明显的&lt;strong&gt;弊端&lt;/strong&gt;：完成一个任务可能需要&lt;strong&gt;多次与LLM进行交互&lt;/strong&gt;（LLM决策 -&amp;gt; Agent执行 -&amp;gt; Agent反馈结果 -&amp;gt; LLM再决策&amp;hellip;），并且为了让LLM理解上下文，每次交互都需要传递越来越长的历史信息，这既&lt;strong&gt;增加了延迟&lt;/strong&gt;，也&lt;strong&gt;增加了API调用成本和Token消耗&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-codeact-让llm直接写代码执行&#34;&gt;3. CodeAct：让LLM直接写代码执行&lt;/h3&gt;
+
+&lt;p&gt;我们知道，当前LLM最强的能力之一就是&lt;strong&gt;代码生成&lt;/strong&gt;。于是，就有人想出了另一种更直接的思路：既然LLM擅长写代码，而我们提供的工具本身很多就是函数或者可以通过代码调用的API，那何不让LLM直接生成一小段可执行的代码（比如Python），然后在我们的Agent里内置一个安全的&lt;strong&gt;代码执行沙箱&lt;/strong&gt;来运行这段代码呢？&lt;/p&gt;
+
+&lt;p&gt;在这段生成的代码里，LLM可以直接包含对我们提供的工具（函数）的调用，甚至可以编写一些简单的流程控制逻辑（if/else、循环等）。这样一来，多个步骤和工具调用可能通过一次LLM生成、一次代码执行就完成了，大大&lt;strong&gt;减少了与LLM的交互次数&lt;/strong&gt;。这种方法就被称为&lt;strong&gt;CodeAct&lt;/strong&gt;（代码作为行动）。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-到底什么是ai-agent&#34;&gt;4. 到底什么是AI Agent？&lt;/h3&gt;
+
+&lt;p&gt;聊了这么多，我们再来尝试给AI Agent下一个定义。我认为，&lt;strong&gt;AI Agent = LLM（大脑） + Tools（手脚） + Agent Runtime（执行器） + 决策循环&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;具体来说，AI Agent通过调用LLM API，并结合一系列可用的工具（Tools），来理解并执行用户的自然语言任务。它通常采用一种&lt;strong&gt;决策-执行-观察&lt;/strong&gt;的循环模式（ReAct）：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;决策（Reason）&lt;/strong&gt;：由LLM根据当前任务目标和上下文信息，决定下一步是调用工具还是直接回复。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;执行（Act）&lt;/strong&gt;：由Agent Runtime根据LLM的决策，执行相应的工具调用或代码片段。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;观察（Observe）&lt;/strong&gt;：Agent Runtime将执行结果反馈给LLM，作为新的上下文信息，供LLM进行下一轮决策。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这个循环一直持续，直到任务完成。&lt;/p&gt;
+
+&lt;p&gt;但这里有个关键问题：LLM本身具有一定的&lt;strong&gt;不确定性&lt;/strong&gt;。对于相同的输入（Prompt），它每次返回的结果可能都不完全一样。这就给AI Agent的执行带来了挑战，有时候可能会偏离预期或者卡在某个环节。因此，在开发AI Agent时，接入&lt;strong&gt;Tracing（追踪）&lt;/strong&gt;系统变得非常重要。我们需要能够实时跟踪Agent与LLM的每一次交互、上下文内容、工具调用情况以及执行结果，这样才能在出现问题时快速定位和调试，进而优化我们的Prompt或者Agent逻辑。&lt;/p&gt;
+
+&lt;h3 id=&#34;5-多agent协作-专业的事交给专业的agent&#34;&gt;5. 多Agent协作：专业的事交给专业的Agent&lt;/h3&gt;
+
+&lt;p&gt;随着Manus的流行，&lt;strong&gt;多Agent编排（Multi-Agent Orchestration）&lt;/strong&gt;的理念也开始受到关注。核心思路是&lt;strong&gt;化整为零，分工协作&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;我们不再试图构建一个“万能”的超级Agent，而是将复杂的任务拆解，构建多个&lt;strong&gt;功能单一、职责明确&lt;/strong&gt;的&lt;strong&gt;专家Agent&lt;/strong&gt;。比如，我们可以把&lt;code&gt;web_search&lt;/code&gt;和&lt;code&gt;web_fetch&lt;/code&gt;这两个工具组合起来，封装成一个专门负责网页抓取的&lt;code&gt;web_scraper_agent&lt;/code&gt;。这种单一功能的Agent，它的大脑（LLM）可能不需要最顶级的推理能力，我们可以选用一个&lt;strong&gt;性能足够且成本更低&lt;/strong&gt;的模型（比如一些中小型模型或者特定领域的微调模型）。&lt;/p&gt;
+
+&lt;p&gt;当我们有了多个这样的专家Agent后，再引入一个&lt;strong&gt;Planner Agent（规划器Agent）&lt;/strong&gt;。这个Planner Agent通常需要一个&lt;strong&gt;推理能力较强&lt;/strong&gt;的LLM作为大脑，它的职责是：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;接收用户的原始任务。&lt;/li&gt;
+&lt;li&gt;将任务拆解成若干子步骤。&lt;/li&gt;
+&lt;li&gt;根据每个子步骤的需求，选择并调用合适的专家Agent。&lt;/li&gt;
+&lt;li&gt;收集专家Agent的执行结果。&lt;/li&gt;
+&lt;li&gt;根据执行结果，动态调整后续的计划（可能需要重新规划或调用其他Agent）。&lt;/li&gt;
+&lt;li&gt;循环这个过程，直到最终任务完成，然后将结果汇总返回给用户。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这种多Agent架构带来的好处显而易见：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;成本效益&lt;/strong&gt;：在大量执行具体任务的专家Agent上可以使用更便宜的LLM。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;维护性&lt;/strong&gt;：每个Agent功能单一，更容易开发、测试和维护。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;扩展性&lt;/strong&gt;：可以方便地增加新的专家Agent来扩展整个系统的能力。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可能更优化的上下文管理&lt;/strong&gt;：Planner Agent可能只需要关注子任务的目标和专家Agent返回的关键结果，而不需要承载所有底层工具调用的详细上下文。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;6-prompt工程-agent的灵魂&#34;&gt;6. Prompt工程：Agent的灵魂&lt;/h3&gt;
+
+&lt;p&gt;无论是使用ReAct还是CodeAct，无论是单Agent架构还是多Agent编排，有一个环节始终是绕不开的，那就是&lt;strong&gt;Prompt Engineering（提示工程）&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;我们需要为每一个与LLM交互的环节（无论是Planner Agent制定计划，还是专家Agent执行任务，或是Function Calling/CodeAct的触发）&lt;strong&gt;精心设计Prompt&lt;/strong&gt;。好的Prompt需要能够引导LLM按照我们的预期来思考和输出：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;让Planner Agent生成&lt;strong&gt;结构化、可分步执行&lt;/strong&gt;的计划。&lt;/li&gt;
+&lt;li&gt;让LLM在需要时&lt;strong&gt;准确地选择并调用&lt;/strong&gt;我们提供的工具。&lt;/li&gt;
+&lt;li&gt;让LLM返回&lt;strong&gt;格式规范、易于解析&lt;/strong&gt;的文本（比如JSON），方便Agent Runtime处理。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可以说，Prompt就是我们给AI Agent注入灵魂的方式。&lt;/p&gt;
+
+&lt;h3 id=&#34;7-mcp-agent间沟通的标准语&#34;&gt;7. MCP：Agent间沟通的标准语&lt;/h3&gt;
+
+&lt;p&gt;随着多Agent架构的兴起，Agent之间如何发现彼此、如何调用彼此的能力就成了一个问题。这时，&lt;strong&gt;MCP（Model Context Protocol）&lt;/strong&gt;这个概念应运而生。&lt;/p&gt;
+
+&lt;p&gt;你可以把MCP理解为一套&lt;strong&gt;为Agent（或者说LLM的工具）设计的标准化接口规范&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;在没有MCP之前，我们实现的工具可能五花八门：一段本地Python代码、一个内部HTTP API调用、一个第三方云服务接口等等。每次要给Agent添加新工具，都需要手动编写关于这个工具的描述（功能、参数、格式），然后注入到Agent的上下文中。&lt;/p&gt;
+
+&lt;p&gt;有了MCP之后，情况就可能变得更规范：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;工具提供方可以将其能力封装成一个遵循MCP协议的&lt;strong&gt;MCP Server&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;Agent可以通过标准的MCP方法（比如&lt;code&gt;list_tools&lt;/code&gt;）来&lt;strong&gt;动态发现&lt;/strong&gt;某个MCP Server提供了哪些工具及其描述。&lt;/li&gt;
+&lt;li&gt;Agent可以通过标准的MCP &lt;strong&gt;RPC Call&lt;/strong&gt;来执行这些工具。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;MCP不仅仅规范了工具的调用，它通常也试图规范&lt;strong&gt;Prompt模板、资源管理&lt;/strong&gt;等Agent开发中常见的元素。如果MCP能够被广泛采用，理论上可以：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;降低Agent的开发门槛&lt;/strong&gt;：开发者可以直接复用社区提供的、遵循MCP标准的工具服务，而不需要自己重复实现和描述工具。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提高Agent的互操作性&lt;/strong&gt;：不同开发者、不同团队开发的Agent或许能更容易地进行协作。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当然，MCP目前似乎还在发展初期，但它指明了一个让Agent生态更加规范化、标准化的方向。&lt;/p&gt;
+
+&lt;h3 id=&#34;8-总结-门槛不高-精通不易&#34;&gt;8. 总结：门槛不高，精通不易&lt;/h3&gt;
+
+&lt;p&gt;以上就是我这段时间学习下来，对AI Agent和MCP的一些粗浅理解。在阅读了几个开源的Manus实现（或者类似的多Agent框架）之后，我的一个直观感受是：&lt;/p&gt;
+
+&lt;p&gt;对于掌握Python的程序员来说，上手开发一个基础的AI Agent，或者编写一个简单的Tool/MCP Server，&lt;strong&gt;技术门槛似乎并不算特别高&lt;/strong&gt;。很多框架（如LangChain、LlamaIndex等）已经帮我们处理了与LLM交互、管理上下文、执行工具等繁琐的底层工作。&lt;/p&gt;
+
+&lt;p&gt;然而，&lt;strong&gt;真正的挑战在于&lt;/strong&gt;：如何在一个&lt;strong&gt;特定的业务场景&lt;/strong&gt;下，设计和实现一个&lt;strong&gt;稳定、可靠、高效&lt;/strong&gt;的AI Agent。这需要：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;深刻理解业务需求&lt;/strong&gt;，并将其转化为适合Agent执行的任务流程。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;精心的Prompt设计与调优&lt;/strong&gt;，不断尝试，引导LLM给出期望的输出。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;有效的Tracing和Debugging&lt;/strong&gt;，快速定位Agent执行过程中的问题并进行修复。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;合理的架构选择&lt;/strong&gt;（单Agent vs 多Agent，ReAct vs CodeAct）和&lt;strong&gt;成本控制&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;就像当年我们从写简单脚本到构建复杂系统一样，AI Agent的世界也是易学难精。工具和框架降低了入门门槛，但要做出真正好用的Agent，还需要大量的实践、思考和打磨。&lt;/p&gt;
+
+&lt;h3 id=&#34;9-参考&#34;&gt;9. 参考&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://arthurchiao.art/blog/ai-agent-white-paper-zh/&#34;&gt;Google AI Agent（智能体）技术白皮书&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://arthurchiao.art/blog/build-effective-ai-agent-zh/&#34;&gt;Anthropic AI Workflow &amp;amp; AI Agent：架构、模式与工程建议&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://huggingface.co/learn/agents-course/zh-CN/unit0/introduction&#34;&gt;Hugging Face AI Agents 课程&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/liaokongVFX/MCP-Chinese-Getting-Started-Guide&#34;&gt;Model Context Protocol(MCP) 编程极速入门&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/liaokongVFX/LangChain-Chinese-Getting-Started-Guide&#34;&gt;LangChain 中文入门教程&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mannaandpoem/OpenManus&#34;&gt;OpenManus&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Darwin-lfl/langmanus&#34;&gt;LangManus&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>云原生开发入门</title>
@@ -2088,64 +2238,6 @@ iptables -t nat -A OUTPUT -p tcp -j V2RAY&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;这篇文章详细介绍了家庭网络的拓扑结构、IPv4与IPv6的配置以及三个阶段的透明代理方案演进。通过本文的分享，希望读者在搭建自己的透明代理方案时能够有所借鉴，更好地定制适合自己需求的网络环境。网络技术的不断发展，也让我们对未来的网络体验充满期待。&lt;/p&gt;
 
 &lt;p&gt;在科技的道路上，我们将不断追求创新，不断完善，让科技更好地服务于我们的生活。希望这篇文章对您有所启发，为您的网络探索之路提供一些有益的参考。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>零成本使用OpenAI API</title>
-      <link>https://zhu327.github.io/2023/12/20/%E9%9B%B6%E6%88%90%E6%9C%AC%E4%BD%BF%E7%94%A8openai-api/</link>
-      <pubDate>Wed, 20 Dec 2023 15:25:52 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2023/12/20/%E9%9B%B6%E6%88%90%E6%9C%AC%E4%BD%BF%E7%94%A8openai-api/</guid>
-      <description>&lt;h3 id=&#34;1-openai-chatgpt&#34;&gt;1. OpenAI ChatGPT&lt;/h3&gt;
-
-&lt;p&gt;ChatGPT已经发布了一年有余，成为有史以来用户增长最快的互联网产品。如果到了2023年你还没有使用过ChatGPT，可能你已经远离了互联网的中心。ChatGPT的发布与更新深刻改变了我的工作方式。我学到了如何撰写高效的提示，发现了ChatGPT的最佳应用场景，并在GitHub上探索了最佳实践。&lt;/p&gt;
-
-&lt;p&gt;一些影响我ChatGPT之旅的值得一提的资源包括&lt;a href=&#34;https://www.huxiu.com/article/2440157.html&#34;&gt;OpenAI官方指南：如何提高ChatGPT的输出质量&lt;/a&gt;，一篇关于&lt;a href=&#34;https://blog.wordbot.io/ai-artificial-intelligence/openai-gpt-3-top-22-trending-use-case-ideas-in-2022/&#34;&gt;2023年OpenAI GPT-3最热门应用案例的文章&lt;/a&gt;，以及GitHub上的&lt;a href=&#34;https://github.com/linexjlin/GPTs&#34;&gt;GPT提示列表&lt;/a&gt;。&lt;/p&gt;
-
-&lt;p&gt;在我的日常工作中，我利用ChatGPT做了很多事情：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;它成为我在编写代码过程中查找相关文档的首选工具，替代了传统搜索引擎的需求。&lt;/li&gt;
-&lt;li&gt;它轻松帮助我进行中英文翻译，充分发挥了其语言处理能力。&lt;/li&gt;
-&lt;li&gt;在数据分析中，它高效地协助我处理复杂的SQL查询。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;尽管我已经是一个长时间的用户，但我仍然保持在免费计划上，没有选择Plus，也没有使用OpenAI API。由于ChatGPT的充值的限制，我尚未探索基于OpenAI API构建的众多AI工具和插件。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;2-gemini-pro-api&#34;&gt;2. Gemini Pro API&lt;/h3&gt;
-
-&lt;p&gt;Gemini Pro是最近由Google发布的大型语言模型，作为ChatGPT的竞争对手。尽管从各项研究来看，它的性能略逊于&lt;code&gt;gpt-3.5-turbo&lt;/code&gt;，但作为通用用途的语言模型已经足够出色。尤其值得一提的是，它提供了每分钟60次的免费API调用，使我们能够以零成本使用。&lt;/p&gt;
-
-&lt;p&gt;参考资源：&lt;a href=&#34;https://arxiv.org/abs/2312.11444&#34;&gt;《Gemini的语言能力深度剖析》&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;鉴于OpenAI API已经成为事实上大型模型API协议的标准，市面上许多AI工具和插件仅支持OpenAI API。然而，作为新兴竞品，Gemini Pro API尚未得到众多AI工具的支持。因此，我开发了Gemini-OpenAI-Proxy这个协议转换代理，以帮助各种AI工具能够使用Gemini Pro API。&lt;/p&gt;
-
-&lt;p&gt;GitHub链接：&lt;a href=&#34;https://github.com/zhu327/gemini-openai-proxy&#34;&gt;Gemini-OpenAI-Proxy&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;这个工具具备优秀的OpenAI API兼容性，只需在&lt;a href=&#34;https://ai.google.dev/&#34;&gt;Google AI平台&lt;/a&gt;上申请一个API KEY，就可以像使用OpenAI API一样轻松使用Gemini Pro API。&lt;/p&gt;
-
-&lt;p&gt;作为一个服务端程序，我们需要将Gemini-OpenAI-Proxy部署在开放Gemini Pro API的国外服务器上。我推荐使用&lt;a href=&#34;https://fly.io/&#34;&gt;fly.io&lt;/a&gt;进行零成本部署到日本或新加坡，以便在中国大陆能够快速响应。&lt;/p&gt;
-
-&lt;h3 id=&#34;3-ai工具&#34;&gt;3. AI工具&lt;/h3&gt;
-
-&lt;p&gt;拥有独立的OpenAI API服务后，我开始在工作和生活中广泛使用各种AI工具。在工作中，我倚赖以下一些工具和插件：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://chatboxai.app/&#34;&gt;Chatbox&lt;/a&gt;：桌面聊天客户端，直接与AI对话，内置了多种场景和prompt。&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://apps.apple.com/us/app/pal-ai-chat-client/id6447545085&#34;&gt;Pal&lt;/a&gt;：iOS聊天客户端，方便随时随地与AI沟通。我会让AI帮忙创作睡前故事，然后播放给我的宝宝听。&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://chromewebstore.google.com/detail/nnjcoododbeemlmmhbfmmkbneniepaog&#34;&gt;ChatGPT Summary Assistant&lt;/a&gt;：对于较长的文章，我首先使用文章总结助手进行摘要总结，然后再判断是否需要更深入的精读。&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://chrome.google.com/webstore/detail/openai-translator/ogjibjphoadhljaoicdnjnmgokohngcc&#34;&gt;OpenAI Translator&lt;/a&gt;：AI翻译工具，在阅读英文文章时尤其实用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;这些工具的使用让我的工作效率得到了提升，同时也为生活增添了一些趣味。特别是在使用AI翻译工具时，它在阅读英文文章时发挥了巨大的帮助作用。&lt;/p&gt;
-
-&lt;h3 id=&#34;4-总结&#34;&gt;4. 总结&lt;/h3&gt;
-
-&lt;p&gt;总的来说，以ChatGPT为代表的大型语言模型已经深刻地改变了我们的工作和生活方式，同时也对整个世界产生了深远的影响。这些先进的AI工具不仅提高了工作效率，还为创造性和创新性的任务提供了新的可能性。随着技术的不断进步，我们可以期待这些语言模型继续发挥更大的作用，推动着人工智能在各个领域的进一步发展。在这个语言驱动的时代，ChatGPT等大型语言模型正在引领着我们走向更加智能化、创新化的未来。&lt;/p&gt;
-
-&lt;p&gt;注: 这篇文章使用&lt;code&gt;gpt-3.5-turbo&lt;/code&gt;模型进行润色!&lt;/p&gt;</description>
     </item>
     
   </channel>

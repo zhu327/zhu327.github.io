@@ -6,10 +6,27 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 28 Mar 2025 10:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 02 Apr 2025 10:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>我理解的AI Agent与MCP</title>
+      <link>https://zhu327.github.io/2025/04/02/%E6%88%91%E7%90%86%E8%A7%A3%E7%9A%84ai-agent%E4%B8%8Emcp/</link>
+      <pubDate>Wed, 02 Apr 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/04/02/%E6%88%91%E7%90%86%E8%A7%A3%E7%9A%84ai-agent%E4%B8%8Emcp/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;最近AI圈子里Manus这个项目可以说是相当火了，连带着MCP（Model Context Protocol）这个概念也开始频繁出现在各种技术讨论区。作为一个程序员，自然也对这些新东西充满了好奇，于是花时间捣鼓了一下AI Agent和MCP相关的知识。这篇文章就是我学习和思考后，对这两个概念的一些个人理解和梳理。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-从workflow到ai-agent-大脑的进化&#34;&gt;1. 从Workflow到AI Agent：大脑的进化&lt;/h3&gt;
+
+&lt;p&gt;回顾我们以前做自动化任务，比如搞个自动抢票、自动下单之类的，思路基本都是围绕着一个固定的&lt;strong&gt;workflow&lt;/strong&gt;。我们会预先设定好一套流程逻辑：收到指令 -&amp;gt; 判断条件 -&amp;gt; 走对应分支 -&amp;gt; 调用特定工具（API、脚本等）。整个过程就像一个流程图，每个节点和路径都是我们程序员预先设计好的。在这个模式下，&lt;strong&gt;我们程序员就是这个workflow的“大脑”&lt;/strong&gt;，我们把执行计划通过代码逻辑，“硬编码”到系统里。比如预定机票这个场景，我们会写代码一步步调用查询接口、选择航班接口、填写乘机人信息接口、支付接口等等。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>云原生开发入门</title>
