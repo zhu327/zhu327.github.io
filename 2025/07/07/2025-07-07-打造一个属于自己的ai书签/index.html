@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      2025-07-07-打造一个属于自己的AI书签 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2025. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">2025-07-07-打造一个属于自己的AI书签</h1>
+  <span class="post-date">Jul 7 2025</span>
+  
+
+<h3 id="前言">前言</h3>
+
+<p>我一直是个重度的书签使用者，多年来都依赖 Pocket 来收藏和沉淀那些在网上看到的、值得一读的文章。然而，最近 Pocket 宣布其通知服务即将关闭，这对我来说像是一个信号，是时候去寻找一个更稳定、更可控的替代品了。</p>
+
+<p>我的探索之旅就这样开始了：</p>
+
+<ol>
+<li><strong>Raindrop.io</strong>：社区里很多人推荐，功能也确实强大。但不知道是不是网络原因，我这边访问起来总是感觉有点慢，而且用惯了 Pocket 的我，对它的界面和交互逻辑始终有些不太习惯。</li>
+<li><strong>自建服务</strong>：作为程序员，第一反应自然是自己动手。我找到了像 <a href="https://github.com/sissbruecker/linkding">linkding</a> 这样的优秀开源项目。我尝试把它部署在 <a href="https://fly.io/">fly.io</a> 的免费实例上，但 linkding 对资源的要求不低，最低配的 256M 内存实例直接就 OOM (Out of Memory) 了，升级配置又意味着成本。</li>
+<li><strong>从零开始写一个？</strong> 这个念头一闪而过。我甚至构思好了技术选型：参照 linkding 的功能，用我最近在学习的 <strong>Rust</strong> 实现后端，部署在 <strong>Cloudflare Workers</strong> 上，再配上 <strong>Cloudflare D1</strong> 的 SQLite 数据库。这套方案 Serverless、成本极低，堪称完美。但转念一想，这工程量可不小，对于业余项目来说，我实在没有那么多时间投入进去。</li>
+</ol>
+
+<p>就在我快要放弃，准备将就着用某个方案时，我想起了一篇以前收藏过的文章。</p>
+
+<h3 id="1-灵感乍现-llm-x-github-书签">1. 灵感乍现：LLM x GitHub 书签</h3>
+
+<p>那篇文章是 <a href="https://nekonull.me/posts/llm_x_bookmark/">LLM x 书签收藏：摘要 &amp; 全文索引</a>，作者提供了一个极具创意的思路：通过一个浏览器插件 <a href="https://github.com/osmoscraft/osmosmemo">osmos::memo</a>，可以将书签直接保存到指定 GitHub 仓库的 <code>README.md</code> 文件里。</p>
+
+<p>这个方案瞬间击中了我！它足够<strong>简单</strong>，没有多余的功能，完美符合我的需求。数据就躺在自己的 GitHub 仓库里，再也不用担心服务关停。虽然原文后续介绍了如何利用 LLM 对书签进行摘要和索引，但我觉得还可以更进一步，改造成一个完全自动化、更符合我使用习惯的流程。</p>
+
+<p>说干就干，我立刻创建了一个新的仓库 <a href="https://github.com/zhu327/bookmark">bookmark</a>，准备开始我的改造计划。</p>
+
+<h3 id="2-存量数据的漫漫迁移路">2. 存量数据的漫漫迁移路</h3>
+
+<p>要打造新家，首先得把老家的家当搬过去。第一步，就是处理从 Pocket 导出的几百条存量书签。</p>
+
+<p>我写了一个简单的 Python 脚本，将 Pocket 导出的 HTML 文件解析成 Markdown 格式，然后一股脑儿地塞进了 <code>README.md</code>。但这只是万里长征的第一步。我的目标是让每个书签都有 <strong>AI 生成的摘要和分类</strong>。</p>
+
+<p>我想到了最近很火的 Gemini，它的命令行工具 <code>gemini-cli</code> 看起来很适合用来做批处理。于是，我开始了我的踩坑之旅：</p>
+
+<ol>
+<li><strong>初次尝试（失败）</strong>：我用 <strong>Playwright</strong> 写了个脚本，模拟浏览器去访问我的 230 个书签链接，把每个页面的完整 HTML 都抓取下来。结果，所有内容加起来足足有 <strong>165MB</strong>。</li>
+<li><strong>分割文件 + Gemini CLI（失败）</strong>：我把这 165MB 的内容按每个网页一个文件进行分割，然后尝试用 <code>gemini-cli</code> 遍历所有文件，让它为每个 HTML 生成摘要和分类。结果，Gemini 的上下文窗口有限，而且 API 调用非常非常慢，一个下午过去，才处理了不到 80 个。果断放弃。</li>
+<li><strong>打包上传 AI Studio（失败）</strong>：我想，单个处理不行，那就打包处理。我用 Python 脚本把网页按每 20 个一组进行打包，但每个包的文件大小仍在 5MB ~ 14MB 之间。这个大小对于直接上传到 Google AI Studio 来说还是太大了，此路不通。</li>
+<li><strong>精简内容 + 手动处理（成功！）</strong>：看来问题出在原始 HTML 内容太庞杂了。我再次修改脚本，在分割文件的同时，引入 <strong><code>html2text</code></strong> 库，将臃肿的 HTML 转换成纯文本。这下效果立竿见影，每 20 个网页打包成的文件只有 <strong>400KB ~ 600KB</strong>。</li>
+<li><strong>AI 手工操作</strong>：我将这 13 个（230/20 ≈ 13）处理过的文本文件，<strong>手动一个个上传</strong>到 Google AI Studio。然后，通过精心设计的 Prompt，让 AI 为文件里的每一个链接都生成摘要，并整理成我想要的 Markdown 格式。</li>
+<li><strong>最终分类</strong>：我把 AI 生成的所有摘要内容汇总到一个 <code>summary.md</code> 文件里。最后，再把这个汇总文件上传给 AI Studio，给它下达最终指令：“请根据这些内容的摘要，将所有链接按技术领域、生活、思考等类别进行分类整理。”</li>
+</ol>
+
+<p>最终，我得到了完美的分类归档文件：<a href="https://github.com/zhu327/bookmark/blob/main/category.md">category.md</a>。虽然过程曲折，但看到整齐划一的成果时，一切都值了。</p>
+
+<h3 id="3-新增书签-交给-github-actions-吧">3. 新增书签？交给 GitHub Actions 吧！</h3>
+
+<p>处理完存量数据，接下来就要考虑如何自动化地处理每一个新增的书签了。我的思路是，让万能的 <strong>GitHub Actions</strong> 来扮演这个智能管家的角色。</p>
+
+<p>整个流程如下：</p>
+
+<ol>
+<li><strong>触发</strong>：每当我通过 <code>osmos::memo</code> 插件向 <code>README.md</code> 添加新链接并推送到 GitHub 时，就会自动触发 GitHub Actions 的 workflow。</li>
+<li><strong>解析</strong>：在 workflow 中运行的 Python 脚本 (<code>process_bookmarks.py</code>) 会使用 <code>git diff</code> 命令，精准地找出 <code>README.md</code> 中新增加的那一行书签链接。</li>
+<li><strong>抓取内容</strong>：为了避免自己写爬虫遇到的各种反爬问题，我选择了一个非常棒的工具——<a href="https://jina.ai/reader/">jina reader</a>。通过调用它的 API (<code>https://r.jina.ai/URL</code>)，可以直接获取到目标链接页面的干净、规范的 Markdown 文本。</li>
+<li><strong>生成摘要</strong>：将获取到的 Markdown 文本发送给 LLM API，让它生成一段简洁的摘要。</li>
+<li><strong>智能分类</strong>：将链接的原始标题和 AI 生成的摘要再次组合，发送给 LLM API，让它判断这个链接应该属于哪个分类。</li>
+<li><strong>写入归档</strong>：最后，脚本会按照 <code>[标题](链接) - 摘要</code> 的格式，将这条全新的、处理好的书签信息，追加到 <code>category.md</code> 文件对应的分类下。</li>
+</ol>
+
+<p>就这样，一套完全自动化的 AI 书签整理流程就诞生了。我只需要在浏览器上点一下收藏，剩下的抓取、摘要、分类、归档工作，都由我的 AI 管家在云端默默完成。</p>
+
+<h3 id="4-拥有你自己的-ai-书签">4. 拥有你自己的 AI 书签</h3>
+
+<p>这套方案我已经开源在 GitHub 上：<a href="https://github.com/zhu327/bookmark">https://github.com/zhu327/bookmark</a></p>
+
+<p>目前我使用的 LLM API 是由硅基流动提供的免费模型 <strong>deepseek-ai/DeepSeek-R1-0528-Qwen3-8B</strong>，效果相当不错。如果你也对这个方案感兴趣，可以非常简单地拥有自己的 AI 书签：</p>
+
+<ol>
+<li><strong>Fork</strong> 这个仓库。</li>
+<li>在你的仓库 <code>Settings -&gt; Secrets and variables -&gt; Actions</code> 中，添加两个 <code>Repository secrets</code>：
+
+<ul>
+<li><code>LLM_API_URL</code>: 兼容 OpenAI API 格式的大模型接口地址，例如 <code>https://api.siliconflow.cn/v1/chat/completions</code>。</li>
+<li><code>OPENAI_API_KEY</code>: 调用该 API 所需的 Key。</li>
+</ul></li>
+</ol>
+
+<p>当然，这个方案也并非完美。比如对于有严格反爬策略的网站（点名微信公众号），<code>jina reader</code> 也无能为力，无法直接获取到文章内容。</p>
+
+<h3 id="总结">总结</h3>
+
+<p>在后 Pocket 时代，借助 LLM 的强大能力，我的个人书签系统完成了一次有趣的进化。它不再是一个依赖于第三方在线服务的传统书签，而是变成了一个由我自己掌控、活在 GitHub 上的智能知识库。所有数据都以 Markdown 格式清晰地存储，检索也变得前所未有的简单——打开 <code>category.md</code>，按下 <code>CTRL + F</code> 即可。</p>
+
+<p>这个小项目让我再次感受到，将 AI 作为一种工具融入到个人工作流中，能够迸发出巨大的能量。它不仅解决了我的实际问题，也让整个过程充满了探索和创造的乐趣。</p>
+
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

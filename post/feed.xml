@@ -6,10 +6,25 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 02 Apr 2025 10:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 07 Jul 2025 14:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>2025-07-07-打造一个属于自己的AI书签</title>
+      <link>https://zhu327.github.io/2025/07/07/2025-07-07-%E6%89%93%E9%80%A0%E4%B8%80%E4%B8%AA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84ai%E4%B9%A6%E7%AD%BE/</link>
+      <pubDate>Mon, 07 Jul 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/07/07/2025-07-07-%E6%89%93%E9%80%A0%E4%B8%80%E4%B8%AA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84ai%E4%B9%A6%E7%AD%BE/</guid>
+      <description>前言 我一直是个重度的书签使用者，多年来都依赖 Pocket 来收藏和沉淀那些在网上看到的、值得一读的文章。然而，最近 Pocket 宣布其通知服务即将关闭，这对我来说像是一个信号，是时候去寻找一个更稳定、更可控的替代品了。
+我的探索之旅就这样开始了：
+ Raindrop.io：社区里很多人推荐，功能也确实强大。但不知道是不是网络原因，我这边访问起来总是感觉有点慢，而且用惯了 Pocket 的我，对它的界面和交互逻辑始终有些不太习惯。 自建服务：作为程序员，第一反应自然是自己动手。我找到了像 linkding 这样的优秀开源项目。我尝试把它部署在 fly.io 的免费实例上，但 linkding 对资源的要求不低，最低配的 256M 内存实例直接就 OOM (Out of Memory) 了，升级配置又意味着成本。 从零开始写一个？ 这个念头一闪而过。我甚至构思好了技术选型：参照 linkding 的功能，用我最近在学习的 Rust 实现后端，部署在 Cloudflare Workers 上，再配上 Cloudflare D1 的 SQLite 数据库。这套方案 Serverless、成本极低，堪称完美。但转念一想，这工程量可不小，对于业余项目来说，我实在没有那么多时间投入进去。  就在我快要放弃，准备将就着用某个方案时，我想起了一篇以前收藏过的文章。
+1. 灵感乍现：LLM x GitHub 书签 那篇文章是 LLM x 书签收藏：摘要 &amp;amp; 全文索引，作者提供了一个极具创意的思路：通过一个浏览器插件 osmos::memo，可以将书签直接保存到指定 GitHub 仓库的 README.md 文件里。
+这个方案瞬间击中了我！它足够简单，没有多余的功能，完美符合我的需求。数据就躺在自己的 GitHub 仓库里，再也不用担心服务关停。虽然原文后续介绍了如何利用 LLM 对书签进行摘要和索引，但我觉得还可以更进一步，改造成一个完全自动化、更符合我使用习惯的流程。
+说干就干，我立刻创建了一个新的仓库 bookmark，准备开始我的改造计划。
+2. 存量数据的漫漫迁移路 要打造新家，首先得把老家的家当搬过去。第一步，就是处理从 Pocket 导出的几百条存量书签。</description>
+    </item>
     
     <item>
       <title>我理解的AI Agent与MCP</title>
