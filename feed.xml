@@ -15,9 +15,7 @@
       <pubDate>Mon, 07 Jul 2025 14:55:52 &#43;0800</pubDate>
       
       <guid>https://zhu327.github.io/2025/07/07/2025-07-07-%E6%89%93%E9%80%A0%E4%B8%80%E4%B8%AA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84ai%E4%B9%A6%E7%AD%BE/</guid>
-      <description>
-
-&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
 
 &lt;p&gt;我一直是个重度的书签使用者，多年来都依赖 Pocket 来收藏和沉淀那些在网上看到的、值得一读的文章。然而，最近 Pocket 宣布其通知服务即将关闭，这对我来说像是一个信号，是时候去寻找一个更稳定、更可控的替代品了。&lt;/p&gt;
 
@@ -30,6 +28,8 @@
 &lt;/ol&gt;
 
 &lt;p&gt;就在我快要放弃，准备将就着用某个方案时，我想起了一篇以前收藏过的文章。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;1-灵感乍现-llm-x-github-书签&#34;&gt;1. 灵感乍现：LLM x GitHub 书签&lt;/h3&gt;
 
@@ -97,8 +97,7 @@
 
 &lt;p&gt;在后 Pocket 时代，借助 LLM 的强大能力，我的个人书签系统完成了一次有趣的进化。它不再是一个依赖于第三方在线服务的传统书签，而是变成了一个由我自己掌控、活在 GitHub 上的智能知识库。所有数据都以 Markdown 格式清晰地存储，检索也变得前所未有的简单——打开 &lt;code&gt;category.md&lt;/code&gt;，按下 &lt;code&gt;CTRL + F&lt;/code&gt; 即可。&lt;/p&gt;
 
-&lt;p&gt;这个小项目让我再次感受到，将 AI 作为一种工具融入到个人工作流中，能够迸发出巨大的能量。它不仅解决了我的实际问题，也让整个过程充满了探索和创造的乐趣。&lt;/p&gt;
-</description>
+&lt;p&gt;这个小项目让我再次感受到，将 AI 作为一种工具融入到个人工作流中，能够迸发出巨大的能量。它不仅解决了我的实际问题，也让整个过程充满了探索和创造的乐趣。&lt;/p&gt;</description>
     </item>
     
     <item>
