@@ -7,7 +7,183 @@
     <language>zh-cn</language>
     
     
-    <updated>Mon, 07 Jul 2025 14:55:52 &#43;0800</updated>
+    <updated>Mon, 04 Aug 2025 14:55:52 &#43;0800</updated>
+    
+    <item>
+      <title>整洁架构落地实践</title>
+      <link>https://zhu327.github.io/2025/08/04/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Mon, 04 Aug 2025 14:55:52 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/08/04/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</guid>
+      <description>&lt;p&gt;最近在新公司接手了一个历史悠久的项目，功能不多，代码量却不小。深入其中，才发现有太多太多的槽点，简直让人头大。每当要新增一个功能或者修复一个 Bug，都感觉像是在雷区里跳舞，步步惊心。&lt;/p&gt;
+
+&lt;p&gt;总结下来，这个项目主要有这么几个“硬伤”：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;代码逻辑不内聚&lt;/strong&gt;：同一个功能的实现，像天女散花一样分散在好几个不同的文件里，想理清完整的逻辑链条，得在 IDE 里跳来跳去，极其耗费心智。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分层过多且混乱&lt;/strong&gt;：一个简单的请求，要穿越重重关卡，经过好几个层级的调用才能抵达终点。有时你都分不清某一层到底是干嘛的，感觉纯粹是为了分层而分层。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内部自研框架不好用&lt;/strong&gt;：项目依赖了一个内部的 &lt;code&gt;kgo&lt;/code&gt; 框架，但文档缺失，设计理念也比较陈旧，出了问题排查起来非常困难。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;外部依赖离散&lt;/strong&gt;：对数据库、缓存、外部 API 的调用封装得五花八门，没有统一的规范和入口，整个项目像一个杂乱的“百宝箱”。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;恰好，Leader 对这个项目制定了新的方向与目标，之前这些遗留问题实实在在成了我们前进路上的绊脚石。因此，一次彻底的架构升级与重构势在必行。同时，部门内也正在推广项目规范化和最佳实践输出，这简直是天赐良机。&lt;/p&gt;
+
+&lt;p&gt;很久以前我就读过《架构整洁之道》这本书，在之前的项目中也或多或少受到一些启发，但从未有机会从一个项目初始就完整地贯彻整洁架构的理念。这次，我决定抓住机会，来一场彻彻底底的整洁架构实践。在这个过程中，我感觉自己对整洁架构的理解，以及对 SOLID 原则的落地方式，都有了前所未有的深入体会。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;在实践的过程中，我将心得与经验沉淀下来，开源了一个即开即用的 Go 整洁架构项目模板，希望能给有同样需求的同学一些参考：
+&lt;strong&gt;&lt;a href=&#34;https://github.com/zhu327/go-clean-arch&#34;&gt;https://github.com/zhu327/go-clean-arch&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;项目模板特性&#34;&gt;项目模板特性&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Clean Architecture&lt;/strong&gt;: 清晰地分离业务逻辑与基础设施。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dependency Injection&lt;/strong&gt;: 使用 Google Wire 实现编译时依赖注入，避免反射。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Structured Logging&lt;/strong&gt;: 开箱即用的结构化日志。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Configuration Management&lt;/strong&gt;: 基于 Viper 的环境化配置管理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Docker Support&lt;/strong&gt;: 包含 &lt;code&gt;Dockerfile&lt;/code&gt; 和 &lt;code&gt;docker-compose.yaml&lt;/code&gt;，便于部署。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;架构设计&#34;&gt;架构设计&lt;/h3&gt;
+
+&lt;p&gt;这个项目严格遵循整洁架构（Clean Architecture）的原则，确保代码库的可扩展性、可维护性和可测试性。&lt;/p&gt;
+
+&lt;h4 id=&#34;各层描述&#34;&gt;各层描述&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;🔵 Domain 层&lt;/strong&gt;: 包含核心的业务逻辑和实体。它是最独立的层，不依赖于任何其他层。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;🟣 Use Case 层&lt;/strong&gt;: 通过与 Domain 层交互来编排业务工作流。它定义了供 Adapter 层实现的接口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;🟠 Adapter 层&lt;/strong&gt;: 作为与外部世界（如 UI、数据库、外部 API）沟通的桥梁。它实现了 Use Case 层定义的接口。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;🟢 External World&lt;/strong&gt;: 代表与应用程序交互的外部系统，如 Web 客户端、数据库或第三方服务。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;核心原则&#34;&gt;核心原则&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;依赖方向&lt;/strong&gt;: 所有依赖都必须指向内部。Domain 层位于中心，任何内层都不能依赖于外层。这是依赖倒置的核心。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接口隔离&lt;/strong&gt;: 接口由消费者（Use Case 层）定义，由提供者（Adapter 层）实现。这使得业务逻辑与基础设施细节解耦。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分层隔离&lt;/strong&gt;: 每一层只与它的相邻层交互，保持清晰的职责分离。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;项目结构&#34;&gt;项目结构&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;internal/
+├── domain/          # Domain 层 (业务实体和规则)
+├── usecase/         # Use Case 层 (业务逻辑, 接口, DTOs)
+├── adapter/         # Adapter 层
+│   ├── delivery/    # 交付机制 (例如, HTTP, gRPC handlers)
+│   ├── repository/  # 仓库实现 (数据库访问)
+│   └── gateway/     # 到外部服务的网关
+└── di/              # 依赖注入配置 (Wire)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;实践中的思考与-顿悟&#34;&gt;实践中的思考与“顿悟”&lt;/h3&gt;
+
+&lt;p&gt;理论总是美好的，但实践才是检验真理的唯一标准。在重构过程中，我遇到了不少困惑，也收获了很多“原来如此”的顿悟时刻。&lt;/p&gt;
+
+&lt;h4 id=&#34;1-每一层到底应该放什么&#34;&gt;1. 每一层到底应该放什么？&lt;/h4&gt;
+
+&lt;p&gt;刚开始划分代码时，我经常会纠结一个结构体、一个文件到底该放在哪。经过反复的思考和试错，我总结出了一套相对清晰的指导方针。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;internal/domain/&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;✅ 应该包含&lt;/strong&gt;: 核心业务实体（代表业务对象的 Struct）、值对象、领域服务接口、与领域相关的枚举和常量。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;❌ 不应包含&lt;/strong&gt;: HTTP 请求/响应结构体、分页或 API 特定数据等应用级概念、任何基础设施细节（如 JSON 标签）。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;internal/usecase/&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;✅ 应该包含&lt;/strong&gt;: 具体业务用例的实现（如 &lt;code&gt;CreateUser&lt;/code&gt;, &lt;code&gt;LoginUser&lt;/code&gt;）、依赖项的接口定义（如 &lt;code&gt;UserRepository&lt;/code&gt;）、请求和响应的 DTO（数据传输对象）。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;internal/adapter/&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;✅ 应该包含&lt;/strong&gt;: 将请求转换为用例调用的 HTTP/gRPC 处理器、实现 Use Case 层接口的数据库仓库、外部服务的客户端（网关）。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;通过这个项目我深刻地体会到，&lt;strong&gt;项目的根本目的是解决现实世界的问题&lt;/strong&gt;。我们需要对现实中的实体进行建模，这就是 &lt;code&gt;domain&lt;/code&gt; 层的使命。这个实体必须纯粹，不依赖任何外部技术，只包含自身的业务规则和逻辑。&lt;/p&gt;
+
+&lt;p&gt;而 &lt;code&gt;usecase&lt;/code&gt; 层，则是针对领域模型的一次具体应用和落地。它需要依赖外部能力，比如查询一次数据库、调用一次 gRPC。这时，&lt;strong&gt;我们不应该直接在 &lt;code&gt;usecase&lt;/code&gt; 中去 new 一个 DB client&lt;/strong&gt;。而是应该在 &lt;code&gt;usecase&lt;/code&gt; 中定义业务所需的 &lt;code&gt;interface&lt;/code&gt;，然后由 &lt;code&gt;adapter&lt;/code&gt; 层的 &lt;code&gt;repository&lt;/code&gt; 或 &lt;code&gt;gateway&lt;/code&gt; 来实现这些接口。&lt;/p&gt;
+
+&lt;p&gt;这样一来，&lt;code&gt;repository&lt;/code&gt; 就不再只是对 GORM 或 &lt;code&gt;sqlx&lt;/code&gt; 的简单封装，它变成了 &lt;code&gt;usecase&lt;/code&gt; 接口的具体“提供者”。它需要将从数据库查出的数据模型，转换为 &lt;code&gt;usecase&lt;/code&gt; 能理解的 &lt;code&gt;domain&lt;/code&gt; 模型。最后，通过依赖注入，实现了完美的依赖倒置。&lt;/p&gt;
+
+&lt;h4 id=&#34;2-关于依赖注入-从排斥到接受&#34;&gt;2. 关于依赖注入：从排斥到接受&lt;/h4&gt;
+
+&lt;p&gt;在以往的项目中，我基本没用过依赖注入，项目里充斥着各种 &lt;code&gt;init()&lt;/code&gt; 函数和全局变量，给测试和维护带来了无尽的痛苦。后来接触到依赖注入，有个老哥自己撸了一套基于反射的 DI 框架，读他的代码真的太难受了，完全不知道依赖到底是怎么注入进来的，魔法感十足，这导致我对依赖注入一度有先入为主的排斥。&lt;/p&gt;
+
+&lt;p&gt;但在实践整洁架构的过程中，由于 &lt;code&gt;usecase&lt;/code&gt; 必须做依赖倒置，我不得不引入 DI 工具。最终选择了 Google 的 &lt;code&gt;wire&lt;/code&gt;。用过之后才发现，&lt;strong&gt;它其实并没有什么魔法&lt;/strong&gt;，只是通过扫描代码，自动生成了那些“手动挡”的初始化代码而已（&lt;code&gt;wire_gen.go&lt;/code&gt;）。相对于通过反射实现的“自动挡”，这种代码生成的方式让一切依赖关系都变得明确和可知，可读性好太多了。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-dto-的归属之争&#34;&gt;3. DTO 的归属之争&lt;/h4&gt;
+
+&lt;p&gt;这是一个让我纠结了很久的问题。&lt;code&gt;usecase&lt;/code&gt; 理想情况下只应该依赖 &lt;code&gt;domain&lt;/code&gt; 定义的模型。然而在实际业务中，总会有一些不属于 &lt;code&gt;domain&lt;/code&gt; 核心模型的结构，比如 &lt;code&gt;CreateUserRequest&lt;/code&gt;、&lt;code&gt;UserListResponse&lt;/code&gt;。注意，这并非 &lt;code&gt;delivery&lt;/code&gt; 层用于解析 JSON 的结构体，而是 &lt;code&gt;usecase&lt;/code&gt; 自身执行业务逻辑所需要的数据结构。&lt;/p&gt;
+
+&lt;p&gt;我曾经犹豫过，要不要把这些结构体也塞进 &lt;code&gt;domain&lt;/code&gt; 层？&lt;/p&gt;
+
+&lt;p&gt;纠结过后，我得出的结论是：&lt;strong&gt;不能！一定要保持 &lt;code&gt;domain&lt;/code&gt; 层的纯粹性&lt;/strong&gt;。这些结构体实际上是和某个具体的 &lt;code&gt;usecase&lt;/code&gt; 强绑定的，它们应该属于 &lt;code&gt;usecase&lt;/code&gt; 层。所以，我在 &lt;code&gt;usecase&lt;/code&gt; 层下也创建了 &lt;code&gt;dto&lt;/code&gt; 目录，用来存放这些用例专属的请求/响应结构。&lt;/p&gt;
+
+&lt;p&gt;这确实会导致 &lt;code&gt;delivery&lt;/code&gt; (HTTP) 层和 &lt;code&gt;usecase&lt;/code&gt; 层可能都有各自的 DTO，初看可能会有些冗余和困惑。但这样做的好处是职责更清晰，&lt;code&gt;usecase&lt;/code&gt; 不会因为 &lt;code&gt;delivery&lt;/code&gt; 层的变化（比如修改一个 JSON 字段名）而被迫修改。这是为了层与层之间的解耦，必须付出的代价。&lt;/p&gt;
+
+&lt;h4 id=&#34;4-我终于悟了-在调用者包中定义接口&#34;&gt;4. 我终于悟了：“在调用者包中定义接口”&lt;/h4&gt;
+
+&lt;p&gt;我之前读到过 Go 社区的一个广为流传的建议（出自 &lt;a href=&#34;https://colobu.com/gotips/018.html&#34;&gt;colobu.com/gotips/018.html&lt;/a&gt;）：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;在使用者的包中定义接口，而不是提供者的包中定义。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;说实话，在没有深入实践整洁架构之前，我对这条原则一直是一知半解。为什么接口要让“用的人”来定义，而不是“做的人”来定义呢？&lt;/p&gt;
+
+&lt;p&gt;在这次重构之后，我“悟了”。&lt;strong&gt;这不就是对“依赖倒置原则”最精准、最通俗的诠释吗！&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在我们的架构里：
+-   &lt;code&gt;usecase&lt;/code&gt; 是接口的&lt;strong&gt;使用者&lt;/strong&gt;（消费者）。
+-   &lt;code&gt;adapter&lt;/code&gt; 是接口的&lt;strong&gt;实现者&lt;/strong&gt;（提供者）。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;usecase&lt;/code&gt; 说：“我需要一个能根据用户 ID 找到用户，并返回 &lt;code&gt;domain.User&lt;/code&gt; 的能力，我不管你是从 MySQL、Redis 还是从文件中获取，总之，你得满足我定义的这个 &lt;code&gt;UserRepository&lt;/code&gt; 接口。”&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// in usecase/iface/repository.go
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;iface&lt;/span&gt;
+
+&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;your_project/internal/domain&amp;#34;&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;UserRepository&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;interface&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;FindByID&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;id&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;domain&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;User&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;error&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后，&lt;code&gt;adapter/repository&lt;/code&gt; 层去实现它。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// in adapter/repository/user_gorm.go
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;repository&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;// ...
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;r&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;userRepository&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;FindByID&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;id&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;domain&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;User&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;error&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;c1&#34;&gt;// gorm query logic...
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;// convert gorm model to domain.User
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这样做的好处是巨大的：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;完美解耦&lt;/strong&gt;：&lt;code&gt;usecase&lt;/code&gt; 只关心它需要什么，不关心底层如何实现。更换数据库实现对 &lt;code&gt;usecase&lt;/code&gt; 毫无影响。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;易于测试&lt;/strong&gt;：在为 &lt;code&gt;usecase&lt;/code&gt; 写单元测试时，我们可以轻而易举地 mock 这个 &lt;code&gt;UserRepository&lt;/code&gt; 接口，而无需一个真实的数据库连接。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;符合最小知识原则&lt;/strong&gt;：如果让 &lt;code&gt;adapter&lt;/code&gt; 来定义接口，它可能会暴露很多 &lt;code&gt;usecase&lt;/code&gt; 根本不需要的方法，增加了使用者的心智负担。而由使用者定义，则可以确保接口的精简和必要。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
+
+&lt;p&gt;从一个混乱的遗留项目开始，到最终落地一套清晰、可维护的整洁架构，这次重构之旅让我收获颇丰。整洁架构并不仅仅是一套死板的目录结构或分层规则，它更是一种引导我们写出高内聚、低耦合代码的思维方式。&lt;/p&gt;
+
+&lt;p&gt;它迫使我们去思考：
+-   什么是业务的核心？（Domain）
+-   业务流程是怎样的？（UseCase）
+-   技术细节如何与业务逻辑解耦？（Adapter &amp;amp; Dependency Inversion）&lt;/p&gt;
+
+&lt;p&gt;通过这次实践，我对依赖倒置、接口隔离等 SOLID 原则有了远比书本上更深刻的理解。当你真正理解了“为什么”要这么做，而不是仅仅停留在“是什么”和“怎么做”的层面时，你会发现，写出整洁、健壮的代码，其实是一件充满乐趣的事情。&lt;/p&gt;
+
+&lt;p&gt;希望这篇文章能为同样在重构道路上探索的你，提供一些有价值的参考与启发。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>打造一个属于自己的AI书签</title>
@@ -2020,115 +2196,6 @@ TAB script-binding stats/display-stats
 &lt;p&gt;&lt;a href=&#34;https://www.xiaoyuzhoufm.com/podcast/6456fdfc0a8e51c73e68d0cd&#34;&gt;https://www.xiaoyuzhoufm.com/podcast/6456fdfc0a8e51c73e68d0cd&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;通过以上这些订阅，我能及时了解到国外各种热门科技话题，而且是在中文环境中。有时候，在网络上找不到解决方案时，我们应该动动自己的脑筋，写些代码来解决问题。现在的互联网有各种免费资源，我们完全可以充分利用，通过这些资源改善我们的生活。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>2023年阅读分享：深度挖掘编程之道</title>
-      <link>https://zhu327.github.io/2024/01/10/2023%E5%B9%B4%E9%98%85%E8%AF%BB%E5%88%86%E4%BA%AB%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98%E7%BC%96%E7%A8%8B%E4%B9%8B%E9%81%93/</link>
-      <pubDate>Wed, 10 Jan 2024 10:55:52 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2024/01/10/2023%E5%B9%B4%E9%98%85%E8%AF%BB%E5%88%86%E4%BA%AB%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98%E7%BC%96%E7%A8%8B%E4%B9%8B%E9%81%93/</guid>
-      <description>&lt;p&gt;作为一个热衷于技术的程序员博主，我在2023年迎来了全新的阅读体验，将RSS作为我的主要信息源，并通过订阅Hacker News热门主题，持续深入英文技术文章的阅读。在这个过程中，我发现了一些真正精彩的文章，这些不仅仅是知识的积累，更是对编程之路的深刻思考。在这里，我将其中一些我认为值得分享的文章整理出来，推荐给各位看官，希望你们在学习中找到灵感，不断进步。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;基础篇&#34;&gt;&lt;strong&gt;基础篇&lt;/strong&gt;&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://tontinton.com/posts/database-fundementals/&#34;&gt;Database Fundamentals&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;在这篇文章中，作者深入浅出地介绍了数据库基础知识，对于构建稳健的数据存储系统至关重要。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://iq.thc.org/how-does-linux-start-a-process&#34;&gt;How does Linux start a process&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;深入理解Linux启动过程，从操作系统的角度探究进程的创建机制，对于理解底层原理有着重要的启发。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://labs.iximiuz.com/tutorials/container-networking-from-scratch&#34;&gt;How Container Networking Works - Building a Linux Bridge Network From Scratch&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;这篇教程详细讲解了如何从零开始构建一个Linux桥接网络，深入了解容器网络背后的原理。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.kawabangga.com/posts/5330&#34;&gt;有关 TLS/SSL 证书的一切&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;对于网络安全至关重要的TLS/SSL证书，本文涵盖了与之相关的方方面面，是一份权威的参考资料。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ibraheem.ca/posts/too-many-web-servers/&#34;&gt;Learning Async Rust With Entirely Too Many Web Servers&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Rust语言异步编程的学习之旅，通过构建多个Web服务器的过程，帮助读者更好地理解异步编程的精髓。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;技巧篇&#34;&gt;&lt;strong&gt;技巧篇&lt;/strong&gt;&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://johnnymetz.com/posts/slow-django-database-queries/&#34;&gt;Supercharge Your Django App: 7 Sneaky Tricks to Crush Slow Database Queries&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Django应用性能优化的七个技巧，解决慢查询问题，提升应用的响应速度。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://blog.europython.eu/kraken-technologies-how-we-organize-our-very-large-pythonmonolith/&#34;&gt;Kraken Technologies: How we organize our very large Python monolith&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Kraken Technologies分享了他们是如何组织庞大的Python单体应用的，对于大型项目的架构设计有很好的借鉴价值。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.b-list.org/weblog/2022/dec/19/boring-python-code-quality/&#34;&gt;Boring Python: code quality&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;通过讲解“无聊”的Python代码如何提高代码质量，本文强调了代码可读性和可维护性的重要性。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://sharats.me/posts/shell-script-best-practices/&#34;&gt;Shell Script Best Practices&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Shell脚本最佳实践，帮助你写出更加健壮和可维护的Shell脚本，提高命令行工具的质量。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.willett.io/posts/precepts/&#34;&gt;How to Build Software like an SRE&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;以SRE（Site Reliability Engineering）的视角，分享了构建高可用软件的原则和实践，对于追求系统稳定性的开发者尤为重要。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;通识篇&#34;&gt;&lt;strong&gt;通识篇&lt;/strong&gt;&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.huxiu.com/article/2440157.html&#34;&gt;OpenAI官方指南：如何让ChatGPT输出更好的结果？&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;了解如何利用OpenAI的ChatGPT模型获得更优质的输出结果，对于与自然语言处理相关的开发者有着实际指导意义。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.luu.io/posts/mature-engineer&#34;&gt;One common behavior seen in “mature” software engineers&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;本文探讨了“成熟”软件工程师中常见的一些行为，对于追求职业发展和技术成熟度的读者有很好的启示。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://huyenchip.com/2023/01/24/what-we-look-for-in-a-candidate.html&#34;&gt;What we look for in a resume&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;针对简历中的关键要素，分享了招聘者在候选人中寻找的特质，是一份实用的求职指南。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://jimmyislive.dev/posts/how-to-prioritize/&#34;&gt;How To Prioritize Tasks ?&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;学会如何合理优先级地处理任务，提高工作效率，这对于任何一位程序员都是必备的生存技能。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;这些建议的阅读材料希望能够为你在编程之路上提供新的思路和技能，让我们共同进步，迎接2024年更多的技术挑战！&lt;/p&gt;</description>
     </item>
     
   </channel>

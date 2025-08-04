@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      整洁架构落地实践 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2025. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">整洁架构落地实践</h1>
+  <span class="post-date">Aug 4 2025</span>
+  <p>最近在新公司接手了一个历史悠久的项目，功能不多，代码量却不小。深入其中，才发现有太多太多的槽点，简直让人头大。每当要新增一个功能或者修复一个 Bug，都感觉像是在雷区里跳舞，步步惊心。</p>
+
+<p>总结下来，这个项目主要有这么几个“硬伤”：</p>
+
+<ol>
+<li><strong>代码逻辑不内聚</strong>：同一个功能的实现，像天女散花一样分散在好几个不同的文件里，想理清完整的逻辑链条，得在 IDE 里跳来跳去，极其耗费心智。</li>
+<li><strong>分层过多且混乱</strong>：一个简单的请求，要穿越重重关卡，经过好几个层级的调用才能抵达终点。有时你都分不清某一层到底是干嘛的，感觉纯粹是为了分层而分层。</li>
+<li><strong>内部自研框架不好用</strong>：项目依赖了一个内部的 <code>kgo</code> 框架，但文档缺失，设计理念也比较陈旧，出了问题排查起来非常困难。</li>
+<li><strong>外部依赖离散</strong>：对数据库、缓存、外部 API 的调用封装得五花八门，没有统一的规范和入口，整个项目像一个杂乱的“百宝箱”。</li>
+</ol>
+
+<p>恰好，Leader 对这个项目制定了新的方向与目标，之前这些遗留问题实实在在成了我们前进路上的绊脚石。因此，一次彻底的架构升级与重构势在必行。同时，部门内也正在推广项目规范化和最佳实践输出，这简直是天赐良机。</p>
+
+<p>很久以前我就读过《架构整洁之道》这本书，在之前的项目中也或多或少受到一些启发，但从未有机会从一个项目初始就完整地贯彻整洁架构的理念。这次，我决定抓住机会，来一场彻彻底底的整洁架构实践。在这个过程中，我感觉自己对整洁架构的理解，以及对 SOLID 原则的落地方式，都有了前所未有的深入体会。</p>
+
+<p></p>
+
+<p>在实践的过程中，我将心得与经验沉淀下来，开源了一个即开即用的 Go 整洁架构项目模板，希望能给有同样需求的同学一些参考：
+<strong><a href="https://github.com/zhu327/go-clean-arch">https://github.com/zhu327/go-clean-arch</a></strong></p>
+
+<h3 id="项目模板特性">项目模板特性</h3>
+
+<ul>
+<li><strong>Clean Architecture</strong>: 清晰地分离业务逻辑与基础设施。</li>
+<li><strong>Dependency Injection</strong>: 使用 Google Wire 实现编译时依赖注入，避免反射。</li>
+<li><strong>Structured Logging</strong>: 开箱即用的结构化日志。</li>
+<li><strong>Configuration Management</strong>: 基于 Viper 的环境化配置管理。</li>
+<li><strong>Docker Support</strong>: 包含 <code>Dockerfile</code> 和 <code>docker-compose.yaml</code>，便于部署。</li>
+</ul>
+
+<h3 id="架构设计">架构设计</h3>
+
+<p>这个项目严格遵循整洁架构（Clean Architecture）的原则，确保代码库的可扩展性、可维护性和可测试性。</p>
+
+<h4 id="各层描述">各层描述</h4>
+
+<ul>
+<li><strong>🔵 Domain 层</strong>: 包含核心的业务逻辑和实体。它是最独立的层，不依赖于任何其他层。</li>
+<li><strong>🟣 Use Case 层</strong>: 通过与 Domain 层交互来编排业务工作流。它定义了供 Adapter 层实现的接口。</li>
+<li><strong>🟠 Adapter 层</strong>: 作为与外部世界（如 UI、数据库、外部 API）沟通的桥梁。它实现了 Use Case 层定义的接口。</li>
+<li><strong>🟢 External World</strong>: 代表与应用程序交互的外部系统，如 Web 客户端、数据库或第三方服务。</li>
+</ul>
+
+<h4 id="核心原则">核心原则</h4>
+
+<ol>
+<li><strong>依赖方向</strong>: 所有依赖都必须指向内部。Domain 层位于中心，任何内层都不能依赖于外层。这是依赖倒置的核心。</li>
+<li><strong>接口隔离</strong>: 接口由消费者（Use Case 层）定义，由提供者（Adapter 层）实现。这使得业务逻辑与基础设施细节解耦。</li>
+<li><strong>分层隔离</strong>: 每一层只与它的相邻层交互，保持清晰的职责分离。</li>
+</ol>
+
+<h4 id="项目结构">项目结构</h4>
+
+<pre><code>internal/
+├── domain/          # Domain 层 (业务实体和规则)
+├── usecase/         # Use Case 层 (业务逻辑, 接口, DTOs)
+├── adapter/         # Adapter 层
+│   ├── delivery/    # 交付机制 (例如, HTTP, gRPC handlers)
+│   ├── repository/  # 仓库实现 (数据库访问)
+│   └── gateway/     # 到外部服务的网关
+└── di/              # 依赖注入配置 (Wire)
+</code></pre>
+
+<h3 id="实践中的思考与-顿悟">实践中的思考与“顿悟”</h3>
+
+<p>理论总是美好的，但实践才是检验真理的唯一标准。在重构过程中，我遇到了不少困惑，也收获了很多“原来如此”的顿悟时刻。</p>
+
+<h4 id="1-每一层到底应该放什么">1. 每一层到底应该放什么？</h4>
+
+<p>刚开始划分代码时，我经常会纠结一个结构体、一个文件到底该放在哪。经过反复的思考和试错，我总结出了一套相对清晰的指导方针。</p>
+
+<ul>
+<li><p><strong><code>internal/domain/</code></strong></p>
+
+<ul>
+<li><strong>✅ 应该包含</strong>: 核心业务实体（代表业务对象的 Struct）、值对象、领域服务接口、与领域相关的枚举和常量。</li>
+<li><strong>❌ 不应包含</strong>: HTTP 请求/响应结构体、分页或 API 特定数据等应用级概念、任何基础设施细节（如 JSON 标签）。</li>
+</ul></li>
+
+<li><p><strong><code>internal/usecase/</code></strong></p>
+
+<ul>
+<li><strong>✅ 应该包含</strong>: 具体业务用例的实现（如 <code>CreateUser</code>, <code>LoginUser</code>）、依赖项的接口定义（如 <code>UserRepository</code>）、请求和响应的 DTO（数据传输对象）。</li>
+</ul></li>
+
+<li><p><strong><code>internal/adapter/</code></strong></p>
+
+<ul>
+<li><strong>✅ 应该包含</strong>: 将请求转换为用例调用的 HTTP/gRPC 处理器、实现 Use Case 层接口的数据库仓库、外部服务的客户端（网关）。</li>
+</ul></li>
+</ul>
+
+<p>通过这个项目我深刻地体会到，<strong>项目的根本目的是解决现实世界的问题</strong>。我们需要对现实中的实体进行建模，这就是 <code>domain</code> 层的使命。这个实体必须纯粹，不依赖任何外部技术，只包含自身的业务规则和逻辑。</p>
+
+<p>而 <code>usecase</code> 层，则是针对领域模型的一次具体应用和落地。它需要依赖外部能力，比如查询一次数据库、调用一次 gRPC。这时，<strong>我们不应该直接在 <code>usecase</code> 中去 new 一个 DB client</strong>。而是应该在 <code>usecase</code> 中定义业务所需的 <code>interface</code>，然后由 <code>adapter</code> 层的 <code>repository</code> 或 <code>gateway</code> 来实现这些接口。</p>
+
+<p>这样一来，<code>repository</code> 就不再只是对 GORM 或 <code>sqlx</code> 的简单封装，它变成了 <code>usecase</code> 接口的具体“提供者”。它需要将从数据库查出的数据模型，转换为 <code>usecase</code> 能理解的 <code>domain</code> 模型。最后，通过依赖注入，实现了完美的依赖倒置。</p>
+
+<h4 id="2-关于依赖注入-从排斥到接受">2. 关于依赖注入：从排斥到接受</h4>
+
+<p>在以往的项目中，我基本没用过依赖注入，项目里充斥着各种 <code>init()</code> 函数和全局变量，给测试和维护带来了无尽的痛苦。后来接触到依赖注入，有个老哥自己撸了一套基于反射的 DI 框架，读他的代码真的太难受了，完全不知道依赖到底是怎么注入进来的，魔法感十足，这导致我对依赖注入一度有先入为主的排斥。</p>
+
+<p>但在实践整洁架构的过程中，由于 <code>usecase</code> 必须做依赖倒置，我不得不引入 DI 工具。最终选择了 Google 的 <code>wire</code>。用过之后才发现，<strong>它其实并没有什么魔法</strong>，只是通过扫描代码，自动生成了那些“手动挡”的初始化代码而已（<code>wire_gen.go</code>）。相对于通过反射实现的“自动挡”，这种代码生成的方式让一切依赖关系都变得明确和可知，可读性好太多了。</p>
+
+<h4 id="3-dto-的归属之争">3. DTO 的归属之争</h4>
+
+<p>这是一个让我纠结了很久的问题。<code>usecase</code> 理想情况下只应该依赖 <code>domain</code> 定义的模型。然而在实际业务中，总会有一些不属于 <code>domain</code> 核心模型的结构，比如 <code>CreateUserRequest</code>、<code>UserListResponse</code>。注意，这并非 <code>delivery</code> 层用于解析 JSON 的结构体，而是 <code>usecase</code> 自身执行业务逻辑所需要的数据结构。</p>
+
+<p>我曾经犹豫过，要不要把这些结构体也塞进 <code>domain</code> 层？</p>
+
+<p>纠结过后，我得出的结论是：<strong>不能！一定要保持 <code>domain</code> 层的纯粹性</strong>。这些结构体实际上是和某个具体的 <code>usecase</code> 强绑定的，它们应该属于 <code>usecase</code> 层。所以，我在 <code>usecase</code> 层下也创建了 <code>dto</code> 目录，用来存放这些用例专属的请求/响应结构。</p>
+
+<p>这确实会导致 <code>delivery</code> (HTTP) 层和 <code>usecase</code> 层可能都有各自的 DTO，初看可能会有些冗余和困惑。但这样做的好处是职责更清晰，<code>usecase</code> 不会因为 <code>delivery</code> 层的变化（比如修改一个 JSON 字段名）而被迫修改。这是为了层与层之间的解耦，必须付出的代价。</p>
+
+<h4 id="4-我终于悟了-在调用者包中定义接口">4. 我终于悟了：“在调用者包中定义接口”</h4>
+
+<p>我之前读到过 Go 社区的一个广为流传的建议（出自 <a href="https://colobu.com/gotips/018.html">colobu.com/gotips/018.html</a>）：</p>
+
+<blockquote>
+<p><strong>在使用者的包中定义接口，而不是提供者的包中定义。</strong></p>
+</blockquote>
+
+<p>说实话，在没有深入实践整洁架构之前，我对这条原则一直是一知半解。为什么接口要让“用的人”来定义，而不是“做的人”来定义呢？</p>
+
+<p>在这次重构之后，我“悟了”。<strong>这不就是对“依赖倒置原则”最精准、最通俗的诠释吗！</strong></p>
+
+<p>在我们的架构里：
+-   <code>usecase</code> 是接口的<strong>使用者</strong>（消费者）。
+-   <code>adapter</code> 是接口的<strong>实现者</strong>（提供者）。</p>
+
+<p><code>usecase</code> 说：“我需要一个能根据用户 ID 找到用户，并返回 <code>domain.User</code> 的能力，我不管你是从 MySQL、Redis 还是从文件中获取，总之，你得满足我定义的这个 <code>UserRepository</code> 接口。”</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// in usecase/iface/repository.go
+</span><span class="c1"></span><span class="kn">package</span> <span class="nx">iface</span>
+
+<span class="kn">import</span> <span class="s">&#34;your_project/internal/domain&#34;</span>
+
+<span class="kd">type</span> <span class="nx">UserRepository</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="nx">FindByID</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">id</span> <span class="kt">uint</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">domain</span><span class="p">.</span><span class="nx">User</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+<span class="p">}</span></code></pre></div>
+<p>然后，<code>adapter/repository</code> 层去实现它。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// in adapter/repository/user_gorm.go
+</span><span class="c1"></span><span class="kn">package</span> <span class="nx">repository</span>
+
+<span class="c1">// ...
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">userRepository</span><span class="p">)</span> <span class="nx">FindByID</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">id</span> <span class="kt">uint</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">domain</span><span class="p">.</span><span class="nx">User</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// gorm query logic...
+</span><span class="c1"></span>    <span class="c1">// convert gorm model to domain.User
+</span><span class="c1"></span><span class="p">}</span></code></pre></div>
+<p>这样做的好处是巨大的：</p>
+
+<ol>
+<li><strong>完美解耦</strong>：<code>usecase</code> 只关心它需要什么，不关心底层如何实现。更换数据库实现对 <code>usecase</code> 毫无影响。</li>
+<li><strong>易于测试</strong>：在为 <code>usecase</code> 写单元测试时，我们可以轻而易举地 mock 这个 <code>UserRepository</code> 接口，而无需一个真实的数据库连接。</li>
+<li><strong>符合最小知识原则</strong>：如果让 <code>adapter</code> 来定义接口，它可能会暴露很多 <code>usecase</code> 根本不需要的方法，增加了使用者的心智负担。而由使用者定义，则可以确保接口的精简和必要。</li>
+</ol>
+
+<h3 id="总结">总结</h3>
+
+<p>从一个混乱的遗留项目开始，到最终落地一套清晰、可维护的整洁架构，这次重构之旅让我收获颇丰。整洁架构并不仅仅是一套死板的目录结构或分层规则，它更是一种引导我们写出高内聚、低耦合代码的思维方式。</p>
+
+<p>它迫使我们去思考：
+-   什么是业务的核心？（Domain）
+-   业务流程是怎样的？（UseCase）
+-   技术细节如何与业务逻辑解耦？（Adapter &amp; Dependency Inversion）</p>
+
+<p>通过这次实践，我对依赖倒置、接口隔离等 SOLID 原则有了远比书本上更深刻的理解。当你真正理解了“为什么”要这么做，而不是仅仅停留在“是什么”和“怎么做”的层面时，你会发现，写出整洁、健壮的代码，其实是一件充满乐趣的事情。</p>
+
+<p>希望这篇文章能为同样在重构道路上探索的你，提供一些有价值的参考与启发。</p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

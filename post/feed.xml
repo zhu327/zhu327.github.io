@@ -6,10 +6,34 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 07 Jul 2025 14:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 04 Aug 2025 14:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>整洁架构落地实践</title>
+      <link>https://zhu327.github.io/2025/08/04/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Mon, 04 Aug 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/08/04/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</guid>
+      <description>&lt;p&gt;最近在新公司接手了一个历史悠久的项目，功能不多，代码量却不小。深入其中，才发现有太多太多的槽点，简直让人头大。每当要新增一个功能或者修复一个 Bug，都感觉像是在雷区里跳舞，步步惊心。&lt;/p&gt;
+
+&lt;p&gt;总结下来，这个项目主要有这么几个“硬伤”：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;代码逻辑不内聚&lt;/strong&gt;：同一个功能的实现，像天女散花一样分散在好几个不同的文件里，想理清完整的逻辑链条，得在 IDE 里跳来跳去，极其耗费心智。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分层过多且混乱&lt;/strong&gt;：一个简单的请求，要穿越重重关卡，经过好几个层级的调用才能抵达终点。有时你都分不清某一层到底是干嘛的，感觉纯粹是为了分层而分层。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内部自研框架不好用&lt;/strong&gt;：项目依赖了一个内部的 &lt;code&gt;kgo&lt;/code&gt; 框架，但文档缺失，设计理念也比较陈旧，出了问题排查起来非常困难。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;外部依赖离散&lt;/strong&gt;：对数据库、缓存、外部 API 的调用封装得五花八门，没有统一的规范和入口，整个项目像一个杂乱的“百宝箱”。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;恰好，Leader 对这个项目制定了新的方向与目标，之前这些遗留问题实实在在成了我们前进路上的绊脚石。因此，一次彻底的架构升级与重构势在必行。同时，部门内也正在推广项目规范化和最佳实践输出，这简直是天赐良机。&lt;/p&gt;
+
+&lt;p&gt;很久以前我就读过《架构整洁之道》这本书，在之前的项目中也或多或少受到一些启发，但从未有机会从一个项目初始就完整地贯彻整洁架构的理念。这次，我决定抓住机会，来一场彻彻底底的整洁架构实践。在这个过程中，我感觉自己对整洁架构的理解，以及对 SOLID 原则的落地方式，都有了前所未有的深入体会。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>打造一个属于自己的AI书签</title>
