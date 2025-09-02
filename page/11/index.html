@@ -78,6 +78,31 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/03/python%E7%8E%A9%E8%BD%AC%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">python玩转数据笔记:数据结构</a></h1>
+        <span class="post-date">May 3 2016</span>
+        <p>想储备点数据分析相关知识，所以抽了1天时间上了1门数据分析入门的公开课，记录一下学到的东西。</p>
+
+<blockquote>
+<p><a href="https://www.coursera.org/learn/hipython">python玩转数据</a></p>
+</blockquote>
+
+<h3 id="ndarray-多维数组">ndarray 多维数组</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span> <span class="c1"># 自动生成3*4的二维数组，全为1</span>
+<span class="n">array</span><span class="p">([[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
+<span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+       <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># 生成全为0</span>
+<span class="n">array</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 类似于range生成列表</span>
+<span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span></code></pre></div>
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/04/29/%E7%BD%91%E7%AB%99%E8%B4%A6%E5%8F%B7%E7%BB%91%E5%AE%9A%E5%BE%AE%E4%BF%A1%E6%96%B9%E6%A1%88/">网站账号绑定微信方案</a></h1>
         <span class="post-date">Apr 29 2016</span>
         <p>一般面向用户的网站都会有一些通知用户的需求，传统的方式会通过email，短信等等方式，鉴于微信的流行，像拉勾会使用微信来做通知。通过微信通知就需要把网站内部的账户体系与微信关联起来，目前体验比较好的绑定方式是通过微信扫描二维码来绑定用户账号。<br />
@@ -202,26 +227,6 @@ golang实现，最大的优点就是快，而且golang可以编译为二进制�
 </blockquote>
 
 <p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/03/07/blog%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95/">Blog更新记录</a></h1>
-        <span class="post-date">Mar 7 2016</span>
-        <p>周末花了点时间把许久没有动过的<a href="https://github.com/zhu327/blog">Blog</a>做了一些优化，优化的目标：更快，更省。</p>
-
-<h3 id="更快">更快</h3>
-
-<ol>
-<li>缓存SQL查询结果</li>
-<li>优化数据库表结构</li>
-<li>优化SQL查询语句</li>
-<li>使用misaka(C写的Markdown解析器)</li>
-</ol>
-
-<h3 id="更省">更省</h3>
-
-<p>用SAE KVDB替换Memcached
-</p>
     </div>
   
 </div>

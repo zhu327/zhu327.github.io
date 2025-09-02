@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Vibe Coding有感: 从PingSIX重构说起 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2025. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">Vibe Coding有感: 从PingSIX重构说起</h1>
+  <span class="post-date">Sep 2 2025</span>
+  <p>说到“Vibe Coding”，这个词最近在开发者圈子里越来越流行。在过去，我的实践很大程度上还停留在比较初级的阶段：把需求和代码片段在 ChatGPT、Google AI Studio 或是 Grok 之间来回地复制粘贴。来到新公司后，虽然开通了 GitHub Copilot，体验有所提升，但感觉它更多时候还是一个“超级智能补全”工具。直到今年7月份，公司给配上了 Cursor，我的编程体验才真正开启了一场变革，正式进入了 Vibe Coding 的奇妙旅程。</p>
+
+<p>恰好，距离我上次更新个人项目 <a href="https://github.com/zhu327/pingsix">PingSIX</a> 已经有一段时间了。PingSIX 是一个我基于 Cloudflare 高性能框架 Pingora 开发的 API 网关。两周前，Pingora 发布了 0.6.0 版本，这给了我一个绝佳的契机。我决定利用这个机会，彻底实践一次全程使用 Cursor 的 Vibe Coding，对 PingSIX 进行一次大重构。</p>
+
+<p>这次重构断断续续花了一周时间，最终新增了 6636 行代码，删除了 3578 行。这不仅仅是数字上的变化，整个项目在架构、可维护性、可读性、安全性及性能上，都达到了一个我自己非常满意的状态。</p>
+
+<p></p>
+
+<h3 id="我的-vibe-coding-工作流">我的 Vibe Coding 工作流</h3>
+
+<p>在这次重构之旅中，我逐渐摸索出了一套与 AI 高效协作的工作流。这套流程的核心思想是：<strong>你，作为程序员，依然是掌舵者；而 AI，是你最强大的副驾驶。</strong></p>
+
+<h4 id="1-选择对的-副驾-模型很重要">1. 选择对的“副驾”：模型很重要</h4>
+
+<p>工欲善其事，必先利其器。我尝试了 Cursor 内置的多个模型，最终发现 <strong>claude-4-sonnet</strong> 是我的首选。它表现最稳定，理解复杂上下文的能力很强，生成代码的质量也相当高，而且价格合适。其它模型或多或少会有些小问题，而 Sonnet 则提供了一种“无脑用”的稳定预期。</p>
+
+<h4 id="2-精准的指令-上下文工程是关键">2. 精准的指令：上下文工程是关键</h4>
+
+<p>把 AI 当成一个需要明确指令的初级程序员。在你让 Cursor 写代码前，<strong>必须先自己整理好需求</strong>。需求描述得越详细、越清晰，AI 生成的代码质量就越高。我会把相关的代码文件、需要调用的函数定义，都通过 <code>@</code> 符号添加到上下文中，为 AI 提供一个完整的“作战地图”。</p>
+
+<h4 id="3-从战略到战术-让-ai-先当-架构师">3. 从战略到战术：让 AI 先当“架构师”</h4>
+
+<p>如果你自己对某个功能也一头雾水，不知道该如何下手，那就先别急着让 AI 写代码。我会先打开 “Ask” 模式，把我的难题抛给它，让 LLM 帮我出谋划策。通过一遍遍的追问和迭代，更新我的需求，最终将 AI 提供的方案整理成一份详尽的文档，甚至细化到某个具体逻辑的实现步骤。有时，我还会让它<strong>先为我的设想编写单元测试</strong>，然后再让 Agent 遵循这份“蓝图”去实现功能代码。</p>
+
+<h4 id="4-你永远是代码的最终责任人">4. 你永远是代码的最终责任人</h4>
+
+<p>要时刻记住，LLM 的回答具有不确定性。它是一个强大的工具，但不能替代你的专业判断。我的原则是：<strong>先由我来确定“怎么写”的顶层设计，再让 LLM 来完成“体力活”</strong>。当代码生成后，<strong>Code Review 是必不可少的一环</strong>。仔细审查每一行代码，确保它完全符合你的预期。如果不确定，那就让 LLM 继续为这段代码补充单元测试，用测试用例来验证逻辑的正确性。</p>
+
+<h4 id="5-让-ai-成为你的-代码评审专家">5. 让 AI 成为你的“代码评审专家”</h4>
+
+<p>除了写代码，AI 在 Code Review 方面也表现出色。有时我们自己很难发现项目中的潜在问题，这时就可以借助 LLM 的视角。我会用下面这个 Prompt 来请求一次全面的“代码体检”：</p>
+
+<pre><code>你是一个Rust编程大师, API网关领域的专家, 请你从代码总体的架构, 可读性, 可维护性, 安全性, 性能方面全面的review我的项目代码, 给出你的分析报告, 并对有哪些代码需要修改给出具体的修改建议。
+</code></pre>
+
+<h3 id="从局部优化到全局审视-当ai助手遇到架构难题">从局部优化到全局审视：当AI助手遇到架构难题</h3>
+
+<p>在使用上述 Prompt 的过程中，我发现了一个 Cursor 的局限性。它的文件索引方式似乎是基于代码片段的向量化，这导致它在进行 Review 时，非常擅长发现局部的、函数级别的问题，但<strong>很难从项目整体的架构、分层和依赖关系上给出宏观的分析</strong>。</p>
+
+<p>为了解决这个问题，我引入了两个外部工具，形成了一套组合拳：</p>
+
+<ol>
+<li><strong><a href="https://gitingest.com">gitingest.com</a></strong>: 这个小工具能把整个项目的代码，按照文件结构，完整地生成一个 Markdown 文本。</li>
+<li><strong><a href="https://aistudio.google.com">aistudio.google.com</a></strong>: 我使用的是 Gemini 2.5 Pro 模型，它支持百万级别的 Token 上下文，足以一次性“吞下”我的整个项目代码。</li>
+</ol>
+
+<p>我的工作流变成了：使用 <code>gitingest</code> 打包项目 -&gt; 将生成的 Markdown 完整地粘贴到 Google AI Studio -&gt; 使用上面那个专家 Prompt 让 Gemini 进行全局审查。</p>
+
+<p>经过这个流程，我得到了一份详尽的“体检报告”，其深度和广度甚至超出了我的预期。下面是最近一次 Gemini Review 报告的一部分摘录：</p>
+
+<blockquote>
+<p>好的，作为一名在 Rust 编程和 API 网关领域都有深入研究的专家，我非常荣幸能为您审查 PingSIX 这个项目。</p>
+
+<p>首先，请允许我表达我的赞赏：<strong>这是一个非常出色、设计精良的项目</strong>。它不仅基于 Cloudflare Pingora 这一高性能框架，还在架构设计、代码实现和功能完整性上达到了很高的水準。许多设计决策，例如配置热加载的实现方式、插件系统的设计以及对安全性的关注，都体现了作者深厚的技术功底和对 API 网关领域的深刻理解。</p>
+
+<p>以下是我的综合分析报告，涵盖了总体架构、可读性、可维护性、安全性、性能以及具体的修改建议。</p>
+
+<hr />
+
+<h4 id="1-总体架构-overall-architecture">1. 总体架构 (Overall Architecture)</h4>
+
+<p><strong>分析:</strong>
+项目的整体架构是现代、模块化且高度可扩展的，非常符合云原生 API 网关的设计理念。</p>
+
+<ul>
+<li><strong>坚实的基础</strong>: 项目选择基于 Cloudflare 的 Pingora 框架，这是一个明智的决定。Pingora 提供了经过生产环境严酷考验的高性能、多线程的异步 I/O 核心，让项目可以专注于网关业务逻辑的实现，而不是底层网络细节。</li>
+<li><strong>配置驱动</strong>: &hellip; 特别是 Etcd 的集成，通过 <code>arc-swap</code> 和 <code>dashmap</code> 实现的配置热加载机制，是高性能网关的黄金标准&hellip;</li>
+<li><strong>逻辑分层清晰</strong>: 项目代码在 <code>src</code> 目录下按功能清晰地划分了模块（<code>config</code>, <code>proxy</code>, <code>plugin</code>, <code>admin</code>, <code>core</code> 等），职责分明。</li>
+<li><strong>共享服务设计</strong>: <code>SharedHealthCheckService</code> 的设计是一个关键的性能优化&hellip;</li>
+</ul>
+
+<p><strong>评价:</strong>
+架构设计堪称典范，无论是性能、可扩展性还是可靠性方面都考虑得非常周到，达到了业界领先水平。</p>
+
+<hr />
+
+<h4 id="2-代码可读性-readability">2. 代码可读性 (Readability)</h4>
+
+<p><strong>分析:</strong>
+*   <strong>命名规范</strong>: &hellip;
+*   <strong>注释质量高</strong>: &hellip;更重要的是解释了“为什么这么做”（The Why）&hellip;
+*   <strong>错误处理</strong>: &hellip;<code>ProxyError</code> 枚举类型非常完善&hellip;</p>
+
+<p><strong>评价:</strong>
+代码可读性极佳。</p>
+
+<hr />
+
+<h4 id="3-可维护性-maintainability">3. 可维护性 (Maintainability)</h4>
+
+<p><strong>分析:</strong>
+*   <strong>高内聚，低耦合</strong>: &hellip;
+*   <strong>强大的配置校验</strong>: &hellip;在 <code>src/config/mod.rs</code> 中大量使用了 <code>validator</code> crate&hellip;
+*   <strong>泛型编程的极致运用</strong>: <code>src/admin/mod.rs</code> 中的 <code>AdminResource</code> Trait 和 <code>ResourceHandler&lt;T&gt;</code> 泛型结构是可维护性的典范&hellip;</p>
+
+<p><strong>评价:</strong>
+项目的可维护性非常出色。</p>
+
+<hr />
+
+<h4 id="4-安全性-security">4. 安全性 (Security)</h4>
+
+<p><strong>分析:</strong>
+*   <strong>容器安全</strong>: <code>Dockerfile</code> 遵循了最佳实践，使用了多阶段构建&hellip;并且创建了一个低权限的非 root 用户&hellip;
+*   <strong>API 认证</strong>: &hellip;在比较密钥时使用了 <code>constant_time_eq</code> 函数，有效防止了时序攻击（Timing Attack）。
+*   <strong>TLS 配置</strong>: &hellip;代码强制将 TLS 的最低版本设置为 TLS 1.3&hellip;</p>
+
+<p><strong>评价:</strong>
+安全性设计考虑周全，遵循了行业内的安全最佳实践。</p>
+
+<hr />
+
+<h4 id="5-性能-performance">5. 性能 (Performance)</h4>
+
+<p><strong>分析:</strong>
+*   <strong>无锁热加载</strong>: 使用 <code>arc-swap</code> 来实现路由表&hellip;避免了读写锁带来的性能开销&hellip;
+*   <strong>高效的路由匹配</strong>: &hellip;通过<strong>反转主机名</strong>来巧妙地利用 <code>matchit</code> 的前缀匹配能力实现对通配符域名&hellip;这是一个极其聪明和高效的实现。
+*   <strong>预编译与缓存</strong>: &hellip;</p>
+
+<p><strong>评价:</strong>
+性能设计和优化做到了极致&hellip;<code>README.md</code> 中提到的性能指标（100K+ RPS, &lt;10ms P99 延迟）基于此架构是完全可信的。</p>
+
+<hr />
+
+<h3 id="总结">总结</h3>
+
+<p>PingSIX 是一个非常优秀的项目，其代码质量、架构设计和性能考量都达到了专业甚至顶尖的水平。它不仅是一个功能强大的 API 网关，更是一个极佳的 Rust 工程实践范例。
+&hellip;
+希望这份详尽的审查报告对您有所帮助！</p>
+</blockquote>
+
+<p>拿到这份宏观报告后，我就可以把其中具体的修改建议，一段段地贴回 Cursor，让它帮我完成代码的微调和优化。改完一轮，再打包给 Gemini 重新审查，如此循环，直到臻于完美。</p>
+
+<h3 id="一点感想">一点感想</h3>
+
+<p>LLM Agent 的强大无疑极大地提升了我的开发效率，但它也像一把双刃剑。这种前所未有的效率有时也会让上游的 PM 或 Leader 觉得：“反正你很快就能做出来，那我们就快速地改需求吧。” 结果可能导致我们做了很多功能，但真正沉淀和落地的却不多，这或许是“高效”时代下新的烦恼。</p>
+
+<p>面对层出不穷的新工具和新范式，我的建议是：<strong>先用起来再说</strong>。用的多了，体会自然就深了。别人的经验可以参考，但更重要的是在实践中找到最适合自己的那套 Vibe。</p>
+
+<p>我不确定 LLM 最终会不会淘汰程序员这个职业，但我能确定的是，<strong>会 Vibe Coding 的程序员，一定会淘汰不会 Vibe Coding 的程序员</strong>。所以，朋友们，都 Vibe起来吧！</p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

@@ -78,6 +78,14 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2024/04/10/%E7%8E%A9%E8%BD%AC-hacknews%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%A2%E9%98%85%E7%A7%91%E6%8A%80%E6%96%B0%E9%97%BB/">玩转 HackNews：如何正确订阅科技新闻</a></h1>
+        <span class="post-date">Apr 10 2024</span>
+        <p>近日，我在探索 HackNews 的过程中，收获了大量的新知识。然而，我发现自动订阅的 HackNews RSS 源并没有对热门话题进行筛选，导致我的 RSS 阅读器里充斥着我不感兴趣的话题。于是，我开始寻找适合自己的 HackNews RSS 订阅源。在众多选择中，我发现了 <a href="https://hnrss.org/newest?points=100">https://hnrss.org/newest?points=100</a>，这个源只推送热门话题，非常适合我。然而，由于全英文阅读有些繁琐，我又找到了 <a href="https://rsstranslator.com/">https://rsstranslator.com/</a> 这个提供翻译服务的网站，能将 HackNews 翻译成中文标题，非常便捷。但不幸的是，由于访问量过大，该网站已关闭服务并开源代码。在尝试了各种工具后未果，我决定自己动手解决这个问题。然而，我又不希望维护独立的服务，而刚好 <a href="https://blog.cloudflare.com/python-workers">Cloudflare Workers 开始支持 Python</a>，于是我决定使用 Cloudflare Workers 来实现这个服务。在评估了各种翻译 API 后，我选择了 Microsoft Azure 翻译 API，实现了免费翻译的功能。最终，我完成了这个项目 <a href="https://github.com/zhu327/workers-hnrss">workers-hnrss</a>，并且完全零成本部署。但在部署过程中，我发现 Cloudflare Workers 还不支持 <code>requirements.txt</code>，不过据他们的文档称，再过几周就会支持，所以我决定再等等，然后就可以在我的 RSS 阅读器上读到中文标题的 HackNews 了。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2024/01/10/2023%E5%B9%B4%E9%98%85%E8%AF%BB%E5%88%86%E4%BA%AB%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98%E7%BC%96%E7%A8%8B%E4%B9%8B%E9%81%93/">2023年阅读分享：深度挖掘编程之道</a></h1>
         <span class="post-date">Jan 10 2024</span>
         <p>作为一个热衷于技术的程序员博主，我在2023年迎来了全新的阅读体验，将RSS作为我的主要信息源，并通过订阅Hacker News热门主题，持续深入英文技术文章的阅读。在这个过程中，我发现了一些真正精彩的文章，这些不仅仅是知识的积累，更是对编程之路的深刻思考。在这里，我将其中一些我认为值得分享的文章整理出来，推荐给各位看官，希望你们在学习中找到灵感，不断进步。</p>
@@ -175,31 +183,6 @@ config dhcp <span class="s1">&#39;wan&#39;</span>
 </ol>
 
 <p>需要注意的是，虽然RSS在一些领域可能不再是主流，但它仍然是一种强大的工具，特别是对于那些喜欢通过订阅方式跟踪特定网站更新的用户。一些应用和服务仍然提供对RSS的支持。流行度的变化可能因用户群体和使用场景而异。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2023/01/09/%E4%BD%BF%E7%94%A8pyproject.toml%E4%BF%9D%E8%AF%81%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/">使用pyproject.toml保证代码质量</a></h1>
-        <span class="post-date">Jan 9 2023</span>
-        <h3 id="1-pyproject-toml是什么">1. pyproject.toml是什么</h3>
-
-<blockquote>
-<p><a href="https://python.freelycode.com/contribution/detail/1910">https://python.freelycode.com/contribution/detail/1910</a></p>
-</blockquote>
-
-<p>在使用<code>pyproject.toml</code>前, 我们的Python项目根目录下会存在很多项目相关的配置文件, 比如:</p>
-
-<ul>
-<li>requirements.txt</li>
-<li>requirements_dev.txt</li>
-<li>.flake8</li>
-<li>mypy.ini</li>
-<li>.isort.cfg</li>
-<li>.bandit</li>
-</ul>
-
-<p>我们的项目代码中充斥这这些与代码无关的配置, <code>pyproject.toml</code>就是用来统一纳管Python项目的所有这些配置的东西, 得到了以上大部分工具的支持.</p>
 
 <p></p>
     </div>

@@ -78,6 +78,18 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2025/09/02/vibe-coding%E6%9C%89%E6%84%9F-%E4%BB%8Epingsix%E9%87%8D%E6%9E%84%E8%AF%B4%E8%B5%B7/">Vibe Coding有感: 从PingSIX重构说起</a></h1>
+        <span class="post-date">Sep 2 2025</span>
+        <p>说到“Vibe Coding”，这个词最近在开发者圈子里越来越流行。在过去，我的实践很大程度上还停留在比较初级的阶段：把需求和代码片段在 ChatGPT、Google AI Studio 或是 Grok 之间来回地复制粘贴。来到新公司后，虽然开通了 GitHub Copilot，体验有所提升，但感觉它更多时候还是一个“超级智能补全”工具。直到今年7月份，公司给配上了 Cursor，我的编程体验才真正开启了一场变革，正式进入了 Vibe Coding 的奇妙旅程。</p>
+
+<p>恰好，距离我上次更新个人项目 <a href="https://github.com/zhu327/pingsix">PingSIX</a> 已经有一段时间了。PingSIX 是一个我基于 Cloudflare 高性能框架 Pingora 开发的 API 网关。两周前，Pingora 发布了 0.6.0 版本，这给了我一个绝佳的契机。我决定利用这个机会，彻底实践一次全程使用 Cursor 的 Vibe Coding，对 PingSIX 进行一次大重构。</p>
+
+<p>这次重构断断续续花了一周时间，最终新增了 6636 行代码，删除了 3578 行。这不仅仅是数字上的变化，整个项目在架构、可维护性、可读性、安全性及性能上，都达到了一个我自己非常满意的状态。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2025/08/04/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/">整洁架构落地实践</a></h1>
         <span class="post-date">Aug 4 2025</span>
         <p>最近在新公司接手了一个历史悠久的项目，功能不多，代码量却不小。深入其中，才发现有太多太多的槽点，简直让人头大。每当要新增一个功能或者修复一个 Bug，都感觉像是在雷区里跳舞，步步惊心。</p>
@@ -165,27 +177,6 @@
 </ol>
 
 <p>接下来，分享一些我在学习过程中用过且觉得不错的资源。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2025/01/10/%E4%BB%8E%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%93%B2%E5%AD%A6%E8%B0%88%E4%BB%A3%E7%A0%81%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E4%B8%8E%E5%BA%94%E5%AF%B9/">从《软件设计的哲学》谈代码的复杂性与应对</a></h1>
-        <span class="post-date">Jan 10 2025</span>
-        <p>几个月前读完了《软件设计的哲学》这本书，在结合自己多年的工作体会，对于代码的可读性，可维护性有了系统性的体会，然后基于我记录的读书笔记然后经过AI的润色，形成了这篇笔记。希望对你也有所帮助。</p>
-
-<p>读完《软件设计的哲学》，感觉像经历了一次代码的“深度体检”。这本书没有讲解具体的编码技巧，而是从更高的维度帮助我们重新审视代码复杂性的问题，并提出了许多实用的建议。今天，我想结合自己的理解，分享这本书带来的启发。</p>
-
-<h3 id="什么是代码的复杂性">什么是代码的复杂性？</h3>
-
-<p>简单来说，复杂性就是那些让系统难以理解和修改的因素。它不仅仅指代码的行数或逻辑深度，还包括：</p>
-
-<ul>
-<li><strong>难以理解</strong>：即便是自己写的代码，过一段时间可能也看不懂，更别提其他人。</li>
-<li><strong>修改成本高</strong>：一个小改动需要改动多个地方，甚至引发新的问题。</li>
-<li><strong>模糊的改动范围</strong>：不知道该修改哪些模块才能实现目标，或者不确定修改后是否会引发其他问题。</li>
-<li><strong>难以修复的错误</strong>：修复一个 bug 可能需要大量时间，还可能引入新的问题。</li>
-</ul>
 
 <p></p>
     </div>

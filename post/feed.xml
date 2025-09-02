@@ -6,10 +6,25 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 04 Aug 2025 14:55:52 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 02 Sep 2025 14:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Vibe Coding有感: 从PingSIX重构说起</title>
+      <link>https://zhu327.github.io/2025/09/02/vibe-coding%E6%9C%89%E6%84%9F-%E4%BB%8Epingsix%E9%87%8D%E6%9E%84%E8%AF%B4%E8%B5%B7/</link>
+      <pubDate>Tue, 02 Sep 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/09/02/vibe-coding%E6%9C%89%E6%84%9F-%E4%BB%8Epingsix%E9%87%8D%E6%9E%84%E8%AF%B4%E8%B5%B7/</guid>
+      <description>&lt;p&gt;说到“Vibe Coding”，这个词最近在开发者圈子里越来越流行。在过去，我的实践很大程度上还停留在比较初级的阶段：把需求和代码片段在 ChatGPT、Google AI Studio 或是 Grok 之间来回地复制粘贴。来到新公司后，虽然开通了 GitHub Copilot，体验有所提升，但感觉它更多时候还是一个“超级智能补全”工具。直到今年7月份，公司给配上了 Cursor，我的编程体验才真正开启了一场变革，正式进入了 Vibe Coding 的奇妙旅程。&lt;/p&gt;
+
+&lt;p&gt;恰好，距离我上次更新个人项目 &lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;PingSIX&lt;/a&gt; 已经有一段时间了。PingSIX 是一个我基于 Cloudflare 高性能框架 Pingora 开发的 API 网关。两周前，Pingora 发布了 0.6.0 版本，这给了我一个绝佳的契机。我决定利用这个机会，彻底实践一次全程使用 Cursor 的 Vibe Coding，对 PingSIX 进行一次大重构。&lt;/p&gt;
+
+&lt;p&gt;这次重构断断续续花了一周时间，最终新增了 6636 行代码，删除了 3578 行。这不仅仅是数字上的变化，整个项目在架构、可维护性、可读性、安全性及性能上，都达到了一个我自己非常满意的状态。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>整洁架构落地实践</title>
