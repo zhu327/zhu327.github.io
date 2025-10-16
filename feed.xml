@@ -87,17 +87,17 @@
 
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;它的唯一职责&lt;/strong&gt;：建立一个“无菌室”，只存放最核心、最纯粹的业务实体和业务规则。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;code&gt;kfinops&lt;/code&gt; 的实践:&lt;/strong&gt;
-&lt;code&gt;go
-// internal/domain/subdomain.go
-// 只有业务属性，没有json，gorm等任何技术标签
-type SubDomain struct {
-    ID         string // 纯粹的业务ID
-    FullDomain string
-    Status     SubDomainStatus
-}
-&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;效果：&lt;/strong&gt; 业务核心完全稳定。前端/数据库的任何变化，都不会触碰到这个文件。&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;kfinops&lt;/code&gt; 的实践:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// internal/domain/subdomain.go
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 只有业务属性，没有json，gorm等任何技术标签
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;SubDomain&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;ID&lt;/span&gt;         &lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 纯粹的业务ID
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;FullDomain&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;Status&lt;/span&gt;     &lt;span class=&#34;nx&#34;&gt;SubDomainStatus&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt; 业务核心完全稳定。前端/数据库的任何变化，都不会触碰到这个文件。&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -107,25 +107,26 @@ type SubDomain struct {
 &lt;li&gt;&lt;strong&gt;(🖼️ 视觉元素占位符: 洋葱图高亮第二层的 &amp;ldquo;Use Cases&amp;rdquo; 环)&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;(🎤 互动环节):&lt;/strong&gt; “举个手，谁遇到过想看懂一个功能，结果在IDE里跳了十几个文件的情况？”&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;痛点场景：&lt;/strong&gt; 业务流程像天女散花，心智负担极大，你根本找不到一个地方能看清这个功能的“剧本”。&lt;strong&gt;这就是业务流程的逻辑离散。&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;解药：一个清晰的【用例层 Use Case Layer】&lt;/strong&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;解药：一个清晰的【用例层 Use Case Layer】&lt;/strong&gt;&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;它的唯一职责&lt;/strong&gt;：像一个“导演”，负责编排一个完整的业务故事。一个Use Case就代表系统的一个能力。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;code&gt;kfinops&lt;/code&gt; 的实践:&lt;/strong&gt;
-&lt;code&gt;go
-// in internal/usecase/subdomain/service.go
-type SubDomainUseCase struct {
-    repo repository.SubDomainRepository // 依赖接口
-}
-func (uc *SubDomainUseCase) CreateSubDomain(...) error {
-    // 1. 验证输入 (DTO)                &amp;lt;-- 高亮
-    // 2. 创建 Domain 实体             &amp;lt;-- 高亮
-    // 3. 调用 Domain 实体业务方法      &amp;lt;-- 高亮
-    // 4. 通过【接口】进行持久化          &amp;lt;-- 高亮
-    return uc.repo.Save(ctx, domainEntity)
-}
-&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;效果：&lt;/strong&gt; 想理解一个功能，只需要看这一个文件。它清晰地讲述了“做什么（What）”，而不关心“怎么做（How）”。&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;kfinops&lt;/code&gt; 的实践:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// in internal/usecase/subdomain/service.go
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;SubDomainUseCase&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;repo&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;repository&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;SubDomainRepository&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 依赖接口
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;uc&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;SubDomainUseCase&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;CreateSubDomain&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;error&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;c1&#34;&gt;// 1. 验证输入 (DTO)                &amp;lt;-- 高亮
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;// 2. 创建 Domain 实体             &amp;lt;-- 高亮
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;// 3. 调用 Domain 实体业务方法      &amp;lt;-- 高亮
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;// 4. 通过【接口】进行持久化          &amp;lt;-- 高亮
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;uc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;repo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Save&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;domainEntity&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt; 想理解一个功能，只需要看这一个文件。它清晰地讲述了“做什么（What）”，而不关心“怎么做（How）”。&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
