@@ -78,6 +78,35 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/15/python-%E4%B8%AD%E7%9A%84%E5%85%83%E7%B1%BB/">Python 中的元类</a></h1>
+        <span class="post-date">Sep 15 2014</span>
+        <h3 id="参考">参考</h3>
+
+<p><a href="http://blog.jobbole.com/21351/">深刻理解Python中的元类(metaclass)</a></p>
+
+<h3 id="类与类的创建">类与类的创建</h3>
+
+<p>Python中的class也是object，所以类可以作为参数，作为函数返回值，作为对象获取属性。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">MyClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">myObject</span> <span class="o">=</span> <span class="n">MyClass</span><span class="p">()</span>
+
+<span class="nb">type</span><span class="p">(</span><span class="n">myObject</span><span class="p">)</span> <span class="c1"># 获取对象的类</span>
+<span class="c1"># &lt;class &#39;__main__.MyClass&#39;&gt;</span>
+
+<span class="nb">type</span><span class="p">(</span><span class="n">MyClass</span><span class="p">)</span> <span class="c1"># 所有的类都是type类的对象</span>
+<span class="c1"># &lt;type &#39;type&#39;&gt;</span>
+
+<span class="n">myObject</span><span class="o">.</span><span class="vm">__class__</span> <span class="c1"># 获取对象的类</span>
+<span class="c1"># &lt;class &#39;__main__.MyClass&#39;&gt;</span>
+
+<span class="n">MyClass</span><span class="o">.</span><span class="vm">__class__</span>
+<span class="c1"># &lt;type &#39;type&#39;&gt;</span></code></pre></div>
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/15/python-%E4%BD%BF%E7%94%A8-mysql/">Python 使用 MySQL</a></h1>
         <span class="post-date">Sep 15 2014</span>
         <h3 id="mysqldb基本使用方式">MySQLdb基本使用方式</h3>
@@ -144,36 +173,6 @@ Boz是一个用Python实现的轻量级Blog程序。<br />
 <li><a href="https://github.com/zhu327/boz/tree/awesome">awesome</a>：廖雪峰教程的标准实现</li>
 <li>master：: 部署在SAE(Sina App Engine)的版本</li>
 </ol>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/1/01/01/%E7%BC%96%E5%86%99%E5%8F%AF%E7%BB%B4%E6%8A%A4%E7%9A%84%E4%BB%A3%E7%A0%81----%E9%9D%A2%E5%90%91ai%E7%BC%96%E7%A8%8B/">编写可维护的代码 -- 面向AI编程</a></h1>
-        <span class="post-date">Jan 1 0001</span>
-        <p>这是最近在小组内做的一次技术分享的文字稿, 总体来说我觉得没有表达出特别硬核的内容, 我本身也希望说这次分享不用讲的太硬核, 在分享的开头还设计了互动环节, 分享的过程中也尝试加入一些问答来互动, 奈何现公司的技术氛围确实比较沉闷, 似乎同事都比较I, 好在最后的问答环节有几个比较好的问题, 总体来说还算是一次成功的分享吧, 希望自己能输出更多的好内容。</p>
-
-<h4 id="p1-我们写的代码是写给谁看的"><strong>P1: 我们写的代码是写给谁看的?</strong></h4>
-
-<ul>
-<li><strong>(🎤 互动环节):</strong> “大家有没有过接手一个项目时，看到的第一感觉是：我该从哪下手？结果花了三天才搞明白一个功能的逻辑。有过类似经历的兄弟举个手我看看？”</li>
-<li>小说家写小说给读者，建筑师盖房子给业主&hellip; 那我们程序员写代码，最终是写给未来的自己，和接手我们代码的同事看的。</li>
-<li>代码的可维护性，决定了我们是在“创造价值”还是在“创造负债”。</li>
-</ul>
-
-<h4 id="p2-举几个代码坏味道的例子"><strong>P2: 举几个代码坏味道的例子?</strong></h4>
-
-<ul>
-<li><strong>(🎤 互动环节):</strong> “看过《重构》的同学应该都知道代码坏味道。来，大家一起吐槽一下，你在项目里见过最痛苦的代码坏味道是什么？” (引导大家说出几个)</li>
-<li>其实按照我朴素的理解, 能让我快速理清逻辑的就是好代码, 理解起来很费劲的, 那肯定就充满坏味道。</li>
-<li>正如我在入职后接手的<code>kitam</code>项目，它就充满了这些味道：
-
-<ul>
-<li><strong>代码逻辑不内聚</strong>：功能实现像天女散花。</li>
-<li><strong>分层过多且混乱</strong>：一个请求要穿越重重关卡。</li>
-<li><strong>外部依赖离散</strong>：数据库、缓存的调用没有统一规范。</li>
-</ul></li>
-</ul>
-
-<p></p>
     </div>
   
 </div>
