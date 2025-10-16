@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      编写可维护的代码 -- 面向AI编程 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2025. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">编写可维护的代码 -- 面向AI编程</h1>
+  <span class="post-date">Jan 1 0001</span>
+  <p>这是最近在小组内做的一次技术分享的文字稿, 总体来说我觉得没有表达出特别硬核的内容, 我本身也希望说这次分享不用讲的太硬核, 在分享的开头还设计了互动环节, 分享的过程中也尝试加入一些问答来互动, 奈何现公司的技术氛围确实比较沉闷, 似乎同事都比较I, 好在最后的问答环节有几个比较好的问题, 总体来说还算是一次成功的分享吧, 希望自己能输出更多的好内容。</p>
+
+<h4 id="p1-我们写的代码是写给谁看的"><strong>P1: 我们写的代码是写给谁看的?</strong></h4>
+
+<ul>
+<li><strong>(🎤 互动环节):</strong> “大家有没有过接手一个项目时，看到的第一感觉是：我该从哪下手？结果花了三天才搞明白一个功能的逻辑。有过类似经历的兄弟举个手我看看？”</li>
+<li>小说家写小说给读者，建筑师盖房子给业主&hellip; 那我们程序员写代码，最终是写给未来的自己，和接手我们代码的同事看的。</li>
+<li>代码的可维护性，决定了我们是在“创造价值”还是在“创造负债”。</li>
+</ul>
+
+<h4 id="p2-举几个代码坏味道的例子"><strong>P2: 举几个代码坏味道的例子?</strong></h4>
+
+<ul>
+<li><strong>(🎤 互动环节):</strong> “看过《重构》的同学应该都知道代码坏味道。来，大家一起吐槽一下，你在项目里见过最痛苦的代码坏味道是什么？” (引导大家说出几个)</li>
+<li>其实按照我朴素的理解, 能让我快速理清逻辑的就是好代码, 理解起来很费劲的, 那肯定就充满坏味道。</li>
+<li>正如我在入职后接手的<code>kitam</code>项目，它就充满了这些味道：
+
+<ul>
+<li><strong>代码逻辑不内聚</strong>：功能实现像天女散花。</li>
+<li><strong>分层过多且混乱</strong>：一个请求要穿越重重关卡。</li>
+<li><strong>外部依赖离散</strong>：数据库、缓存的调用没有统一规范。</li>
+</ul></li>
+</ul>
+
+<p></p>
+
+<h4 id="p3-今天分享的主题"><strong>P3: 今天分享的主题</strong></h4>
+
+<ul>
+<li>今天分享的主题是 编写可维护的代码, 以及我们可探讨下面向AI编程。</li>
+<li>面对代码的坏味道和混乱，我们有什么良药？—— 答案是：一个好的架构。今天我将分享我们<code>kfinops</code>项目中使用的架构：整洁架构 (Clean Architecture)。</li>
+</ul>
+
+<h4 id="p4-我们的敌人是谁-是-耦合-这头怪兽"><strong>P4: 我们的敌人是谁？——是“耦合”这头怪兽！</strong></h4>
+
+<p><img src="https://github.com/user-attachments/assets/67458592-6307-44ed-a991-a6def7f53bf8" alt="Image3" width="700px" /></p>
+
+<ul>
+<li><strong>(🖼️ 视觉元素占位符: 此处放置一张生动的图片，比如一个身上贴满“耦合”标签的小怪兽 🐲)</strong></li>
+<li>在深入架构之前，我们先要认清我们真正的敌人：<strong>耦合 (Coupling)</strong>。</li>
+<li>什么是耦合？当你修改代码的一个地方，却意外地导致另一个看似无关的地方也必须修改，甚至直接崩溃时，你就遇到了耦合。</li>
+<li>整洁架构的核心目标只有一个：斩断不必要的耦合，为我们的代码建立“防火墙”，控制变更的“爆炸半径”。</li>
+<li>接下来，我会通过4个我们都经历过的惨痛问题，来展示整洁架构是如何一步步帮我们驯服这头怪兽的。</li>
+<li><strong>(🖼️ 视觉元素占位符: 此处展示完整的整洁架构“洋葱图”，并快速解释四个环：Entities -&gt; Use Cases -&gt; Adapters -&gt; Frameworks)</strong></li>
+</ul>
+
+<p><img src="https://github.com/user-attachments/assets/fb504fdb-4ba4-4dc8-8d01-c869da9be03d" alt="Image3" width="700px" /></p>
+
+<h4 id="p5-问题一-我只想改个业务规则-为什么还要动数据库和api的代码"><strong>P5: 问题一：“我只想改个业务规则，为什么还要动数据库和API的代码？”</strong></h4>
+
+<ul>
+<li><strong>(🖼️ 视觉元素占位符: 洋葱图高亮最内层的 &ldquo;Entities&rdquo; 环)</strong></li>
+
+<li><p><strong>痛点场景：</strong> 你想修改一个实体（比如 <code>User</code>）的业务规则。但在很多项目中，这个实体被定义成了一个“万能Struct”：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// user.go
+</span><span class="c1">// 它既是业务实体，又是GORM模型，还是HTTP响应体
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">ID</span>        <span class="kt">uint</span>      <span class="s">`json:&#34;id&#34; gorm:&#34;primaryKey&#34;`</span> <span class="c1">// &lt;-- 高亮此行
+</span><span class="c1"></span>    <span class="nx">Name</span>      <span class="kt">string</span>    <span class="s">`json:&#34;name&#34; gorm:&#34;size:255&#34;`</span>
+    <span class="nx">Points</span>    <span class="kt">int</span>       <span class="s">`json:&#34;points&#34;`</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span></code></pre></div>
+<ul>
+<li>现在，产品说：为了兼容新App，<code>ID</code> 字段对外要改成 <code>user_id</code>。</li>
+<li>你只能修改：<code>ID uint \</code>json:&ldquo;user_id&rdquo; gorm:&ldquo;primaryKey&rdquo;``。</li>
+<li><strong>问题来了：</strong> 你只是在修改一个前端展示字段的名称，却迫使你修改了一个核心业务实体（User）的文件。<strong>这就是业务逻辑和展示细节的耦合。</strong></li>
+</ul></li>
+
+<li><p><strong>解药：一个纯净的【领域层 Domain Layer】</strong></p>
+
+<ul>
+<li><strong>它的唯一职责</strong>：建立一个“无菌室”，只存放最核心、最纯粹的业务实体和业务规则。</li>
+<li><strong><code>kfinops</code> 的实践:</strong>
+<code>go
+// internal/domain/subdomain.go
+// 只有业务属性，没有json, gorm等任何技术标签
+type SubDomain struct {
+    ID         string // 纯粹的业务ID
+    FullDomain string
+    Status     SubDomainStatus
+}
+</code></li>
+<li><strong>效果：</strong> 业务核心完全稳定。前端/数据库的任何变化，都不会触碰到这个文件。</li>
+</ul></li>
+</ul>
+
+<h4 id="p6-问题二-创建子域名-这个功能-代码到底在哪"><strong>P6: 问题二：“‘创建子域名’这个功能，代码到底在哪？”</strong></h4>
+
+<ul>
+<li><strong>(🖼️ 视觉元素占位符: 洋葱图高亮第二层的 &ldquo;Use Cases&rdquo; 环)</strong></li>
+<li><strong>(🎤 互动环节):</strong> “举个手，谁遇到过想看懂一个功能，结果在IDE里跳了十几个文件的情况？”</li>
+<li><strong>痛点场景：</strong> 业务流程像天女散花，心智负担极大，你根本找不到一个地方能看清这个功能的“剧本”。<strong>这就是业务流程的逻辑离散。</strong></li>
+<li><strong>解药：一个清晰的【用例层 Use Case Layer】</strong>
+
+<ul>
+<li><strong>它的唯一职责</strong>：像一个“导演”，负责编排一个完整的业务故事。一个Use Case就代表系统的一个能力。</li>
+<li><strong><code>kfinops</code> 的实践:</strong>
+<code>go
+// in internal/usecase/subdomain/service.go
+type SubDomainUseCase struct {
+    repo repository.SubDomainRepository // 依赖接口
+}
+func (uc *SubDomainUseCase) CreateSubDomain(...) error {
+    // 1. 验证输入 (DTO)                &lt;-- 高亮
+    // 2. 创建 Domain 实体             &lt;-- 高亮
+    // 3. 调用 Domain 实体业务方法      &lt;-- 高亮
+    // 4. 通过【接口】进行持久化          &lt;-- 高亮
+    return uc.repo.Save(ctx, domainEntity)
+}
+</code></li>
+<li><strong>效果：</strong> 想理解一个功能，只需要看这一个文件。它清晰地讲述了“做什么（What）”，而不关心“怎么做（How）”。</li>
+</ul></li>
+</ul>
+
+<h4 id="p7-问题三-数据库要从mysql换成mongodb-完了-项目要重写了"><strong>P7: 问题三：“数据库要从MySQL换成MongoDB，完了，项目要重写了！”</strong></h4>
+
+<ul>
+<li><strong>(🖼️ 视觉元素占位符: 洋葱图高亮第三层的 &ldquo;Adapters&rdquo; 环，并画一个箭头表示依赖反转)</strong></li>
+<li><strong>痛点场景：</strong> 你的代码里到处都是 <code>gorm.DB.Where(...).Find(...)</code>。你的业务逻辑“知道”你正在使用GORM和MySQL。<strong>这就是业务逻辑和数据存储技术的强耦合。</strong></li>
+<li><strong>解药：【适配器层 Adapter】 + 【依赖倒置原则】</strong>
+
+<ul>
+<li><strong>它的唯一职责</strong>：将技术细节“适配”成业务层能理解的“插件”。</li>
+<li><strong>核心魔法——依赖倒置</strong>：
+
+<ol>
+<li><strong>Use Case（使用者）</strong> 在自己包里定义接口。</li>
+<li><strong>Adapter（实现者）</strong> 去实现这个接口。</li>
+</ol></li>
+<li><strong>效果：</strong> 技术实现变成了可插拔的“零件”。更换数据库？只需要写一个新的Repository实现，然后在DI配置里换掉即可，<strong>Use Case层的代码一行都不用改！</strong></li>
+</ul></li>
+</ul>
+
+<h4 id="p8-问题四-这代码根本没法写单元测试"><strong>P8: 问题四：“这代码根本没法写单元测试！”</strong></h4>
+
+<p><img src="https://github.com/user-attachments/assets/7271b7b0-f51e-40ce-8fe0-dfad4850ed7e" alt="Image3" width="700px" /></p>
+
+<ul>
+<li><strong>(🖼️ 视觉元素占位符: 一张图片，左边是混乱的毛线球代表紧耦合，右边是整齐的乐高积木代表可测试)</strong></li>
+<li><strong>(🎤 互动环节):</strong> “诚实地举手，谁因为代码太难测试而放弃写单元测试的？”</li>
+<li><strong>痛点场景：</strong> 业务逻辑里 <code>new</code> 了一个数据库连接，导致单元测试必须依赖真实环境。<strong>这是【可测试性灾难】。</strong></li>
+
+<li><p><strong>解药：【接口】 + 【依赖注入 Dependency Injection】</strong></p>
+
+<ul>
+<li><strong>它的唯一职责</strong>：将组件之间的依赖关系从“硬编码”变为“外部配置”。</li>
+
+<li><p><strong>效果：在单元测试中，我们可以轻松地“骗”过 Use Case：</strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 我们可以轻易地用一个 &#34;假的&#34; mockRepo 替换掉 &#34;真的&#34; GormRepo
+</span><span class="c1"></span><span class="nx">mockRepo</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">MockSubDomainRepository</span><span class="p">)</span>
+<span class="c1">// 告诉 mockRepo: &#34;当有人调用Save方法时，假装成功&#34;
+</span><span class="c1"></span><span class="nx">mockRepo</span><span class="p">.</span><span class="nx">On</span><span class="p">(</span><span class="s">&#34;Save&#34;</span><span class="p">,</span> <span class="nx">mock</span><span class="p">.</span><span class="nx">Anything</span><span class="p">,</span> <span class="nx">mock</span><span class="p">.</span><span class="nx">Anything</span><span class="p">).</span><span class="nx">Return</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span> <span class="c1">// &lt;-- 高亮
+</span><span class="c1"></span>
+<span class="nx">useCase</span> <span class="o">:=</span> <span class="nx">NewSubDomainUseCase</span><span class="p">(</span><span class="nx">mockRepo</span><span class="p">)</span> <span class="c1">// 依赖被注入了！ &lt;-- 高亮
+</span><span class="c1"></span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">useCase</span><span class="p">.</span><span class="nx">CreateSubDomain</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="nx">assert</span><span class="p">.</span><span class="nx">NoError</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span> <span class="o">//</span> <span class="nx">测试通过</span><span class="err">！</span><span class="nx">全程没有碰过数据库</span><span class="err">！</span></code></pre></div></li>
+
+<li><p><strong>这让编写快速、可靠的单元测试成为可能，极大地保证了代码质量。</strong></p></li>
+</ul></li>
+</ul>
+
+<h4 id="p9-可维护性的延伸-构建强大的可观测性"><strong>P9: 可维护性的延伸：构建强大的可观测性</strong></h4>
+
+<p><img src="https://github.com/user-attachments/assets/297e1818-ea6e-4a33-8747-5ad78e004e40" alt="Image3" width="700px" /></p>
+
+<ul>
+<li>作为SRE团队，我们不仅要写出可维护的代码，更要确保系统在生产环境中是‘可理解’、‘可诊断’的。</li>
+<li><strong>可观测性三大支柱：</strong>
+
+<ul>
+<li><strong>🪵 日志 (Logging) - 定位“哪里”出错了</strong>: 接入KAE，结构化日志，包含<code>request_id</code>。</li>
+<li><strong>📊 指标 (Metrics) - 了解“怎么样”了</strong>: Prometheus + Grafana Dashboard。</li>
+<li><strong>🔗 追踪 (Tracing) - 分析“为什么”慢了</strong>: OpenTelemetry 分布式追踪。</li>
+</ul></li>
+<li><strong>小结：整洁的架构让代码在“静态时”易于理解；完善的可观测性体系则让系统在“运行时”易于诊断。</strong></li>
+</ul>
+
+<h4 id="p10-面向ai编程-架构即契约-约束即指导"><strong>P10: 面向AI编程：架构即契约，约束即指导</strong></h4>
+
+<p><img src="https://github.com/user-attachments/assets/640a4f7e-5ef3-4ec6-806e-5e72fd31cb26" alt="Image3" width="700px" /></p>
+
+<ul>
+<li><strong>(🖼️ 视觉元素占位符: 一个对比图)</strong>
+
+<ul>
+<li><strong>左边 (无架构):</strong> 人类 🤯 → prompt → AI 🤖 → 一堆散乱代码 💩</li>
+<li><strong>右边 (有架构):</strong> 人类 😎 → 短prompt → AI 🤖 → 精准、分层的代码 ✅</li>
+</ul></li>
+<li><strong>一个好的架构，就是整个项目的“代码契约 (Code Contract)”</strong>，它为AI提供了一个清晰、明确的上下文环境。</li>
+<li><strong>有了这份“契约”，约束就变成了对AI最有效的指导：</strong>
+
+<ol>
+<li><strong>架构定义了“剧本 (Playbook)”</strong>: AI会像一个熟悉项目的老手一样，在正确的地方写代码。</li>
+<li><strong>约束提供了“护栏 (Guardrails)”</strong>: AI不会在usecase层直接写SQL。</li>
+<li><strong>“契约”简化了我们的“指令 (Prompt)”</strong>: 从“一步步告诉AI怎么做”，变成了“<strong>为 <code>CreateUser</code> 用例实现API</strong>”这样简单的指令。</li>
+</ol></li>
+<li><strong>结论：架构即提示 (Architecture as the Prompt)。</strong></li>
+</ul>
+
+<h4 id="p11-总结与行动指南"><strong>P11: 总结与行动指南</strong></h4>
+
+<ul>
+<li>编写可维护代码的核心是“降低理解成本”和“控制变更影响”。</li>
+<li>整洁架构是一份强大的“代码契约”，通过强制规则保证了项目的一致性。</li>
+<li><strong>(🚀 行动号召):</strong>
+
+<ul>
+<li><strong>团队可以马上尝试的实践</strong>: 在下一个新功能里，先和同事花10分钟讨论一下它的 Use Case 是什么。</li>
+<li><strong>推荐大家试用</strong>: 克隆我们的 <code>kfinops</code> 项目或<code>go-clean-arch</code>模板，亲手运行一下，感受分层的清晰。</li>
+</ul></li>
+<li><strong>面向AI编程不是一句口号，而是一种新的工作范式。</strong> 你的架构越清晰、约束越明确，AI就越能成为你的得力助手。</li>
+</ul>
+
+<h4 id="p12-q-a"><strong>P12: Q&amp;A</strong></h4>
+
+<ul>
+<li><strong>谢谢大家！</strong></li>
+<li><strong>项目模板参考: <a href="https://github.com/zhu327/go-clean-arch">https://github.com/zhu327/go-clean-arch</a></strong></li>
+<li><strong>大家有什么问题吗？或者对我们团队未来的代码规范有什么建议？</strong></li>
+</ul>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+
