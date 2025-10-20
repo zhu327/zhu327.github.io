@@ -55,11 +55,13 @@ PingSIX 自从上次重构之后, 我一直在考虑如何扩展这个项目的�
 
 #### 5. ADC Executor Interface (执行器接口)
 ADC Executor提供统一的Execute接口，支持三种实现：
+
 - **HTTPADCExecutor**: 通过HTTP调用ADC Server（推荐方式）
 - **DefaultADCExecutor**: 通过命令行调用adc命令
 
 #### 6. ADC HTTP Server (ADC HTTP服务器)
 ADC HTTP Server的核心流程：
+
 1. 接收`/sync`端点的PUT请求
 2. 解析ADCServerRequest（包含opts和config）
 3. 根据label-selector从APISIX拉取现有资源
@@ -70,6 +72,7 @@ ADC HTTP Server的核心流程：
 
 #### 7. APISIX Data Plane (APISIX数据平面)
 最终在APISIX中创建/更新/删除的资源：
+
 - Routes (路由)
 - Services (服务)
 - Upstreams (上游)
@@ -162,6 +165,7 @@ For(&networkingv1.Ingress{}, builder.WithPredicates(
 **作用**：监听 Ingress 资源本身的变化
 
 **Predicates（过滤条件）**：
+
 - `MatchesIngressClassPredicate`: 只处理由当前控制器管理的 IngressClass 的 Ingress
 - `GenerationChangedPredicate`: 资源的 Generation 发生变化（spec 修改）
 - `AnnotationChangedPredicate`: 注解发生变化
@@ -185,9 +189,11 @@ Watches(
 **作用**：监听 IngressClass 资源的变化
 
 **触发条件**：
+
 - `matchesIngressController`: 只监听由当前控制器管理的 IngressClass（通过 `spec.controller` 字段匹配）
 
 **逻辑** (`listIngressForIngressClass`)：
+
 1. 检查 IngressClass 是否是默认类（通过注解 `ingressclass.kubernetes.io/is-default-class`）
 2. 如果是默认类：列出所有未指定 IngressClassName 或指定为该类的 Ingress
 3. 如果不是默认类：通过索引查找使用该 IngressClass 的所有 Ingress
@@ -207,6 +213,7 @@ Watches(
 **作用**：监听后端服务的 Endpoint 变化
 
 **逻辑** (`listIngressesByService`)：
+
 1. 从 EndpointSlice 的 label 中提取 Service 名称（`discovery.k8s.io/service-name`）
 2. 通过索引 `ServiceIndexRef` 查找引用该 Service 的所有 Ingress
 3. 过滤出由当前控制器管理的 Ingress
@@ -226,6 +233,7 @@ Watches(
 **作用**：监听 TLS 证书 Secret 的变化
 
 **逻辑** (`listIngressesBySecret`)：
+
 1. 通过索引 `SecretIndexRef` 查找直接引用该 Secret 的 Ingress（TLS 配置）
 2. 查找引用该 Secret 的 GatewayProxy（用于 provider 认证）
 3. 如果 GatewayProxy 引用了该 Secret，找到使用该 GatewayProxy 的 IngressClass
@@ -233,6 +241,7 @@ Watches(
 5. 去重后返回所有需要 reconcile 的 Ingress
 
 **使用场景**：
+
 - TLS 证书更新或轮换
 - GatewayProxy 的 AdminKey Secret 变化
 
@@ -250,6 +259,7 @@ Watches(&v1alpha1.BackendTrafficPolicy{},
 **作用**：监听后端流量策略的变化
 
 **Predicates 逻辑**：
+
 - **Create**: 返回 true，新建时触发
 - **Delete**: 返回 true，删除时触发
 - **Update**: 检测 `targetRefs` 的变化
@@ -258,6 +268,7 @@ Watches(&v1alpha1.BackendTrafficPolicy{},
   - 这样可以清理不再被引用的资源
 
 **逻辑** (`listIngressForBackendTrafficPolicy`)：
+
 1. 遍历 Policy 的所有 `targetRefs`（引用的 Service）
 2. 通过索引查找使用这些 Service 的 Ingress
 3. 去重后返回需要 reconcile 的 Ingress 列表
@@ -276,12 +287,14 @@ Watches(&v1alpha1.HTTPRoutePolicy{},
 **作用**：监听 HTTP 路由策略的变化
 
 **Predicates 逻辑**：
+
 - **Create/Delete**: 返回 true
 - **Update**: 检测 `targetRefs` 的变化
   - 找出被移除的 targetRefs
   - 将包含被移除 targetRefs 的旧对象发送到 genericEvent channel
 
 **逻辑** (`listIngressesByHTTPRoutePolicy`)：
+
 1. 遍历 Policy 的所有 `targetRefs`
 2. 过滤出 Kind 为 `Ingress` 的引用
 3. 获取这些 Ingress 对象
@@ -300,11 +313,13 @@ Watches(&v1alpha1.GatewayProxy{},
 **作用**：监听 GatewayProxy 配置的变化
 
 **逻辑** (`listIngressesForGatewayProxy` -> `listIngressClassRequestsForGatewayProxy`)：
+
 1. 通过索引 `IngressClassParametersRef` 查找引用该 GatewayProxy 的 IngressClass
 2. 对每个 IngressClass，调用 `listIngressForIngressClass` 获取相关 Ingress
 3. 去重后返回所有需要 reconcile 的 Ingress
 
 **使用场景**：
+
 - GatewayProxy 的 APISIX 地址变化
 - 发布服务配置变化
 - Provider 配置变化
@@ -323,11 +338,13 @@ WatchesRawSource(
 **作用**：处理通过 channel 发送的自定义事件
 
 **逻辑** (`listIngressForGenericEvent`)：
+
 - 根据对象类型路由到相应的处理函数：
   - `BackendTrafficPolicy` -> `listIngressForBackendTrafficPolicy`
   - `HTTPRoutePolicy` -> `listIngressesByHTTPRoutePolicy`
 
 **使用场景**：
+
 - 处理 Policy 的 targetRefs 被移除时的清理工作
 - 确保当资源不再被引用时，能正确更新相关配置
 
