@@ -149,31 +149,40 @@
 
 <h4 id="5-adc-executor-interface-执行器接口">5. ADC Executor Interface (执行器接口)</h4>
 
-<p>ADC Executor提供统一的Execute接口，支持三种实现：
-- <strong>HTTPADCExecutor</strong>: 通过HTTP调用ADC Server（推荐方式）
-- <strong>DefaultADCExecutor</strong>: 通过命令行调用adc命令</p>
+<p>ADC Executor提供统一的Execute接口，支持三种实现：</p>
+
+<ul>
+<li><strong>HTTPADCExecutor</strong>: 通过HTTP调用ADC Server（推荐方式）</li>
+<li><strong>DefaultADCExecutor</strong>: 通过命令行调用adc命令</li>
+</ul>
 
 <h4 id="6-adc-http-server-adc-http服务器">6. ADC HTTP Server (ADC HTTP服务器)</h4>
 
-<p>ADC HTTP Server的核心流程：
-1. 接收<code>/sync</code>端点的PUT请求
-2. 解析ADCServerRequest（包含opts和config）
-3. 根据label-selector从APISIX拉取现有资源
-4. 将ADC资源描述转换为APISIX资源格式
-5. 对比已拉取的资源，计算差异（Diff）
-6. 调用APISIX Admin API执行创建/更新/删除操作
-7. 返回SyncResult（包含成功/失败状态）</p>
+<p>ADC HTTP Server的核心流程：</p>
+
+<ol>
+<li>接收<code>/sync</code>端点的PUT请求</li>
+<li>解析ADCServerRequest（包含opts和config）</li>
+<li>根据label-selector从APISIX拉取现有资源</li>
+<li>将ADC资源描述转换为APISIX资源格式</li>
+<li>对比已拉取的资源，计算差异（Diff）</li>
+<li>调用APISIX Admin API执行创建/更新/删除操作</li>
+<li>返回SyncResult（包含成功/失败状态）</li>
+</ol>
 
 <h4 id="7-apisix-data-plane-apisix数据平面">7. APISIX Data Plane (APISIX数据平面)</h4>
 
-<p>最终在APISIX中创建/更新/删除的资源：
-- Routes (路由)
-- Services (服务)
-- Upstreams (上游)
-- SSL/TLS (证书)
-- Consumers (消费者)
-- Global Rules (全局规则)
-- Plugin Metadata (插件元数据)</p>
+<p>最终在APISIX中创建/更新/删除的资源：</p>
+
+<ul>
+<li>Routes (路由)</li>
+<li>Services (服务)</li>
+<li>Upstreams (上游)</li>
+<li>SSL/TLS (证书)</li>
+<li>Consumers (消费者)</li>
+<li>Global Rules (全局规则)</li>
+<li>Plugin Metadata (插件元数据)</li>
+</ul>
 
 <h4 id="8-核心特性">8. 核心特性</h4>
 
@@ -252,11 +261,14 @@
 <span class="p">))</span></code></pre></div>
 <p><strong>作用</strong>：监听 Ingress 资源本身的变化</p>
 
-<p><strong>Predicates（过滤条件）</strong>：
-- <code>MatchesIngressClassPredicate</code>: 只处理由当前控制器管理的 IngressClass 的 Ingress
-- <code>GenerationChangedPredicate</code>: 资源的 Generation 发生变化（spec 修改）
-- <code>AnnotationChangedPredicate</code>: 注解发生变化
-- <code>TypePredicate[*corev1.Secret]()</code>: 用于 Secret 类型判断</p>
+<p><strong>Predicates（过滤条件）</strong>：</p>
+
+<ul>
+<li><code>MatchesIngressClassPredicate</code>: 只处理由当前控制器管理的 IngressClass 的 Ingress</li>
+<li><code>GenerationChangedPredicate</code>: 资源的 Generation 发生变化（spec 修改）</li>
+<li><code>AnnotationChangedPredicate</code>: 注解发生变化</li>
+<li><code>TypePredicate[*corev1.Secret]()</code>: 用于 Secret 类型判断</li>
+</ul>
 
 <p><strong>逻辑</strong>：这是主要的监听对象，当 Ingress 的规格或注解变化时触发 Reconcile</p>
 
@@ -270,14 +282,20 @@
 <span class="p">)</span></code></pre></div>
 <p><strong>作用</strong>：监听 IngressClass 资源的变化</p>
 
-<p><strong>触发条件</strong>：
-- <code>matchesIngressController</code>: 只监听由当前控制器管理的 IngressClass（通过 <code>spec.controller</code> 字段匹配）</p>
+<p><strong>触发条件</strong>：</p>
 
-<p><strong>逻辑</strong> (<code>listIngressForIngressClass</code>)：
-1. 检查 IngressClass 是否是默认类（通过注解 <code>ingressclass.kubernetes.io/is-default-class</code>）
-2. 如果是默认类：列出所有未指定 IngressClassName 或指定为该类的 Ingress
-3. 如果不是默认类：通过索引查找使用该 IngressClass 的所有 Ingress
-4. 返回需要 reconcile 的 Ingress 列表</p>
+<ul>
+<li><code>matchesIngressController</code>: 只监听由当前控制器管理的 IngressClass（通过 <code>spec.controller</code> 字段匹配）</li>
+</ul>
+
+<p><strong>逻辑</strong> (<code>listIngressForIngressClass</code>)：</p>
+
+<ol>
+<li>检查 IngressClass 是否是默认类（通过注解 <code>ingressclass.kubernetes.io/is-default-class</code>）</li>
+<li>如果是默认类：列出所有未指定 IngressClassName 或指定为该类的 Ingress</li>
+<li>如果不是默认类：通过索引查找使用该 IngressClass 的所有 Ingress</li>
+<li>返回需要 reconcile 的 Ingress 列表</li>
+</ol>
 
 <p><strong>使用场景</strong>：当 IngressClass 的配置变化时，需要重新处理所有使用该类的 Ingress</p>
 
@@ -288,11 +306,14 @@
 <span class="p">)</span></code></pre></div>
 <p><strong>作用</strong>：监听后端服务的 Endpoint 变化</p>
 
-<p><strong>逻辑</strong> (<code>listIngressesByService</code>)：
-1. 从 EndpointSlice 的 label 中提取 Service 名称（<code>discovery.k8s.io/service-name</code>）
-2. 通过索引 <code>ServiceIndexRef</code> 查找引用该 Service 的所有 Ingress
-3. 过滤出由当前控制器管理的 Ingress
-4. 返回需要 reconcile 的 Ingress 列表</p>
+<p><strong>逻辑</strong> (<code>listIngressesByService</code>)：</p>
+
+<ol>
+<li>从 EndpointSlice 的 label 中提取 Service 名称（<code>discovery.k8s.io/service-name</code>）</li>
+<li>通过索引 <code>ServiceIndexRef</code> 查找引用该 Service 的所有 Ingress</li>
+<li>过滤出由当前控制器管理的 Ingress</li>
+<li>返回需要 reconcile 的 Ingress 列表</li>
+</ol>
 
 <p><strong>使用场景</strong>：当后端 Pod 的 IP 地址变化（扩缩容、重启等）时，需要更新 APISIX 的 upstream 配置</p>
 
@@ -303,16 +324,22 @@
 <span class="p">)</span></code></pre></div>
 <p><strong>作用</strong>：监听 TLS 证书 Secret 的变化</p>
 
-<p><strong>逻辑</strong> (<code>listIngressesBySecret</code>)：
-1. 通过索引 <code>SecretIndexRef</code> 查找直接引用该 Secret 的 Ingress（TLS 配置）
-2. 查找引用该 Secret 的 GatewayProxy（用于 provider 认证）
-3. 如果 GatewayProxy 引用了该 Secret，找到使用该 GatewayProxy 的 IngressClass
-4. 再找到使用这些 IngressClass 的所有 Ingress
-5. 去重后返回所有需要 reconcile 的 Ingress</p>
+<p><strong>逻辑</strong> (<code>listIngressesBySecret</code>)：</p>
 
-<p><strong>使用场景</strong>：
-- TLS 证书更新或轮换
-- GatewayProxy 的 AdminKey Secret 变化</p>
+<ol>
+<li>通过索引 <code>SecretIndexRef</code> 查找直接引用该 Secret 的 Ingress（TLS 配置）</li>
+<li>查找引用该 Secret 的 GatewayProxy（用于 provider 认证）</li>
+<li>如果 GatewayProxy 引用了该 Secret，找到使用该 GatewayProxy 的 IngressClass</li>
+<li>再找到使用这些 IngressClass 的所有 Ingress</li>
+<li>去重后返回所有需要 reconcile 的 Ingress</li>
+</ol>
+
+<p><strong>使用场景</strong>：</p>
+
+<ul>
+<li>TLS 证书更新或轮换</li>
+<li>GatewayProxy 的 AdminKey Secret 变化</li>
+</ul>
 
 <h4 id="5-backendtrafficpolicy-watch-第97-102行">5. <strong>BackendTrafficPolicy Watch</strong> (第97-102行)</h4>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">Watches</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">v1alpha1</span><span class="p">.</span><span class="nx">BackendTrafficPolicy</span><span class="p">{},</span>
@@ -323,18 +350,27 @@
 <span class="p">)</span></code></pre></div>
 <p><strong>作用</strong>：监听后端流量策略的变化</p>
 
-<p><strong>Predicates 逻辑</strong>：
-- <strong>Create</strong>: 返回 true，新建时触发
-- <strong>Delete</strong>: 返回 true，删除时触发
-- <strong>Update</strong>: 检测 <code>targetRefs</code> 的变化
-  - 找出被移除的 targetRefs
-  - 将包含被移除 targetRefs 的旧对象发送到 genericEvent channel
-  - 这样可以清理不再被引用的资源</p>
+<p><strong>Predicates 逻辑</strong>：</p>
 
-<p><strong>逻辑</strong> (<code>listIngressForBackendTrafficPolicy</code>)：
-1. 遍历 Policy 的所有 <code>targetRefs</code>（引用的 Service）
-2. 通过索引查找使用这些 Service 的 Ingress
-3. 去重后返回需要 reconcile 的 Ingress 列表</p>
+<ul>
+<li><strong>Create</strong>: 返回 true，新建时触发</li>
+<li><strong>Delete</strong>: 返回 true，删除时触发</li>
+<li><strong>Update</strong>: 检测 <code>targetRefs</code> 的变化
+
+<ul>
+<li>找出被移除的 targetRefs</li>
+<li>将包含被移除 targetRefs 的旧对象发送到 genericEvent channel</li>
+<li>这样可以清理不再被引用的资源</li>
+</ul></li>
+</ul>
+
+<p><strong>逻辑</strong> (<code>listIngressForBackendTrafficPolicy</code>)：</p>
+
+<ol>
+<li>遍历 Policy 的所有 <code>targetRefs</code>（引用的 Service）</li>
+<li>通过索引查找使用这些 Service 的 Ingress</li>
+<li>去重后返回需要 reconcile 的 Ingress 列表</li>
+</ol>
 
 <p><strong>使用场景</strong>：配置后端流量策略（如负载均衡算法、健康检查等）</p>
 
@@ -345,17 +381,26 @@
 <span class="p">)</span></code></pre></div>
 <p><strong>作用</strong>：监听 HTTP 路由策略的变化</p>
 
-<p><strong>Predicates 逻辑</strong>：
-- <strong>Create/Delete</strong>: 返回 true
-- <strong>Update</strong>: 检测 <code>targetRefs</code> 的变化
-  - 找出被移除的 targetRefs
-  - 将包含被移除 targetRefs 的旧对象发送到 genericEvent channel</p>
+<p><strong>Predicates 逻辑</strong>：</p>
 
-<p><strong>逻辑</strong> (<code>listIngressesByHTTPRoutePolicy</code>)：
-1. 遍历 Policy 的所有 <code>targetRefs</code>
-2. 过滤出 Kind 为 <code>Ingress</code> 的引用
-3. 获取这些 Ingress 对象
-4. 返回需要 reconcile 的 Ingress 列表</p>
+<ul>
+<li><strong>Create/Delete</strong>: 返回 true</li>
+<li><strong>Update</strong>: 检测 <code>targetRefs</code> 的变化
+
+<ul>
+<li>找出被移除的 targetRefs</li>
+<li>将包含被移除 targetRefs 的旧对象发送到 genericEvent channel</li>
+</ul></li>
+</ul>
+
+<p><strong>逻辑</strong> (<code>listIngressesByHTTPRoutePolicy</code>)：</p>
+
+<ol>
+<li>遍历 Policy 的所有 <code>targetRefs</code></li>
+<li>过滤出 Kind 为 <code>Ingress</code> 的引用</li>
+<li>获取这些 Ingress 对象</li>
+<li>返回需要 reconcile 的 Ingress 列表</li>
+</ol>
 
 <p><strong>使用场景</strong>：配置 HTTP 路由级别的策略（如重写、重定向、超时等）</p>
 
@@ -365,15 +410,21 @@
 <span class="p">)</span></code></pre></div>
 <p><strong>作用</strong>：监听 GatewayProxy 配置的变化</p>
 
-<p><strong>逻辑</strong> (<code>listIngressesForGatewayProxy</code> -&gt; <code>listIngressClassRequestsForGatewayProxy</code>)：
-1. 通过索引 <code>IngressClassParametersRef</code> 查找引用该 GatewayProxy 的 IngressClass
-2. 对每个 IngressClass，调用 <code>listIngressForIngressClass</code> 获取相关 Ingress
-3. 去重后返回所有需要 reconcile 的 Ingress</p>
+<p><strong>逻辑</strong> (<code>listIngressesForGatewayProxy</code> -&gt; <code>listIngressClassRequestsForGatewayProxy</code>)：</p>
 
-<p><strong>使用场景</strong>：
-- GatewayProxy 的 APISIX 地址变化
-- 发布服务配置变化
-- Provider 配置变化</p>
+<ol>
+<li>通过索引 <code>IngressClassParametersRef</code> 查找引用该 GatewayProxy 的 IngressClass</li>
+<li>对每个 IngressClass，调用 <code>listIngressForIngressClass</code> 获取相关 Ingress</li>
+<li>去重后返回所有需要 reconcile 的 Ingress</li>
+</ol>
+
+<p><strong>使用场景</strong>：</p>
+
+<ul>
+<li>GatewayProxy 的 APISIX 地址变化</li>
+<li>发布服务配置变化</li>
+<li>Provider 配置变化</li>
+</ul>
 
 <h4 id="8-generic-event-channel-第110-116行">8. <strong>Generic Event Channel</strong> (第110-116行)</h4>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">WatchesRawSource</span><span class="p">(</span>
@@ -384,14 +435,23 @@
 <span class="p">)</span></code></pre></div>
 <p><strong>作用</strong>：处理通过 channel 发送的自定义事件</p>
 
-<p><strong>逻辑</strong> (<code>listIngressForGenericEvent</code>)：
-- 根据对象类型路由到相应的处理函数：
-  - <code>BackendTrafficPolicy</code> -&gt; <code>listIngressForBackendTrafficPolicy</code>
-  - <code>HTTPRoutePolicy</code> -&gt; <code>listIngressesByHTTPRoutePolicy</code></p>
+<p><strong>逻辑</strong> (<code>listIngressForGenericEvent</code>)：</p>
 
-<p><strong>使用场景</strong>：
-- 处理 Policy 的 targetRefs 被移除时的清理工作
-- 确保当资源不再被引用时，能正确更新相关配置</p>
+<ul>
+<li>根据对象类型路由到相应的处理函数：
+
+<ul>
+<li><code>BackendTrafficPolicy</code> -&gt; <code>listIngressForBackendTrafficPolicy</code></li>
+<li><code>HTTPRoutePolicy</code> -&gt; <code>listIngressesByHTTPRoutePolicy</code></li>
+</ul></li>
+</ul>
+
+<p><strong>使用场景</strong>：</p>
+
+<ul>
+<li>处理 Policy 的 targetRefs 被移除时的清理工作</li>
+<li>确保当资源不再被引用时，能正确更新相关配置</li>
+</ul>
 
 <h4 id="整体工作流程">整体工作流程</h4>
 

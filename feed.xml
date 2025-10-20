@@ -90,31 +90,40 @@
 
 &lt;h4 id=&#34;5-adc-executor-interface-执行器接口&#34;&gt;5. ADC Executor Interface (执行器接口)&lt;/h4&gt;
 
-&lt;p&gt;ADC Executor提供统一的Execute接口，支持三种实现：
-- &lt;strong&gt;HTTPADCExecutor&lt;/strong&gt;: 通过HTTP调用ADC Server（推荐方式）
-- &lt;strong&gt;DefaultADCExecutor&lt;/strong&gt;: 通过命令行调用adc命令&lt;/p&gt;
+&lt;p&gt;ADC Executor提供统一的Execute接口，支持三种实现：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;HTTPADCExecutor&lt;/strong&gt;: 通过HTTP调用ADC Server（推荐方式）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DefaultADCExecutor&lt;/strong&gt;: 通过命令行调用adc命令&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h4 id=&#34;6-adc-http-server-adc-http服务器&#34;&gt;6. ADC HTTP Server (ADC HTTP服务器)&lt;/h4&gt;
 
-&lt;p&gt;ADC HTTP Server的核心流程：
-1. 接收&lt;code&gt;/sync&lt;/code&gt;端点的PUT请求
-2. 解析ADCServerRequest（包含opts和config）
-3. 根据label-selector从APISIX拉取现有资源
-4. 将ADC资源描述转换为APISIX资源格式
-5. 对比已拉取的资源，计算差异（Diff）
-6. 调用APISIX Admin API执行创建/更新/删除操作
-7. 返回SyncResult（包含成功/失败状态）&lt;/p&gt;
+&lt;p&gt;ADC HTTP Server的核心流程：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;接收&lt;code&gt;/sync&lt;/code&gt;端点的PUT请求&lt;/li&gt;
+&lt;li&gt;解析ADCServerRequest（包含opts和config）&lt;/li&gt;
+&lt;li&gt;根据label-selector从APISIX拉取现有资源&lt;/li&gt;
+&lt;li&gt;将ADC资源描述转换为APISIX资源格式&lt;/li&gt;
+&lt;li&gt;对比已拉取的资源，计算差异（Diff）&lt;/li&gt;
+&lt;li&gt;调用APISIX Admin API执行创建/更新/删除操作&lt;/li&gt;
+&lt;li&gt;返回SyncResult（包含成功/失败状态）&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;h4 id=&#34;7-apisix-data-plane-apisix数据平面&#34;&gt;7. APISIX Data Plane (APISIX数据平面)&lt;/h4&gt;
 
-&lt;p&gt;最终在APISIX中创建/更新/删除的资源：
-- Routes (路由)
-- Services (服务)
-- Upstreams (上游)
-- SSL/TLS (证书)
-- Consumers (消费者)
-- Global Rules (全局规则)
-- Plugin Metadata (插件元数据)&lt;/p&gt;
+&lt;p&gt;最终在APISIX中创建/更新/删除的资源：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Routes (路由)&lt;/li&gt;
+&lt;li&gt;Services (服务)&lt;/li&gt;
+&lt;li&gt;Upstreams (上游)&lt;/li&gt;
+&lt;li&gt;SSL/TLS (证书)&lt;/li&gt;
+&lt;li&gt;Consumers (消费者)&lt;/li&gt;
+&lt;li&gt;Global Rules (全局规则)&lt;/li&gt;
+&lt;li&gt;Plugin Metadata (插件元数据)&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h4 id=&#34;8-核心特性&#34;&gt;8. 核心特性&lt;/h4&gt;
 
@@ -193,11 +202,14 @@
 &lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;作用&lt;/strong&gt;：监听 Ingress 资源本身的变化&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Predicates（过滤条件）&lt;/strong&gt;：
-- &lt;code&gt;MatchesIngressClassPredicate&lt;/code&gt;: 只处理由当前控制器管理的 IngressClass 的 Ingress
-- &lt;code&gt;GenerationChangedPredicate&lt;/code&gt;: 资源的 Generation 发生变化（spec 修改）
-- &lt;code&gt;AnnotationChangedPredicate&lt;/code&gt;: 注解发生变化
-- &lt;code&gt;TypePredicate[*corev1.Secret]()&lt;/code&gt;: 用于 Secret 类型判断&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Predicates（过滤条件）&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;MatchesIngressClassPredicate&lt;/code&gt;: 只处理由当前控制器管理的 IngressClass 的 Ingress&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;GenerationChangedPredicate&lt;/code&gt;: 资源的 Generation 发生变化（spec 修改）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;AnnotationChangedPredicate&lt;/code&gt;: 注解发生变化&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;TypePredicate[*corev1.Secret]()&lt;/code&gt;: 用于 Secret 类型判断&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt;：这是主要的监听对象，当 Ingress 的规格或注解变化时触发 Reconcile&lt;/p&gt;
 
@@ -211,14 +223,20 @@
 &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;作用&lt;/strong&gt;：监听 IngressClass 资源的变化&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;触发条件&lt;/strong&gt;：
-- &lt;code&gt;matchesIngressController&lt;/code&gt;: 只监听由当前控制器管理的 IngressClass（通过 &lt;code&gt;spec.controller&lt;/code&gt; 字段匹配）&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;触发条件&lt;/strong&gt;：&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressForIngressClass&lt;/code&gt;)：
-1. 检查 IngressClass 是否是默认类（通过注解 &lt;code&gt;ingressclass.kubernetes.io/is-default-class&lt;/code&gt;）
-2. 如果是默认类：列出所有未指定 IngressClassName 或指定为该类的 Ingress
-3. 如果不是默认类：通过索引查找使用该 IngressClass 的所有 Ingress
-4. 返回需要 reconcile 的 Ingress 列表&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;matchesIngressController&lt;/code&gt;: 只监听由当前控制器管理的 IngressClass（通过 &lt;code&gt;spec.controller&lt;/code&gt; 字段匹配）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressForIngressClass&lt;/code&gt;)：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;检查 IngressClass 是否是默认类（通过注解 &lt;code&gt;ingressclass.kubernetes.io/is-default-class&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;如果是默认类：列出所有未指定 IngressClassName 或指定为该类的 Ingress&lt;/li&gt;
+&lt;li&gt;如果不是默认类：通过索引查找使用该 IngressClass 的所有 Ingress&lt;/li&gt;
+&lt;li&gt;返回需要 reconcile 的 Ingress 列表&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;p&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：当 IngressClass 的配置变化时，需要重新处理所有使用该类的 Ingress&lt;/p&gt;
 
@@ -229,11 +247,14 @@
 &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;作用&lt;/strong&gt;：监听后端服务的 Endpoint 变化&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressesByService&lt;/code&gt;)：
-1. 从 EndpointSlice 的 label 中提取 Service 名称（&lt;code&gt;discovery.k8s.io/service-name&lt;/code&gt;）
-2. 通过索引 &lt;code&gt;ServiceIndexRef&lt;/code&gt; 查找引用该 Service 的所有 Ingress
-3. 过滤出由当前控制器管理的 Ingress
-4. 返回需要 reconcile 的 Ingress 列表&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressesByService&lt;/code&gt;)：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;从 EndpointSlice 的 label 中提取 Service 名称（&lt;code&gt;discovery.k8s.io/service-name&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;通过索引 &lt;code&gt;ServiceIndexRef&lt;/code&gt; 查找引用该 Service 的所有 Ingress&lt;/li&gt;
+&lt;li&gt;过滤出由当前控制器管理的 Ingress&lt;/li&gt;
+&lt;li&gt;返回需要 reconcile 的 Ingress 列表&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;p&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：当后端 Pod 的 IP 地址变化（扩缩容、重启等）时，需要更新 APISIX 的 upstream 配置&lt;/p&gt;
 
@@ -244,16 +265,22 @@
 &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;作用&lt;/strong&gt;：监听 TLS 证书 Secret 的变化&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressesBySecret&lt;/code&gt;)：
-1. 通过索引 &lt;code&gt;SecretIndexRef&lt;/code&gt; 查找直接引用该 Secret 的 Ingress（TLS 配置）
-2. 查找引用该 Secret 的 GatewayProxy（用于 provider 认证）
-3. 如果 GatewayProxy 引用了该 Secret，找到使用该 GatewayProxy 的 IngressClass
-4. 再找到使用这些 IngressClass 的所有 Ingress
-5. 去重后返回所有需要 reconcile 的 Ingress&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressesBySecret&lt;/code&gt;)：&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：
-- TLS 证书更新或轮换
-- GatewayProxy 的 AdminKey Secret 变化&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;通过索引 &lt;code&gt;SecretIndexRef&lt;/code&gt; 查找直接引用该 Secret 的 Ingress（TLS 配置）&lt;/li&gt;
+&lt;li&gt;查找引用该 Secret 的 GatewayProxy（用于 provider 认证）&lt;/li&gt;
+&lt;li&gt;如果 GatewayProxy 引用了该 Secret，找到使用该 GatewayProxy 的 IngressClass&lt;/li&gt;
+&lt;li&gt;再找到使用这些 IngressClass 的所有 Ingress&lt;/li&gt;
+&lt;li&gt;去重后返回所有需要 reconcile 的 Ingress&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;TLS 证书更新或轮换&lt;/li&gt;
+&lt;li&gt;GatewayProxy 的 AdminKey Secret 变化&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h4 id=&#34;5-backendtrafficpolicy-watch-第97-102行&#34;&gt;5. &lt;strong&gt;BackendTrafficPolicy Watch&lt;/strong&gt; (第97-102行)&lt;/h4&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;nx&#34;&gt;Watches&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;v1alpha1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;BackendTrafficPolicy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{},&lt;/span&gt;
@@ -264,18 +291,27 @@
 &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;作用&lt;/strong&gt;：监听后端流量策略的变化&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Predicates 逻辑&lt;/strong&gt;：
-- &lt;strong&gt;Create&lt;/strong&gt;: 返回 true，新建时触发
-- &lt;strong&gt;Delete&lt;/strong&gt;: 返回 true，删除时触发
-- &lt;strong&gt;Update&lt;/strong&gt;: 检测 &lt;code&gt;targetRefs&lt;/code&gt; 的变化
-  - 找出被移除的 targetRefs
-  - 将包含被移除 targetRefs 的旧对象发送到 genericEvent channel
-  - 这样可以清理不再被引用的资源&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Predicates 逻辑&lt;/strong&gt;：&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressForBackendTrafficPolicy&lt;/code&gt;)：
-1. 遍历 Policy 的所有 &lt;code&gt;targetRefs&lt;/code&gt;（引用的 Service）
-2. 通过索引查找使用这些 Service 的 Ingress
-3. 去重后返回需要 reconcile 的 Ingress 列表&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Create&lt;/strong&gt;: 返回 true，新建时触发&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Delete&lt;/strong&gt;: 返回 true，删除时触发&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Update&lt;/strong&gt;: 检测 &lt;code&gt;targetRefs&lt;/code&gt; 的变化
+
+&lt;ul&gt;
+&lt;li&gt;找出被移除的 targetRefs&lt;/li&gt;
+&lt;li&gt;将包含被移除 targetRefs 的旧对象发送到 genericEvent channel&lt;/li&gt;
+&lt;li&gt;这样可以清理不再被引用的资源&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressForBackendTrafficPolicy&lt;/code&gt;)：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;遍历 Policy 的所有 &lt;code&gt;targetRefs&lt;/code&gt;（引用的 Service）&lt;/li&gt;
+&lt;li&gt;通过索引查找使用这些 Service 的 Ingress&lt;/li&gt;
+&lt;li&gt;去重后返回需要 reconcile 的 Ingress 列表&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;p&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：配置后端流量策略（如负载均衡算法、健康检查等）&lt;/p&gt;
 
@@ -286,17 +322,26 @@
 &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;作用&lt;/strong&gt;：监听 HTTP 路由策略的变化&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Predicates 逻辑&lt;/strong&gt;：
-- &lt;strong&gt;Create/Delete&lt;/strong&gt;: 返回 true
-- &lt;strong&gt;Update&lt;/strong&gt;: 检测 &lt;code&gt;targetRefs&lt;/code&gt; 的变化
-  - 找出被移除的 targetRefs
-  - 将包含被移除 targetRefs 的旧对象发送到 genericEvent channel&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Predicates 逻辑&lt;/strong&gt;：&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressesByHTTPRoutePolicy&lt;/code&gt;)：
-1. 遍历 Policy 的所有 &lt;code&gt;targetRefs&lt;/code&gt;
-2. 过滤出 Kind 为 &lt;code&gt;Ingress&lt;/code&gt; 的引用
-3. 获取这些 Ingress 对象
-4. 返回需要 reconcile 的 Ingress 列表&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Create/Delete&lt;/strong&gt;: 返回 true&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Update&lt;/strong&gt;: 检测 &lt;code&gt;targetRefs&lt;/code&gt; 的变化
+
+&lt;ul&gt;
+&lt;li&gt;找出被移除的 targetRefs&lt;/li&gt;
+&lt;li&gt;将包含被移除 targetRefs 的旧对象发送到 genericEvent channel&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressesByHTTPRoutePolicy&lt;/code&gt;)：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;遍历 Policy 的所有 &lt;code&gt;targetRefs&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;过滤出 Kind 为 &lt;code&gt;Ingress&lt;/code&gt; 的引用&lt;/li&gt;
+&lt;li&gt;获取这些 Ingress 对象&lt;/li&gt;
+&lt;li&gt;返回需要 reconcile 的 Ingress 列表&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;p&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：配置 HTTP 路由级别的策略（如重写、重定向、超时等）&lt;/p&gt;
 
@@ -306,15 +351,21 @@
 &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;作用&lt;/strong&gt;：监听 GatewayProxy 配置的变化&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressesForGatewayProxy&lt;/code&gt; -&amp;gt; &lt;code&gt;listIngressClassRequestsForGatewayProxy&lt;/code&gt;)：
-1. 通过索引 &lt;code&gt;IngressClassParametersRef&lt;/code&gt; 查找引用该 GatewayProxy 的 IngressClass
-2. 对每个 IngressClass，调用 &lt;code&gt;listIngressForIngressClass&lt;/code&gt; 获取相关 Ingress
-3. 去重后返回所有需要 reconcile 的 Ingress&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressesForGatewayProxy&lt;/code&gt; -&amp;gt; &lt;code&gt;listIngressClassRequestsForGatewayProxy&lt;/code&gt;)：&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：
-- GatewayProxy 的 APISIX 地址变化
-- 发布服务配置变化
-- Provider 配置变化&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;通过索引 &lt;code&gt;IngressClassParametersRef&lt;/code&gt; 查找引用该 GatewayProxy 的 IngressClass&lt;/li&gt;
+&lt;li&gt;对每个 IngressClass，调用 &lt;code&gt;listIngressForIngressClass&lt;/code&gt; 获取相关 Ingress&lt;/li&gt;
+&lt;li&gt;去重后返回所有需要 reconcile 的 Ingress&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;GatewayProxy 的 APISIX 地址变化&lt;/li&gt;
+&lt;li&gt;发布服务配置变化&lt;/li&gt;
+&lt;li&gt;Provider 配置变化&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h4 id=&#34;8-generic-event-channel-第110-116行&#34;&gt;8. &lt;strong&gt;Generic Event Channel&lt;/strong&gt; (第110-116行)&lt;/h4&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;nx&#34;&gt;WatchesRawSource&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
@@ -325,14 +376,23 @@
 &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;作用&lt;/strong&gt;：处理通过 channel 发送的自定义事件&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressForGenericEvent&lt;/code&gt;)：
-- 根据对象类型路由到相应的处理函数：
-  - &lt;code&gt;BackendTrafficPolicy&lt;/code&gt; -&amp;gt; &lt;code&gt;listIngressForBackendTrafficPolicy&lt;/code&gt;
-  - &lt;code&gt;HTTPRoutePolicy&lt;/code&gt; -&amp;gt; &lt;code&gt;listIngressesByHTTPRoutePolicy&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;逻辑&lt;/strong&gt; (&lt;code&gt;listIngressForGenericEvent&lt;/code&gt;)：&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：
-- 处理 Policy 的 targetRefs 被移除时的清理工作
-- 确保当资源不再被引用时，能正确更新相关配置&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;根据对象类型路由到相应的处理函数：
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;BackendTrafficPolicy&lt;/code&gt; -&amp;gt; &lt;code&gt;listIngressForBackendTrafficPolicy&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;HTTPRoutePolicy&lt;/code&gt; -&amp;gt; &lt;code&gt;listIngressesByHTTPRoutePolicy&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;处理 Policy 的 targetRefs 被移除时的清理工作&lt;/li&gt;
+&lt;li&gt;确保当资源不再被引用时，能正确更新相关配置&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h4 id=&#34;整体工作流程&#34;&gt;整体工作流程&lt;/h4&gt;
 
