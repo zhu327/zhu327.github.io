@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      pingsix-ingress-controller启动 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2025. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">pingsix-ingress-controller启动</h1>
+  <span class="post-date">Oct 20 2025</span>
+  <blockquote>
+<p><a href="https://github.com/zhu327/pingsix">https://github.com/zhu327/pingsix</a></p>
+</blockquote>
+
+<p>PingSIX 自从上次重构之后, 我一直在考虑如何扩展这个项目的功能与使用场景, 有2个方向可以考虑:</p>
+
+<ol>
+<li>支持proxy-wasm插件</li>
+<li>实现pingsix-ingress-controller</li>
+</ol>
+
+<p>在调研了proxy-wasm的相关功能后, 结论是由于pingora面向的场景是CDN的反向代理, 所以没有考虑过方便的修改请求体与响应体, 这就造成很难基于pingora来实现proxy-wasm的ABI, 如果我要自己定义一个wasm的接口协议, 没法复用社区现有的proxy-wasm插件, 那就没必要了, 不如直接写Rust的插件. 相关参考内容:</p>
+
+<ul>
+<li><a href="https://github.com/cloudflare/pingora/issues/17">proxy-wasm support</a></li>
+<li><a href="https://segmentfault.com/a/1190000045232953">pingora 能做什么和不能做什么</a></li>
+</ul>
+
+<p>在放弃了proxy-wasm的支持后, 我开始调研如何实现pingsix-ingress-controller, 由于pingsix的的资源定义是参考apisix来实现的, 所以就直接参考<a href="https://github.com/apache/apisix-ingress-controller">apisix-ingress-controller</a>来实现我们自己的<a href="https://github.com/zhu327/pingsix-ingress-controller">pingsix-ingress-controller</a>.</p>
+
+<p></p>
+
+<h3 id="1-apisix-ingress-controller架构">1. apisix-ingress-controller架构</h3>
+
+<p><img src="https://github.com/user-attachments/assets/1ecf116a-378f-4357-a597-5bafb56991fd" alt="Image1" width="700px" /></p>
+
+<h4 id="1-k8s-resources-watch-layer-资源监听层">1. K8s Resources Watch Layer (资源监听层)</h4>
+
+<ul>
+<li>各种Controller通过Kubernetes的Watch机制监听对应的资源变化</li>
+<li>支持的资源类型包括：
+
+<ul>
+<li>Gateway API: HTTPRoute, Gateway, GRPCRoute, TCPRoute, UDPRoute, TLSRoute</li>
+<li>Kubernetes原生: Ingress, IngressClass</li>
+<li>APISIX CRD: ApisixRoute, ApisixGlobalRule, ApisixTls, ApisixConsumer, ApisixUpstream</li>
+<li>自定义: Consumer, GatewayProxy</li>
+</ul></li>
+</ul>
+
+<h4 id="2-provider-layer-提供者层">2. Provider Layer (提供者层)</h4>
+
+<ul>
+<li>Provider接收Controller的Update/Delete请求</li>
+<li>TranslateContext收集所有依赖资源（Services, Secrets, EndpointSlices等）</li>
+<li>为Translator提供完整的上下文信息</li>
+</ul>
+
+<h4 id="3-translator-layer-翻译层">3. Translator Layer (翻译层)</h4>
+
+<ul>
+<li>将K8s资源翻译成ADC资源描述</li>
+<li>每种资源类型都有对应的Translator方法</li>
+<li>输出TranslateResult，包含：
+
+<ul>
+<li>Services (路由规则)</li>
+<li>SSL/TLS (证书)</li>
+<li>Consumers (消费者)</li>
+<li>GlobalRules (全局规则)</li>
+<li>PluginMetadata (插件元数据)</li>
+</ul></li>
+</ul>
+
+<h4 id="4-adc-client-layer-adc客户端层">4. ADC Client Layer (ADC客户端层)</h4>
+
+<ul>
+<li><strong>ConfigManager</strong>: 管理多个GatewayProxy的配置</li>
+<li><strong>Store/MemDB</strong>: 内存数据库，存储ADC资源状态</li>
+<li><strong>StoreDelta</strong>: 对比新旧配置，计算差异</li>
+<li>将变更任务传递给Executor执行</li>
+</ul>
+
+<h4 id="5-adc-executor-interface-执行器接口">5. ADC Executor Interface (执行器接口)</h4>
+
+<p>ADC Executor提供统一的Execute接口，支持三种实现：
+- <strong>HTTPADCExecutor</strong>: 通过HTTP调用ADC Server（推荐方式）
+- <strong>DefaultADCExecutor</strong>: 通过命令行调用adc命令</p>
+
+<h4 id="6-adc-http-server-adc-http服务器">6. ADC HTTP Server (ADC HTTP服务器)</h4>
+
+<p>ADC HTTP Server的核心流程：
+1. 接收<code>/sync</code>端点的PUT请求
+2. 解析ADCServerRequest（包含opts和config）
+3. 根据label-selector从APISIX拉取现有资源
+4. 将ADC资源描述转换为APISIX资源格式
+5. 对比已拉取的资源，计算差异（Diff）
+6. 调用APISIX Admin API执行创建/更新/删除操作
+7. 返回SyncResult（包含成功/失败状态）</p>
+
+<h4 id="7-apisix-data-plane-apisix数据平面">7. APISIX Data Plane (APISIX数据平面)</h4>
+
+<p>最终在APISIX中创建/更新/删除的资源：
+- Routes (路由)
+- Services (服务)
+- Upstreams (上游)
+- SSL/TLS (证书)
+- Consumers (消费者)
+- Global Rules (全局规则)
+- Plugin Metadata (插件元数据)</p>
+
+<h4 id="8-核心特性">8. 核心特性</h4>
+
+<ol>
+<li><strong>多GatewayProxy支持</strong>: 通过ConfigManager管理多个APISIX实例的配置</li>
+<li><strong>Label Selector</strong>: 支持通过标签选择器过滤资源</li>
+<li><strong>增量同步</strong>: 通过MemDB对比差异，只同步变更的资源</li>
+<li><strong>错误处理</strong>: 完善的错误收集和状态更新机制</li>
+<li><strong>灵活的执行方式</strong>: 支持HTTP、命令行多种执行模式</li>
+<li><strong>资源隔离</strong>: 通过label实现不同资源的隔离和管理</li>
+</ol>
+
+<h3 id="2-apisix-ingress-controller的经验">2. apisix-ingress-controller的经验</h3>
+
+<p>虽然以前也写过一些operator的代码, 但是在学习apisix-ingress-controller代码的过程中, 我还是学到了一些新的东西, 在controller watch一类资源的时候, 我们可以watch所有关联的资源类型, 一旦这些关联的资源类型有变更, 就可以进入统一的变更流程, 这样就减少了我们写controller的逻辑复杂度, 所有的关联资源的变更都会触发主资源的更新.</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// SetupWithManager sets up the controller with the Manager.
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">IngressReconciler</span><span class="p">)</span> <span class="nx">SetupWithManager</span><span class="p">(</span><span class="nx">mgr</span> <span class="nx">ctrl</span><span class="p">.</span><span class="nx">Manager</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="nx">r</span><span class="p">.</span><span class="nx">genericEvent</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">event</span><span class="p">.</span><span class="nx">GenericEvent</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="nx">ctrl</span><span class="p">.</span><span class="nx">NewControllerManagedBy</span><span class="p">(</span><span class="nx">mgr</span><span class="p">).</span>
+		<span class="nx">For</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">networkingv1</span><span class="p">.</span><span class="nx">Ingress</span><span class="p">{},</span>
+			<span class="nx">builder</span><span class="p">.</span><span class="nx">WithPredicates</span><span class="p">(</span>
+				<span class="nx">MatchesIngressClassPredicate</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Client</span><span class="p">,</span> <span class="nx">r</span><span class="p">.</span><span class="nx">Log</span><span class="p">),</span>
+			<span class="p">),</span>
+		<span class="p">).</span>
+		<span class="nx">WithEventFilter</span><span class="p">(</span>
+			<span class="nx">predicate</span><span class="p">.</span><span class="nx">Or</span><span class="p">(</span>
+				<span class="nx">predicate</span><span class="p">.</span><span class="nx">GenerationChangedPredicate</span><span class="p">{},</span>
+				<span class="nx">predicate</span><span class="p">.</span><span class="nx">AnnotationChangedPredicate</span><span class="p">{},</span>
+				<span class="nx">predicate</span><span class="p">.</span><span class="nx">NewPredicateFuncs</span><span class="p">(</span><span class="nx">TypePredicate</span><span class="p">[</span><span class="o">*</span><span class="nx">corev1</span><span class="p">.</span><span class="nx">Secret</span><span class="p">]()),</span>
+			<span class="p">),</span>
+		<span class="p">).</span>
+		<span class="nx">Watches</span><span class="p">(</span>
+			<span class="o">&amp;</span><span class="nx">networkingv1</span><span class="p">.</span><span class="nx">IngressClass</span><span class="p">{},</span>
+			<span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressForIngressClass</span><span class="p">),</span>
+			<span class="nx">builder</span><span class="p">.</span><span class="nx">WithPredicates</span><span class="p">(</span>
+				<span class="nx">predicate</span><span class="p">.</span><span class="nx">NewPredicateFuncs</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">matchesIngressController</span><span class="p">),</span>
+			<span class="p">),</span>
+		<span class="p">).</span>
+		<span class="nx">Watches</span><span class="p">(</span>
+			<span class="o">&amp;</span><span class="nx">discoveryv1</span><span class="p">.</span><span class="nx">EndpointSlice</span><span class="p">{},</span>
+			<span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressesByService</span><span class="p">),</span>
+		<span class="p">).</span>
+		<span class="nx">Watches</span><span class="p">(</span>
+			<span class="o">&amp;</span><span class="nx">corev1</span><span class="p">.</span><span class="nx">Secret</span><span class="p">{},</span>
+			<span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressesBySecret</span><span class="p">),</span>
+		<span class="p">).</span>
+		<span class="nx">Watches</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">v1alpha1</span><span class="p">.</span><span class="nx">BackendTrafficPolicy</span><span class="p">{},</span>
+			<span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressForBackendTrafficPolicy</span><span class="p">),</span>
+			<span class="nx">builder</span><span class="p">.</span><span class="nx">WithPredicates</span><span class="p">(</span>
+				<span class="nx">BackendTrafficPolicyPredicateFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">genericEvent</span><span class="p">),</span>
+			<span class="p">),</span>
+		<span class="p">).</span>
+		<span class="nx">Watches</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">v1alpha1</span><span class="p">.</span><span class="nx">HTTPRoutePolicy</span><span class="p">{},</span>
+			<span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressesByHTTPRoutePolicy</span><span class="p">),</span>
+			<span class="nx">builder</span><span class="p">.</span><span class="nx">WithPredicates</span><span class="p">(</span><span class="nx">httpRoutePolicyPredicateFuncs</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">genericEvent</span><span class="p">)),</span>
+		<span class="p">).</span>
+		<span class="nx">Watches</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">v1alpha1</span><span class="p">.</span><span class="nx">GatewayProxy</span><span class="p">{},</span>
+			<span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressesForGatewayProxy</span><span class="p">),</span>
+		<span class="p">).</span>
+		<span class="nx">WatchesRawSource</span><span class="p">(</span>
+			<span class="nx">source</span><span class="p">.</span><span class="nx">Channel</span><span class="p">(</span>
+				<span class="nx">r</span><span class="p">.</span><span class="nx">genericEvent</span><span class="p">,</span>
+				<span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressForGenericEvent</span><span class="p">),</span>
+			<span class="p">),</span>
+		<span class="p">).</span>
+		<span class="nx">Complete</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span>
+<span class="p">}</span></code></pre></div>
+<p>IngressReconciler Watch 事件详解</p>
+
+<p>根据代码分析，<code>IngressReconciler</code> 在 <code>SetupWithManager</code> 方法中配置了多个 watch 事件。让我为您详细解释每个事件的作用和逻辑：</p>
+
+<h4 id="1-主资源-watch-ingress-第70-81行">1. <strong>主资源 Watch - Ingress</strong> (第70-81行)</h4>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">For</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">networkingv1</span><span class="p">.</span><span class="nx">Ingress</span><span class="p">{},</span> <span class="nx">builder</span><span class="p">.</span><span class="nx">WithPredicates</span><span class="p">(</span>
+    <span class="nx">MatchesIngressClassPredicate</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Client</span><span class="p">,</span> <span class="nx">r</span><span class="p">.</span><span class="nx">Log</span><span class="p">),</span>
+<span class="p">))</span></code></pre></div>
+<p><strong>作用</strong>：监听 Ingress 资源本身的变化</p>
+
+<p><strong>Predicates（过滤条件）</strong>：
+- <code>MatchesIngressClassPredicate</code>: 只处理由当前控制器管理的 IngressClass 的 Ingress
+- <code>GenerationChangedPredicate</code>: 资源的 Generation 发生变化（spec 修改）
+- <code>AnnotationChangedPredicate</code>: 注解发生变化
+- <code>TypePredicate[*corev1.Secret]()</code>: 用于 Secret 类型判断</p>
+
+<p><strong>逻辑</strong>：这是主要的监听对象，当 Ingress 的规格或注解变化时触发 Reconcile</p>
+
+<h4 id="2-ingressclass-watch-第82-88行">2. <strong>IngressClass Watch</strong> (第82-88行)</h4>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">Watches</span><span class="p">(</span>
+    <span class="o">&amp;</span><span class="nx">networkingv1</span><span class="p">.</span><span class="nx">IngressClass</span><span class="p">{},</span>
+    <span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressForIngressClass</span><span class="p">),</span>
+    <span class="nx">builder</span><span class="p">.</span><span class="nx">WithPredicates</span><span class="p">(</span>
+        <span class="nx">predicate</span><span class="p">.</span><span class="nx">NewPredicateFuncs</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">matchesIngressController</span><span class="p">),</span>
+    <span class="p">),</span>
+<span class="p">)</span></code></pre></div>
+<p><strong>作用</strong>：监听 IngressClass 资源的变化</p>
+
+<p><strong>触发条件</strong>：
+- <code>matchesIngressController</code>: 只监听由当前控制器管理的 IngressClass（通过 <code>spec.controller</code> 字段匹配）</p>
+
+<p><strong>逻辑</strong> (<code>listIngressForIngressClass</code>)：
+1. 检查 IngressClass 是否是默认类（通过注解 <code>ingressclass.kubernetes.io/is-default-class</code>）
+2. 如果是默认类：列出所有未指定 IngressClassName 或指定为该类的 Ingress
+3. 如果不是默认类：通过索引查找使用该 IngressClass 的所有 Ingress
+4. 返回需要 reconcile 的 Ingress 列表</p>
+
+<p><strong>使用场景</strong>：当 IngressClass 的配置变化时，需要重新处理所有使用该类的 Ingress</p>
+
+<h4 id="3-endpointslice-watch-第89-92行">3. <strong>EndpointSlice Watch</strong> (第89-92行)</h4>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">Watches</span><span class="p">(</span>
+    <span class="o">&amp;</span><span class="nx">discoveryv1</span><span class="p">.</span><span class="nx">EndpointSlice</span><span class="p">{},</span>
+    <span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressesByService</span><span class="p">),</span>
+<span class="p">)</span></code></pre></div>
+<p><strong>作用</strong>：监听后端服务的 Endpoint 变化</p>
+
+<p><strong>逻辑</strong> (<code>listIngressesByService</code>)：
+1. 从 EndpointSlice 的 label 中提取 Service 名称（<code>discovery.k8s.io/service-name</code>）
+2. 通过索引 <code>ServiceIndexRef</code> 查找引用该 Service 的所有 Ingress
+3. 过滤出由当前控制器管理的 Ingress
+4. 返回需要 reconcile 的 Ingress 列表</p>
+
+<p><strong>使用场景</strong>：当后端 Pod 的 IP 地址变化（扩缩容、重启等）时，需要更新 APISIX 的 upstream 配置</p>
+
+<h4 id="4-secret-watch-第93-96行">4. <strong>Secret Watch</strong> (第93-96行)</h4>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">Watches</span><span class="p">(</span>
+    <span class="o">&amp;</span><span class="nx">corev1</span><span class="p">.</span><span class="nx">Secret</span><span class="p">{},</span>
+    <span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressesBySecret</span><span class="p">),</span>
+<span class="p">)</span></code></pre></div>
+<p><strong>作用</strong>：监听 TLS 证书 Secret 的变化</p>
+
+<p><strong>逻辑</strong> (<code>listIngressesBySecret</code>)：
+1. 通过索引 <code>SecretIndexRef</code> 查找直接引用该 Secret 的 Ingress（TLS 配置）
+2. 查找引用该 Secret 的 GatewayProxy（用于 provider 认证）
+3. 如果 GatewayProxy 引用了该 Secret，找到使用该 GatewayProxy 的 IngressClass
+4. 再找到使用这些 IngressClass 的所有 Ingress
+5. 去重后返回所有需要 reconcile 的 Ingress</p>
+
+<p><strong>使用场景</strong>：
+- TLS 证书更新或轮换
+- GatewayProxy 的 AdminKey Secret 变化</p>
+
+<h4 id="5-backendtrafficpolicy-watch-第97-102行">5. <strong>BackendTrafficPolicy Watch</strong> (第97-102行)</h4>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">Watches</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">v1alpha1</span><span class="p">.</span><span class="nx">BackendTrafficPolicy</span><span class="p">{},</span>
+    <span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressForBackendTrafficPolicy</span><span class="p">),</span>
+    <span class="nx">builder</span><span class="p">.</span><span class="nx">WithPredicates</span><span class="p">(</span>
+        <span class="nx">BackendTrafficPolicyPredicateFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">genericEvent</span><span class="p">),</span>
+    <span class="p">),</span>
+<span class="p">)</span></code></pre></div>
+<p><strong>作用</strong>：监听后端流量策略的变化</p>
+
+<p><strong>Predicates 逻辑</strong>：
+- <strong>Create</strong>: 返回 true，新建时触发
+- <strong>Delete</strong>: 返回 true，删除时触发
+- <strong>Update</strong>: 检测 <code>targetRefs</code> 的变化
+  - 找出被移除的 targetRefs
+  - 将包含被移除 targetRefs 的旧对象发送到 genericEvent channel
+  - 这样可以清理不再被引用的资源</p>
+
+<p><strong>逻辑</strong> (<code>listIngressForBackendTrafficPolicy</code>)：
+1. 遍历 Policy 的所有 <code>targetRefs</code>（引用的 Service）
+2. 通过索引查找使用这些 Service 的 Ingress
+3. 去重后返回需要 reconcile 的 Ingress 列表</p>
+
+<p><strong>使用场景</strong>：配置后端流量策略（如负载均衡算法、健康检查等）</p>
+
+<h4 id="6-httproutepolicy-watch-第103-106行">6. <strong>HTTPRoutePolicy Watch</strong> (第103-106行)</h4>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">Watches</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">v1alpha1</span><span class="p">.</span><span class="nx">HTTPRoutePolicy</span><span class="p">{},</span>
+    <span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressesByHTTPRoutePolicy</span><span class="p">),</span>
+    <span class="nx">builder</span><span class="p">.</span><span class="nx">WithPredicates</span><span class="p">(</span><span class="nx">httpRoutePolicyPredicateFuncs</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">genericEvent</span><span class="p">)),</span>
+<span class="p">)</span></code></pre></div>
+<p><strong>作用</strong>：监听 HTTP 路由策略的变化</p>
+
+<p><strong>Predicates 逻辑</strong>：
+- <strong>Create/Delete</strong>: 返回 true
+- <strong>Update</strong>: 检测 <code>targetRefs</code> 的变化
+  - 找出被移除的 targetRefs
+  - 将包含被移除 targetRefs 的旧对象发送到 genericEvent channel</p>
+
+<p><strong>逻辑</strong> (<code>listIngressesByHTTPRoutePolicy</code>)：
+1. 遍历 Policy 的所有 <code>targetRefs</code>
+2. 过滤出 Kind 为 <code>Ingress</code> 的引用
+3. 获取这些 Ingress 对象
+4. 返回需要 reconcile 的 Ingress 列表</p>
+
+<p><strong>使用场景</strong>：配置 HTTP 路由级别的策略（如重写、重定向、超时等）</p>
+
+<h4 id="7-gatewayproxy-watch-第107-109行">7. <strong>GatewayProxy Watch</strong> (第107-109行)</h4>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">Watches</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">v1alpha1</span><span class="p">.</span><span class="nx">GatewayProxy</span><span class="p">{},</span>
+    <span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressesForGatewayProxy</span><span class="p">),</span>
+<span class="p">)</span></code></pre></div>
+<p><strong>作用</strong>：监听 GatewayProxy 配置的变化</p>
+
+<p><strong>逻辑</strong> (<code>listIngressesForGatewayProxy</code> -&gt; <code>listIngressClassRequestsForGatewayProxy</code>)：
+1. 通过索引 <code>IngressClassParametersRef</code> 查找引用该 GatewayProxy 的 IngressClass
+2. 对每个 IngressClass，调用 <code>listIngressForIngressClass</code> 获取相关 Ingress
+3. 去重后返回所有需要 reconcile 的 Ingress</p>
+
+<p><strong>使用场景</strong>：
+- GatewayProxy 的 APISIX 地址变化
+- 发布服务配置变化
+- Provider 配置变化</p>
+
+<h4 id="8-generic-event-channel-第110-116行">8. <strong>Generic Event Channel</strong> (第110-116行)</h4>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">WatchesRawSource</span><span class="p">(</span>
+    <span class="nx">source</span><span class="p">.</span><span class="nx">Channel</span><span class="p">(</span>
+        <span class="nx">r</span><span class="p">.</span><span class="nx">genericEvent</span><span class="p">,</span>
+        <span class="nx">handler</span><span class="p">.</span><span class="nx">EnqueueRequestsFromMapFunc</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">listIngressForGenericEvent</span><span class="p">),</span>
+    <span class="p">),</span>
+<span class="p">)</span></code></pre></div>
+<p><strong>作用</strong>：处理通过 channel 发送的自定义事件</p>
+
+<p><strong>逻辑</strong> (<code>listIngressForGenericEvent</code>)：
+- 根据对象类型路由到相应的处理函数：
+  - <code>BackendTrafficPolicy</code> -&gt; <code>listIngressForBackendTrafficPolicy</code>
+  - <code>HTTPRoutePolicy</code> -&gt; <code>listIngressesByHTTPRoutePolicy</code></p>
+
+<p><strong>使用场景</strong>：
+- 处理 Policy 的 targetRefs 被移除时的清理工作
+- 确保当资源不再被引用时，能正确更新相关配置</p>
+
+<h4 id="整体工作流程">整体工作流程</h4>
+
+<pre><code>1. 事件触发 → 2. Predicate 过滤 → 3. MapFunc 映射 → 4. Reconcile 队列 → 5. Reconcile 执行
+</code></pre>
+
+<h4 id="reconcile-主要步骤">Reconcile 主要步骤：</h4>
+
+<ol>
+<li><strong>获取 Ingress 对象</strong>：如果不存在则执行删除逻辑</li>
+<li><strong>查找 IngressClass</strong>：确定配置来源</li>
+<li><strong>处理 IngressClass Parameters</strong>：加载 GatewayProxy 配置</li>
+<li><strong>处理 TLS</strong>：加载证书 Secret</li>
+<li><strong>处理 Backends</strong>：加载 Service 和 EndpointSlice</li>
+<li><strong>处理 HTTPRoutePolicy</strong>：应用路由策略</li>
+<li><strong>处理 BackendTrafficPolicy</strong>：应用后端流量策略</li>
+<li><strong>更新 APISIX 配置</strong>：通过 Provider 同步到 APISIX</li>
+<li><strong>更新状态</strong>：更新 Ingress 和相关资源的状态</li>
+</ol>
+
+<h4 id="关键设计特点">关键设计特点</h4>
+
+<ol>
+<li><strong>索引优化</strong>：使用 Field Indexer 快速查找资源关系</li>
+<li><strong>级联更新</strong>：依赖资源变化时自动触发主资源更新</li>
+<li><strong>去重机制</strong>：避免重复处理同一个 Ingress</li>
+<li><strong>事件通道</strong>：使用 genericEvent channel 处理复杂的清理场景</li>
+<li><strong>条件过滤</strong>：通过 Predicate 减少不必要的 Reconcile</li>
+</ol>
+
+<h4 id="indexer性能优化">indexer性能优化</h4>
+
+<p>可以看到在上面的watch逻辑中有很多的list操作, 比如listIngressForBackendTrafficPolicy, 这个时候就需要事先在k8s client的indexer中建立索引来优化查询速度, 避免list全扫数据:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nx">setupIngressIndexer</span><span class="p">(</span><span class="nx">mgr</span> <span class="nx">ctrl</span><span class="p">.</span><span class="nx">Manager</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="c1">// create IngressClass index
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">mgr</span><span class="p">.</span><span class="nx">GetFieldIndexer</span><span class="p">().</span><span class="nx">IndexField</span><span class="p">(</span>
+		<span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span>
+		<span class="o">&amp;</span><span class="nx">networkingv1</span><span class="p">.</span><span class="nx">Ingress</span><span class="p">{},</span>
+		<span class="nx">IngressClassRef</span><span class="p">,</span>
+		<span class="nx">IngressClassRefIndexFunc</span><span class="p">,</span>
+	<span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+
+	<span class="c1">// create Service index for quick lookup of Ingresses using specific services
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">mgr</span><span class="p">.</span><span class="nx">GetFieldIndexer</span><span class="p">().</span><span class="nx">IndexField</span><span class="p">(</span>
+		<span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span>
+		<span class="o">&amp;</span><span class="nx">networkingv1</span><span class="p">.</span><span class="nx">Ingress</span><span class="p">{},</span>
+		<span class="nx">ServiceIndexRef</span><span class="p">,</span>
+		<span class="nx">IngressServiceIndexFunc</span><span class="p">,</span>
+	<span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+
+	<span class="c1">// create secret index for TLS
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">mgr</span><span class="p">.</span><span class="nx">GetFieldIndexer</span><span class="p">().</span><span class="nx">IndexField</span><span class="p">(</span>
+		<span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span>
+		<span class="o">&amp;</span><span class="nx">networkingv1</span><span class="p">.</span><span class="nx">Ingress</span><span class="p">{},</span>
+		<span class="nx">SecretIndexRef</span><span class="p">,</span>
+		<span class="nx">IngressSecretIndexFunc</span><span class="p">,</span>
+	<span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">mgr</span><span class="p">.</span><span class="nx">GetFieldIndexer</span><span class="p">().</span><span class="nx">IndexField</span><span class="p">(</span>
+		<span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span>
+		<span class="o">&amp;</span><span class="nx">networkingv1</span><span class="p">.</span><span class="nx">Ingress</span><span class="p">{},</span>
+		<span class="nx">TLSHostIndexRef</span><span class="p">,</span>
+		<span class="nx">IngressTLSHostIndexFunc</span><span class="p">,</span>
+	<span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+
+	<span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span></code></pre></div>
+<h5 id="索引概览表">📊 <strong>索引概览表</strong></h5>
+
+<table>
+<thead>
+<tr>
+<th>索引名称</th>
+<th>索引字段</th>
+<th>索引函数</th>
+<th>主要用途</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>IngressClassRef</td>
+<td><code>ingressClassRef</code></td>
+<td><code>IngressClassRefIndexFunc</code></td>
+<td>根据 IngressClass 查找 Ingress</td>
+</tr>
+
+<tr>
+<td>ServiceIndexRef</td>
+<td><code>serviceRefs</code></td>
+<td><code>IngressServiceIndexFunc</code></td>
+<td>根据后端 Service 查找 Ingress</td>
+</tr>
+
+<tr>
+<td>SecretIndexRef</td>
+<td><code>secretRefs</code></td>
+<td><code>IngressSecretIndexFunc</code></td>
+<td>根据 TLS Secret 查找 Ingress</td>
+</tr>
+
+<tr>
+<td>TLSHostIndexRef</td>
+<td><code>tlsHostRefs</code></td>
+<td><code>IngressTLSHostIndexFunc</code></td>
+<td>根据 TLS 主机名查找 Ingress</td>
+</tr>
+</tbody>
+</table>
+
+<p>Ingress 的 4 个索引形成了一个完整的查询体系：</p>
+
+<ol>
+<li><strong>IngressClassRef</strong>：管理层面 - 按控制器分组</li>
+<li><strong>ServiceIndexRef</strong>：数据平面 - 后端服务关联</li>
+<li><strong>SecretIndexRef</strong>：安全层面 - TLS 证书管理</li>
+<li><strong>TLSHostIndexRef</strong>：域名层面 - SSL 配置管理</li>
+</ol>
+
+<p>这些索引确保了当任何依赖资源变化时，控制器都能<strong>快速、准确</strong>地找到需要更新的 Ingress，实现<strong>高效的级联更新</strong>和<strong>实时配置同步</strong>。</p>
+
+<h3 id="3-pingsix-ingress-controller架构决策">3. pingsix-ingress-controller架构决策</h3>
+
+<p>从apisix-ingress-controller的架构中, 我们知道apisix抽象了一种ADC(API Declarative CLI)的资源类型用来在ingress与apisix资源之间作为中间的桥梁, 如果直接使用apisix-ingress-controller来对接pingsix的话, 就需要pingsix完整的实现apisix的admin api, 并且还需要在使用时启动etcd.</p>
+
+<p>在我的印象中曾经看到过apisix-ingress-controller实现过一个不需要etcd的方案:</p>
+
+<ul>
+<li><a href="https://apisix.apache.org/blog/2023/10/18/ingress-apisix/">Embrace the Lightweight APISIX Ingress Controller Without etcd Dependency</a></li>
+</ul>
+
+<p>然后我在apisix-ingress-controller 1.8.x 版本的代码下找到了这个这个实现方式, 只是当前的 2.0.x 版本在引入了ADC相关的功能后去掉了<a href="https://github.com/api7/etcd-adapter">etcd-adapter</a>, 那我在考虑实现我的pingsix-ingress-controller时, 为了避免直接改动pingsix的代码, 并且也不希望在ingress启动时依赖etcd, 所以决定重新引入etcd-adapter, 然后为了后续pingsix-ingress-controller能同步apisix-ingress-controller的上游更新, 我决定在现有的ADC Executor的接口的基础上, 实现pingsix的Executor, 这样就可以在避免直接修改apisix的逻辑代码, 使用一种adapter的方式来实现我们自己的pingsix-ingress-controller.</p>
+
+<p><img src="https://github.com/user-attachments/assets/a10a7162-ea7d-4407-b7a6-b5481823592b" alt="Image2" width="700px" /></p>
+
+<p>可以看到我们实现的这个Executor, 其实就是重复了一遍ADC http serve的逻辑, 但是最终资源的数据是写入到etcd-adapter中的, 我们实现了一个apisix-ingress-controller最底层的抽象, 通过这种低成本的改造我们后续还可以继续同步apisix-ingress-controller的变更, 并不会造成代码冲突.</p>
+
+<h3 id="总结">总结</h3>
+
+<p>在实现<a href="https://github.com/zhu327/pingsix-ingress-controller">pingsix-ingress-controller</a>的过程中, 我完整的阅读了apisix-ingress-controller的代码, 收获了一些写operator的技巧, 然后在分析现有apisix-ingress-controller的代码架构时, 决定通过扩展ADC Executor的实现来实践了面向对象的开闭原则, 对于后续的代码更新合并开了一个好头.</p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

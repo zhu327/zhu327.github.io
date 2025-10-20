@@ -78,6 +78,14 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2018/07/17/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3/">微信公众号迁移Serverless详解</a></h1>
+        <span class="post-date">Jul 17 2018</span>
+        <p>3月腾讯云函数计算开放测试, 看到的第一反应是这种Serverless太适合做微信公众号的后端来实现自动应答了, 尝试把我服务了3年的一个公众号迁移到腾讯云函数计算, 结果因为API gateway的一个功能缺失搁置了, 这周腾讯云API gateway终于补上了集成响应的能力, 能正常服务我的公众号, 这里记录下实现过程.</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2018/06/26/%E5%83%8Fopenresty%E4%B8%80%E6%A0%B7%E4%BD%BF%E7%94%A8golang%E5%BC%80%E5%8F%91web-app/">像OpenResty一样使用Golang开发Web App</a></h1>
         <span class="post-date">Jun 26 2018</span>
         <p><a href="https://github.com/zhu327/glualor">https://github.com/zhu327/glualor</a></p>
@@ -151,21 +159,6 @@
 </blockquote>
 
 <p>正好公司有个生成短链接的小项目,不限语言,先拿Openresty练练手,写了个shorturl.</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2017/05/08/zerorpc-api%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97/">zerorpc api设计指南</a></h1>
-        <span class="post-date">May 8 2017</span>
-        <blockquote>
-<p><a href="http://tailnode.tk/2017/03/google-api-design-guide/contents/">Google API 设计指南</a><br />
-<a href="https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/">在Django中使用zerorpc</a></p>
-</blockquote>
-
-<p>之前实现了在Django环境下使用zerorpc的封装,api的组织单位是function.受到Google API 设计指南的启发,重新设计了一种基于Resources的api组织风格,并且约定Resource的方法名与Django Rest Framework的ViewSets中实现的action名称一致.</p>
-
-<p>zerorpc默认只能在同一个Server上面注册一个对象,而我们需要注册多个类(一个类表示一Resources),在阅读zerorpc Server的代码后,想到一个简单的方式来注册Resources.</p>
 
 <p></p>
     </div>

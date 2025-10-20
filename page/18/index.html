@@ -78,6 +78,22 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/24/jinja2-%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E/">Jinja2 模版引擎</a></h1>
+        <span class="post-date">Sep 24 2014</span>
+        <h3 id="参考">参考</h3>
+
+<ul>
+<li><a href="http://docs.jinkan.org/docs/jinja2/">Jinja2 文档</a></li>
+<li><a href="http://www.oschina.net/question/5189_3943">Jinja2 简明使用手册</a></li>
+</ul>
+
+<h3 id="api">API</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">jinja2</span> <span class="kn">import</span> <span class="n">Environment</span><span class="p">,</span> <span class="n">FileSystemLoader</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">templ_dir</span><span class="p">))</span></code></pre></div>
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/24/python-web-farmwork/">Python Web farmwork</a></h1>
         <span class="post-date">Sep 24 2014</span>
         <h3 id="简介">简介</h3>
@@ -148,22 +164,6 @@
 <span class="n">body</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># 类文件对象有与文件对象类似的方法，read，readline等</span>
 <span class="n">heade</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">info</span><span class="p">()</span> <span class="c1"># 获取响应的头，字典</span>
 <span class="n">url</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">geturl</span><span class="p">()</span> <span class="c1"># 获取响应的真实url，如果有重定向，url会改变</span></code></pre></div>
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/16/orm-%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%84/">ORM 对象关系映射</a></h1>
-        <span class="post-date">Sep 16 2014</span>
-        <h3 id="orm概念">ORM概念</h3>
-
-<p>wikipedia: <a href="http://zh.wikipedia.org/wiki/对象关系映射">对象关系映射</a></p>
-
-<p>简单的说ORM就是通过操作Python中的对象来实现对关系数据库(MySQL)中数据的操作。<code>Model</code>类与数据库表映射，<code>Model</code>对象与数据库中的行映射，对象的属性与表中的字段映射。</p>
-
-<h3 id="用python实现基本功能的orm">用Python实现基本功能的ORM</h3>
-
-<p>首先定义<code>Field</code>类，代表DB中tabale的每一个字段，对象初始化的时候需要定义的属性有，字段名称，字段数据类型，是否为主键，是否可为空，字段默认值，是否可更改等字段属性</p>
-
 <p></p>
     </div>
   

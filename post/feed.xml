@@ -6,10 +6,39 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 16 Oct 2025 10:00:52 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 20 Oct 2025 10:00:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>pingsix-ingress-controller启动</title>
+      <link>https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/</link>
+      <pubDate>Mon, 20 Oct 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;https://github.com/zhu327/pingsix&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;PingSIX 自从上次重构之后, 我一直在考虑如何扩展这个项目的功能与使用场景, 有2个方向可以考虑:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;支持proxy-wasm插件&lt;/li&gt;
+&lt;li&gt;实现pingsix-ingress-controller&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在调研了proxy-wasm的相关功能后, 结论是由于pingora面向的场景是CDN的反向代理, 所以没有考虑过方便的修改请求体与响应体, 这就造成很难基于pingora来实现proxy-wasm的ABI, 如果我要自己定义一个wasm的接口协议, 没法复用社区现有的proxy-wasm插件, 那就没必要了, 不如直接写Rust的插件. 相关参考内容:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/cloudflare/pingora/issues/17&#34;&gt;proxy-wasm support&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://segmentfault.com/a/1190000045232953&#34;&gt;pingora 能做什么和不能做什么&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在放弃了proxy-wasm的支持后, 我开始调研如何实现pingsix-ingress-controller, 由于pingsix的的资源定义是参考apisix来实现的, 所以就直接参考&lt;a href=&#34;https://github.com/apache/apisix-ingress-controller&#34;&gt;apisix-ingress-controller&lt;/a&gt;来实现我们自己的&lt;a href=&#34;https://github.com/zhu327/pingsix-ingress-controller&#34;&gt;pingsix-ingress-controller&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>编写可维护的代码 -- 面向AI编程</title>
