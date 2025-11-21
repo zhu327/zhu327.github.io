@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      系统性思维的陷阱：从“完美方案”到“有效落地” &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2025. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">系统性思维的陷阱：从“完美方案”到“有效落地”</h1>
+  <span class="post-date">Nov 21 2025</span>
+  <p>我做程序员已经 10 多年了。</p>
+
+<p>回想刚入行那会儿，我的思维模式很简单：产品经理提什么，我就做什么。那时候追求的是“短平快”，像个执行指令的机器，代码写得快就是牛。</p>
+
+<p>后来加入了腾讯，随着职级的提升，负责的系统越来越复杂，我开始意识到：写代码只是冰山一角，<strong>做方案才是真正的考验。</strong></p>
+
+<p>所谓的“系统性思维”，一度让我受益匪浅，但最近我发现，如果一旦陷入对“完美”的执念，系统性思维反而会成为阻碍项目落地的最大陷阱。今天想和大家聊聊，如何在架构设计、风险控制和实际落地之间找到那个微妙的平衡点。</p>
+
+<p></p>
+
+<h3 id="方案的本质-平衡客观条件的艺术">方案的本质：平衡客观条件的艺术</h3>
+
+<p>什么是做方案？以前我觉得是画一张最漂亮的架构图，用最牛的组件。现在我理解，<strong>做方案其实是把各种“客观条件”作为输入，寻找最优解的过程。</strong></p>
+
+<p>这些客观条件包括：</p>
+
+<ul>
+<li><strong>硬件资源</strong>：手头有多少服务器？</li>
+<li><strong>依赖组件</strong>：公司基建支持什么？（比如你想用 ClickHouse，但公司运维没经验，出了问题没人兜底，那这就不是一个好选项，不如看看现有组件能不能替代。）</li>
+<li><strong>人力成本</strong>：团队几个人？水平如何？</li>
+<li><strong>时间窗口</strong>：业务等得起多久？</li>
+</ul>
+
+<p>我见过很多“完美”的方案，逻辑自洽，架构优雅，但落地需要半年。而另一个方案虽然略显粗糙，但只需要 1 个月，且预留了后续演进的空间。在商业世界里，后者往往才是胜者。</p>
+
+<p><strong>架构不是设计出来的，是演进出来的。</strong> 我们需要做的是调整各种客观条件的优先级，在风险可控的前提下，通过多方评审（集思广益，消除盲区），找到那个平衡点。</p>
+
+<h3 id="实战案例-只解决-80-的问题">实战案例：只解决 80% 的问题</h3>
+
+<p>分享一个我在腾讯做权限中心时的真实案例。</p>
+
+<p>当时我们面临一个痛点：有一个中心化的管理员，每天大量时间都在处理审批单，他一直在吐槽，希望把这些审批自动路由到对应的业务负责人，别全堆在他头上。</p>
+
+<p>我第一反应是：<strong>做不到。</strong></p>
+
+<p>从技术角度看，审批范围是一个复杂的表达式。要根据用户申请的数据去匹配这个表达式，没法直接做数据库索引。如果要实现，就得全表扫描进行遍历匹配，性能扛不住。而且，很多申请范围很模糊，根本匹配不到具体负责人，最后还是得兜底回落到管理员那里。</p>
+
+<p>于是这个需求被我挡回去了。后来问题太严重，捅到了上面。在复盘会上，我的 Leader 问了一句话，让我瞬间顿悟：</p>
+
+<p><strong>“能不能在只解决 80% 问题的前提下，来做这个方案？”</strong></p>
+
+<p>我突然意识到，我陷入了“完美主义”的陷阱。我一直在纠结那 20% 匹配不到的情况，却忽略了如果能自动化处理掉 80% 的单子，管理员的工作量就能大大减轻。</p>
+
+<p>于是我重新设计了方案：
+1.  <strong>引入前置索引</strong>：提取表达式中的关键特征做索引。
+2.  <strong>允许降级</strong>：能走索引匹配的先走索引，匹配不到的（那复杂的 20%），直接回退给中心管理员。</p>
+
+<p>事实证明，方案落地后，管理员的压力骤减。这就告诉我：<strong>有时候真的没有完美的方案，只有平衡现状的方案。</strong></p>
+
+<h3 id="开源代码的-神话-与重构">开源代码的“神话”与重构</h3>
+
+<p>在阅读优秀开源项目代码时，我常有这种时刻：“哇塞，这代码写得太神了，连这种极端场景都想到了，作者是开了天眼吗？”</p>
+
+<p>随着我自己经验的增长，我发现所谓的“神人”并没有那么玄乎。</p>
+
+<p>他能考虑到那个场景，很可能只是因为他<strong>踩过那个坑</strong>。</p>
+
+<ul>
+<li>版本 1.0 可能是个草台班子。</li>
+<li>版本 2.0 修复了几个致命 Bug（踩坑）。</li>
+<li>版本 3.0 因为补丁打多了，代码太烂，被迫重构，把之前的坑变成了新的设计约束。</li>
+</ul>
+
+<p>我在腾讯的 6 年里，权限中心整体重构过 3 次，API 网关也重构过 3 次。每一次重构，都是因为旧的方案无法适应新的客观条件。</p>
+
+<p><strong>踩坑并不是坏事，失败也是财富。</strong> 那些让你绞尽脑汁都想不到的 Edge Case，往往是别人血淋淋的经验积累。我们在做方案时，不要怕现在的方案未来会被推翻，<strong>只要预留了演进空间，现在的“不完美”就是未来能力的基石。</strong></p>
+
+<h3 id="警惕-过度系统化-的僵局">警惕“过度系统化”的僵局</h3>
+
+<p>我现在所在的公司，领导层是运维出身。运维思维和研发思维有一个本质的区别：<strong>运维天然厌恶风险（Risk Averse），而研发需要管理风险。</strong></p>
+
+<p>这就导致了一个尴尬的局面：
+我提出了方案 A 来解决问题 A，但在评审会上，领导会挑战：“你这个方案没有解决问题 B 怎么办？有没有风险？”</p>
+
+<p>于是，技术评审会变成了“挑刺大会”。</p>
+
+<ul>
+<li>为了应对领导的挑刺，我们被迫把方案搞得越来越复杂，试图覆盖所有角落。</li>
+<li>方案一复杂，落地难度就指数级上升。</li>
+<li>最终结果是：动作变形，无法落地，不了了之。</li>
+</ul>
+
+<p>组内甚至有同事因为方案迟迟推不动，最后无奈活水走人。</p>
+
+<p>这种<strong>过度系统化</strong>的思考方式，实际上是一种<strong>停滞</strong>。领导当然需要系统性思考，但如果一直纠结于“一步到位”的完美方案，就会导致方案根本不具备可行性。</p>
+
+<h3 id="我的应对策略-最小化闭环">我的应对策略：最小化闭环</h3>
+
+<p>面对这种环境，如果硬刚，很容易陷入内耗。我的应对方法是：<strong>MVP（Minimum Viable Product）策略 + 工具提效。</strong></p>
+
+<ol>
+<li><strong>把方案切得足够小</strong>：不要试图画一张大饼，而是聚焦当前最核心的痛点。</li>
+<li><strong>快速跑通 PoC（概念验证）</strong>：与其在会议室争论风险，不如直接把代码跑起来，让领导看到可视化的成果。</li>
+<li><strong>利用 AI 提效</strong>：为了不让自己太累，我现在大量使用 AI 编程工具。它可以帮我快速生成原型代码，大大缩短从“想法”到“演示”的时间。</li>
+</ol>
+
+<p>虽然这样做确实会累一点（因为要先斩后奏，自己承担一部分验证成本），但在“不做不错”和“艰难推进”之间，我选择后者。</p>
+
+<h3 id="写在最后">写在最后</h3>
+
+<p>系统性思维是好东西，它让我们思考得更全面。但我们不能让系统性思维成为<strong>阻碍系统发展</strong>的借口。</p>
+
+<p>做方案，本质上是在<strong>不确定性中寻找确定性</strong>。</p>
+
+<p>既要有思维高度，也要有“先解决当下问题”的务实态度。不要害怕方案不完美，<strong>只要控制好风险，让系统转起来，剩下的，交给时间去演进。</strong></p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+
