@@ -7,7 +7,95 @@
     <language>zh-cn</language>
     
     
-    <updated>Fri, 21 Nov 2025 10:00:52 &#43;0800</updated>
+    <updated>Sun, 30 Nov 2025 10:00:00 &#43;0800</updated>
+    
+    <item>
+      <title>AI Agent 工程化实践：从 Prompt 到 Context 的思维转变</title>
+      <link>https://zhu327.github.io/2025/11/30/ai-agent-%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AE%9E%E8%B7%B5%E4%BB%8E-prompt-%E5%88%B0-context-%E7%9A%84%E6%80%9D%E7%BB%B4%E8%BD%AC%E5%8F%98/</link>
+      <pubDate>Sun, 30 Nov 2025 10:00:00 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/11/30/ai-agent-%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AE%9E%E8%B7%B5%E4%BB%8E-prompt-%E5%88%B0-context-%E7%9A%84%E6%80%9D%E7%BB%B4%E8%BD%AC%E5%8F%98/</guid>
+      <description>&lt;p&gt;最近在新公司这边，大部分精力都耗在了 AI Agent 的落地应用上。大家都在谈 Agent，网上的 Demo 也是满天飞，但当你真正把这玩意儿往生产环境搬的时候，会发现完全是两码事。&lt;/p&gt;
+
+&lt;p&gt;简单的说，AI Agent 的核心逻辑其实并不复杂，本质上就是一个基于 ReAct（Reasoning and Acting）范式的工程结构，程序在一个死循环里不断地调用 LLM 的 API，让它根据当前的观测去决策下一步是思考还是行动。&lt;/p&gt;
+
+&lt;p&gt;起初我也觉得这就跟写个脚本差不多，但在实际调试过程中，我发现让 Agent “跑通”不难，但要让它“跑好”、“省钱”且“不犯蠢”，这里面全是工程细节。我也复盘了一下这段时间的踩坑经历，总结了一些在工程实践中的“巧思”。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;遇到的瓶颈&#34;&gt;遇到的瓶颈&lt;/h3&gt;
+
+&lt;p&gt;在项目初期，我碰到的最大痛点就是 &lt;strong&gt;Token 的消耗&lt;/strong&gt; 和 &lt;strong&gt;上下文窗口（Context Window）的限制&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;Agent 运行起来后，为了保证它能记住之前的操作，我们往往会把历史对话一股脑地塞进 Prompt 里。但随着交互轮数的增加，上下文会迅速膨胀。这不仅烧钱（Token 费很贵），更要命的是，当无关信息太多时，LLM 的注意力会被稀释，导致它开始“幻觉”或者逻辑混乱，也就是我们常说的“变笨了”。&lt;/p&gt;
+
+&lt;p&gt;为了解决这个问题，我开始从工程角度去干预 Agent 的记忆机制，我发现单纯的 Prompt Engineering 已经不够用了，我们需要进阶到 &lt;strong&gt;Context Engineering（上下文工程）&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h3 id=&#34;几个工程化的巧思&#34;&gt;几个工程化的巧思&lt;/h3&gt;
+
+&lt;p&gt;针对上下文过载和执行效率低的问题，我在工程实践中尝试了以下几个优化策略，效果还不错：&lt;/p&gt;
+
+&lt;h4 id=&#34;1-动态整理与压缩上下文&#34;&gt;1. 动态整理与压缩上下文&lt;/h4&gt;
+
+&lt;p&gt;这招主要是应对“记不住”的问题。当对话轮数逼近模型的 Context 上限时，如果直接截断最早的记录，Agent 可能会丢失关键的任务背景。&lt;/p&gt;
+
+&lt;p&gt;我的做法是，在检测到 Token 数快到阈值时，触发一个后台任务，让 LLM 自己对之前的多轮对话做一个动态整理（Summary）。
+*   &lt;strong&gt;输入&lt;/strong&gt;：过去 N 轮的详细对话。
+*   &lt;strong&gt;输出&lt;/strong&gt;：提取出“用户的核心诉求”、“已完成的关键步骤”和“当前获得的中间结果”。&lt;/p&gt;
+
+&lt;p&gt;用这段高密度的摘要替换掉那 N 轮冗长的对话。这样既大幅减少了 Token 量，又确保了历史关键信息得以保存，让 Agent 始终记得“我是谁，我在哪，我要干什么”。&lt;/p&gt;
+
+&lt;h4 id=&#34;2-checkpoint-回溯与有效信息保留&#34;&gt;2. Checkpoint 回溯与有效信息保留&lt;/h4&gt;
+
+&lt;p&gt;Agent 在尝试调用工具时，并不总是成功的。有时候它参数传错了，有时候 API 报错了。在标准的 ReAct 循环里，这些报错信息（Error Logs）会被完整地记录在上下文里。&lt;/p&gt;
+
+&lt;p&gt;这就导致一个问题：如果 Agent 试错了好几次才成功，那上下文里会充斥着大量的垃圾报错信息。这些信息对于后续的决策不仅无用，反而可能误导模型。&lt;/p&gt;
+
+&lt;p&gt;这里我引入了一个类似游戏存档的 &lt;strong&gt;Checkpoint（检查点）&lt;/strong&gt; 机制。
+*   在执行关键动作前，系统会自动保存当前的上下文快照。
+*   当检测到 Agent 陷入死循环或产生大量无效交互时，系统会强制回滚到上一个 Checkpoint。
+*   &lt;strong&gt;关键点&lt;/strong&gt;：回溯不是简单的“读档重来”，我们会通过规则提取出刚才试错过程中产生的“有效信息”（比如“某个参数验证失败”的结论），将其注入到回溯后的上下文中。&lt;/p&gt;
+
+&lt;p&gt;这样既清洗了上下文中的噪音，又保留了试错的价值，避免 Agent 在同一个坑里跌倒两次。&lt;/p&gt;
+
+&lt;h4 id=&#34;3-sub-agent-解决上下文隔离&#34;&gt;3. Sub Agent 解决上下文隔离&lt;/h4&gt;
+
+&lt;p&gt;在某些场景下，Agent 需要执行非常复杂的子任务，比如写一段 Python 代码并执行，或者进行复杂的数据清洗。&lt;/p&gt;
+
+&lt;p&gt;如果把这些子任务的所有中间步骤都塞进主线程的上下文（Main Context），瞬间就会把 Token 撑爆。我的解决思路是引入 &lt;strong&gt;Sub Agent（子智能体）&lt;/strong&gt;：
+*   把复杂任务分发给一个独立的 Sub Agent。
+*   Sub Agent 拥有独立的上下文空间，它可以在里面进行多轮的思考、调试、修正。
+*   当 Sub Agent 任务完成后，只提取“最终结果”返回给主 Agent。&lt;/p&gt;
+
+&lt;p&gt;通过这种方式，我们实现了上下文的物理隔离，主 Agent 的视野始终保持清爽，只关注宏观流程，而细节则由 Sub Agent 屏蔽。&lt;/p&gt;
+
+&lt;h4 id=&#34;4-面向-人-设计工具-而非面向-api&#34;&gt;4. 面向“人”设计工具，而非面向 API&lt;/h4&gt;
+
+&lt;p&gt;这一点是我觉得思维层次提升最大的地方。&lt;/p&gt;
+
+&lt;p&gt;最初给 Agent 设计工具时，我习惯直接把后端的原子 API 扔给它，比如 &lt;code&gt;login()&lt;/code&gt;, &lt;code&gt;get_token()&lt;/code&gt;, &lt;code&gt;get_user_info()&lt;/code&gt;。结果就是 Agent 完成一个简单的查用户信息，需要来回跑三趟。&lt;/p&gt;
+
+&lt;p&gt;后来我意识到，Agent 使用工具的逻辑应该更像“人”使用 app。工具的设计粒度应该更粗。我们将多个原子 API 组合封装成一个面向业务场景的高阶工具。这样一次调用就能搞定，减少了 Agent 的交互流程，容错率也大大提升。&lt;/p&gt;
+
+&lt;h3 id=&#34;总结-从-prompt-到-context&#34;&gt;总结：从 Prompt 到 Context&lt;/h3&gt;
+
+&lt;p&gt;回顾这些优化点，我们可以发现，提升 Agent 能力的关键，不仅仅在于你 Prompt 写得有多花哨，更在于你如何管理它所能看到的“世界”。&lt;/p&gt;
+
+&lt;p&gt;让我们来总结下这里的思维层次：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;第一层（Prompt Engineering）&lt;/strong&gt;：专注于怎么把 Prompt 词写好，试图用一段话把所有要求都告诉 AI。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第二层（RAG / Memory）&lt;/strong&gt;：开始给 AI 外挂数据库，解决知识库的问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第三层（Context Engineering）&lt;/strong&gt;：把上下文看作一种稀缺的计算资源，通过动态压缩、Checkpoint 回溯、Sub Agent 隔离等工程手段，动态地管理 AI 的注意力。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第四层（Architecture Design）&lt;/strong&gt;：从单点优化走向系统设计，构建一套具备自我纠错、状态管理、分层协作的智能体运行时环境。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;以前做传统开发，我们优化的是 CPU 和内存；现在做 AI 开发，我们优化的其实是 Context Window 和 Token 效率。&lt;/p&gt;
+
+&lt;p&gt;在这个技术日新月异的时代，作为程序员，我们不仅要会写代码，更要学会如何设计系统来弥补模型的短板。这些关于 Context 的巧思，其实就是把复杂的非结构化问题，通过工程手段变得有序化的过程。&lt;/p&gt;
+
+&lt;p&gt;希望这些瞎絮叨的经验能对正在折腾 Agent 的你有那么一点点启发。2025 年了，保持学习，保持思考，依然是应对变化的唯一解法。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>系统性思维的陷阱：从“完美方案”到“有效落地”</title>
@@ -2766,95 +2854,6 @@
 &lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
 
 &lt;p&gt;在实际项目中我们会碰到各种问题，解决问题的思路和方法多种多样。需要根据项目的实际情况与项目未来的发展方向来决策使用什么方法来解决问题。以我当前的项目为例，客户的政治原因导致不能引入MySQL，只能考虑其它的方式来解决问题。在引入SQLite的同时还解决了需要双写带来的耦合问题，这里的代码不多，但是提供一种解决CRD资源通用查询的思路，有需要可以参考。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>以Vaultwarden为例使用SQLite Litestream实现无数据库服务</title>
-      <link>https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/</link>
-      <pubDate>Tue, 03 Sep 2024 10:55:52 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/</guid>
-      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
-
-&lt;p&gt;Vaultwarden是一个非官方实现的Bitwarden Server，用于密码管理，支持Web端、桌面端和移动端。它支持多种数据来存储数据，包括SQLite、PostgreSQL和MySQL等。当我们想把它部署在一个容器服务平台时，如果容器服务本身没有提供持久挂载的卷，那我们就只能使用PostgreSQL或者MySQL外部数据来存储数据。&lt;/p&gt;
-
-&lt;p&gt;但是我们并不想额外再买资源来运行一个数据库，那我们就可以使用SQLite来存储数据，并且使用Litestream来实现容灾备份。这样虽然容器服务没有持久存储，但是数据还是安全的。下面以Vaultwarden为例，使用SQLite和Litestream来实现无数据库服务。其它可以使用SQLite的程序也可以使用这种方式来实现无数据库服务。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;1-litestream-yml&#34;&gt;1. litestream.yml&lt;/h3&gt;
-
-&lt;p&gt;Litesream是一个开源的SQLite数据库备份工具，它使用Go语言开发。它可以监控一个SQLite数据库文件的变化，并且将变化记录到S3、MinIO等对象存储服务上。它巧妙的使用了SQLite的WAL（Write-Ahead Logging）机制，来记录数据库的变化，并流式地将这些变化记录到对象存储服务上，达到实时备份的目的。在服务启前，Litestream可以从对象存储服务上恢复数据到SQLite数据库文件中。它的实现原理可以参考&lt;a href=&#34;https://litestream.io/how-it-works/&#34;&gt;这篇文章&lt;/a&gt;。&lt;/p&gt;
-
-&lt;p&gt;在使用Litestream时，我们需要准备一个S3兼容的对象存储，这里以Cloudflare R2为例，我们需要准备一个&lt;code&gt;litestream.yml&lt;/code&gt;的配置文件，内容如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;dbs&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;path&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;/data/db.sqlite3&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;replicas&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;-&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;type&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;s3&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;endpoint&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;${REPLICA_URL}&lt;span class=&#34;w&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;bucket&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;sqlite&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;code&gt;/data/db.sqlite3&lt;/code&gt; 是Vaultwarden的SQLite数据库文件路径，&lt;code&gt;REPLICA_URL&lt;/code&gt;是对象存储服务的地址，比如 &lt;code&gt;https://&amp;lt;cloudflare-account-id&amp;gt;.r2.cloudflarestorage.com&lt;/code&gt;，我们需要在Cloudflare R2上创建一个&lt;code&gt;sqlite&lt;/code&gt;的存储桶。&lt;/p&gt;
-
-&lt;h3 id=&#34;2-entrypoint-sh&#34;&gt;2. entrypoint.sh&lt;/h3&gt;
-
-&lt;p&gt;我们还需要准备一个&lt;code&gt;entrypoint.sh&lt;/code&gt;的脚本文件，用于启动Liestream和Vaultwarden服务。内容如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#!/bin/bash
-&lt;/span&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;set&lt;/span&gt; -e
-
-&lt;span class=&#34;c1&#34;&gt;# Set the directory of the database in a variable
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;DB_PATH&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/data/db.sqlite3
-
-&lt;span class=&#34;c1&#34;&gt;# Restore the database if it does not already exist.
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt; -f &lt;span class=&#34;nv&#34;&gt;$DB_PATH&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;then&lt;/span&gt;
-	&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Database already exists, skipping restore&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;
-	&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;No database found, restoring from replica if exists&amp;#34;&lt;/span&gt;
-	litestream restore -if-replica-exists -config /etc/litestream.yml &lt;span class=&#34;nv&#34;&gt;$DB_PATH&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;fi&lt;/span&gt;
-
-&lt;span class=&#34;c1&#34;&gt;# Litestream replicate database and start vaultwarden
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;exec litestream&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nb&#34;&gt;exec&lt;/span&gt; litestream replicate -exec &lt;span class=&#34;s2&#34;&gt;&amp;#34;/start.sh&amp;#34;&lt;/span&gt; -config /etc/litestream.yml&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;在启动Vaultwarden服务前，我们首先检查SQLite数据库文件是否存在，如果不存在则从对象存储服务上恢复数据。&lt;/p&gt;
-
-&lt;h3 id=&#34;3-dockerfile&#34;&gt;3. Dockerfile&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-dockerfile&#34; data-lang=&#34;dockerfile&#34;&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; litestream/litestream:latest AS litestream&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; vaultwarden/server:latest&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;COPY --from&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;litestream /usr/local/bin/litestream /usr/local/bin/litestream&lt;span class=&#34;err&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;COPY --chmod&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;755&lt;/span&gt; entrypoint.sh /usr/bin/entrypoint.sh&lt;span class=&#34;err&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;COPY litestream.yml /etc/litestream.yml&lt;span class=&#34;err&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
-&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;CMD&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; [&amp;#34;/usr/bin/entrypoint.sh&amp;#34;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;这样会打一个新的镜像把Litestream和Vaultwarden服务一起打包，并且使用&lt;code&gt;entrypoint.sh&lt;/code&gt;启动服务。&lt;/p&gt;
-
-&lt;h3 id=&#34;4-启动服务&#34;&gt;4. 启动服务&lt;/h3&gt;
-
-&lt;p&gt;我们还要准备一个.env文件，用于设置环境变量：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;nv&#34;&gt;LITESTREAM_ACCESS_KEY_ID&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;lt;cloudflare-r2-access-key-id&amp;gt;
-&lt;span class=&#34;nv&#34;&gt;LITESTREAM_SECRET_ACCESS_KEY&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;lt;cloudflare-r2-access-key&amp;gt;
-&lt;span class=&#34;nv&#34;&gt;PUSH_ENABLED&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;true&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;PUSH_INSTALLATION_ID&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;lt;push-installation-id&amp;gt;
-&lt;span class=&#34;nv&#34;&gt;PUSH_INSTALLATION_KEY&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;lt;push-installation-key&amp;gt;
-&lt;span class=&#34;nv&#34;&gt;PUSH_RELAY_BASE_URI&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;https://push.bitwarden.com
-&lt;span class=&#34;nv&#34;&gt;REPLICA_URL&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;https://&amp;lt;cloudflare-account-id&amp;gt;.r2.cloudflarestorage.com
-&lt;span class=&#34;nv&#34;&gt;SIGNUPS_ALLOWED&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;true&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;vaulewarden的PUSH配置需要到&lt;a href=&#34;https://bitwarden.com/host/&#34;&gt;这里&lt;/a&gt;申请。&lt;/p&gt;
-
-&lt;p&gt;然后我们就可以使用Docker来启动服务了：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;docker run -d &lt;span class=&#34;se&#34;&gt;\
-&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;  --name bitwarden &lt;span class=&#34;se&#34;&gt;\
-&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;  -p &lt;span class=&#34;m&#34;&gt;80&lt;/span&gt;:80 &lt;span class=&#34;se&#34;&gt;\
-&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;  --restart unless-stopped &lt;span class=&#34;se&#34;&gt;\
-&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;  --env-file .env &lt;span class=&#34;se&#34;&gt;\
-&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;  vaultwarden/server:latest&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;这样我们就可以在没有持久存储的容器服务上无数据库的运行Vaultwarden服务了，比如GCP Code Run，我们可以把实例数量scale到0，只有流量进来时才启动服务，真正做到只有使用时才付费。&lt;/p&gt;
-
-&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
-
-&lt;p&gt;我们使用Litestream实现了Vaultwarden的无数据库服务，并且使用Cloudflare R2作为对象存储服务。这样即使容器服务没有持久存储卷，数据也是安全的。类似的思路还可以推广到其它使用SQLite的程序上。比如我们自己开发了一个Django的程序，不依赖外部的数据库服务，也可以使用Litestream来实现容灾备份。&lt;/p&gt;</description>
     </item>
     
   </channel>

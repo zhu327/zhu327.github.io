@@ -6,10 +6,25 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 21 Nov 2025 10:00:52 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 30 Nov 2025 10:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>AI Agent 工程化实践：从 Prompt 到 Context 的思维转变</title>
+      <link>https://zhu327.github.io/2025/11/30/ai-agent-%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AE%9E%E8%B7%B5%E4%BB%8E-prompt-%E5%88%B0-context-%E7%9A%84%E6%80%9D%E7%BB%B4%E8%BD%AC%E5%8F%98/</link>
+      <pubDate>Sun, 30 Nov 2025 10:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/11/30/ai-agent-%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AE%9E%E8%B7%B5%E4%BB%8E-prompt-%E5%88%B0-context-%E7%9A%84%E6%80%9D%E7%BB%B4%E8%BD%AC%E5%8F%98/</guid>
+      <description>&lt;p&gt;最近在新公司这边，大部分精力都耗在了 AI Agent 的落地应用上。大家都在谈 Agent，网上的 Demo 也是满天飞，但当你真正把这玩意儿往生产环境搬的时候，会发现完全是两码事。&lt;/p&gt;
+
+&lt;p&gt;简单的说，AI Agent 的核心逻辑其实并不复杂，本质上就是一个基于 ReAct（Reasoning and Acting）范式的工程结构，程序在一个死循环里不断地调用 LLM 的 API，让它根据当前的观测去决策下一步是思考还是行动。&lt;/p&gt;
+
+&lt;p&gt;起初我也觉得这就跟写个脚本差不多，但在实际调试过程中，我发现让 Agent “跑通”不难，但要让它“跑好”、“省钱”且“不犯蠢”，这里面全是工程细节。我也复盘了一下这段时间的踩坑经历，总结了一些在工程实践中的“巧思”。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>系统性思维的陷阱：从“完美方案”到“有效落地”</title>
@@ -2127,21 +2142,6 @@ Boz是一个用Python实现的轻量级Blog程序。&lt;br /&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/zhu327/boz/tree/awesome&#34;&gt;awesome&lt;/a&gt;：廖雪峰教程的标准实现&lt;/li&gt;
 &lt;li&gt;master：: 部署在SAE(Sina App Engine)的版本&lt;/li&gt;
 &lt;/ol&gt;</description>
-    </item>
-    
-    <item>
-      <title>AI Agent 工程化实践：从 Prompt 到 Context 的思维转变</title>
-      <link>https://zhu327.github.io/1/01/01/ai-agent-%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AE%9E%E8%B7%B5%E4%BB%8E-prompt-%E5%88%B0-context-%E7%9A%84%E6%80%9D%E7%BB%B4%E8%BD%AC%E5%8F%98/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://zhu327.github.io/1/01/01/ai-agent-%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AE%9E%E8%B7%B5%E4%BB%8E-prompt-%E5%88%B0-context-%E7%9A%84%E6%80%9D%E7%BB%B4%E8%BD%AC%E5%8F%98/</guid>
-      <description>&lt;p&gt;最近在新公司这边，大部分精力都耗在了 AI Agent 的落地应用上。大家都在谈 Agent，网上的 Demo 也是满天飞，但当你真正把这玩意儿往生产环境搬的时候，会发现完全是两码事。&lt;/p&gt;
-
-&lt;p&gt;简单的说，AI Agent 的核心逻辑其实并不复杂，本质上就是一个基于 ReAct（Reasoning and Acting）范式的工程结构，程序在一个死循环里不断地调用 LLM 的 API，让它根据当前的观测去决策下一步是思考还是行动。&lt;/p&gt;
-
-&lt;p&gt;起初我也觉得这就跟写个脚本差不多，但在实际调试过程中，我发现让 Agent “跑通”不难，但要让它“跑好”、“省钱”且“不犯蠢”，这里面全是工程细节。我也复盘了一下这段时间的踩坑经历，总结了一些在工程实践中的“巧思”。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>
