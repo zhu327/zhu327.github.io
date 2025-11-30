@@ -39,9 +39,12 @@
 
 &lt;p&gt;这招主要是应对“记不住”的问题。当对话轮数逼近模型的 Context 上限时，如果直接截断最早的记录，Agent 可能会丢失关键的任务背景。&lt;/p&gt;
 
-&lt;p&gt;我的做法是，在检测到 Token 数快到阈值时，触发一个后台任务，让 LLM 自己对之前的多轮对话做一个动态整理（Summary）。
-*   &lt;strong&gt;输入&lt;/strong&gt;：过去 N 轮的详细对话。
-*   &lt;strong&gt;输出&lt;/strong&gt;：提取出“用户的核心诉求”、“已完成的关键步骤”和“当前获得的中间结果”。&lt;/p&gt;
+&lt;p&gt;我的做法是，在检测到 Token 数快到阈值时，触发一个后台任务，让 LLM 自己对之前的多轮对话做一个动态整理（Summary）。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;输入&lt;/strong&gt;：过去 N 轮的详细对话。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;输出&lt;/strong&gt;：提取出“用户的核心诉求”、“已完成的关键步骤”和“当前获得的中间结果”。&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;用这段高密度的摘要替换掉那 N 轮冗长的对话。这样既大幅减少了 Token 量，又确保了历史关键信息得以保存，让 Agent 始终记得“我是谁，我在哪，我要干什么”。&lt;/p&gt;
 
@@ -51,10 +54,13 @@
 
 &lt;p&gt;这就导致一个问题：如果 Agent 试错了好几次才成功，那上下文里会充斥着大量的垃圾报错信息。这些信息对于后续的决策不仅无用，反而可能误导模型。&lt;/p&gt;
 
-&lt;p&gt;这里我引入了一个类似游戏存档的 &lt;strong&gt;Checkpoint（检查点）&lt;/strong&gt; 机制。
-*   在执行关键动作前，系统会自动保存当前的上下文快照。
-*   当检测到 Agent 陷入死循环或产生大量无效交互时，系统会强制回滚到上一个 Checkpoint。
-*   &lt;strong&gt;关键点&lt;/strong&gt;：回溯不是简单的“读档重来”，我们会通过规则提取出刚才试错过程中产生的“有效信息”（比如“某个参数验证失败”的结论），将其注入到回溯后的上下文中。&lt;/p&gt;
+&lt;p&gt;这里我引入了一个类似游戏存档的 &lt;strong&gt;Checkpoint（检查点）&lt;/strong&gt; 机制。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在执行关键动作前，系统会自动保存当前的上下文快照。&lt;/li&gt;
+&lt;li&gt;当检测到 Agent 陷入死循环或产生大量无效交互时，系统会强制回滚到上一个 Checkpoint。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键点&lt;/strong&gt;：回溯不是简单的“读档重来”，我们会通过规则提取出刚才试错过程中产生的“有效信息”（比如“某个参数验证失败”的结论），将其注入到回溯后的上下文中。&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;这样既清洗了上下文中的噪音，又保留了试错的价值，避免 Agent 在同一个坑里跌倒两次。&lt;/p&gt;
 
@@ -62,10 +68,13 @@
 
 &lt;p&gt;在某些场景下，Agent 需要执行非常复杂的子任务，比如写一段 Python 代码并执行，或者进行复杂的数据清洗。&lt;/p&gt;
 
-&lt;p&gt;如果把这些子任务的所有中间步骤都塞进主线程的上下文（Main Context），瞬间就会把 Token 撑爆。我的解决思路是引入 &lt;strong&gt;Sub Agent（子智能体）&lt;/strong&gt;：
-*   把复杂任务分发给一个独立的 Sub Agent。
-*   Sub Agent 拥有独立的上下文空间，它可以在里面进行多轮的思考、调试、修正。
-*   当 Sub Agent 任务完成后，只提取“最终结果”返回给主 Agent。&lt;/p&gt;
+&lt;p&gt;如果把这些子任务的所有中间步骤都塞进主线程的上下文（Main Context），瞬间就会把 Token 撑爆。我的解决思路是引入 &lt;strong&gt;Sub Agent（子智能体）&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;把复杂任务分发给一个独立的 Sub Agent。&lt;/li&gt;
+&lt;li&gt;Sub Agent 拥有独立的上下文空间，它可以在里面进行多轮的思考、调试、修正。&lt;/li&gt;
+&lt;li&gt;当 Sub Agent 任务完成后，只提取“最终结果”返回给主 Agent。&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;通过这种方式，我们实现了上下文的物理隔离，主 Agent 的视野始终保持清爽，只关注宏观流程，而细节则由 Sub Agent 屏蔽。&lt;/p&gt;
 
