@@ -6,10 +6,31 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 30 Nov 2025 10:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 04 Jan 2026 10:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>我的2025</title>
+      <link>https://zhu327.github.io/2026/01/04/%E6%88%91%E7%9A%842025/</link>
+      <pubDate>Sun, 04 Jan 2026 10:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/01/04/%E6%88%91%E7%9A%842025/</guid>
+      <description>&lt;p&gt;今天是2026年的第一个周日，窗外是珠海特有的温润海风。这一年，我从深圳到珠海，从一家迷茫的小公司到了老牌的金山办公。如果说2024年是本命年的阵痛，那么2025年对我来说，更像是在这激荡的技术浪潮中，努力寻找平衡与自洽的一年。&lt;/p&gt;
+
+&lt;p&gt;依然按照惯例，絮絮叨叨地复盘下我的2025吧。&lt;/p&gt;
+
+&lt;h3 id=&#34;行云创新-及时止损的教训&#34;&gt;行云创新：及时止损的教训&lt;/h3&gt;
+
+&lt;p&gt;2025年的开头，我还在行云创新做云原生产品。当时做的是基于 K8s 的在线云 IDE，技术方案其实挺有意思：用 K8s 调度启动在线编辑器，用 code-server 和 selkies 暴露桌面 IDE，甚至还研究了 Docker Windows 容器。为了解决文件同步，我设计了 Sidecar 模式的文件服务，负责上传变更、初始化 git 目录这些活儿。&lt;/p&gt;
+
+&lt;p&gt;技术上虽然有成就感，但职场环境却让我第一次深刻体会到“庙小妖风大”。&lt;/p&gt;
+
+&lt;p&gt;先是内部莫名其妙的同事纠纷，随后是让人窒息的“服从性测试”。有一次我下班刚到家，就被领导一个电话叫回去值守，其实压根不是我的问题。最崩坏的是关于技术方向的讨论，领导要求我周末加班，把已经验证通过的方案改回到之前被废弃的死路上。我坚持了专业意见，并坦言周末搞不定，结果就是失去了所谓的“信任”。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>AI Agent 工程化实践：从 Prompt 到 Context 的思维转变</title>

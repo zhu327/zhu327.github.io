@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2025. All rights reserved.</p>
+    <p>&copy; 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,22 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/06/04/%E9%82%AE%E4%BB%B6%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">邮件密码找回功能实现</a></h1>
+        <span class="post-date">Jun 4 2015</span>
+        <h3 id="思路">思路</h3>
+
+<p>公司做项目,有用到注册,登录,密码找回等功能,以前自己写的论坛也实现了邮件密码找回,不过比较简单,直接生成随机密码,把新密码发送到用户邮箱.比较不安全,要实现一般网站的用链接找回的功能.</p>
+
+<p>对链接的要求有如下:</p>
+
+<ol>
+<li>每次生成的链接都必须不一样;</li>
+<li>链接要有过期时间,过期以后无效;</li>
+<li>后台在链接被请求时,必须验证链接是否有效.</li>
+</ol>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/03/16/django%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95oauth2.0%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1/">Django实现简单OAuth2.0认证服务</a></h1>
@@ -139,12 +155,6 @@
 <li>带Cookie的情况下，频繁访问偶尔触发反爬出，偶现500错误</li>
 <li>不带Cookie情况下，隔几个小时范围一下不会触发反爬虫</li>
 </ol>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/31/python%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87%E5%B0%8F%E8%B4%B4%E5%A3%AB/">Python性能提升小贴士</a></h1>
-        <span class="post-date">Jan 31 2015</span>
-         用xrange循环时代替range ''.join() 替代 + while 1替代while True 列表推到 &gt; for循环 &gt; while循环 用cProfile, cStringIO and cPickle 用局部变量好于全局变量 itertools用各种迭代器，生成器 用map, reduce, filter替代列表推倒或循环 判断 a in b时，字典与集合好于列表和元组  
     </div>
   
 </div>

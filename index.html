@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2025. All rights reserved.</p>
+    <p>&copy; 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,24 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2026/01/04/%E6%88%91%E7%9A%842025/">我的2025</a></h1>
+        <span class="post-date">Jan 4 2026</span>
+        <p>今天是2026年的第一个周日，窗外是珠海特有的温润海风。这一年，我从深圳到珠海，从一家迷茫的小公司到了老牌的金山办公。如果说2024年是本命年的阵痛，那么2025年对我来说，更像是在这激荡的技术浪潮中，努力寻找平衡与自洽的一年。</p>
+
+<p>依然按照惯例，絮絮叨叨地复盘下我的2025吧。</p>
+
+<h3 id="行云创新-及时止损的教训">行云创新：及时止损的教训</h3>
+
+<p>2025年的开头，我还在行云创新做云原生产品。当时做的是基于 K8s 的在线云 IDE，技术方案其实挺有意思：用 K8s 调度启动在线编辑器，用 code-server 和 selkies 暴露桌面 IDE，甚至还研究了 Docker Windows 容器。为了解决文件同步，我设计了 Sidecar 模式的文件服务，负责上传变更、初始化 git 目录这些活儿。</p>
+
+<p>技术上虽然有成就感，但职场环境却让我第一次深刻体会到“庙小妖风大”。</p>
+
+<p>先是内部莫名其妙的同事纠纷，随后是让人窒息的“服从性测试”。有一次我下班刚到家，就被领导一个电话叫回去值守，其实压根不是我的问题。最崩坏的是关于技术方向的讨论，领导要求我周末加班，把已经验证通过的方案改回到之前被废弃的死路上。我坚持了专业意见，并坦言周末搞不定，结果就是失去了所谓的“信任”。</p>
+
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2025/11/30/ai-agent-%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AE%9E%E8%B7%B5%E4%BB%8E-prompt-%E5%88%B0-context-%E7%9A%84%E6%80%9D%E7%BB%B4%E8%BD%AC%E5%8F%98/">AI Agent 工程化实践：从 Prompt 到 Context 的思维转变</a></h1>
@@ -155,18 +173,6 @@
 <li><strong>外部依赖离散</strong>：数据库、缓存的调用没有统一规范。</li>
 </ul></li>
 </ul>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2025/09/02/vibe-coding%E6%9C%89%E6%84%9F-%E4%BB%8Epingsix%E9%87%8D%E6%9E%84%E8%AF%B4%E8%B5%B7/">Vibe Coding有感: 从PingSIX重构说起</a></h1>
-        <span class="post-date">Sep 2 2025</span>
-        <p>说到“Vibe Coding”，这个词最近在开发者圈子里越来越流行。在过去，我的实践很大程度上还停留在比较初级的阶段：把需求和代码片段在 ChatGPT、Google AI Studio 或是 Grok 之间来回地复制粘贴。来到新公司后，虽然开通了 GitHub Copilot，体验有所提升，但感觉它更多时候还是一个“超级智能补全”工具。直到今年7月份，公司给配上了 Cursor，我的编程体验才真正开启了一场变革，正式进入了 Vibe Coding 的奇妙旅程。</p>
-
-<p>恰好，距离我上次更新个人项目 <a href="https://github.com/zhu327/pingsix">PingSIX</a> 已经有一段时间了。PingSIX 是一个我基于 Cloudflare 高性能框架 Pingora 开发的 API 网关。两周前，Pingora 发布了 0.6.0 版本，这给了我一个绝佳的契机。我决定利用这个机会，彻底实践一次全程使用 Cursor 的 Vibe Coding，对 PingSIX 进行一次大重构。</p>
-
-<p>这次重构断断续续花了一周时间，最终新增了 6636 行代码，删除了 3578 行。这不仅仅是数字上的变化，整个项目在架构、可维护性、可读性、安全性及性能上，都达到了一个我自己非常满意的状态。</p>
 
 <p></p>
     </div>

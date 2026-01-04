@@ -53,7 +53,7 @@
   </nav>
 
   <div class="sidebar-item">
-    <p>&copy; 2025. All rights reserved.</p>
+    <p>&copy; 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -76,6 +76,43 @@
 
 
 <div class="posts">
+  
+    <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/15/python-%E4%BD%BF%E7%94%A8-mysql/">Python 使用 MySQL</a></h1>
+        <span class="post-date">Sep 15 2014</span>
+        <h3 id="mysqldb基本使用方式">MySQLdb基本使用方式</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">MySQLdb</span>
+
+<span class="c1"># 建立MySQL连接</span>
+<span class="n">connect</span> <span class="o">=</span> <span class="n">MySQL</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="n">passwd</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">connect</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="c1"># 生成游标对象</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SQL </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="c1"># 游标对象执行SQL语句，语句中有%s，则用args替换</span>
+
+    <span class="c1"># 执行SELECT语句通过以下方法可获取到查询结果</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span> <span class="c1"># 结果为列表，列表每一项代表查询的一row，每行都是一个列表，列表顺序按照SELECT的字段顺序排序</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span> <span class="c1"># 获取查询到结果的第一行数据，返回列表，再次运行获取下一条</span>
+
+    <span class="n">cursor</span><span class="o">.</span><span class="n">description</span> <span class="c1"># 查询到字段定义信息</span>
+
+    <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span> <span class="c1"># 序列的第一个值为字段名称</span>
+
+    <span class="c1"># 执行INSERT DELETE操作获取受影响的行数</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">rowcount</span>
+
+    <span class="c1"># 获取INSERT行的主键值，一般是id</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">lastrowid</span>
+
+    <span class="n">connect</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span> <span class="c1"># 游标对象执行语句是以事务方式执行，所以需要提交</span>
+<span class="k">except</span><span class="p">:</span> <span class="c1"># 如果提交失败</span>
+    <span class="n">connect</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span> <span class="c1"># 回滚事务</span>
+<span class="n">finnally</span><span class="p">:</span>
+    <span class="c1"># 最后关闭游标，连接</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">connect</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></code></pre></div>
+<p></p>
+    </div>
   
     <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/14/python-with%E8%AF%AD%E5%8F%A5/">Python with语句</a></h1>
