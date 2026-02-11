@@ -73,7 +73,7 @@
 
 &lt;p&gt;理论有了，怎么在 Cursor 里实现？上个月 Cursor 2.4 更新了 SubAgents、Skills 和 Commands，我感觉机会来了。&lt;/p&gt;
 
-&lt;p&gt;我先是扒了 &lt;code&gt;[everything-claude-code](https://github.com/affaan-m/everything-claude-code)&lt;/code&gt; 这个项目，想复刻一套工具链：&lt;/p&gt;
+&lt;p&gt;我先是扒了 &lt;a href=&#34;https://github.com/affaan-m/everything-claude-code&#34;&gt;everything-claude-code&lt;/a&gt; 这个项目，想复刻一套工具链：&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Subagent&lt;/strong&gt;: planner, code-reviewer, doc-updater&lt;/li&gt;
@@ -89,7 +89,7 @@
 
 &lt;h4 id=&#34;4-最终的折衷方案&#34;&gt;4. 最终的折衷方案&lt;/h4&gt;
 
-&lt;p&gt;不死心的我又去研究了 &lt;code&gt;[superpowers](https://github.com/obra/superpowers)&lt;/code&gt; 和 &lt;code&gt;[code-review-expert](https://github.com/sanyuan0704/code-review-expert)&lt;/code&gt; 这两个项目，重新调整了策略。&lt;/p&gt;
+&lt;p&gt;不死心的我又去研究了 &lt;a href=&#34;https://github.com/obra/superpowers&#34;&gt;superpowers&lt;/a&gt; 和 &lt;a href=&#34;https://github.com/sanyuan0704/code-review-expert&#34;&gt;code-review-expert&lt;/a&gt; 这两个项目，重新调整了策略。&lt;/p&gt;
 
 &lt;p&gt;既然 Cursor 对 SubAgent 的调度有自己的想法，那我就顺着它，把流程简化，侧重于&lt;strong&gt;前置规划&lt;/strong&gt;和&lt;strong&gt;后置学习&lt;/strong&gt;。&lt;/p&gt;
 
