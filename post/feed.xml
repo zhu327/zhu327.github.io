@@ -6,10 +6,37 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 04 Jan 2026 10:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 11 Feb 2026 14:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>AI工程落地实践</title>
+      <link>https://zhu327.github.io/2026/02/11/ai%E5%B7%A5%E7%A8%8B%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Wed, 11 Feb 2026 14:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/02/11/ai%E5%B7%A5%E7%A8%8B%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</guid>
+      <description>&lt;p&gt;前几天在整理项目代码的时候，看着 commit log 里那些由 AI 生成的代码，突然有点感慨。以前写代码是体力和脑力的双重劳动，现在好像变成了单纯的脑力博弈——跟 AI 的博弈。&lt;/p&gt;
+
+&lt;p&gt;这篇想絮絮叨叨聊一下从传统的开发模式转变为 Vibe Coding 的过程中，我踩过的坑以及现在摸索出来的一套还算顺手的 SOP。&lt;/p&gt;
+
+&lt;h4 id=&#34;1-回顾-前ai时代的手工作坊&#34;&gt;1. 回顾：前AI时代的手工作坊&lt;/h4&gt;
+
+&lt;p&gt;在那时候，我接一个大需求，流程基本是雷打不动的：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;拆解&lt;/strong&gt;：把大需求掰碎了，变成一个个小任务。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;设计&lt;/strong&gt;：看老代码，定方案。哪里要改，哪里要加，脑子里或者纸上得有个谱。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;搬砖&lt;/strong&gt;：按计划写代码，写单测。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;验证&lt;/strong&gt;：跑通端对端流程。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Code Review&lt;/strong&gt;：提 PR，等同事挑刺，改代码，合并。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这个过程里，最重要的一步其实往往被忽视，就是&lt;strong&gt;复盘&lt;/strong&gt;。这波开发里学到了什么新模式？引入了什么新坑？怎么避免下次再犯？这种“复利”思维才是工程师成长的关键。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>我的2025</title>

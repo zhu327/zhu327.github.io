@@ -78,6 +78,19 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/03/python%E7%8E%A9%E8%BD%AC%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/">python玩转数据笔记:数据处理</a></h1>
+        <span class="post-date">May 3 2016</span>
+        <h3 id="时间索引">时间索引</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">&#39;20160503&#39;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">index</span>
+<span class="n">DatetimeIndex</span><span class="p">([</span><span class="s1">&#39;2016-05-03&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-05-04&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-05-05&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-05-06&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;2016-05-07&#39;</span><span class="p">],</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span></code></pre></div>
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/03/python%E7%8E%A9%E8%BD%AC%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">python玩转数据笔记:数据结构</a></h1>
         <span class="post-date">May 3 2016</span>
         <p>想储备点数据分析相关知识，所以抽了1天时间上了1门数据分析入门的公开课，记录一下学到的东西。</p>
@@ -208,24 +221,6 @@ golang实现，最大的优点就是快，而且golang可以编译为二进制�
                                        <span class="n">add_by</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">client</span><span class="o">.</span><span class="n">captureException</span><span class="p">()</span></code></pre></div>
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/03/09/tastypie%E5%85%A5%E9%97%A8%E5%B0%8F%E7%BB%93/">Tastypie入门小结</a></h1>
-        <span class="post-date">Mar 9 2016</span>
-        <h3 id="tastypie是什么">Tastypie是什么</h3>
-
-<p>Tastypie是基于Django的RESTful api开发框架，如果你有一个通过Django实现的网站，那么通过Tastypie写少许的代码就能实现一个全功能的REST api。</p>
-
-<h3 id="我要写些什么">我要写些什么</h3>
-
-<p>这不是一篇Tastypie的入门教程，如果需要教程，可以从官方文档开始，我写的只在探索Tastypie的过程中我认为值得记录的地方。</p>
-
-<blockquote>
-<p><a href="http://django-tastypie.readthedocs.org/en/latest/tutorial.html">Getting Started with Tastypie</a></p>
-</blockquote>
-
 <p></p>
     </div>
   

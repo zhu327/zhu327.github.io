@@ -78,6 +78,23 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/07/02/openshift%E5%B9%B3%E5%8F%B0diy%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AEtornado/">openshift平台DIY环境配置Tornado</a></h1>
+        <span class="post-date">Jul 2 2015</span>
+        <blockquote>
+<p>openshift官方和社区提供不少配置好的环境，也包括python2.7和python3.3下的tornado套件。<br />
+一方面希望拥有更高的使用自由，另一方面希望熟悉一下openshift的DIY环境，本着这个目的，自行创建一个DIY环境，在上面安装运行python 2.7.10和Tornado 3.2。</p>
+</blockquote>
+
+<p>【Step1、创建DIY环境】</p>
+
+<p>【Step2、安装python 2.7.10】</p>
+
+<p>通过<code>python -V</code>看到系统已预装<code>python 2.6.6</code>，直接在<code>$OPENSHIFT_DATA_DIR</code>下安装2.7.10可以正常使用，但需要注意其调用路径为<code>$OPENSHIFT_DATA_DIR/bin/python</code>。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/06/04/%E9%82%AE%E4%BB%B6%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">邮件密码找回功能实现</a></h1>
         <span class="post-date">Jun 4 2015</span>
         <h3 id="思路">思路</h3>
@@ -139,22 +156,6 @@
 </blockquote>
 
 <p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/02/15/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB/">记搜狗微信号搜索反爬虫</a></h1>
-        <span class="post-date">Feb 15 2015</span>
-        <h3 id="反爬虫">反爬虫</h3>
-
-<p><a href="https://github.com/zhu327/rss">RSS Factory</a>前段时间又出问题了，访问微信公众号RSS一直500，完全没法用了。</p>
-
-<p>经调试，发现由于爬取数据太频繁，触发了搜狗微信公众号的反爬虫，探索了下反爬虫的规则:</p>
-
-<ol>
-<li>没有带Cookie的情况下，频繁访问触发反爬虫</li>
-<li>带Cookie的情况下，频繁访问偶尔触发反爬出，偶现500错误</li>
-<li>不带Cookie情况下，隔几个小时范围一下不会触发反爬虫</li>
-</ol>
     </div>
   
 </div>

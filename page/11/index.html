@@ -78,6 +78,36 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/02/haystack-elasticsearch%E5%AE%9E%E7%8E%B0%E6%8B%BC%E9%9F%B3%E6%90%9C%E7%B4%A2/">haystack-Elasticsearch实现拼音搜索</a></h1>
+        <span class="post-date">Jun 2 2016</span>
+        <p>前一篇<a href="https://zhu327.github.io/2016/05/30/djangoelasticsearch%E5%AE%9E%E7%8E%B0%E6%90%9C%E7%B4%A2%E5%8A%9F%E8%83%BD/">Django+Elasticsearch实现搜索功能</a>已经实现了搜索的基本功能，但是其实还是有一些错误，这里先纠正一下。</p>
+
+<ol>
+<li>以为通过elsticstack实现了默认的分词器
+通过查看elasticsearch types的mapping发现string类型的根本就没有加载ik analyzer</li>
+<li>拼音分词方式设置错误
+拼音分词的尝试过程中，终于实现了全拼分词</li>
+</ol>
+
+<h3 id="环境搭建">环境搭建</h3>
+
+<p>Elasticsearch安装拼音分词:</p>
+
+<blockquote>
+<p><a href="http://my.oschina.net/UpBoy/blog/625014?fromerr=mRvT8rzk">http://my.oschina.net/UpBoy/blog/625014?fromerr=mRvT8rzk</a></p>
+</blockquote>
+
+<p>Django依赖安装:</p>
+
+<pre><code>django-haystack==2.5.dev1
+</code></pre>
+
+<p>之前会使用elasticstack与haystack2.4配合，发现问题比较多，所以删掉elasticstack，升级haystack为github上的最新版本</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/30/django-elasticsearch%E5%AE%9E%E7%8E%B0%E6%90%9C%E7%B4%A2%E5%8A%9F%E8%83%BD/">Django-Elasticsearch实现搜索功能</a></h1>
         <span class="post-date">May 30 2016</span>
         <p>在项目中实现了资讯搜索功能，用到了Django Tastypie haystack Elasticsearch ik分词，覆盖了我对搜索了解的所有姿势。其实也就了解一些简单的概念，不过haystack+elasticsearch并不需要太多搜索基础，只要看看haystack文档就就能实现简单的搜索需求了。</p>
@@ -170,19 +200,6 @@ elasticstack==0.4.1
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CAPTCHA_LENGTH</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">+=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">ret</span></code></pre></div>
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/03/python%E7%8E%A9%E8%BD%AC%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/">python玩转数据笔记:数据处理</a></h1>
-        <span class="post-date">May 3 2016</span>
-        <h3 id="时间索引">时间索引</h3>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">&#39;20160503&#39;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">index</span>
-<span class="n">DatetimeIndex</span><span class="p">([</span><span class="s1">&#39;2016-05-03&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-05-04&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-05-05&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-05-06&#39;</span><span class="p">,</span>
-               <span class="s1">&#39;2016-05-07&#39;</span><span class="p">],</span>
-              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span></code></pre></div>
 <p></p>
     </div>
   

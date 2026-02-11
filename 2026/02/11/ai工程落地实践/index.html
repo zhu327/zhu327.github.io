@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      AI工程落地实践 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2026. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">AI工程落地实践</h1>
+  <span class="post-date">Feb 11 2026</span>
+  <p>前几天在整理项目代码的时候，看着 commit log 里那些由 AI 生成的代码，突然有点感慨。以前写代码是体力和脑力的双重劳动，现在好像变成了单纯的脑力博弈——跟 AI 的博弈。</p>
+
+<p>这篇想絮絮叨叨聊一下从传统的开发模式转变为 Vibe Coding 的过程中，我踩过的坑以及现在摸索出来的一套还算顺手的 SOP。</p>
+
+<h4 id="1-回顾-前ai时代的手工作坊">1. 回顾：前AI时代的手工作坊</h4>
+
+<p>在那时候，我接一个大需求，流程基本是雷打不动的：</p>
+
+<ol>
+<li><strong>拆解</strong>：把大需求掰碎了，变成一个个小任务。</li>
+<li><strong>设计</strong>：看老代码，定方案。哪里要改，哪里要加，脑子里或者纸上得有个谱。</li>
+<li><strong>搬砖</strong>：按计划写代码，写单测。</li>
+<li><strong>验证</strong>：跑通端对端流程。</li>
+<li><strong>Code Review</strong>：提 PR，等同事挑刺，改代码，合并。</li>
+</ol>
+
+<p>这个过程里，最重要的一步其实往往被忽视，就是<strong>复盘</strong>。这波开发里学到了什么新模式？引入了什么新坑？怎么避免下次再犯？这种“复利”思维才是工程师成长的关键。</p>
+
+<p></p>
+
+<h4 id="2-vibe-coding-时代的冲击与适应">2. Vibe Coding 时代的冲击与适应</h4>
+
+<p>进入 AI 时代（或者说 Cursor 时代）后，我一开始也是懵的，试错了很多次，现在的 SOP 变成了这样：</p>
+
+<ol>
+<li><strong>聊需求</strong>：先不急着写代码。拉着 ChatGPT 或者 Gemini 开聊。讨论业界怎么做，现在的项目痛点在哪。这一步是为了定方向，最后产出一份靠谱的需求文档。</li>
+<li><strong>定计划（<code>feat.md</code>大法）</strong>：
+
+<ul>
+<li>我会在 Cursor 里建个 <code>feat.md</code>，把需求文档丢进去。</li>
+<li>在 Cursor 里 <code>@feat.md</code>，让 AI 出 Plan。</li>
+<li><strong>重点</strong>：如果 Plan 太大，我会让它拆。如果 Plan 漏了东西，只要不致命，我先不打断，记在小本本上，等它写完代码再补。</li>
+<li>有时候 Plan 实在离谱，改动量太大，我会回头改 <code>feat.md</code>，限制它的发挥范围，只做第一阶段。</li>
+</ul></li>
+<li><strong>生成</strong>：Plan 只要逻辑通顺，我就让 Cursor 开工。</li>
+<li><strong>人工 Review</strong>：这一步绝对不能省。我对 AI 的信任度还没到无脑 Merge 的地步，尤其是 E2E 测试覆盖率不够高的时候。我得盯着它生成的代码，脑子里过一遍逻辑。</li>
+<li><strong>收尾</strong>：测试，合并。</li>
+</ol>
+
+<p>这个流程看着挺顺，但有个大问题：<strong>我怎么把“复利”这一环加回来？</strong></p>
+
+<p>之前我看 Spec Driven Development（文档驱动开发），也就是 Speckit 或者 OpenSpec 那一套，试了一下就放弃了。感觉太重了，光是喂给 AI 的上下文就把窗口撑爆了，而且那种从头到尾写文档的感觉，很反直觉，完全没有了快速验证的快感。</p>
+
+<p>直到读到那篇<a href="https://mp.weixin.qq.com/s/CXx-0ar1EBf14vgQHHjU7A">《认知重建：Speckit 用了三个月，我放弃了》</a>，里面提到了<strong>复利工程</strong>的概念，简直说到我心坎里去了：</p>
+
+<pre><code>Plan ──────→ Work ──────→ Review ──────→ Compound
+详细规划     执行工作     质量检查       知识沉淀
+   ↑                                       │
+   └───────────────────────────────────────┘
+            知识复合：下次规划更精准
+</code></pre>
+
+<p>这不就是我以前手工作坊时代的升级版吗？</p>
+
+<h4 id="3-在-cursor-中落地复利工程">3. 在 Cursor 中落地复利工程</h4>
+
+<p>理论有了，怎么在 Cursor 里实现？上个月 Cursor 2.4 更新了 SubAgents、Skills 和 Commands，我感觉机会来了。</p>
+
+<p>我先是扒了 <code>[everything-claude-code](https://github.com/affaan-m/everything-claude-code)</code> 这个项目，想复刻一套工具链：</p>
+
+<ul>
+<li><strong>Subagent</strong>: planner, code-reviewer, doc-updater</li>
+<li><strong>Skill</strong>: security-review, tdd-workflow</li>
+<li><strong>Commands</strong>: learn（这个最关键，用于知识沉淀）</li>
+</ul>
+
+<p>理想很丰满，流程应该是 <code>planner -&gt; tdd-guide -&gt; code-reviewer -&gt; learn</code>。</p>
+
+<p>现实很骨感。Cursor 的 SubAgent 经常“自作主张”。你给它编排好了流程，它跑着跑着就切回自己的默认 Plan 模式，或者无视我的 SubAgent 逻辑。那一阵子搞得我很抓狂，感觉在跟一个不听话的实习生较劲。</p>
+
+<p>不过，<code>learn</code> 这个命令我是真留下来了。每次做完需求，把改动总结成知识点存下来，下次 AI 再写代码时，就能读到这些“家规”，确实有用。</p>
+
+<h4 id="4-最终的折衷方案">4. 最终的折衷方案</h4>
+
+<p>不死心的我又去研究了 <code>[superpowers](https://github.com/obra/superpowers)</code> 和 <code>[code-review-expert](https://github.com/sanyuan0704/code-review-expert)</code> 这两个项目，重新调整了策略。</p>
+
+<p>既然 Cursor 对 SubAgent 的调度有自己的想法，那我就顺着它，把流程简化，侧重于<strong>前置规划</strong>和<strong>后置学习</strong>。</p>
+
+<p>现在的工具组合变成了：</p>
+
+<ul>
+<li><strong>Skill</strong>: brainstorming, writing-plans, executing-plans, test-driven-development, subagent-driven-development, code-review-expert, using-superpowers</li>
+<li><strong>Commands</strong>: learn (雷打不动)</li>
+</ul>
+
+<p>流程图大概是这样：</p>
+
+<pre><code>brainstorming ──→ writing-plans ──→ executing-plans ──┬──→ test-driven-development
+                                                      └──→ code-review-expert ──→ learn
+</code></pre>
+
+<p>为了适配 Cursor，我把 Claude Code 定义的工具名都改了一遍，还在 Prompt 里强制要求它必须明确调用哪个 Skill。</p>
+
+<p>虽然现在 Cursor 还是偶尔会丢失上下文，或者写着写着断片了，需要我手动把断掉的节点接起来，但整体上，这套流程已经能复刻我以前的工作流了。</p>
+
+<p><strong>总结：</strong></p>
+
+<p>不管 AI 工具有多强，它终究是个工具。不要被工具牵着鼻子走，也不要为了用 AI 而用 AI。</p>
+
+<p>我觉得核心还是要把<strong>人</strong>的经验沉淀下来。以前我们沉淀在脑子里、Wiki 里，现在我们通过 <code>learn</code> 命令沉淀在本地文档里。</p>
+
+<p>AI 可以帮我们把 <code>Plan -&gt; Work</code> 这一段做得飞快，但 <code>Review -&gt; Compound</code> 这一段，目前还得靠我们自己把关。只有把这个闭环跑通了，才算真正把 AI 用成了自己的副驾驶，而不是请了个随时会跑路的外包。</p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+

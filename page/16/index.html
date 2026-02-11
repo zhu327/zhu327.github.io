@@ -78,6 +78,22 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/02/15/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB/">记搜狗微信号搜索反爬虫</a></h1>
+        <span class="post-date">Feb 15 2015</span>
+        <h3 id="反爬虫">反爬虫</h3>
+
+<p><a href="https://github.com/zhu327/rss">RSS Factory</a>前段时间又出问题了，访问微信公众号RSS一直500，完全没法用了。</p>
+
+<p>经调试，发现由于爬取数据太频繁，触发了搜狗微信公众号的反爬虫，探索了下反爬虫的规则:</p>
+
+<ol>
+<li>没有带Cookie的情况下，频繁访问触发反爬虫</li>
+<li>带Cookie的情况下，频繁访问偶尔触发反爬出，偶现500错误</li>
+<li>不带Cookie情况下，隔几个小时范围一下不会触发反爬虫</li>
+</ol>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/31/python%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87%E5%B0%8F%E8%B4%B4%E5%A3%AB/">Python性能提升小贴士</a></h1>
         <span class="post-date">Jan 31 2015</span>
          用xrange循环时代替range ''.join() 替代 + while 1替代while True 列表推到 &gt; for循环 &gt; while循环 用cProfile, cStringIO and cPickle 用局部变量好于全局变量 itertools用各种迭代器，生成器 用map, reduce, filter替代列表推倒或循环 判断 a in b时，字典与集合好于列表和元组  
@@ -128,24 +144,6 @@
 <p><a href="http://docspy3zh.readthedocs.org/en/latest/index.html">python 3.2.2</a></p>
 
 <p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/10/django%E5%AE%9E%E7%8E%B0join%E6%9F%A5%E8%AF%A2/">Django实现JOIN查询</a></h1>
-        <span class="post-date">Jan 10 2015</span>
-        <p>在写Django Model的Manager面临的一大问题是怎么样才能实现Django Model的复杂查询，比如LEFT JOIN语句的使用，Google用了不少时间，基本上了解大概，总结下，大概有3种方式。</p>
-
-<h3 id="参考">参考</h3>
-
-<blockquote>
-<p><a href="http://wing2south.com/post/django-raw-sql/">闲话 Django Raw SQL</a><br />
-<a href="http://blog.jobbole.com/74881/">实例详解Django的 select_related 和 prefetch_related 函数对 QuerySet 查询的优化</a></p>
-</blockquote>
-
-<h3 id="想法">想法</h3>
-
-<p>写Model的时候参考<a href="http://f2m.im">http://f2m.im</a>的表结构，发现它大量使用了JOIN查询，而且在多个表上都没有使用外键，我想不用外键也是为了方便修改，删除时产生不必要的约束。Django Model实现了ForeignKey，很方便的能查询到外键所在的实例，进一步能查询的更多，但是查询一次相当于执行一次SQL语句，这就造成了性能开销。所以F2E才会使用JOIN语句把计算的过程都交给MySQL。
-</p>
     </div>
   
 </div>

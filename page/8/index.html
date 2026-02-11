@@ -78,6 +78,20 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2018/06/26/%E5%83%8Fopenresty%E4%B8%80%E6%A0%B7%E4%BD%BF%E7%94%A8golang%E5%BC%80%E5%8F%91web-app/">像OpenResty一样使用Golang开发Web App</a></h1>
+        <span class="post-date">Jun 26 2018</span>
+        <p><a href="https://github.com/zhu327/glualor">https://github.com/zhu327/glualor</a></p>
+
+<p>最近在公司内网读过一篇Gopher Lua的文章, 感觉在Golang中使用Lua VM的模式跟OpenResty是一样一样的. 在Github上找了一圈net/http的到Gopher Lua的绑定, 然而并没有. 造轮子的机会来了 ^_^</p>
+
+<h3 id="gluaweb">gluaweb</h3>
+
+<p>虽然看过几本Golang的书, 也读过几个开源项目的代码, 来腾讯后还上过两门Golang的课, 但是却没有写过一个Golang的项目, 从新读过net/http标准库的文档, 再看看Gopher Lua的例子就写了<a href="https://github.com/zhu327/gluaweb">gluaweb</a></p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2018/03/24/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B8%8Erpc/">服务治理与RPC</a></h1>
         <span class="post-date">Mar 24 2018</span>
         <p>以前写过Django中使用zerorpc的方法，但是由于我们的Django是运行在gevent下，而zeromq需要启动一个后台进程处理消息，与gevent使用的greenlet携程是冲突的。</p>
@@ -152,32 +166,6 @@
 <p>之前实现了在Django环境下使用zerorpc的封装,api的组织单位是function.受到Google API 设计指南的启发,重新设计了一种基于Resources的api组织风格,并且约定Resource的方法名与Django Rest Framework的ViewSets中实现的action名称一致.</p>
 
 <p>zerorpc默认只能在同一个Server上面注册一个对象,而我们需要注册多个类(一个类表示一Resources),在阅读zerorpc Server的代码后,想到一个简单的方式来注册Resources.</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2017/04/21/django-%E4%BC%98%E5%8C%96%E6%9D%82%E8%B0%88/">Django 优化杂谈</a></h1>
-        <span class="post-date">Apr 21 2017</span>
-        <p>总结下最近看过的一些文章,然后想到的一些优化点,整理一下.</p>
-
-<h3 id="数据库连接池">数据库连接池</h3>
-
-<blockquote>
-<p><a href="http://mt.dbanotes.net/arch/instagram.html">http://mt.dbanotes.net/arch/instagram.html</a></p>
-</blockquote>
-
-<p>Django 默认DB配置提供了选项<code>CONN_MAX_AGE</code>用于配置在同一个thread/greenlet里面DB connection的最大存活时间,便于连接的复用,在实践中发现如果使用gunicorn+gevent的方式来启动WSGI服务,由于gunicorn会创建一个很大的gevent pool,导致数据库连接数会暴涨.所以这个选项被放弃了,另外的方式是使用connection pool.</p>
-
-<p>instagram 使用 PostGreSQL 并且使用 Pgbouncer 这个中间件来管理连接池,MySQL也有Proxy这种中间件但是比较重,所以考虑在django mysql backend的基础上自己实现一个连接池.</p>
-
-<blockquote>
-<p><a href="https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38">https://gist.github.com/zhu327/94c22c7fa9c92cc38e998eab41e77c38</a></p>
-</blockquote>
-
-<p>主要参考了Connector/Python的pool实现.</p>
-
-<p>数据库连接池也不是&rdquo;银弹&rdquo;,在应用层做数据库连接池也不值得推荐,随着业务的扩展,使用一主多备搭建集群,通过读写分类中间件来做连接池管理,推荐<a href="https://github.com/sysown/proxysql">ProxySQL</a>.</p>
 
 <p></p>
     </div>

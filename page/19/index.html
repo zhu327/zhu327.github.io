@@ -78,6 +78,29 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/24/python-web-farmwork/">Python Web farmwork</a></h1>
+        <span class="post-date">Sep 24 2014</span>
+        <h3 id="简介">简介</h3>
+
+<ul>
+<li><a href="http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/0014023080708565bc89d6ab886481fb25a16cdc3b773f0000">编写Web框架</a></li>
+<li><a href="https://github.com/zhu327/blog/blob/master/www/transwarp/web.py">web.py</a></li>
+</ul>
+
+<p><a href="http://bozpy.sinaapp.com/blog/7">上一节</a>写了WSGI与Cookie相关的内容，为了方便的实现Web App，需要编写一个简单的Web框架，需要实现以下功能:</p>
+
+<ol>
+<li>处理request；</li>
+<li>生成response header；</li>
+<li>根据request URI找到对应处理的函数，即URL路由；</li>
+<li>定制模版引擎；</li>
+<li>拦截器，在处理函数产生响应前，做预处理，相当于WSGI中middlware的概念，比如处理Cookie等。</li>
+</ol>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/21/http-cookie/">HTTP Cookie</a></h1>
         <span class="post-date">Sep 21 2014</span>
         <h3 id="什么是cookie">什么是Cookie</h3>
@@ -141,35 +164,6 @@
 
 <p>首先定义<code>Field</code>类，代表DB中tabale的每一个字段，对象初始化的时候需要定义的属性有，字段名称，字段数据类型，是否为主键，是否可为空，字段默认值，是否可更改等字段属性</p>
 
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/15/python-%E4%B8%AD%E7%9A%84%E5%85%83%E7%B1%BB/">Python 中的元类</a></h1>
-        <span class="post-date">Sep 15 2014</span>
-        <h3 id="参考">参考</h3>
-
-<p><a href="http://blog.jobbole.com/21351/">深刻理解Python中的元类(metaclass)</a></p>
-
-<h3 id="类与类的创建">类与类的创建</h3>
-
-<p>Python中的class也是object，所以类可以作为参数，作为函数返回值，作为对象获取属性。</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">MyClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-<span class="n">myObject</span> <span class="o">=</span> <span class="n">MyClass</span><span class="p">()</span>
-
-<span class="nb">type</span><span class="p">(</span><span class="n">myObject</span><span class="p">)</span> <span class="c1"># 获取对象的类</span>
-<span class="c1"># &lt;class &#39;__main__.MyClass&#39;&gt;</span>
-
-<span class="nb">type</span><span class="p">(</span><span class="n">MyClass</span><span class="p">)</span> <span class="c1"># 所有的类都是type类的对象</span>
-<span class="c1"># &lt;type &#39;type&#39;&gt;</span>
-
-<span class="n">myObject</span><span class="o">.</span><span class="vm">__class__</span> <span class="c1"># 获取对象的类</span>
-<span class="c1"># &lt;class &#39;__main__.MyClass&#39;&gt;</span>
-
-<span class="n">MyClass</span><span class="o">.</span><span class="vm">__class__</span>
-<span class="c1"># &lt;type &#39;type&#39;&gt;</span></code></pre></div>
 <p></p>
     </div>
   

@@ -78,6 +78,35 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/15/python-%E4%B8%AD%E7%9A%84%E5%85%83%E7%B1%BB/">Python 中的元类</a></h1>
+        <span class="post-date">Sep 15 2014</span>
+        <h3 id="参考">参考</h3>
+
+<p><a href="http://blog.jobbole.com/21351/">深刻理解Python中的元类(metaclass)</a></p>
+
+<h3 id="类与类的创建">类与类的创建</h3>
+
+<p>Python中的class也是object，所以类可以作为参数，作为函数返回值，作为对象获取属性。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">MyClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">myObject</span> <span class="o">=</span> <span class="n">MyClass</span><span class="p">()</span>
+
+<span class="nb">type</span><span class="p">(</span><span class="n">myObject</span><span class="p">)</span> <span class="c1"># 获取对象的类</span>
+<span class="c1"># &lt;class &#39;__main__.MyClass&#39;&gt;</span>
+
+<span class="nb">type</span><span class="p">(</span><span class="n">MyClass</span><span class="p">)</span> <span class="c1"># 所有的类都是type类的对象</span>
+<span class="c1"># &lt;type &#39;type&#39;&gt;</span>
+
+<span class="n">myObject</span><span class="o">.</span><span class="vm">__class__</span> <span class="c1"># 获取对象的类</span>
+<span class="c1"># &lt;class &#39;__main__.MyClass&#39;&gt;</span>
+
+<span class="n">MyClass</span><span class="o">.</span><span class="vm">__class__</span>
+<span class="c1"># &lt;type &#39;type&#39;&gt;</span></code></pre></div>
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2014/09/15/python-%E4%BD%BF%E7%94%A8-mysql/">Python 使用 MySQL</a></h1>
         <span class="post-date">Sep 15 2014</span>
         <h3 id="mysqldb基本使用方式">MySQLdb基本使用方式</h3>
