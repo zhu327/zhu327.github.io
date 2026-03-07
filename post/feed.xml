@@ -6,10 +6,27 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 11 Feb 2026 14:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 07 Mar 2026 12:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>复盘：ClawOps AI Agent</title>
+      <link>https://zhu327.github.io/2026/03/07/%E5%A4%8D%E7%9B%98clawops-ai-agent/</link>
+      <pubDate>Sat, 07 Mar 2026 12:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/03/07/%E5%A4%8D%E7%9B%98clawops-ai-agent/</guid>
+      <description>&lt;h4 id=&#34;前言&#34;&gt;前言&lt;/h4&gt;
+
+&lt;p&gt;过去的两周，我经历了一次充满激情的开发，也经历了一次彻底的失败。&lt;/p&gt;
+
+&lt;p&gt;起因是我准备在内部做一个公共的“运维AI机器人”。我满怀热情地规划了多租户架构、复杂的并发控制、MCP（Model Context Protocol）对接以及各种内部系统的打通。然而，经过两周的爆肝，项目上线没多久就被平台团队勒令下线，而从业务价值来看，老板其实也并不需要这样一个东西。&lt;/p&gt;
+
+&lt;p&gt;俗话说，失败是成功之母。虽然项目黄了，但这两周踩过的坑、写过的废代码，都是技术架构演进路上的宝贵经验。我在这里复盘一下整个过程，聊聊我的技术实现、妥协，以及如果让我重新设计，我会怎么做。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>AI工程落地实践</title>

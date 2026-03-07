@@ -78,6 +78,32 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/">pingsix-ingress-controller启动</a></h1>
+        <span class="post-date">Oct 20 2025</span>
+        <blockquote>
+<p><a href="https://github.com/zhu327/pingsix">https://github.com/zhu327/pingsix</a></p>
+</blockquote>
+
+<p>PingSIX 自从上次重构之后, 我一直在考虑如何扩展这个项目的功能与使用场景, 有2个方向可以考虑:</p>
+
+<ol>
+<li>支持proxy-wasm插件</li>
+<li>实现pingsix-ingress-controller</li>
+</ol>
+
+<p>在调研了proxy-wasm的相关功能后, 结论是由于pingora面向的场景是CDN的反向代理, 所以没有考虑过方便的修改请求体与响应体, 这就造成很难基于pingora来实现proxy-wasm的ABI, 如果我要自己定义一个wasm的接口协议, 没法复用社区现有的proxy-wasm插件, 那就没必要了, 不如直接写Rust的插件. 相关参考内容:</p>
+
+<ul>
+<li><a href="https://github.com/cloudflare/pingora/issues/17">proxy-wasm support</a></li>
+<li><a href="https://segmentfault.com/a/1190000045232953">pingora 能做什么和不能做什么</a></li>
+</ul>
+
+<p>在放弃了proxy-wasm的支持后, 我开始调研如何实现pingsix-ingress-controller, 由于pingsix的的资源定义是参考apisix来实现的, 所以就直接参考<a href="https://github.com/apache/apisix-ingress-controller">apisix-ingress-controller</a>来实现我们自己的<a href="https://github.com/zhu327/pingsix-ingress-controller">pingsix-ingress-controller</a>.</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2025/10/16/%E7%BC%96%E5%86%99%E5%8F%AF%E7%BB%B4%E6%8A%A4%E7%9A%84%E4%BB%A3%E7%A0%81----%E9%9D%A2%E5%90%91ai%E7%BC%96%E7%A8%8B/">编写可维护的代码 -- 面向AI编程</a></h1>
         <span class="post-date">Oct 16 2025</span>
         <p>这是最近在小组内做的一次技术分享的文字稿，总体来说我觉得没有表达出特别硬核的内容，我本身也希望说这次分享不用讲的太硬核，在分享的开头还设计了互动环节，分享的过程中也尝试加入一些问答来互动，奈何现公司的技术氛围确实比较沉闷，似乎同事都比较I，好在最后的问答环节有几个比较好的问题，总体来说还算是一次成功的分享吧，希望自己能输出更多的好内容。</p>
@@ -156,20 +182,6 @@
 </ol>
 
 <p>就在我快要放弃，准备将就着用某个方案时，我想起了一篇以前收藏过的文章。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2025/04/02/%E6%88%91%E7%90%86%E8%A7%A3%E7%9A%84ai-agent%E4%B8%8Emcp/">我理解的AI Agent与MCP</a></h1>
-        <span class="post-date">Apr 2 2025</span>
-        <h3 id="前言">前言</h3>
-
-<p>最近AI圈子里Manus这个项目可以说是相当火了，连带着MCP（Model Context Protocol）这个概念也开始频繁出现在各种技术讨论区。作为一个程序员，自然也对这些新东西充满了好奇，于是花时间捣鼓了一下AI Agent和MCP相关的知识。这篇文章就是我学习和思考后，对这两个概念的一些个人理解和梳理。</p>
-
-<h3 id="1-从workflow到ai-agent-大脑的进化">1. 从Workflow到AI Agent：大脑的进化</h3>
-
-<p>回顾我们以前做自动化任务，比如搞个自动抢票、自动下单之类的，思路基本都是围绕着一个固定的<strong>workflow</strong>。我们会预先设定好一套流程逻辑：收到指令 -&gt; 判断条件 -&gt; 走对应分支 -&gt; 调用特定工具（API、脚本等）。整个过程就像一个流程图，每个节点和路径都是我们程序员预先设计好的。在这个模式下，<strong>我们程序员就是这个workflow的“大脑”</strong>，我们把执行计划通过代码逻辑，“硬编码”到系统里。比如预定机票这个场景，我们会写代码一步步调用查询接口、选择航班接口、填写乘机人信息接口、支付接口等等。</p>
 
 <p></p>
     </div>

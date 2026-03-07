@@ -78,6 +78,29 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/14/tornado%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-ioloop/">Tornado代码阅读笔记 IOLoop</a></h1>
+        <span class="post-date">Jun 14 2016</span>
+        <p>准备用Tornado + greenlet + Django ORM搭一个框架，大体上有个思路，在开始前再次阅读下Tornado的代码。目的是在学习Torndao使用的同时，了解下原理，以便在使用过程中少踩点坑。</p>
+
+<h3 id="准备">准备</h3>
+
+<ol>
+<li><p>学习IO多路复用: epoll<br />
+<a href="http://scotdoyle.com/python-epoll-howto.html">http://scotdoyle.com/python-epoll-howto.html</a><br />
+<a href="https://fukun.org/archives/10051470.html">https://fukun.org/archives/10051470.html</a></p></li>
+
+<li><p>Reactor模型<br />
+<a href="http://blog.csdn.net/u013074465/article/details/46276967">http://blog.csdn.net/u013074465/article/details/46276967</a></p></li>
+</ol>
+
+<p>去年大概这个时候也硬着头皮读过Tornado的代码，当时没有经验，还不知道编程模型，在程序的理解上都是顺序执行的思路，所以看到Tornado的代码只会觉得特么的牛B，各种类，各种方法的调来调去。现在理解了Reactor模型以后，再回过头看Tornado，就比较容易理解了，所以在阅读代码前如果能在构架上先理解，读起来会快很多。</p>
+
+<p>Tornado的代码基于2.0版本，最新的4.3版本读起来比较绕，抽象的更加细化，阅读代码的目的在于学习编程思路，不求新。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/02/haystack-elasticsearch%E5%AE%9E%E7%8E%B0%E6%8B%BC%E9%9F%B3%E6%90%9C%E7%B4%A2/">haystack-Elasticsearch实现拼音搜索</a></h1>
         <span class="post-date">Jun 2 2016</span>
         <p>前一篇<a href="https://zhu327.github.io/2016/05/30/djangoelasticsearch%E5%AE%9E%E7%8E%B0%E6%90%9C%E7%B4%A2%E5%8A%9F%E8%83%BD/">Django+Elasticsearch实现搜索功能</a>已经实现了搜索的基本功能，但是其实还是有一些错误，这里先纠正一下。</p>
@@ -172,34 +195,6 @@ elasticstack==0.4.1
 
 <p>但是在api中就不能继续使用cookie了，我们会使用accesstoken的方式来实现认证。之前同事使用redis实现了一版accesstoken的认证，但是由于考虑不周全，导致在使用过程中出现了很多bug，然后为了解决bug又写了很多恶心的兼容代码，所以抽空直接使用熟悉的session重构了认证过程。</p>
 
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/05/14/django%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%8E%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81%E7%A0%81%E5%B1%95%E7%A4%BA%E7%AD%96%E7%95%A5/">Django验证码实现与登录验证码展示策略</a></h1>
-        <span class="post-date">May 14 2016</span>
-        <p>Django实现验证码有很多现成可用的库，Google后选择<a href="https://github.com/mbi/django-simple-captcha">Django Simple Captcha</a>，需要做一些展示与表单验证方面的定制。</p>
-
-<h3 id="验证码展示">验证码展示</h3>
-
-<p>默认的验证码展示形式不是很适合我们网站的样式，所以在settings中做了一些定制。</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 验证码设置</span>
-<span class="n">CAPTCHA_FOREGROUND_COLOR</span> <span class="o">=</span> <span class="s1">&#39;#d83a46&#39;</span> <span class="c1"># 验证码字体颜色</span>
-<span class="n">CAPTCHA_BACKGROUND_COLOR</span> <span class="o">=</span> <span class="s1">&#39;#f5f5f5&#39;</span> <span class="c1"># 验证码背景颜色</span>
-<span class="n">CAPTCHA_NOISE_FUNCTIONS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;captcha.helpers.noise_dots&#39;</span><span class="p">,)</span> <span class="c1"># 验证码混淆配置，这里设置的点点</span>
-<span class="n">CAPTCHA_CHALLENGE_FUNCT</span> <span class="o">=</span> <span class="s1">&#39;random_char_challenge&#39;</span> <span class="c1"># 验证码生成函数配置</span></code></pre></div>
-<p>为了提供验证码的识别率，定制了一个随机字符串生成函数来生成验证码。</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># coding: utf-8</span>
-
-<span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">from</span> <span class="nn">captcha.conf</span> <span class="kn">import</span> <span class="n">settings</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">u</span>
-
-<span class="k">def</span> <span class="nf">random_char_challenge</span><span class="p">():</span>
-    <span class="n">chars</span><span class="p">,</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">u</span><span class="p">(</span><span class="s1">&#39;acefghkprtuvwxy34679&#39;</span><span class="p">),</span> <span class="n">u</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CAPTCHA_LENGTH</span><span class="p">):</span>
-        <span class="n">ret</span> <span class="o">+=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">ret</span></code></pre></div>
 <p></p>
     </div>
   

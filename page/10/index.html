@@ -78,6 +78,18 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2016/09/25/django-db%E4%BD%BF%E7%94%A8mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/">Django db使用MySQL连接池</a></h1>
+        <span class="post-date">Sep 25 2016</span>
+        <p>Django db模块本身不支持MySQL连接池，只有一个配置<code>CONN_MAX_AGE</code>连接最大存活时间，如果WSGI服务器使用了线程池技术，会达到连接复用的效果。但是如果WSGI服务如果是每个请求都创建新的线程，那么这个配置没有任何效果，因为连接保存在<code>Thread.local()</code>名称空间中，在不同的线程中不能复用。</p>
+
+<p>在上一篇<a href="https://zhu327.github.io/2016/09/25/greentor-mysql连接池实现/">greentor MySQL连接池实现</a>中已经实现了MySQL连接池，只需要重写Django MySQL backend以支持连接池，就能达到连接复用的目的，减少socket 3次握手的开销，提高性能。</p>
+
+<p><a href="https://github.com/zhu327/greentor/blob/master/demo/core/base.py">https://github.com/zhu327/greentor/blob/master/demo/core/base.py</a></p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/09/25/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0/">greentor MySQL连接池实现</a></h1>
         <span class="post-date">Sep 25 2016</span>
         <blockquote>
@@ -179,29 +191,6 @@
 </ol>
 
 <p>具体的实现过程不是很好描述，调度过程比较复杂，还是看看参考文章大牛的解析吧。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/14/tornado%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-ioloop/">Tornado代码阅读笔记 IOLoop</a></h1>
-        <span class="post-date">Jun 14 2016</span>
-        <p>准备用Tornado + greenlet + Django ORM搭一个框架，大体上有个思路，在开始前再次阅读下Tornado的代码。目的是在学习Torndao使用的同时，了解下原理，以便在使用过程中少踩点坑。</p>
-
-<h3 id="准备">准备</h3>
-
-<ol>
-<li><p>学习IO多路复用: epoll<br />
-<a href="http://scotdoyle.com/python-epoll-howto.html">http://scotdoyle.com/python-epoll-howto.html</a><br />
-<a href="https://fukun.org/archives/10051470.html">https://fukun.org/archives/10051470.html</a></p></li>
-
-<li><p>Reactor模型<br />
-<a href="http://blog.csdn.net/u013074465/article/details/46276967">http://blog.csdn.net/u013074465/article/details/46276967</a></p></li>
-</ol>
-
-<p>去年大概这个时候也硬着头皮读过Tornado的代码，当时没有经验，还不知道编程模型，在程序的理解上都是顺序执行的思路，所以看到Tornado的代码只会觉得特么的牛B，各种类，各种方法的调来调去。现在理解了Reactor模型以后，再回过头看Tornado，就比较容易理解了，所以在阅读代码前如果能在构架上先理解，读起来会快很多。</p>
-
-<p>Tornado的代码基于2.0版本，最新的4.3版本读起来比较绕，抽象的更加细化，阅读代码的目的在于学习编程思路，不求新。</p>
 
 <p></p>
     </div>

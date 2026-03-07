@@ -78,6 +78,20 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2026/03/07/%E5%A4%8D%E7%9B%98clawops-ai-agent/">复盘：ClawOps AI Agent</a></h1>
+        <span class="post-date">Mar 7 2026</span>
+        <h4 id="前言">前言</h4>
+
+<p>过去的两周，我经历了一次充满激情的开发，也经历了一次彻底的失败。</p>
+
+<p>起因是我准备在内部做一个公共的“运维AI机器人”。我满怀热情地规划了多租户架构、复杂的并发控制、MCP（Model Context Protocol）对接以及各种内部系统的打通。然而，经过两周的爆肝，项目上线没多久就被平台团队勒令下线，而从业务价值来看，老板其实也并不需要这样一个东西。</p>
+
+<p>俗话说，失败是成功之母。虽然项目黄了，但这两周踩过的坑、写过的废代码，都是技术架构演进路上的宝贵经验。我在这里复盘一下整个过程，聊聊我的技术实现、妥协，以及如果让我重新设计，我会怎么做。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2026/02/11/ai%E5%B7%A5%E7%A8%8B%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/">AI工程落地实践</a></h1>
         <span class="post-date">Feb 11 2026</span>
         <p>前几天在整理项目代码的时候，看着 commit log 里那些由 AI 生成的代码，突然有点感慨。以前写代码是体力和脑力的双重劳动，现在好像变成了单纯的脑力博弈——跟 AI 的博弈。</p>
@@ -141,32 +155,6 @@
 <p>后来加入了腾讯，随着职级的提升，负责的系统越来越复杂，我开始意识到：写代码只是冰山一角，<strong>做方案才是真正的考验。</strong></p>
 
 <p>所谓的“系统性思维”，一度让我受益匪浅，但最近我发现，如果一旦陷入对“完美”的执念，系统性思维反而会成为阻碍项目落地的最大陷阱。今天想和大家聊聊，如何在架构设计、风险控制和实际落地之间找到那个微妙的平衡点。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/">pingsix-ingress-controller启动</a></h1>
-        <span class="post-date">Oct 20 2025</span>
-        <blockquote>
-<p><a href="https://github.com/zhu327/pingsix">https://github.com/zhu327/pingsix</a></p>
-</blockquote>
-
-<p>PingSIX 自从上次重构之后, 我一直在考虑如何扩展这个项目的功能与使用场景, 有2个方向可以考虑:</p>
-
-<ol>
-<li>支持proxy-wasm插件</li>
-<li>实现pingsix-ingress-controller</li>
-</ol>
-
-<p>在调研了proxy-wasm的相关功能后, 结论是由于pingora面向的场景是CDN的反向代理, 所以没有考虑过方便的修改请求体与响应体, 这就造成很难基于pingora来实现proxy-wasm的ABI, 如果我要自己定义一个wasm的接口协议, 没法复用社区现有的proxy-wasm插件, 那就没必要了, 不如直接写Rust的插件. 相关参考内容:</p>
-
-<ul>
-<li><a href="https://github.com/cloudflare/pingora/issues/17">proxy-wasm support</a></li>
-<li><a href="https://segmentfault.com/a/1190000045232953">pingora 能做什么和不能做什么</a></li>
-</ul>
-
-<p>在放弃了proxy-wasm的支持后, 我开始调研如何实现pingsix-ingress-controller, 由于pingsix的的资源定义是参考apisix来实现的, 所以就直接参考<a href="https://github.com/apache/apisix-ingress-controller">apisix-ingress-controller</a>来实现我们自己的<a href="https://github.com/zhu327/pingsix-ingress-controller">pingsix-ingress-controller</a>.</p>
 
 <p></p>
     </div>

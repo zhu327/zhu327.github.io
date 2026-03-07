@@ -78,6 +78,21 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/11/24/elasticsearch-%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95%E6%93%8D%E4%BD%9C/">Elasticsearch 数据索引操作</a></h1>
+        <span class="post-date">Nov 24 2015</span>
+        <p>开始一系列的搜索相关的学习，包括并不限于<br />
+Django<br />
+Haystack<br />
+Elasticsearch<br />
+IK中文分词<br />
+分词字典</p>
+
+<h2 id="简单搜索">简单搜索</h2>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/09/29/gunicorn%E8%BF%90%E8%A1%8Cdjango%E6%97%B6%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/">Gunicorn运行Django时静态文件处理</a></h1>
         <span class="post-date">Sep 29 2015</span>
         <h3 id="问题">问题</h3>
@@ -135,17 +150,6 @@ IFTTT = if this then that, IFWechat通过微信公众号实现了IFTTT中this的
 
 <li><p>Docker image: Docker镜像,Docker容器实例是通过Docker镜像来构建的,Docker镜像可用看做是一个没有跑起来的Docker环境,存储了Docker环境的所有变更与配置;</p></li>
 </ol>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/07/20/ajax%E4%B8%AD%E7%9A%84jsonp%E7%90%86%E8%A7%A3/">Ajax中的jsonp理解</a></h1>
-        <span class="post-date">Jul 20 2015</span>
-        <p>公司自有服务都是后台api来实现,即使是website也是通过调用api获取来渲染网页,正常的Ajax中请求都是调用浏览器的XMLHttpRequest接口来异步请求数据,但是无论是Chrome,还是IE都有一个限制,就是不能跨域通过XMLHttpRequest来发请求.</p>
-
-<p>话说你有过墙梯我有张良计,聪明的开发者总是会有办法来绕过浏览器跨域的限制来请求数据,在HTML中具有<code>src</code>属性的标签例如<code>script</code>,<code>img</code>都是可用跨域来请求<code>src</code>指向的资源数据的,既然<code>script</code>标签可以跨域,那就利用这个来实现跨域.但是<code>script</code>标签返回的数据不能直接是json格式,需要是标准的javascript函数调用,所以需要返回的数据中包括一个在已有js函数的本地调用方式,传入我们需要的数据,这里的数据才是json格式的.</p>
-
-<p>发送请求:</p>
-<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;http://server2.example.com/RetrieveUser?UserId=1823&amp;jsonp=parseResponse&#34;</span><span class="p">&gt;</span> <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></code></pre></div>
     </div>
   
 </div>
