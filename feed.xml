@@ -29,7 +29,7 @@
 
 &lt;p&gt;项目初期的定位非常庞大：一个服务于全公司的公共运维Agent平台。为了支撑这个目标，我设计了一套相当复杂的服务端架构。&lt;/p&gt;
 
-&lt;p&gt;项目本身基于 &lt;a href=&#34;https://github.com/sipeed/picoclaw&#34;&gt;PicoClaw&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;项目本身基于 &lt;a href=&#34;https://github.com/sipeed/picoclaw&#34;&gt;PicoClaw&lt;/a&gt;。&lt;/p&gt;
 
 &lt;p&gt;在这个阶段，我的思维主要停留在&lt;strong&gt;“如何用技术解决所有场景的问题”&lt;/strong&gt;。&lt;/p&gt;
 
