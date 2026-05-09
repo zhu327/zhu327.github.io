@@ -78,6 +78,23 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2017/01/01/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98/">如何成为一名优秀的程序员</a></h1>
+        <span class="post-date">Jan 1 2017</span>
+        <h4 id="前言">前言</h4>
+
+<blockquote>
+<p><a href="http://open.163.com/movie/2015/7/B/M/MATL76APV_MATL8FCBM.html">罗子雄：如何成为一名优秀设计师</a></p>
+
+<p><a href="https://www.zhihu.com/lives/789840559912009728/messages">董明伟：Python 工程师的入门和进阶</a></p>
+</blockquote>
+
+<p>董明伟基于自己实践讲的知乎live为Python新人提供了很多实用建议，他推荐的<a href="http://open.163.com/movie/2015/7/B/M/MATL76APV_MATL8FCBM.html">罗子雄：如何成为一名优秀设计师</a>的演讲讲的非常好，总结了设计师从入门到提高的优秀实践。<br />
+罗子雄的演讲我看了三遍，再结合自己的程序员生涯，我想我也可以为Python新人提供一些建议，开了<strong>如何成为一名优秀的程序员</strong>一题，讲讲我的Python工程师之路。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2016/09/25/django-db%E4%BD%BF%E7%94%A8mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/">Django db使用MySQL连接池</a></h1>
         <span class="post-date">Sep 25 2016</span>
         <p>Django db模块本身不支持MySQL连接池，只有一个配置<code>CONN_MAX_AGE</code>连接最大存活时间，如果WSGI服务器使用了线程池技术，会达到连接复用的效果。但是如果WSGI服务如果是每个请求都创建新的线程，那么这个配置没有任何效果，因为连接保存在<code>Thread.local()</code>名称空间中，在不同的线程中不能复用。</p>
@@ -162,35 +179,6 @@
         <span class="k">return</span> <span class="n">main</span><span class="o">.</span><span class="n">switch</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">wrapped</span></code></pre></div>
 <p>使用greenlet的好处是我们可以通过这个挂起，唤醒的过程来中断当前的同步代码，而不需要用Tornado自己实现协程，每次都要yield出来，然后回调。通过使用greenlet可以很方便的把同步的网络IO库修改为支持Tornado的异步库。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/16/python%E5%8D%8F%E7%A8%8B/">Python协程</a></h1>
-        <span class="post-date">Jun 16 2016</span>
-        <blockquote>
-<p><a href="https://zh.wikipedia.org/zh-cn/%E5%8D%8F%E7%A8%8B">https://zh.wikipedia.org/zh-cn/%E5%8D%8F%E7%A8%8B</a></p>
-</blockquote>
-
-<p>协程可以理解为线程中的微线程，通过手动挂起函数的执行状态，在合适的时机再次激活继续运行，而不需要上下文切换。所以在python中使用协程会比线程性能更好。</p>
-
-<h3 id="tornado协程">Tornado协程</h3>
-
-<blockquote>
-<p><a href="http://blog.csdn.net/wyx819/article/details/45420017">http://blog.csdn.net/wyx819/article/details/45420017</a></p>
-</blockquote>
-
-<p>上面有大牛分析的Tornado的线程实现，依赖与Tornado的IOLoop，所以不能单独拿出来使用。有几个需要理解的概念:</p>
-
-<ol>
-<li>Future对象
-用来保存异步获取到的结果，并在set_reslut的时候调用callback方法，把对应的callback方法放到ioloop的callback列表中等待下一次ioloop循环再执行</li>
-<li>装饰器coroutine
-在这个装饰器中实现了协程的调度，通过不断的调用next函数来不断获取Future对象，然后每次拿到Future对象在add_callback到ioloop上，等到Future被set_reslut后再次next，直到生成器中抛出Return的异常。</li>
-</ol>
-
-<p>具体的实现过程不是很好描述，调度过程比较复杂，还是看看参考文章大牛的解析吧。</p>
 
 <p></p>
     </div>

@@ -6,10 +6,24 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 07 Mar 2026 12:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 09 May 2026 10:16:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>打造适合自己的 AI Harness 工程：从开发流、E2E 测试到自动排障</title>
+      <link>https://zhu327.github.io/2026/05/09/%E6%89%93%E9%80%A0%E9%80%82%E5%90%88%E8%87%AA%E5%B7%B1%E7%9A%84-ai-harness-%E5%B7%A5%E7%A8%8B%E4%BB%8E%E5%BC%80%E5%8F%91%E6%B5%81e2e-%E6%B5%8B%E8%AF%95%E5%88%B0%E8%87%AA%E5%8A%A8%E6%8E%92%E9%9A%9C/</link>
+      <pubDate>Sat, 09 May 2026 10:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/05/09/%E6%89%93%E9%80%A0%E9%80%82%E5%90%88%E8%87%AA%E5%B7%B1%E7%9A%84-ai-harness-%E5%B7%A5%E7%A8%8B%E4%BB%8E%E5%BC%80%E5%8F%91%E6%B5%81e2e-%E6%B5%8B%E8%AF%95%E5%88%B0%E8%87%AA%E5%8A%A8%E6%8E%92%E9%9A%9C/</guid>
+      <description>&lt;p&gt;最近有点忙，主要围绕着打造适合自己的 harness 工程来进行。在之前的《AI工程落地实践》的文章中，我已经基于 superpowers 构建了适合我们团队的 AI 开发工作流：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;brainstorming ──→ writing-plans ──→ executing-plans ──┬──→ test-driven-development
+                                                      └──→ code-review-expert ──→ learn&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;但是在这个流程的中间，我发现了一个问题：我需要多次跟 Agent 对话来确认进度，而 Cursor 是以请求次数计费的。这就导致每次开发需求我不仅需要频繁切入确认，还浪费了不少 Cursor 的高级模型请求次数。为了解决这个问题，我在现有的开发流程上增加了一个新的 &lt;code&gt;go&lt;/code&gt; 启动 SKILL。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>复盘：ClawOps AI Agent</title>

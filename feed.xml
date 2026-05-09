@@ -7,7 +7,263 @@
     <language>zh-cn</language>
     
     
-    <updated>Sat, 07 Mar 2026 12:00:00 &#43;0800</updated>
+    <updated>Sat, 09 May 2026 10:16:00 &#43;0800</updated>
+    
+    <item>
+      <title>打造适合自己的 AI Harness 工程：从开发流、E2E 测试到自动排障</title>
+      <link>https://zhu327.github.io/2026/05/09/%E6%89%93%E9%80%A0%E9%80%82%E5%90%88%E8%87%AA%E5%B7%B1%E7%9A%84-ai-harness-%E5%B7%A5%E7%A8%8B%E4%BB%8E%E5%BC%80%E5%8F%91%E6%B5%81e2e-%E6%B5%8B%E8%AF%95%E5%88%B0%E8%87%AA%E5%8A%A8%E6%8E%92%E9%9A%9C/</link>
+      <pubDate>Sat, 09 May 2026 10:16:00 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/05/09/%E6%89%93%E9%80%A0%E9%80%82%E5%90%88%E8%87%AA%E5%B7%B1%E7%9A%84-ai-harness-%E5%B7%A5%E7%A8%8B%E4%BB%8E%E5%BC%80%E5%8F%91%E6%B5%81e2e-%E6%B5%8B%E8%AF%95%E5%88%B0%E8%87%AA%E5%8A%A8%E6%8E%92%E9%9A%9C/</guid>
+      <description>&lt;p&gt;最近有点忙，主要围绕着打造适合自己的 harness 工程来进行。在之前的《AI工程落地实践》的文章中，我已经基于 superpowers 构建了适合我们团队的 AI 开发工作流：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;brainstorming ──→ writing-plans ──→ executing-plans ──┬──→ test-driven-development
+                                                      └──→ code-review-expert ──→ learn&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;但是在这个流程的中间，我发现了一个问题：我需要多次跟 Agent 对话来确认进度，而 Cursor 是以请求次数计费的。这就导致每次开发需求我不仅需要频繁切入确认，还浪费了不少 Cursor 的高级模型请求次数。为了解决这个问题，我在现有的开发流程上增加了一个新的 &lt;code&gt;go&lt;/code&gt; 启动 SKILL。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;1-开发流程的全自动化与架构规约&#34;&gt;1. 开发流程的全自动化与架构规约&lt;/h3&gt;
+
+&lt;p&gt;通过引入新的启动机制，现在的流程流畅了很多：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/86b82482-a907-4bc0-b7b5-f90d9fde95ec&#34; alt=&#34;Image1&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/go-clean-arch/blob/main/.cursor/skills/go/SKILL.md&#34;&gt;https://github.com/zhu327/go-clean-arch/blob/main/.cursor/skills/go/SKILL.md&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;除了第一步 &lt;code&gt;brainstorming&lt;/code&gt; 阶段还需要人工确认（其实也是通过 AskQuestion Tool 来引导提问），剩下的一旦启动，1次请求就可以走完整个开发流程，最多可以一口气消耗掉 2 千万 Token。&lt;/p&gt;
+
+&lt;p&gt;除了开发流程本身的提效，这期间我感触最深的一点是：&lt;strong&gt;要写清楚架构约束，制定好项目的规约&lt;/strong&gt;。这就是 harness 工程极其重要的一部分。比如我在维护的 Go 项目中，基于 DDD + Clean Architecture 的约束，我对每一层的代码都做了详细的规范化：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/go-clean-arch/tree/main/.cursor/rules&#34;&gt;https://github.com/zhu327/go-clean-arch/tree/main/.cursor/rules&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;基本上按这个流程并加上严格的 rule 约束开发以后，我就不怎么再自己去一行行 review 代码了。Opus 4.6 确实强，配上详尽的上下文，真有点“言出法随”的意思。&lt;/p&gt;
+
+&lt;h3 id=&#34;2-让-ai-接管-e2e-测试&#34;&gt;2. 让 AI 接管 E2E 测试&lt;/h3&gt;
+
+&lt;p&gt;代码虽然是 AI 写的，但在合并代码前，我还是得手工黑盒测试相关逻辑是否满足需求。既然 AI 都能写代码了，那能不能让 AI 来帮我们做 E2E 的 API 测试呢？&lt;/p&gt;
+
+&lt;p&gt;要做 E2E 测试，首先要解决的是环境问题。以前手工测试的时候，我往往只能把代码发布到测试环境上做，因为应用本身依赖的外部 HTTP/gRPC 服务非常多，又有自己的数据库，在本地测试造数据非常麻烦。为了打造一个适合 AI Agent 的 E2E 测试环境，我做了以下基建：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;外部依赖 Mock&lt;/strong&gt;：我找到了 &lt;a href=&#34;https://github.com/getmockd/mockd&#34;&gt;mockd&lt;/a&gt;，它可以直接 mock 真实的 HTTP/gRPC 服务。我们的 app 只需要把依赖服务的地址配置到 mockd 上，所有的请求真实发生，只是打到了 mockd 上。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据库依赖&lt;/strong&gt;：通过 &lt;a href=&#34;https://github.com/testcontainers/testcontainers-go&#34;&gt;testcontainers-go&lt;/a&gt;，用 Docker 在每次测试前启动真实的数据库，测试后自动销毁。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;API 验证&lt;/strong&gt;：引入了 &lt;a href=&#34;https://github.com/gavv/httpexpect&#34;&gt;gavv/httpexpect&lt;/a&gt; 来方便地请求 API 并验证返回数据。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;环境有了，数据构造对 AI 来说根本不是事儿。为了把 E2E 测试也加入到标准流程中，我专门写了一个 &lt;code&gt;e2e-testing&lt;/code&gt; 的 skill，并把它加入到 &lt;code&gt;writing-plans&lt;/code&gt; 的过程中，&lt;strong&gt;强制要求 Agent 在有接口变更时，先设计 E2E 测试用例并构造数据&lt;/strong&gt;。所有的 E2E 测试直接在代码仓库中维护。&lt;/p&gt;
+
+&lt;p&gt;把 E2E 加入到开发流程中后，我基本上彻底从代码细节中解放出来了。现在我主要看的就是 E2E 的测试用例是否符合业务预期，预期对上了，就快速开发、快速上线。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-sre-与自动排障-agent-的探索&#34;&gt;3. SRE 与自动排障 Agent 的探索&lt;/h3&gt;
+
+&lt;p&gt;除了开发流程的 AI 化，我还关注到了一个非常有意思的开源项目：&lt;a href=&#34;https://github.com/Tracer-Cloud/opensre&#34;&gt;OpenSRE&lt;/a&gt;。它旨在构建开源 AI 运维智能体，依托大模型与各种监控基建工具，通过自动关联告警、日志与指标进行深度推理，实现生产故障从定位到修复的端到端自动化。&lt;/p&gt;
+
+&lt;p&gt;在研究了相关流程以后，我萌生了自己做一个自动 AI 排障 Agent 的想法。正好我们部门也在推进 &lt;code&gt;srecli&lt;/code&gt;，这个命令行工具整合了 SRE 平台的容器、网关、CMDB、DB平台、日志、告警和知识库。有了底座，结合我之前在《复盘：ClawOps AI Agent》中得出的经验——&lt;strong&gt;不要轻易从头造一个厚重的 Agent&lt;/strong&gt;，我决定还是走轻量级的路线，构建一套 SKILL 组合。&lt;/p&gt;
+
+&lt;p&gt;首先用 &lt;code&gt;AGENTS.md&lt;/code&gt; 给 Agent 立一个人设：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-markdown&#34; data-lang=&#34;markdown&#34;&gt;You are Tracer, a Senior SRE Assistant for incident investigation and root cause analysis.&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;你的任务是帮助开发者排查生产故障。你可以调用底层的 &lt;span class=&#34;sb&#34;&gt;`srecli`&lt;/span&gt; 工具来获取监控、日志、Kubernetes和发布状态等信息。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;核心工作原则：
+&lt;span class=&#34;k&#34;&gt;1.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**证据驱动**&lt;/span&gt;**：当你需要确切证据（错误堆栈、具体指标值、发版时间）时，必须调用 &lt;span class=&#34;sb&#34;&gt;`srecli`&lt;/span&gt;，不要猜测。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;2.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**结构化输出**&lt;/span&gt;**：永远不要向用户倾泻原始日志或大量 JSON，请对信息进行提炼。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;3.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**区分事实与推测**&lt;/span&gt;**：明确指出哪些是已验证的证据（Validated Claims），哪些是合理的推测（Non-validated Claims）。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;4.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**无指责文化（Blameless）**&lt;/span&gt;**：关注系统和流程的缺陷（如“缺乏配置校验”），而不是人的失误（如“小明配错了”）。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;5. &lt;span class=&#34;gs&#34;&gt;**增量排查**&lt;/span&gt;**：每次调用工具后，说明你的发现，并说明你的下一步排查计划，让开发者随时掌握排查进度。&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接下来就是一套基于事件流的 SKILL 组合：&lt;code&gt;alert-triage&lt;/code&gt; -&amp;gt; &lt;code&gt;root-cause-analysis&lt;/code&gt; -&amp;gt; &lt;code&gt;blameless-postmortem&lt;/code&gt;。我把多方看文章和研究 OpenSRE 蒸馏出来的逻辑写成了模板（节选部分核心逻辑）：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Skill: Alert Triage (告警初诊)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;要求 Agent 提取受影响范围，收集四大黄金信号（Latency, Traffic, Errors, Saturation），追溯最近1小时的变更记录，并对日志进行摘要聚类。绝对禁止直接输出原始日志。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-markdown&#34; data-lang=&#34;markdown&#34;&gt;&lt;span class=&#34;gh&#34;&gt;#&lt;/span&gt; Skill: Alert Triage &amp;amp; Context Gathering
+**Description**: &lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;当用户丢出一个告警（如高错误率、CPU飙升）或描述一个线上故障时触发。你的任务是作为 SRE 值班工程师的“副驾”，迅速通过 &lt;span class=&#34;sb&#34;&gt;`srecli`&lt;/span&gt; 完成第一轮现场信息收集与整合，避免工程师在多个监控平台间来回切换。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Core Workflow (执行动作要求):
+&lt;span class=&#34;k&#34;&gt;1.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**解析意图与范围**&lt;/span&gt;**：提取受影响的 Service, Namespace/Environment, Time window。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;2.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**收集四大黄金信号 (Golden Signals)**&lt;/span&gt;**：调用 &lt;span class=&#34;sb&#34;&gt;`srecli`&lt;/span&gt; 收集该服务及核心依赖的以下指标：&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;   &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **Latency (延迟)**: 获取 P50, P95, P99 响应时间。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;   &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **Traffic (流量)**: 获取请求速率 (RPS) 或当前活跃连接数。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;   &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **Errors (错误)**: 计算整体错误率 (5xx 比例) 及 Error Budget Burn Rate (判断是 Fast burn 还是 Slow burn)。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;   &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **Saturation (饱和度)**: 获取 CPU 利用率 (是否发生 Throttling)、内存使用率 (是否接近 OOM)、连接池使用率。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;3.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**变更追溯 (Change Context)**&lt;/span&gt;**：调用 &lt;span class=&#34;sb&#34;&gt;`srecli`&lt;/span&gt; 获取最近 1 小时内该服务的基础设施变更、代码发布记录（Deployments/Rollouts）。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;4.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**日志摘要 (Log Digestion)**：调用 `srecli` 获取最近 15 分钟的 ERROR/FATAL 日志。**[绝对禁止]**&lt;/span&gt;** 直接输出原始日志，必须对日志进行聚类（如：某 NullPointerException 出现 50 次）。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Constraints (排障护栏):
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 必须验证指标的当前状态，不要只看告警触发那一刻。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 不要只看当前服务，检查其**下游依赖调用失败率**。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **输出必须结构化**，让值班人员一眼看清现场。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Output Template (必须严格遵循以下格式输出):
+&lt;span class=&#34;gu&#34;&gt;###&lt;/span&gt; 🚨 告警初诊报告: [Service Name]
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **告警时间与影响服务**: [时间] / [受影响服务]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **Error Budget 状态**: [判断属于 Fast burn / Slow burn / 正常，及当前错误率]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;####&lt;/span&gt; 📊 黄金信号快照 (Golden Signals)
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 🟢/🔴 &lt;span class=&#34;gs&#34;&gt;**Latency**&lt;/span&gt;**: [当前 P99 延迟，对比基线]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 🟢/🔴 &lt;span class=&#34;gs&#34;&gt;**Traffic**&lt;/span&gt;**: [当前 QPS/连接数趋势]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 🟢/🔴 &lt;span class=&#34;gs&#34;&gt;**Errors**&lt;/span&gt;**: [当前 5xx 错误率]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 🟢/🔴 &lt;span class=&#34;gs&#34;&gt;**Saturation**&lt;/span&gt;**: [CPU节流 / 内存使用 / 磁盘 / 连接数状态]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;####&lt;/span&gt; 🔄 上下文与变更记录
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **最近发布**: [时间 / 版本号 / 变更人，如无则写&amp;#34;1小时内无变更&amp;#34;]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **关键日志聚类**:&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;1.&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`[报错类型摘要]`&lt;/span&gt; - 出现 N 次&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **下游依赖**: [依赖服务是否健康]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;####&lt;/span&gt; 🧠 初步判断与建议步骤
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **初步判断**: [例如：现象高度吻合 21:31 的灰度发布窗口，且新版本 Pod 错误率显著高于旧版本]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;- &lt;span class=&#34;gs&#34;&gt;**下一步建议**&lt;/span&gt;**: [列出具体建议，如“是否允许我调用 &lt;span class=&#34;sb&#34;&gt;`srecli`&lt;/span&gt; 查看慢查询？”或“是否暂停灰度扩大？”等待用户指令]&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Skill: Root Cause Analysis (根因分析)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;遵循“提出假设 -&amp;gt; 寻找判别性证据 -&amp;gt; 排除假设 -&amp;gt; 锁定根因”的逻辑链。输出必须包含“已证实的推论”和“尚未证实的假设”，并且给出紧急止血的建议动作。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-markdown&#34; data-lang=&#34;markdown&#34;&gt;&lt;span class=&#34;gh&#34;&gt;#&lt;/span&gt; Skill: Root Cause Analysis (Hypothesis-Driven)
+**Description**:&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;当需要定位问题根本原因时触发。你必须表现得像一名资深 SRE。排查不是盲目执行命令，而是遵循“提出假设 -&amp;gt; 寻找判别性证据 -&amp;gt; 排除假设 -&amp;gt; 锁定根因”的逻辑链。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Reasoning Sequence (排查逻辑链):
+&lt;span class=&#34;k&#34;&gt;1.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**观察事实 (Observe)**&lt;/span&gt;**: 列出目前已知的确凿事实。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;2.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**生成假设 (Hypothesize)**&lt;/span&gt;**: 形成 2-4 个合理的根因假设。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;3.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**判别性验证 (Discriminate)**&lt;/span&gt;**:&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;   &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 优先选择能**同时证实一个假设并排除其他假设**的 &lt;span class=&#34;sb&#34;&gt;`srecli`&lt;/span&gt; 动作。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;   &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **特殊处理规则**:&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;     &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; *CPU/连接数告警*: 必须区分是“空闲连接堆积”、“慢查询/昂贵查询”还是“真实流量突增”。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;     &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; *存储打满*: 必须明确检查是否为 Audit logs (如 Postgres/Aurora) 等后台机制导致。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;4.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**排除与锁定 (Eliminate &amp;amp; Select)**&lt;/span&gt;**: 排除与证据矛盾的假设。如果多个假设存活，选择最符合奥卡姆剃刀原则的，并注明。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Anti-Bias Rules (防偏见规则):
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 不要预设故障类型，让数据说话。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 如果现有假设与调取到的指标/日志矛盾，立即抛弃并生成新假设。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **绝不伪造数据**：如果缺少遥测数据，必须在“缺失证据”中明确声明。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Output Template (必须严格遵循以下格式输出):
+&lt;span class=&#34;gu&#34;&gt;###&lt;/span&gt; 🔍 深度根因分析 (RCA) 结论
+
+&lt;span class=&#34;gs&#34;&gt;**ROOT_CAUSE (根本原因)**&lt;/span&gt;**:&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;[1-2句话陈述。如果无法证实，请写 &amp;#34;最有可能的根因是...，但缺失以下证据：...。绝不能只写&amp;#39;无法确定&amp;#39;。]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;gs&#34;&gt;**ROOT_CAUSE_CATEGORY**&lt;/span&gt;**:&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;[必须从以下选择其一：configuration_error | code_defect | data_quality | resource_exhaustion | dependency_failure | infrastructure | unknown]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;gs&#34;&gt;**CAUSAL_CHAIN (故障传导链)**&lt;/span&gt;**:
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; [Step 1: 触发点/初始故障，如: 错误配置被合入]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; [Step 2: 故障蔓延，如: 连接池未正确释放]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; [Step 3: 最终症状，如: 数据库拒绝连接导致API 502]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;gs&#34;&gt;**EVIDENCE_DIGEST (证据摘要)**&lt;/span&gt;**:&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;✅ &lt;span class=&#34;gs&#34;&gt;**VALIDATED_CLAIMS (已证实的推论)**&lt;/span&gt;**:
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; [事实 1] [Evidence: srecli 调用的具体指标/日志路径]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; [事实 2] [Evidence: ...]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;⚠️ &lt;span class=&#34;gs&#34;&gt;**NON_VALIDATED_CLAIMS (尚未证实的假设)**&lt;/span&gt;**:
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; [假设 1] [需什么数据验证，如: &amp;#34;需验证 DB 慢查询日志，但当前无 srecli 权限&amp;#34;]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;gs&#34;&gt;**ALTERNATIVE_HYPOTHESES_CONSIDERED (被排除的假设)**&lt;/span&gt;**:
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; [被排除的假设及排除原因，如: &amp;#34;曾怀疑突发流量，但排查发现 QPS 同比无明显上升&amp;#34;]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;gs&#34;&gt;**REMEDIATION_STEPS (修复建议)**&lt;/span&gt;**:
+&lt;span class=&#34;k&#34;&gt;1.&lt;/span&gt; [最紧急的止血动作，附带确切的 &lt;span class=&#34;sb&#34;&gt;`srecli`&lt;/span&gt; 命令代码块（如回滚/扩容），提示用户确认执行]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;2. [下一步修复建议]&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Skill: Blameless Postmortem (无指责复盘)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;故障恢复后，要求 Agent 出具复盘报告。运用 5 Whys 分析法深挖系统性缺陷，并按照 SMART 原则和控制层级（系统防护 -&amp;gt; 自动化检测 -&amp;gt; 流程规范）提出预防措施。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-markdown&#34; data-lang=&#34;markdown&#34;&gt;&lt;span class=&#34;gh&#34;&gt;#&lt;/span&gt; Skill: Blameless Postmortem Generation
+**Description**:&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;当故障恢复，用户要求出具故障通报或复盘报告时触发。你不仅要总结事件，还要将失败转化为组织学习的机会。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Core Principles (核心原则):
+&lt;span class=&#34;k&#34;&gt;1.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**无指责文化 (Blameless Culture)**&lt;/span&gt;**: 人难免犯错，系统应该具备韧性。绝对不要写“某开发人员配置错误”，必须重构为“部署流水线缺乏配置合法性校验”。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;2.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**量化影响 (Quantify Impact)**&lt;/span&gt;**: 必须量化受影响用户数、SLA 违规时间、潜在业务损失。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;3.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**5 Whys 分析**&lt;/span&gt;**: 深度追问，不能停留在“代码有Bug”表面，要深挖到流程、架构设计的系统性原因。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;4.&lt;/span&gt; &lt;span class=&#34;gs&#34;&gt;**SMART 与控制层级 (Hierarchy of Controls)**&lt;/span&gt;**: 预防措施按“消除风险 -&amp;gt; 增加系统护栏 -&amp;gt; 完善流程(SOP) -&amp;gt; 培训”的优先级提出。&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Output Template (必须严格遵循以下 Markdown 结构):
+&lt;span class=&#34;gu&#34;&gt;###&lt;/span&gt; 📄 故障复盘报告 (Blameless Postmortem)
+&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;####&lt;/span&gt; 1. 摘要与量化影响 (Summary &amp;amp; Impact)
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **事件描述**: [1-2句话总结]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **故障级别**: [Sev1/Sev2/Sev3]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **量化影响**: [受影响用户占比 / 具体 Downtime 时长 / 对外 SLA 影响]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;####&lt;/span&gt; 2. 时间线重建 (Timeline Reconstruction)
+| Time (UTC/Local) | Event | Source | Action Taken |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;|---|---|---|---|&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [HH:MM] | 故障潜伏/变更触发 | [如 CI/CD] | [发布 V2.0] |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [HH:MM] | 告警触发/发现异常 | [如 Grafana] | [错误率飙升至 8.7%] |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [HH:MM] | 锁定根因 | [人工/Agent] | [确认是新代码逻辑导致的连接泄漏] |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [HH:MM] | 止血与恢复 | [CI/CD] | [执行回滚，指标恢复正常] |&lt;span class=&#34;k&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;&amp;gt; &lt;/span&gt;&lt;span class=&#34;ge&#34;&gt;**核心指标**: 发现延迟 (Detection lag): [X] 分钟 | 修复时间 (MTTR): [Y] 分钟
+&lt;/span&gt;&lt;span class=&#34;ge&#34;&gt;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;####&lt;/span&gt; 3. 根因分析 (Root Cause Analysis - 5 Whys)
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **Problem**: [初始现象，如支付网关宕机]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **Why?** [直接原因，如：DB连接池耗尽]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **Why?** [深入一步，如：重试逻辑没有正确释放超时连接]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **Why?** [再深入，如：新版本的压测在测试环境未暴露出此问题]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **Why?** [系统/流程原因，如：测试环境缺乏生产级别的真实长连接模拟]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **系统性根因**: [总结最后的系统性缺陷]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;####&lt;/span&gt; 4. 纠正与预防措施 (Corrective Actions)
+*(按控制层级从强到弱排列，符合 SMART 原则)*
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **[系统防护/Engineering]** [如：给连接池增加绝对超时强制回收机制] (Owner: &lt;span class=&#34;gs&#34;&gt;___ | Due: ___&lt;/span&gt;__)&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **[自动化检测/Detection]** [如：增加连接池利用率 &amp;gt; 80% 的告警] (Owner: &lt;span class=&#34;gs&#34;&gt;___ | Due: ___&lt;/span&gt;__)&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; **[流程规范/Administrative]** [如：补充压测 SOP，增加长连接阻断测试] (Owner: &lt;span class=&#34;gs&#34;&gt;___ | Due: ___&lt;/span&gt;__)&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;####&lt;/span&gt; 5. 经验教训 (Lessons Learned)
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 🟢 &lt;span class=&#34;gs&#34;&gt;**What went well**&lt;/span&gt;**: [做得好的地方，如：回滚机制生效迅速，10分钟内止血]&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;- 🔴 &lt;span class=&#34;gs&#34;&gt;**What could be improved**&lt;/span&gt;**: [需要改进的短板，如：监控仅发现了报错，没有提前发现连接池缓慢泄露的趋势]&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;从 AI 开发流到 E2E AI 测试，再到 AI 排障，我算是为团队跑通了一套全流程的 AI 研发基建。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-探索多智能体并发工作流&#34;&gt;4. 探索多智能体并发工作流&lt;/h3&gt;
+
+&lt;p&gt;除了公司的 Cursor，部门老板最近还为我们提供了火山云的 OpenCode (Coding Plan)。为了尝试新的可能性，我没有直接把 superpowers 搬过去。在读到《&lt;a href=&#34;https://mp.weixin.qq.com/s/BsATc-dbZsYdUlnhtxASbA&#34;&gt;软件基本功没死，它在 AI 时代变得更值钱了&lt;/a&gt;》这篇文章后，我开始在 OpenCode 上实践基于 &lt;a href=&#34;https://github.com/mattpocock/skills&#34;&gt;mattpocock/skills&lt;/a&gt; 改造的开发流程：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;想法
+  ↓
+/grill-me [客户需求文档]       -- 与 AI 建立共同的设计概念
+  ↓
+/to-prd                        -- 将对话转化为目的地文档
+  ↓
+/to-issues                     -- 切分为垂直曳光弹 Issue（看板）
+  ↓
+ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
+  ↓
+人工 QA + 代码审查              -- 把品味和判断注回代码
+  ↓
+回到看板                        -- QA 产生新 Issue，循环继续&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这个流程相比 superpowers 有个巨大的优势：&lt;code&gt;to-issues&lt;/code&gt; 环节会把庞大的需求切分成一个个小的 Issue，并分析它们之间的依赖关系。下一步就可以启动多个 subagent 并发去开发多个 Issue。对于大需求而言，这种开发流不仅更快，而且更可靠，毕竟每个 subagent 只用专注于一个小任务，上下文污染的概率大大降低。&lt;/p&gt;
+
+&lt;p&gt;正如那篇文章里提到的感悟，在 AI 时代，&lt;strong&gt;我们人类要做的是接口和抽象的设计，内部的实现完全交给 AI，把实现细节当作黑盒&lt;/strong&gt;。在使用 OpenCode 的过程中，我确实感觉到国产模型在推理能力上相较于 Opus 4.6 还有一定差距（Token 生成速度也稍慢一些），但通过这种极其严密的流程约束和任务拆解，依然能稳定输出不错的结果。&lt;/p&gt;
+
+&lt;h3 id=&#34;5-业务实战-多云生命周期的-iac-与抽象&#34;&gt;5. 业务实战：多云生命周期的 IaC 与抽象&lt;/h3&gt;
+
+&lt;p&gt;说完了这些工具和流程上折腾的事情，再来说说我最近在做的具体业务。&lt;/p&gt;
+
+&lt;p&gt;目前我们在做一个 CMDB 系统，要实现对云资源的全生命周期管理。这里最大的挑战是要同时对接 4 朵公有云：AWS、阿里云、华为云、金山云。我之前在腾讯蓝鲸的同事做多云管理，搞了一年多还没能把几朵云完全对齐，可见水有多深。而且，我本心并不希望自己只是作为运维的“乙方”去纯做一套死板的平台功能，我希望运维同学能深度参与进来。我来做引擎，运维同学在引擎的基础上扩展能力。&lt;/p&gt;
+
+&lt;p&gt;基于这个思路，刚开始就把方案定格在了 IaC（基础设施即代码）上。在 Terraform 和 Pulumi 之间，由于国内云对 Pulumi 支持欠佳（特别是金山云根本不支持），最终选择了 Terraform。&lt;/p&gt;
+
+&lt;p&gt;为此，我开发了一个轻量级的执行引擎：&lt;a href=&#34;https://github.com/zhu327/tfengine&#34;&gt;tfengine&lt;/a&gt;。在产品逻辑上，我要求运维同学自己维护相关资源的 HCL 模板，然后在平台上以表单的形式面向普通用户提供申请。资源创建过程中，平台会完整透传 &lt;code&gt;terraform plan/apply&lt;/code&gt; 的日志信息。这样做的好处是，一旦资源申请出问题，运维同学通过日志直接就能排查，而不是遇到报错就来找我们开发定位。&lt;/p&gt;
+
+&lt;p&gt;除了资源创建，全生命周期管理中还有很多 Day 2 的操作（比如开关机、升降配等），这些没法用 Terraform 搞定，只能通过各云厂商的 SDK 重新封装。这就引出了两座大山：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;平台内部现有的 &lt;code&gt;cloudservice&lt;/code&gt; 模块做得太早，抽象极差，甚至账号管理都乱七八糟，简而言之就是一坨屎山。&lt;/li&gt;
+&lt;li&gt;不同云厂商的模型差异巨大，比如华为云有一个独创的“企业项目 ID”概念，而金山云的 SDK 又经常缺斤少两。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;幸运的是，现在我有 AI Agent 这个得力助手。我把这些繁杂的脏活全交给了 Agent：让它去扒不同云厂商的 SDK 源码，读又臭又长的 API 文档，最后帮我糊出了一个非常轻量的封装微服务，我管它叫 &lt;code&gt;cloudkit&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;cloudkit&lt;/code&gt; 采用了纯插件式架构，新增一个功能就是新增一个插件，插件内部封装好 4 朵云对应的 API 流程。遇到屎山代码？让 Agent 去理清逻辑并隔离出清晰的接口。&lt;/p&gt;
+
+&lt;p&gt;最后，在 CMDB 平台上统一调用 &lt;code&gt;tfengine&lt;/code&gt; 和 &lt;code&gt;cloudkit&lt;/code&gt;，走同一套账号体系进行纳管。这套方案非常灵活，开发极快。目前我们已经顺利实现了云主机和对象存储的全生命周期管理。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/f21c7ad1-a5bd-4ff6-be7d-2302eaaf866e&#34; alt=&#34;Image2&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;回过头看，无论是流程的演进，还是屎山代码的重构，AI 都在以一种不可逆的方式改变着我们的工作模式。从最初的“测试转开发”，到如今的“写规范让 Agent 开发”，我们解决问题的方式一直在变，但作为程序员，那种对系统掌控感和抽象设计的追求，始终如一。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>复盘：ClawOps AI Agent</title>
@@ -2317,63 +2573,6 @@
 &lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
 
 &lt;p&gt;初入一个项目，我们可能会遇到很多很多问题，但是没有关系的，我们需要做的是把这些疑问都记录下来，然后带着疑问慢慢去熟悉，熟悉一个项目也需要一个过程，不要着急，1个星期不行，就1个月，遇到困难就及时寻求帮助。前人种树，后人乘凉。如果前人没能帮你种好树，那我们就把我们熟悉项目的过程整理成文档，留给后人，这样后人就可以少走很多弯路。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>我的2024</title>
-      <link>https://zhu327.github.io/2024/12/31/%E6%88%91%E7%9A%842024/</link>
-      <pubDate>Tue, 31 Dec 2024 10:55:52 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2024/12/31/%E6%88%91%E7%9A%842024/</guid>
-      <description>&lt;p&gt;今天是2024年的最后一天，我有这一下午的空闲时间，所以就让我来絮絮叨叨的写写我这神奇的2024年吧。&lt;/p&gt;
-
-&lt;p&gt;我是龙年出生的，所以2024年是我的本命年，年初的时候，老婆还有姐姐就给我准备了红内裤，红袜子。由于红袜子太过显眼了，所以这一年我的内裤都是红色的，哈哈。本命年，犯太岁，这一年工作上，心态上，都有一些变化，就让我在本命年的最后一天瞎写写吧。&lt;/p&gt;
-
-&lt;h3 id=&#34;我自己&#34;&gt;我自己&lt;/h3&gt;
-
-&lt;p&gt;我是80年代末生人，出生在一个小镇，是标准的小镇做题家。从高中开始基本就不怎么回家了，然后上大学，跑去了云南，双非一本，学的是热能与动力工程。我的同学大都找到了水电厂，火电厂的工作。工作好的去了三峡，一般就去了云南一些比较偏僻的电厂。而我呢毕业就失业了，后来找到一个海南的小电厂。工作2年后，我就来到了深圳，在躺了好几个月后，经一个亲戚的介绍到一个华为的软件外包公司学习做软件测试。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;软件测试本身是没什么门槛的，然后我自认为还有点小聪明，也由于亲戚的安排，我所在的项目并不是纯粹的手工测试。而是偏向自动化的TCP/IP协议栈的测试，这个测试需要我写一些Lua脚本来模拟发送一些数据包来做测试。虽然这不是一个开发的工作，但是在这个过程中我还是学到不少东西，基本的协议栈，socket，还有一些基础的编程语言方面的知识。&lt;/p&gt;
-
-&lt;p&gt;后来又换了别的项目，做GUI跟网页的功能测试，我接手这个项目的测试的时候，里面还维护了一堆Java写的基于一个IBM的测试框架的自动化测试用例。这可难倒我了，以至于大半年的时间我都没跑过这个自动化的测试，一直都是手动测试。想想不是办法，还是搞搞自动化的测试吧，Java是一时半会学不会的，不如自己学一学Python自动化吧，就这样我接触到Python编程。我依然记得在某一天我用Python写了一个自动匹配关键字的工具用来做安全检查后，获得了华为的持续集成奖。&lt;/p&gt;
-
-&lt;p&gt;就这样我在这个软件外包公司做测试做了4年，然后我决定还是找一份Python开发的工作吧，于是在学习了Django开发后，我就裸辞了。&lt;/p&gt;
-
-&lt;p&gt;在2015年的那个激荡的万众创业，万众创新的2015年，只要你会写点代码，就能找到工作。于是我入职了一家很小的公司做Python后端开发，然后半年之后，我就被优化了。这个时候我确实怀疑过自己，我是不是真的适合做开发呢，我能拿出手的项目只有我在github上写的一个Django的论坛。&lt;/p&gt;
-
-&lt;p&gt;然后就又开始找工作了，不是很顺利，直到2015年下半年的某一天，我收到了一封邮件，嗯，一家我没有投递的公司邀请我去面试。后来才从这家公司的CTO口中得知，他是在看到我的github才邀请我去面试的，然后我就入职了这家公司，继续做Python的后端开发。在这家公司我又找到了自信。然后在这里我发现我做测试的经历还是有用的，毕竟我的自测做的比较细致，以至于我的效率以及质量都远超其他同事。然后由于效率的提升，很快我就开始负责更基础的框架开发，引入了DRF框架，还尝试做了RPC框架，然后又引入了API网关，认识了Openresty，你看，Openresty又回到了我最初做测试的老本行Lua上面。&lt;/p&gt;
-
-&lt;p&gt;由于在github上面尝到了甜头，后续我又在github上写了一些Openresty的小项目，也有Python RPC相关的项目，然后也写了一些我觉得还行的博客文章。我感觉我的能力还是又比较大的提升的，我想我是不是再出去找找机会呢？所以我又开始面试了，不出意外的还是被打击到了，无非是因为非科班出生，然后基础很差。有一个比较nice的面试官推荐我去读一读深入理解计算机系统，然后我就买了这本书。年轻的时候还是比较要强的，不喜欢认输，所以花了好几个月死啃这本书，然后再回顾自己的在工作中点点滴滴，确实对编程这个工作有了更多的理解。再然后我就买了更多的书，在douban上找评分高的书，补齐了很多基础知识。&lt;/p&gt;
-
-&lt;p&gt;时间来到了2018年，很幸运的是我通过了腾讯的面试，这里面有我读书的能力提升，也有不停在github上写项目的努力，还有我那几年积累下来的工作经验。&lt;/p&gt;
-
-&lt;h3 id=&#34;腾讯&#34;&gt;腾讯&lt;/h3&gt;
-
-&lt;p&gt;初入腾讯，我是在一个运维组里的唯一的开发，我接的需求都是我的运维同事通过开发工具来改善他们的运维工作。这期间有一个直播推流相关的需求对我来说算是一个契机，促成了我从Python程序转向Golang程序员。在这个组里做了一年后，我觉得我做的的事情都不具备持久性，没有一个清晰的未来，所以我决定换一个组，于是我来到了蓝鲸的开发组。&lt;/p&gt;
-
-&lt;p&gt;在腾讯作为一个非科班出身的新人，我并没有觉得自己能做很久，我脑子里一直有一个念想就是做个几年，有了大厂光环，然后再出去作为一个架构师找一份新的工作。但是我在蓝鲸确实认识了一群nice的同事，然后这一做就是5年。这期间我一直专注在一个项目上，可以说成为了领域内的专家。持续的一直做一件事情有好处，也有坏处，好处是你可以在这个领域内做到极致，坏处是你很难跳出这个领域。&lt;/p&gt;
-
-&lt;p&gt;在大厂，每半年一次的考核，催促着我成长，沟通能力，项目管理能力，架构能力，规划能力等等，我都有实实在在的成长。然而在本命年的这一年，我还是觉得我可以离开了，毕竟互联网35岁的危机，年纪越大感受越深。&lt;/p&gt;
-
-&lt;h3 id=&#34;新工作&#34;&gt;新工作&lt;/h3&gt;
-
-&lt;p&gt;虽然顶着大厂光环，但是在2024年36岁的年纪，找工作还是很困难，面试了很多，只要涉及写算法什么的基本都挂了，然后我就降薪入职了现在的公司。我有了更多的时间，然后写了更多的文章，也学习了Rust编程，新的Rust的项目也都放到了github上。我不知道自己的职业生涯还能走多远，但是我觉得我依然热爱编程。&lt;/p&gt;
-
-&lt;p&gt;随着AI编程应用越来越多，我觉得对于头部的程序员来说，他们的优势会越来越大，因为AI会极大的提升他们的效率，这对中下部的程序员可能是一个灾难。可能会因为这个整个市场的行情会越来越差，所以我个人觉得持续学习，终身学习在这个时代是必须的。&lt;/p&gt;
-
-&lt;h3 id=&#34;生活&#34;&gt;生活&lt;/h3&gt;
-
-&lt;p&gt;3月的时候跟老婆来了一次广西自驾游，从深圳出发，开着我的电车第一次长途自驾，感谢老婆的辛苦做了攻略，在广西边境看了大瀑布，也第一次体验了溶洞速降，还看到了美丽梦幻的三门海。也去了一些小众的景点。在广西的山间小路悬崖边小心的开着车，在溶洞里面听着水流的声音，看着头顶的灯光，那种感觉真的很棒。&lt;/p&gt;
-
-&lt;p&gt;7月的时候，正式从腾讯离职了，然后也没找到工作，就在家里躺平静静的思考了，关于工作不焦虑是假的，但是生活也是要继续的。新的工作开始后，我有了更多的时间陪小孩，看着小孩的成长，确实又感觉生活不一样了，小孩的需求没那么多，更多是我都是作为一个捧哏的角色，看着她玩耍，配合她的各种需求。&lt;/p&gt;
-
-&lt;p&gt;关于未来，世界变化很快，我也不知道未来会怎么样，在深圳还没有买房，没啥压力，在广西游的过程中有个小小的种子种在了心里，什么时候能在广西找个山好水好的地方过上慢生活呢。&lt;/p&gt;
-
-&lt;h3 id=&#34;结尾&#34;&gt;结尾&lt;/h3&gt;
-
-&lt;p&gt;回头看2024年，这一年过得挺特别的，有变化也有成长。无论是工作上的转折，还是生活中的点滴，我都在慢慢适应、慢慢调整。虽然未来会怎样还不好说，但我想继续保持学习的习惯，保持对生活的热情，也尽量多陪陪家人。生活总是这样，充满未知，但也正因为如此，每一天都值得认真过好。&lt;/p&gt;</description>
     </item>
     
   </channel>

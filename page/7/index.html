@@ -78,6 +78,14 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2022/03/28/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%AF%B9%E8%AF%9D%E9%9B%86/">项目管理对话集</a></h1>
+        <span class="post-date">Mar 28 2022</span>
+        <p>老婆是一名具有4年工作经验的产品经理, 上一份工作聚焦在人力资源SaaS上, 现在的工作刚刚开始不到半年, 行业转向了智能家居跨境电商的内部ERP系统, 面对新的行业, 新的公司的工作流程上的一些问题, 有了以下这些对话. 通过这些对话我也回顾了一些自己工作中感悟, 这里总结一下.</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2020/10/22/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/">领域驱动设计与微服务</a></h1>
         <span class="post-date">Oct 22 2020</span>
         <h3 id="drf的起手式">DRF的起手式</h3>
@@ -138,18 +146,6 @@
 <h2 id="perfork">perfork</h2>
 
 <p>perfork是一种服务端编程模型, Nginx, Gunicorn, uWSGI都是这种模型的实现, 简单的说perfok就是master进程启动注册一堆信号处理函数, 创建listen socket fd, fork出多个worker子进程, 子进程执行accept循环处理请求(这里简化模型, 当然也可以用select, epoll多路复用), master进程只负责监控worker进程状态, 通过pipeline通信来控制worker进程.</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2018/07/19/python%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B/">Python后端架构演进</a></h1>
-        <span class="post-date">Jul 19 2018</span>
-        <p>来腾讯之前在前公司做了3年的后端开发, 经历一款SaaS产品从0到10(还没有到100, 哈哈哈)的过程, 3年间后端的架构逐步演变, 在微服务的实践过程中遇到的问题也越来越多, 在这里总结下.</p>
-
-<p>产品是一款服务于人力资源的SaaS在线服务, 面向HR有Web Android/iOS 小程序多个客户端, 后端采用RESTful风格API来提供服务. 主要使用Python语言, 方便快速迭代.</p>
-
-<p>架构的演进经历了4个大的阶段: 1. MVC 2. 服务拆分 3. 微服务架构 4. 领域驱动设计.</p>
 
 <p></p>
     </div>

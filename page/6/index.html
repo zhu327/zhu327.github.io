@@ -78,6 +78,52 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2023/12/23/%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86%E5%AE%9E%E8%B7%B5%E6%8A%80%E6%9C%AF%E5%B0%8F%E7%BB%93%E4%B8%8E%E6%96%B9%E6%A1%88%E6%BC%94%E8%BF%9B/">透明代理实践：技术小结与方案演进</a></h1>
+        <span class="post-date">Dec 23 2023</span>
+        <h3 id="1-路由拓扑">1. 路由拓扑</h3>
+
+<p>在家中，我们采用了中国移动提供的千兆宽带服务，通过移动自带的光猫进行拨号连接。紧随其后是一台搭载OpenWRT系统的路由器，负责管理Wi-Fi以及局域网的网络地址转换（NAT）。由于光猫已占用了192.168.1.1网段，我们将路由器配置为192.168.2.1，以便更好地管理IPv4流量。在IPv4网络中，数据流经过光猫和路由器的双层NAT进行处理。</p>
+
+<p>对于IPv6网络，由于路由器无法直接获取地址前缀，我们配置了IPv6 DHCP Relay功能，确保局域网内的每个设备都能够获取IPv6地址。</p>
+
+<p>以下是我们在OpenWRT路由器上的相关配置：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># cat /etc/config/network
+</span><span class="c1"></span>config interface <span class="s1">&#39;lan&#39;</span>
+	option <span class="nb">type</span> <span class="s1">&#39;bridge&#39;</span>
+	option ifname <span class="s1">&#39;eth0 ra0 ra1 rai0 rai1&#39;</span>
+	option proto <span class="s1">&#39;static&#39;</span>
+	option netmask <span class="s1">&#39;255.255.255.0&#39;</span>
+	option ipaddr <span class="s1">&#39;192.168.2.1&#39;</span>
+	option macaddr <span class="s1">&#39;C8:BF:4C:87:EE:68&#39;</span></code></pre></div>
+<p>在这里，我们通过将LAN口的MAC地址固定设置，以避免LAN IPv6地址的变化。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># cat /etc/config/dhcp
+</span><span class="c1"></span>config dhcp <span class="s1">&#39;lan&#39;</span>
+	option interface <span class="s1">&#39;lan&#39;</span>
+	option start <span class="s1">&#39;100&#39;</span>
+	option limit <span class="s1">&#39;150&#39;</span>
+	option leasetime <span class="s1">&#39;12h&#39;</span>
+	option ra_slaac <span class="s1">&#39;1&#39;</span>
+	list ra_flags <span class="s1">&#39;managed-config&#39;</span>
+	list ra_flags <span class="s1">&#39;other-config&#39;</span>
+	option ra <span class="s1">&#39;relay&#39;</span>
+	option ndp <span class="s1">&#39;relay&#39;</span>
+	option dhcpv6 <span class="s1">&#39;relay&#39;</span>
+	option force <span class="s1">&#39;1&#39;</span>
+	list dns <span class="s1">&#39;fe80::cabf:4cff:fe87:ee68&#39;</span>
+
+config dhcp <span class="s1">&#39;wan&#39;</span>
+	option interface <span class="s1">&#39;wan&#39;</span>
+	option ignore <span class="s1">&#39;1&#39;</span>
+	option dhcpv6 <span class="s1">&#39;relay&#39;</span>
+	option ra <span class="s1">&#39;relay&#39;</span>
+	option ndp <span class="s1">&#39;relay&#39;</span>
+	option master <span class="s1">&#39;1&#39;</span></code></pre></div>
+<p>此处，我们配置了IPv6 DHCP Relay功能，直接从光猫获取IPv6地址，并指定LAN口IPv6地址作为IPv6 DNS通告，以确保局域网内的设备的DNS配置无论是IPv4还是IPv6地址都是OpenWRT路由器。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2023/12/20/%E9%9B%B6%E6%88%90%E6%9C%AC%E4%BD%BF%E7%94%A8openai-api/">零成本使用OpenAI API</a></h1>
         <span class="post-date">Dec 20 2023</span>
         <h3 id="1-openai-chatgpt">1. OpenAI ChatGPT</h3>
@@ -156,14 +202,6 @@
         <p>半年前还是2021年春节的时候, 在家休假的我, 在B站上发现了一门叫<a href="https://www.bilibili.com/video/BV1hp4y1k7SV">RUST语言的课程</a>, 学习的过程中, 发现RUST语言为了绝对的安全性, 在语法本身上做了很多的妥协, 所以想着等我学完这门课, 再基于自己以往编程语言的学习经历, 写一篇&lt;如何学习一门新的编程语言&gt;的文章. 但是时过境迁, 我并没有学完这门RUST课, 所以&lt;如何学习一门新的编程语言&gt;也就无疾而终了. 回过头来再思考下以往我学习的那些编程语言, 就有了这篇文章&lt;编程语言漫谈&gt;. 我希望以一种比较轻松的散文的形式来阐述我过完学习的一些经验与思考.</p>
 
 <p><img src="https://user-images.githubusercontent.com/873883/160806614-07709f0a-add6-464b-a76a-bbaffdeab727.jpg" alt="rust" width="720px"></p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2022/03/28/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%AF%B9%E8%AF%9D%E9%9B%86/">项目管理对话集</a></h1>
-        <span class="post-date">Mar 28 2022</span>
-        <p>老婆是一名具有4年工作经验的产品经理, 上一份工作聚焦在人力资源SaaS上, 现在的工作刚刚开始不到半年, 行业转向了智能家居跨境电商的内部ERP系统, 面对新的行业, 新的公司的工作流程上的一些问题, 有了以下这些对话. 通过这些对话我也回顾了一些自己工作中感悟, 这里总结一下.</p>
 
 <p></p>
     </div>

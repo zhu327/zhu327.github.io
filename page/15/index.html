@@ -78,6 +78,22 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/07/20/docker%E5%88%9D%E6%8E%A2/">Docker初探</a></h1>
+        <span class="post-date">Jul 20 2015</span>
+        <p>听闻Docker很久了,一直也没有动手玩一下,只知道是Linux的新的虚拟技术容器,比以往的虚拟机轻量很多,能最大化利用硬件资源.</p>
+
+<p>最近<a href="https://github.com/zhu327/rss">RSS Factory</a>因为使用量太大,又一次被搜狗反爬虫机制封杀,不少人来问我如果要自己搭建RSS服务怎么操作,也有自己动手的小伙伴遇到各种问题来问我,鉴于现在市面上有一些免费Docker CaaS提供商,所以考虑自己搭建一个RSS Factory的Docker image来分享给小伙伴来使用.顺便探索一下Docker的使用方法.</p>
+
+<h2 id="概念">概念</h2>
+
+<ol>
+<li><p>Docker repository: 可以理解为Docker的GIT库,Docker的官方的repository就叫Docker hub,可用想见Github之于GIT,上面世界各地的开发者分享的Docker镜像或者Dockerfile;</p></li>
+
+<li><p>Docker image: Docker镜像,Docker容器实例是通过Docker镜像来构建的,Docker镜像可用看做是一个没有跑起来的Docker环境,存储了Docker环境的所有变更与配置;</p></li>
+</ol>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/07/20/ajax%E4%B8%AD%E7%9A%84jsonp%E7%90%86%E8%A7%A3/">Ajax中的jsonp理解</a></h1>
         <span class="post-date">Jul 20 2015</span>
         <p>公司自有服务都是后台api来实现,即使是website也是通过调用api获取来渲染网页,正常的Ajax中请求都是调用浏览器的XMLHttpRequest接口来异步请求数据,但是无论是Chrome,还是IE都有一个限制,就是不能跨域通过XMLHttpRequest来发请求.</p>
@@ -133,22 +149,6 @@
 <h3 id="授权">授权</h3>
 
 <p>OAuth2.0协议定义了4种授权模式，为了学习OAuth2.0授权协议，这里只实现简化模式。以下为简化模式授权过程。</p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/03/14/restful-api-%E7%90%86%E8%A7%A3/">RESTful API 理解</a></h1>
-        <span class="post-date">Mar 14 2015</span>
-        <h3 id="参考">参考</h3>
-
-<p><a href="http://www.ruanyifeng.com/blog/2011/09/restful.html">理解RESTful架构</a><br />
-<a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html">RESTful API 设计指南</a><br />
-<a href="http://get.jobdeer.com/343.get">来自HeroKu的HTTP API 设计指南(中文版)</a></p>
-
-<h3 id="概念">概念</h3>
-
-<p>REST == Representational State Transfer，意思是表现层状态转化，我们来分解这个概念。<br />
-从字面以上理解这是一个操作的过程，实际上它省略了主语资源(Resources)，合起来就是资源的表现层状态转化。
-</p>
     </div>
   
 </div>

@@ -78,6 +78,18 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2018/07/19/python%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B/">Python后端架构演进</a></h1>
+        <span class="post-date">Jul 19 2018</span>
+        <p>来腾讯之前在前公司做了3年的后端开发, 经历一款SaaS产品从0到10(还没有到100, 哈哈哈)的过程, 3年间后端的架构逐步演变, 在微服务的实践过程中遇到的问题也越来越多, 在这里总结下.</p>
+
+<p>产品是一款服务于人力资源的SaaS在线服务, 面向HR有Web Android/iOS 小程序多个客户端, 后端采用RESTful风格API来提供服务. 主要使用Python语言, 方便快速迭代.</p>
+
+<p>架构的演进经历了4个大的阶段: 1. MVC 2. 服务拆分 3. 微服务架构 4. 领域驱动设计.</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2018/07/17/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3/">微信公众号迁移Serverless详解</a></h1>
         <span class="post-date">Jul 17 2018</span>
         <p>3月腾讯云函数计算开放测试, 看到的第一反应是这种Serverless太适合做微信公众号的后端来实现自动应答了, 尝试把我服务了3年的一个公众号迁移到腾讯云函数计算, 结果因为API gateway的一个功能缺失搁置了, 这周腾讯云API gateway终于补上了集成响应的能力, 能正常服务我的公众号, 这里记录下实现过程.</p>
@@ -133,32 +145,6 @@
 <li>cache</li>
 </ul></li>
 </ul>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2017/09/11/%E8%AE%B0/">记</a></h1>
-        <span class="post-date">Sep 11 2017</span>
-        <p>好几个月都没写过Blog,写个小记</p>
-
-<h3 id="openresty">Openresty</h3>
-
-<p>公司业务向微服务迁移过程中接触到API Gateway这种中间件,评估了各种开源方案后,选择了在Openresty基础上实现的<a href="https://github.com/Mashape/kong">Kong</a>.为了在Kong的基础上做二次开发,开始学习Openresty.</p>
-
-<ul>
-<li><a href="https://moonbingbing.gitbooks.io/openresty-best-practices/content/">OpenResty 最佳实践</a></li>
-<li><a href="https://openresty.org/download/agentzh-nginx-tutorials-zhcn.html">agentzh 的 Nginx 教程</a></li>
-<li><a href="http://jinnianshilongnian.iteye.com/blog/2190344">跟开涛学OpenResty(Nginx+Lua)开发</a></li>
-</ul>
-
-<p>还是在好几年做测试的时候用过lua语言写测试脚本,lua语言特性很简单,想捡起来也很快.更多的感触是由于学习过Torando的源码,理解了Reactor模型,协程这些概念.学起Openresty只需要把相关概念套上去就很好理解了.这就是知识体系建立的好处,虽然不同语言,不同框架,还是能快速上手.</p>
-
-<blockquote>
-<p><a href="https://github.com/zhu327/shorturl">https://github.com/zhu327/shorturl</a></p>
-</blockquote>
-
-<p>正好公司有个生成短链接的小项目,不限语言,先拿Openresty练练手,写了个shorturl.</p>
 
 <p></p>
     </div>
