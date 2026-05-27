@@ -7,7 +7,188 @@
     <language>zh-cn</language>
     
     
-    <updated>Sat, 09 May 2026 10:16:00 &#43;0800</updated>
+    <updated>Wed, 27 May 2026 09:16:00 &#43;0800</updated>
+    
+    <item>
+      <title>用LLM Wiki构建SRE知识库</title>
+      <link>https://zhu327.github.io/2026/05/27/%E7%94%A8llm-wiki%E6%9E%84%E5%BB%BAsre%E7%9F%A5%E8%AF%86%E5%BA%93/</link>
+      <pubDate>Wed, 27 May 2026 09:16:00 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/05/27/%E7%94%A8llm-wiki%E6%9E%84%E5%BB%BAsre%E7%9F%A5%E8%AF%86%E5%BA%93/</guid>
+      <description>&lt;p&gt;前段时间，部门leader交给我一个任务：公司SRE平台的工单系统已经累积了7019个人工工单，这些工单里沉淀了大量运维过程中的实际问题和解决经验，leader希望我能用这些数据建立一个SRE领域的专属知识库。&lt;/p&gt;
+
+&lt;p&gt;接到任务后，我初步盘算了一下，制定了一个看似顺理成章的计划：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;把这7000多个工单全部格式化为Markdown文件，提取工单标题、内容、处理会话以及审批详情。&lt;/li&gt;
+&lt;li&gt;选型知识库的检索方案，在传统的 RAG（检索增强生成）和最近比较火的 LLM Wiki 之间做个抉择。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;但随着项目的推进，我发现事情并没有那么简单。在这个过程中，我对“如何用大模型解决实际工程问题”又有了一些新的体悟，在这里复盘总结一下。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;1-现实的骨感-信息密度极低的-脏数据&#34;&gt;1. 现实的骨感：信息密度极低的“脏数据”&lt;/h3&gt;
+
+&lt;p&gt;在写脚本把7019个工单全部格式化抓下来之后，我满怀期待地开始分析数据，结果被现实浇了一盆冷水。&lt;/p&gt;
+
+&lt;p&gt;我发现大部分的工单内容极其水：基本都是“我想开通XX权限”、“XX环境怎么连不上了”，然后处理结果直接就是“已处理”、“已结束”。中间的沟通会话也往往是简单的确认信息（比如“是这个IP吗？”“是的”）。&lt;/p&gt;
+
+&lt;p&gt;这意味着&lt;strong&gt;工单本身的信息密度是非常低的&lt;/strong&gt;。如果采用 RAG 方案，核心逻辑是文本切块（Chunking）和向量检索。面对这种毫无上下文、纯碎片的工单信息，切块后丢进向量数据库，检索出来的绝对是一堆毫无逻辑关联的废话，基本没有可行性。&lt;/p&gt;
+
+&lt;p&gt;考虑到 RAG 方案在召回、重排上需要花费极大的精力去调优，而我的工程直觉告诉我：&lt;strong&gt;尽量不要搞得那么复杂，怎么简单怎么来，快速跑通才是王道&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;所以我决定放弃 RAG，走 LLM Wiki 的方案。&lt;/p&gt;
+
+&lt;h3 id=&#34;2-初试-llm-wiki-与人工-蒸馏&#34;&gt;2. 初试 LLM Wiki 与人工“蒸馏”&lt;/h3&gt;
+
+&lt;p&gt;LLM Wiki 本质上是一种方法论（通过大模型全局阅读并生成结构化的索引和概念页面，查询时先查索引再读原文），具体怎么实现各有各的说法。为了快速验证，我找了 NousResearch 官方的 &lt;a href=&#34;https://github.com/NousResearch/hermes-agent/blob/main/skills/research/llm-wiki/SKILL.md&#34;&gt;Hermes Agent SKILL&lt;/a&gt;，稍微修改适配了 Cursor 就跑了起来。&lt;/p&gt;
+
+&lt;p&gt;第一次 Ingest（数据摄入）跑完后，大模型基于工单生成了 25 个 Entities（实体）和 Concepts（概念）页面。查询的时候确实能起到一些作用，但问题依然回到了数据源本身——工单信息太碎了，Agent 检索回答的依然是碎片信息的拼凑，效果并不理想。&lt;/p&gt;
+
+&lt;p&gt;思考了一下，我决定回到问题的本质：&lt;strong&gt;大模型再强，也无法从没有逻辑的对话中凭空创造严谨的知识&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;于是我做了一个苦力活（也是最关键的一步）：把工单中有用的事实信息分类整理，&lt;strong&gt;蒸馏&lt;/strong&gt;出真正的核心内容。我按照上一步生成的 25 个概念分类，重新梳理了一份 1400 行的 SRE 领域知识文档。在用 Agent 辅助蒸馏的过程中，我反复强调了一个 Prompt 核心：&lt;strong&gt;绝对不要添油加醋，必须是工单中确认的客观事实&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;这份 1400 行的文档，把原本碎片的工单价值分门别类地聚拢了起来。说实话，单单是这份纯文本发出来，就已经非常有价值了，甚至不需要 Agent 来检索。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-扩大战果-整合全域资产&#34;&gt;3. 扩大战果：整合全域资产&lt;/h3&gt;
+
+&lt;p&gt;有了这份高质量的“蒸馏”数据后，我开始思考更高维度的解法。&lt;/p&gt;
+
+&lt;p&gt;其实部门内部原本是有一些 SRE 相关的系统性文档的，只是非常零散，散落在各个地方，且互相之间有很多复杂的文档引用。既然要做知识库，不如一次性做透。&lt;/p&gt;
+
+&lt;p&gt;我利用 WPS 的云文档 MCP 工具（&lt;a href=&#34;https://365.kdocs.cn/3rd/open/documents/app-integration-dev/mcp-server/tools/mcp_kso-yundoc&#34;&gt;mcp_kso-yundoc&lt;/a&gt;），写脚本爬取了所有这些现存的 SRE 领域知识库文档，规范化地保存到 &lt;code&gt;raw/articles&lt;/code&gt; 目录下。&lt;/p&gt;
+
+&lt;p&gt;加上之前蒸馏出来的 25 份核心工单事实，我的知识库语料扩充到了 &lt;strong&gt;646 份高质量文档&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-建立真正的-sre-wiki-index&#34;&gt;4. 建立真正的 SRE Wiki Index&lt;/h3&gt;
+
+&lt;p&gt;语料准备就绪后，我基于这些高质量文档，重新跑了一遍 LLM Wiki 的 Ingest 流程。&lt;/p&gt;
+
+&lt;p&gt;这一次，奇迹出现了。系统完美地生成了 22 个 Entities 页面、56 个 Concepts 页面，以及 1 个 Comparisons 页面。一整个 SRE 领域的全景索引（Index）被清晰地建立了起来。&lt;/p&gt;
+
+&lt;p&gt;看看最终生成的 &lt;code&gt;index.md&lt;/code&gt;，非常有成就感：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-markdown&#34; data-lang=&#34;markdown&#34;&gt;&lt;span class=&#34;gh&#34;&gt;#&lt;/span&gt; Wiki Index
+&lt;span class=&#34;k&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;&amp;gt; &lt;/span&gt;&lt;span class=&#34;ge&#34;&gt;金山办公 SRE 平台工单知识库内容目录。
+&lt;/span&gt;&lt;span class=&#34;ge&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;&amp;gt; &lt;/span&gt;&lt;span class=&#34;ge&#34;&gt;每个 wiki 页面按类型归类，附一行摘要。查询前先读此文件定位相关页面。
+&lt;/span&gt;&lt;span class=&#34;ge&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;&amp;gt; &lt;/span&gt;&lt;span class=&#34;ge&#34;&gt;Last updated: 2026-05-26 | Total pages: 86
+&lt;/span&gt;&lt;span class=&#34;ge&#34;&gt;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Entities
+&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| Page | Summary |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;|------|---------|&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[kae-application-engine]] | KAE 金山应用引擎 — 一站式应用生命周期管理平台（创建/发布/性能分析/日志/配置/OpenAPI/WPS365 API对接/开放平台应用管理） |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[kcicd-ci-cd-platform]] | KCICD CI/CD 流水线平台 — 镜像构建/自动部署/多分支编排/Webhook/Git Submodule/国际化镜像加速/构建缓存 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[klb-load-balancer]] | KLB 金山负载均衡 — 上游配置/路由插件/健康检测/证书自动化/七层路由/监控指标/灰度放量 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[khub-image-registry]] | KHUB 镜像仓库平台 — 镜像存储/清理/海外分发/hub-mirror/清理策略/权限管理 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[milvus-vector-database]] | Milvus 向量数据库 — 存储计算分离架构/索引选型/性能基准/部署运维/监控/可用性矩阵 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[business-gateway]] | 业务网关平台 — istio+Envoy 网关/路由/限流/WASM/Lua/鉴权/监控/多实例 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[istio-service-mesh]] | istio 服务网格 — istiod 配置/Sidecar iptables/Proxyless gRPC/东西流量/性能优化 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[domain-management]] | 域名管理 — 购买/备案/解析/国际化域名/域名适配库/Region-Srv/企业自定义域名 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ssl-certificate]] | SSL 证书管理 — DV/OV/EV 证书/购买/部署/KLB 自动化/巡检 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[inner-ingress-gateway]] | 内网网关 — 集群内服务就近访问/inter-ingress-gateway/跨机房切量 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[region-srv]] | Region-Srv 域名下发服务 — entry 域名配置/v2/v3 接口/全球多区域 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[cdn-service]] | CDN 内容分发网络 — CDN 域名规范/国际化 CDN/wpscdn 域名体系/多厂商覆盖/回源配置 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[iam-identity-management]] | IAM 身份与访问管理系统 — 组织/企业/用户/部门模型，KSO Token 认证体系，云厂 AK/SK 全生命周期管理，权限命名规范，订阅通知，安全系数机制，OAuth2 SSO/KIAM |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[kac-access-control]] | KAC 访问控制平台 — 堡垒机/权限审批/操作审计/云厂账号及AK全生命周期管理/KAC配置中心 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[srecli-cli-tool]] | srecli SRE 命令行工具 — AI 驱动的排障搭子，统一对接 KAE/KLB/KDB/KITSM/KCG 能力 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[bastion-host]] | 堡垒机 KSOP — 基于 JumpServer 的商业版堡垒机，域名已迁移至 ksop.kso.net |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[kafka-message-queue]] | Kafka 消息队列 — 消息中心/Topic管理/磁盘扩容/消费堆积/跨集群通信 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[kdb-database-platform]] | KDB 金山数据库平台 — 监控架构/备份降本与事故复盘/Binlog 中心规划/MySQL HA/多引擎管理 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ks3-object-storage]] | KS3 金山对象存储 — Bucket管理/CORS/生命周期/AK-SK/回收站 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[kslm-license-management]] | KSLM 许可证管理 — 软件许可证购买/分配/监控/回收 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ceph-storage]] | Ceph 存储集群 — YXY Ceph 分布式存储管理 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[sre-team]] | SRE 团队 — 组织架构/职责分工/工单流程/KITSM权限 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Concepts
+&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| Page | Summary |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;|------|---------|&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[cloud-native-application-standards]] | 云原生应用规范 — 优雅启停/微服务治理/可观测性/Docker 镜像规范/KLB 使用规范/共享集群/K8S 调度原理/HPA/调度优化/安全规范 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[cloud-vm-image-standardization]] | 云主机基础镜像标准化 — Linux/Windows 系统配置/安全加固/磁盘自动挂载/内核参数优化 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[container-graceful-shutdown]] | K8S 应用优雅启停 — SIGTERM 处理/preStop Hook/Pod 生命周期/1号进程问题/优雅下线流程/滚动升级策略 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[container-image-management]] | 容器镜像管理 — Docker 镜像规范/KHUB/Harbor/hub-mirror/清理策略/海外分发 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[cloud-platform-release-standards]] | 云平台发版流程和标准 — 产研测三方流程/发版节奏/准入准出标准/线上监控指标 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[cloud-service-change-process]] | 云服务变更流程规范 — 核心/企业核心/非核心云服务变更评审要求/warroom 应急处置 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[kso-token-authentication]] | KSO Token 认证与透传 — JWKManager/Claims 提取/透传/刷新/持久化/业务网关集成/鉴权网关规则变量 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[klb-upstream-configuration]] | KLB 上游配置 — 上游组/负载均衡算法/健康检测/流量比例/超时重试 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[sre-client-certificate-login]] | 使用客户端证书登录 SRE — p12 证书加密/HOST 配置/多平台导入方式 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[kdesign-theme]] | Kdesign Theme 主题使用 — 多主题模式/动态皮肤切换/theme-mode |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[kdesign-icons-library]] | Kdesign Icons 图标库 — React/Vue/Vue3 SVG 图标/多色填充/Figma IconGen 插件 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[service-governance]] | 微服务治理 — 服务发现/gRPC LB/k8sresolver/东西流量/全链路灰度/蓝绿发版/RPC规范/熔断降级/开发环境治理/流量泳道 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[capacity-management]] | 容量管理 — K8S 集群调度/连接数治理/HTTP 连接池配置/异常连接案例/TIME_WAIT 治理 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[database-capacity-management]] | 数据库容量管理 — MySQL/Redis/TiDB 等容量规划/扩容缩容/数据归档与成本优化 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[mysql-operation-practices]] | MySQL 运维实践 — 开发规范/GTID HA/主从延迟/CHAR-VARCHAR/2020-2023 故障模式/BlockHole 运维 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[redis-operation-practices]] | Redis/Tendis 运维实践 — 使用规范/性能排查/主从复制/宿主机初始化/2020-2023 故障模式 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[tidb-operation-practices]] | TiDB 开发与运维规范 — 开发规范/TiUP 部署/慢查诊断/OOM 预案/系统表与常用命令 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[clickhouse-operation-practices]] | ClickHouse 运维实践 — 表引擎选择/字段设计/SQL 规范/分布式集群方案/高可用架构 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[mongodb-operation-practices]] | MongoDB 运维实践 — 设计规范/索引/API/连接规范/2021-2023 故障模式 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[elasticsearch-operation-practices]] | Elasticsearch 运维实践 — 概念/集群模式/KDB 平台操作/Mapping/自研插件/Go SDK/常见问题 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[network-security-practices]] | 网络安全实践 — DNS/域名安全/SSL证书/本地HTTPS/IP白名单/来源IP与白名单区别/CSRF防护 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[network-infrastructure]] | 网络基础设施 — VPC安全分级/DCI专线/子网带宽/MTU/网卡队列/NCE纳管/内部网站 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[idc-operations-practices]] | IDC 机房运维实践 — 上架流程/现场操作/设备报废/存储介质/OpenStack扩容/NUMA/BIOS |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[idc-and-hardware-management]] | IDC 与硬件管理 — 服务器上架/设备报废/存储介质销毁/机房操作规范/NUMA |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[observability-platform]] | 可观测性平台 — Prometheus/VM/Grafana/日志平台/Jaeger/50X告警/采样率治理 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[observability-and-monitoring]] | 可观测性与监控 — Metrics/Logging/Tracing 三大支柱/Prometheus/VM/日志平台/Jaeger |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ingress-gateway-comparison]] | 入口网关对比 — Kong vs istio Gateway vs KLB/分层架构/选型建议 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[cascading-failure-patterns]] | 级联故障模式 — KLB/业务网关/连接追踪表溢出/多域名互相影响/客户端重试风暴 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[fault-recovery-and-postmortem]] | 故障复盘方法论 — 故障分级/应急响应/复盘模板/根因分析与改进跟踪 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[tcp-connection-problems]] | TCP 连接问题 — 半连接队列满/TIME_WAIT堆积/连接追踪表满/连接数暴涨/OOM |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[config-driven-incidents]] | 配置变更驱动的故障 — 权益变更/DNS配置/健康检查配置/灰度回退 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[client-retry-storm]] | 客户端重试风暴 — 权益变更触发传输重试/推送通道断开触发重连/重试放大机制 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[internationalization-deployment]] | 国际化部署 — 海外机房/网络隔离/监控数据源/域名规范/全链路灰度/账号数据迁移及服务升级 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[i18n-and-multilanguage]] | 国际化与多语言研发 — i18n 工具链/资源文件管理/前后端多语言规范与差异化配置 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[local-development-environment]] | SRE 内网本地开发环境 — 珠海园区 k8s_local_dev 集群，支持本地断点调试和服务网格流量泳道 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[wps-web-plugin-system]] | WPS Web 插件 2.0 体系 — 第二代 JSAPI + Web 插件框架，CEF 改造/FakeHTTPS/WPSvConsole/插件平台 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[wps-365-api-system]] | WPS 365 API 体系 — 云体系统一 API，涵盖 IAM/Drive/会议/日历/邮箱/稻壳等核心领域 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[topic-change-process]] | Topic 变更流程 — 发布方/订阅方标准化 Topic 迁移流程，双写渐进式切换 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-ai-gateway]] | AI 网关运行备忘 — 大模型统一接入/EP管理/灰度放量/模型配额 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-bastion-host]] | 堡垒机运行备忘 — KSOP域名迁移/连接排障/安全组配置/权限管理 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-cdn-configuration]] | CDN 配置运行备忘 — 多厂商覆盖/回源配置/CORS/缓存刷新/排障指南 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-data-migration]] | 数据迁移运行备忘 — DTS工具矩阵/跨区域同步/checksum校验/不支持的场景 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-database-capacity-management]] | 数据库容量管理运行备忘 — 监控指标/扩容阈值/连接池配置/慢查询 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-international-deployment]] | 国际化部署运行备忘 — 海外集群/网络隔离/监控数据源/上线流程 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-ip-whitelist-management]] | IP 白名单管理运行备忘 — 三层架构/KAE出口IP/安全组/桶策略/申请流程 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-k8s]] | K8S 集群管理运行备忘 — 资源配额/调度/命名空间/ETCD/PVC |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-kac]] | KAC 配置中心运行备忘 — 下线迁移/域名兼容性/K8S Secret注入 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-kae]] | KAE 应用引擎运行备忘 — 工作负载/健康检查/准入策略/NodePort限制 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-kae-container-troubleshooting]] | KAE 容器排障运行备忘 — ExitCode对照/Pod故障模式/优雅启停 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-kafka-operations]] | Kafka 运维运行备忘 — ConsumerLag/磁盘扩容/Topic管理/客户端兼容性 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-klb-operations]] | KLB 运行备忘 — 路由插件/监控指标/证书管理/上游配置/日志分析/ACL/流量染色 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-kdb]] | KDB 数据库平台运行备忘 — 多引擎支持/安全策略/DDL工单/ClickHouse排障 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-ks3]] | KS3 对象存储运行备忘 — CORS配置/生命周期/回收站/Cloudplex自助 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-kslm]] | KSLM 监控告警运行备忘 — Prometheus保留期/告警平台迁移/knight |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-network-security]] | 网络安全运行备忘 — WAF拓扑/DDoS防护/网络隔离/漏洞管理 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-permission-management]] | 权限管理运行备忘 — RBAC模型/策略配置/权限失效/审批缓存 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ref-sre-team]] | SRE 团队运行备忘 — KITSM 权限/工单审批链/项目加入流程/值班惯例 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Comparisons
+&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| Page | Summary |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;|------|---------|&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;| [[ingress-gateway-comparison]] | 入口网关对比：Kong vs istio Gateway vs KLB — 功能/场景/运维/选型建议 |&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Queries
+&amp;lt;!-- 值得保留的查询结果 --&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&#34;5-交付与总结&#34;&gt;5. 交付与总结&lt;/h3&gt;
+
+&lt;p&gt;最后，我基于 LLM Wiki 的机制，单独抽取了一个 &lt;code&gt;wiki-query&lt;/code&gt; 的只读查询 SKILL，交付给了负责 Agent 的团队。&lt;/p&gt;
+
+&lt;p&gt;现在，一个专用的 SRE 领域知识库查询 Agent 正式上线了。当用户提问时，Agent 的工作流非常清晰：
+1. 先看 Index 目录，定位到可能相关的几个概念/实体页面。
+2. 直接读取这几个文档的&lt;strong&gt;原始内容&lt;/strong&gt;（因为长文本大模型的上下文窗口现在足够大）。
+3. 综合多份原文进行总结回答，并在回答中附带上精准的文档引用链接。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么最终没有用 RAG？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在这次实践中，我深刻体会到，当一个业务领域的概念繁杂、专业名词多且上下文强依赖时，RAG 的召回率往往是个灾难。你要花大量的时间去搞定 Chunking 策略、微调 Embedding 模型、优化多路召回和重排机制，ROI 非常低。&lt;/p&gt;
+
+&lt;p&gt;而 LLM Wiki 的思路，其实就是利用了当前大模型超长上下文的能力——&lt;strong&gt;大力出奇迹&lt;/strong&gt;。通过前期建立良好的索引目录，查询时直接把整篇甚至多篇高度相关的文档塞给大模型，让它自己去阅读理解。这种做法不仅实现起来简单直接，而且几乎杜绝了碎片化导致的幻觉，给出的答案质量极高。&lt;/p&gt;
+
+&lt;p&gt;软件开发的过程实际就是解决问题的过程。架构的设计、技术的选型，不能盲目追逐所谓的主流（比如言必称 RAG），最终还是要服务于数据本身的特质和实际的业务需求。在妥协与变通中找到那条最简单、最能快速跑通的路径，往往就是最优解。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>打造适合自己的 AI Harness 工程：从开发流、E2E 测试到自动排障</title>
@@ -2478,101 +2659,6 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 &lt;h3 id=&#34;结语&#34;&gt;结语&lt;/h3&gt;
 
 &lt;p&gt;《软件设计的哲学》让我意识到，软件开发不仅是实现功能，更是一门需要深思熟虑的艺术。它提醒我们，代码的核心目标是&lt;strong&gt;易于理解和维护&lt;/strong&gt;。毕竟，&lt;strong&gt;代码是写给人看的，其次才是给机器看的&lt;/strong&gt;。希望这些心得对你有所启发，让我们一起写出更清晰、更优雅的代码！&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>如何快速上手项目</title>
-      <link>https://zhu327.github.io/2025/01/08/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E9%A1%B9%E7%9B%AE/</link>
-      <pubDate>Wed, 08 Jan 2025 10:55:52 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2025/01/08/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E9%A1%B9%E7%9B%AE/</guid>
-      <description>&lt;p&gt;职业生涯中接手过很多项目了，各种项目都接触过，一个对新人友好的项目一般具备如下特征：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;完备的安装/功能文档&lt;/li&gt;
-&lt;li&gt;完备的技术方案，架构设计文档&lt;/li&gt;
-&lt;li&gt;合理的分层，清晰的代码目录结构&lt;/li&gt;
-&lt;li&gt;可读，可维护性高的代码&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;但是往往我们会忽略一个一个简单的指引性的文档：&lt;strong&gt;Quick Start&lt;/strong&gt;，这个文档不需要很详细，只需要说明，如何快速上手的过程，具体的步骤链接到对应的文档即可。一般我们会在Quick Start上写明：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;最简安装的步骤&lt;/li&gt;
-&lt;li&gt;主流程功能的使用&lt;/li&gt;
-&lt;li&gt;开发环境的搭建&lt;/li&gt;
-&lt;li&gt;开发注意事项
-
-&lt;ol&gt;
-&lt;li&gt;包含组件的架构图&lt;/li&gt;
-&lt;li&gt;包含代码的分层目录说明&lt;/li&gt;
-&lt;/ol&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这个文档需要由项目的负责人编写，在后续由项目的新人实践的过程中逐步完善。&lt;/p&gt;
-
-&lt;p&gt;当然这都是比较理想的情况，实际情况中，我们可能遇到的项目可能根本就没有文档，然后只有一个代码仓库的情况，那怎么才能快速上手呢？其实还是按照Quick Start的思路，只不过需要自己来摸索来了。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;1-安装&#34;&gt;1. 安装&lt;/h3&gt;
-
-&lt;p&gt;我相信不管什么项目，或多或少都有一些如何安装的文档，如果连一点这样的文档都没有，那就需要问其它同事了，如果连问都问不出来，那恭喜你赶快跑路吧，😂&lt;/p&gt;
-
-&lt;p&gt;因为我们是初次接触项目，不必搞懂安装的每个步骤，每个配置的含义，目标仅仅是把项目跑起来，能用起来，所以这里的目标就是安装最简化的方式把项目跑起来。当前的后端项目一般采用容器交付的形式，一般就交付镜像与helm chart，这种方式的安装理论来说是非常简单的，一条helm install 的命令就可以搞定。所以我们在交付的的时一定要在默认的配置中写好最简化的配置，这样新人就可以直接用默认的配置来安装。&lt;/p&gt;
-
-&lt;h3 id=&#34;2-功能体验&#34;&gt;2. 功能体验&lt;/h3&gt;
-
-&lt;p&gt;安装好之后，我们就可以从产品的角度开始体验项目的相关功能，这里我们要聚焦到项目的核心功能上，跑完整个主要流程，不要在意细节，也不要急于把体验的功能与代码实现结合起来，我们只要梳理功能流程，数据的流转，数据的建模。然后有经验的程序员往往会在这个过程中思考，这个功能如果是我来做，我会怎么做。在这个过程中一定要有自己的输出，比如：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;功能清单&lt;/li&gt;
-&lt;li&gt;功能流程图&lt;/li&gt;
-&lt;li&gt;数据模型&lt;/li&gt;
-&lt;li&gt;数据流转图&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;如果有思考如何实现，还可以记录这些：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;技术选型&lt;/li&gt;
-&lt;li&gt;技术方案&lt;/li&gt;
-&lt;li&gt;架构设计&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在体验过程中如果发现了问题，也需要记录下来，还有自己对项目的疑问，为什么要这么设计，这个功能解决的什么实际问题等等。&lt;/p&gt;
-
-&lt;p&gt;但是我们需要注意的是避免陷入细节，有些东西没搞懂就没搞懂，没有关系，我们是一个新人，搞不懂也正常，把没搞懂的问题记录下来，后续再逐步熟悉。&lt;/p&gt;
-
-&lt;h3 id=&#34;3-组件拆解与用途分析&#34;&gt;3. 组件拆解与用途分析&lt;/h3&gt;
-
-&lt;p&gt;在功能体验完成后，我们就有了自己的对与项目的思考，也有了一些疑问，然后我们就可以从项目的依赖的各个组件来逐步搞清楚这些问题。比如项目中用了什么数据库，用了什么缓存等等。然后我们可以对照我们自己的分析来看看项目是不是真的就是想我们想想的来实现的，数据库的表设计是不是也跟我们的数据建模一致。经验丰富的程序员往往很快就能猜出项目的主要组件依赖，快速画出一个简单的架构图。&lt;/p&gt;
-
-&lt;h3 id=&#34;4-项目代码分析&#34;&gt;4. 项目代码分析&lt;/h3&gt;
-
-&lt;p&gt;搞明白各个组件的用途后，我们需要的是单刀直入，从主要功能流程出发，找到对应代码的入口，然后按照我们整理的功能流程，梳理出代码流转的过程，在这个过程中我们就可以大体分析出项目代码中目录的分层，各个模块的功能了。我们还可以借助工具来绘制代码的依赖图，这样可以帮助我们快速的理解代码。&lt;/p&gt;
-
-&lt;p&gt;在阅读的过程中代码本身可能也会有我们看不惯的地方，这个时候我们需要把代码切出一个分支来，专门用来记录自己阅读时写的注释以及一些觉得要重构的点，但是千万不要直接开始动手，一定只是记录，打上标记，比如：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;// TODO: 这里有待重构
-// ? 为什么这里用的是这种方式
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;等等，也是把自己的疑问记录下来，后续有需要可以带着疑问去问同事。&lt;/p&gt;
-
-&lt;p&gt;在代码阅读的过程中，切记不要陷入细节，不要陷入细节，不要陷入细节。我们只需要搞清楚代码流转的过程即可，至于代码的实现细节，我们后续在解BUG的过程中再去逐步熟悉。&lt;/p&gt;
-
-&lt;h3 id=&#34;5-从小问题入手-逐步上手&#34;&gt;5. 从小问题入手，逐步上手&lt;/h3&gt;
-
-&lt;p&gt;入手项目的初期不要好高骛远，我们从解小的BUG开始熟悉怎么正确的提交第一个PR，在这个过程中我们可以学习项目的规范，正确的写单元测试，然后解BUG的过程中我们不要看哪里的代码就只是哪里的代码，我们还需要关注模块的边界，了解整个模块都有一些什么功能。很多的BUG往往不是主要功能流程中的问题，在处理这些小的BUG的时候正是我们去了解其它非主要流程功能的好机会。&lt;/p&gt;
-
-&lt;h3 id=&#34;6-新功能与重构&#34;&gt;6. 新功能与重构&lt;/h3&gt;
-
-&lt;p&gt;当我们对项目有一定的了解后，就可以做一些新功能了，然后在规划新功能时，往往我们需要对涉及到已有的代码做一些重构，我们需要把握代码重构的一个度，一定是有限处理对我们写新功能有阻碍的代码，然后需要考虑功能的后续迭代与未来的演进来重构。渐进式的重构，不要上来就搞大的，我相信很多程序员都希望能把代码写的跟符合自己的审美，但是初期还是要以功能为主，再实现功能的同时小步渐进式的重构。重构有很多技巧，我们可以把我们改不动的代码做隔离，先保证能跑起来，然后再完善。&lt;/p&gt;
-
-&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
-
-&lt;p&gt;初入一个项目，我们可能会遇到很多很多问题，但是没有关系的，我们需要做的是把这些疑问都记录下来，然后带着疑问慢慢去熟悉，熟悉一个项目也需要一个过程，不要着急，1个星期不行，就1个月，遇到困难就及时寻求帮助。前人种树，后人乘凉。如果前人没能帮你种好树，那我们就把我们熟悉项目的过程整理成文档，留给后人，这样后人就可以少走很多弯路。&lt;/p&gt;</description>
     </item>
     
   </channel>

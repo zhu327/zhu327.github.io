@@ -78,6 +78,16 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2022/03/30/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%BC%AB%E8%B0%88/">编程语言漫谈</a></h1>
+        <span class="post-date">Mar 30 2022</span>
+        <p>半年前还是2021年春节的时候, 在家休假的我, 在B站上发现了一门叫<a href="https://www.bilibili.com/video/BV1hp4y1k7SV">RUST语言的课程</a>, 学习的过程中, 发现RUST语言为了绝对的安全性, 在语法本身上做了很多的妥协, 所以想着等我学完这门课, 再基于自己以往编程语言的学习经历, 写一篇&lt;如何学习一门新的编程语言&gt;的文章. 但是时过境迁, 我并没有学完这门RUST课, 所以&lt;如何学习一门新的编程语言&gt;也就无疾而终了. 回过头来再思考下以往我学习的那些编程语言, 就有了这篇文章&lt;编程语言漫谈&gt;. 我希望以一种比较轻松的散文的形式来阐述我过完学习的一些经验与思考.</p>
+
+<p><img src="https://user-images.githubusercontent.com/873883/160806614-07709f0a-add6-464b-a76a-bbaffdeab727.jpg" alt="rust" width="720px"></p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2022/03/28/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%AF%B9%E8%AF%9D%E9%9B%86/">项目管理对话集</a></h1>
         <span class="post-date">Mar 28 2022</span>
         <p>老婆是一名具有4年工作经验的产品经理, 上一份工作聚焦在人力资源SaaS上, 现在的工作刚刚开始不到半年, 行业转向了智能家居跨境电商的内部ERP系统, 面对新的行业, 新的公司的工作流程上的一些问题, 有了以下这些对话. 通过这些对话我也回顾了一些自己工作中感悟, 这里总结一下.</p>
@@ -134,18 +144,6 @@
 <h4 id="代码检查">代码检查</h4>
 
 <p>Golang是强类型语言, 配合IDE, Lint, 编译工具, 一些常见的, 马马虎虎的写代码的低级错误在代码提交之前就能被检测出来. 虽然Python也有flak8, 但是相对于Golang犯低级错误的可能性更大些, 特别是对于没有单元测试的代码(是的, 单元测试不是每个团队都会做的).</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2018/08/29/gunicorn%E4%B8%8Euwsgi%E4%B9%8B%E6%88%91%E8%A7%81/">Gunicorn与uWSGI之我见</a></h1>
-        <span class="post-date">Aug 29 2018</span>
-        <p>昨天前同事问我<a href="https://github.com/zhu327/doge">doge</a>的服务端怎么是单进程跑的, 其实在生产环境下我们参考<a href="https://github.com/eleme/gunicorn_thrift">gunicorn_thrift</a>实现了一个定制的master/worker模型的Gunicorn服务器. 昨天也写了一个<a href="https://github.com/zhu327/doge/tree/master/doge/gunicorn">简化版本</a>集成到doge, 实际代码不超过20行就能利用到Gunicorn的进程管理功能. 有感于Gunicorn简洁优雅的模型, 这里聊聊我理解的Gunicorn与uWSGI.</p>
-
-<h2 id="perfork">perfork</h2>
-
-<p>perfork是一种服务端编程模型, Nginx, Gunicorn, uWSGI都是这种模型的实现, 简单的说perfok就是master进程启动注册一堆信号处理函数, 创建listen socket fd, fork出多个worker子进程, 子进程执行accept循环处理请求(这里简化模型, 当然也可以用select, epoll多路复用), master进程只负责监控worker进程状态, 通过pipeline通信来控制worker进程.</p>
 
 <p></p>
     </div>

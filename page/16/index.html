@@ -78,6 +78,20 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/03/16/django%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95oauth2.0%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1/">Django实现简单OAuth2.0认证服务</a></h1>
+        <span class="post-date">Mar 16 2015</span>
+        <p>开始写<a href="https://github.com/zhu327/forum">Django forum</a>的RESTful api，首先解决用户认证的问题，使用OAuth2.0协议实现。</p>
+
+<h3 id="参考">参考</h3>
+
+<p><a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html">理解OAuth 2.0</a></p>
+
+<h3 id="授权">授权</h3>
+
+<p>OAuth2.0协议定义了4种授权模式，为了学习OAuth2.0授权协议，这里只实现简化模式。以下为简化模式授权过程。</p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/03/14/restful-api-%E7%90%86%E8%A7%A3/">RESTful API 理解</a></h1>
         <span class="post-date">Mar 14 2015</span>
         <h3 id="参考">参考</h3>
@@ -131,25 +145,6 @@
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/31/python%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87%E5%B0%8F%E8%B4%B4%E5%A3%AB/">Python性能提升小贴士</a></h1>
         <span class="post-date">Jan 31 2015</span>
          用xrange循环时代替range ''.join() 替代 + while 1替代while True 列表推到 &gt; for循环 &gt; while循环 用cProfile, cStringIO and cPickle 用局部变量好于全局变量 itertools用各种迭代器，生成器 用map, reduce, filter替代列表推倒或循环 判断 a in b时，字典与集合好于列表和元组  
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/31/django-forum%E6%80%BB%E7%BB%93/">Django forum总结</a></h1>
-        <span class="post-date">Jan 31 2015</span>
-        <p><a href="https://github.com/zhu327/forum">https://github.com/zhu327/forum</a></p>
-
-<p>元旦的时候决定开始学习Django，学习最好的方式无非边学边做，所以把2年前没敢看的一个Tornado项目通过用Django实现了，这里总结下。</p>
-
-<h3 id="models">models</h3>
-
-<ol>
-<li><p>扩展默认User类</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">AbstractUser</span>
-<span class="c1"># 继承这个类即可</span>
-
-<span class="c1"># setting中设置</span>
-<span class="n">AUTH_USER_MODEL</span> <span class="o">=</span> <span class="s1">&#39;forum.ForumUser&#39;</span> <span class="c1"># 指定用户对象使用的类</span></code></pre></div>
-<p></p>
     </div>
   
 </div>

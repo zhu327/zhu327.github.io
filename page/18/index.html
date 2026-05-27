@@ -78,6 +78,21 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/02/rss-factory%E7%9A%84%E5%9D%91/">RSS Factory的坑</a></h1>
+        <span class="post-date">Jan 2 2015</span>
+        <p>花了一天时间把<a href="https://github.com/zhu327/rss">RSS Factory</a>更新了下，把Tornado默认的模版引擎换为jinja2，解析html第三方库换为lxml。遇到了几个坑，纪录下。</p>
+
+<p><strong>自动转义</strong></p>
+
+<p>Tornado默认的模版引擎默认自动转义，Flask配置的jinja2也自动转义了，<a href="http://bozpy.sinaapp.com/blog/15">在Tornado中使用jinja2模版引擎的简单方法</a>，按照这个方法模版渲染的时候却没有自动转义，所以还需要进一步配置。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">application</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">(</span>
+<span class="n">template_loader</span><span class="o">=</span><span class="n">JinjaLoader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;templates/&#39;</span><span class="p">),</span>
+    <span class="n">autoescape</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;jinja2.ext.autoescape&#39;</span><span class="p">]),</span>
+<span class="p">)</span></code></pre></div>
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/02/%E4%BD%BF%E7%94%A8lxml%E5%A4%84%E7%90%86dom/">使用lxml处理DOM</a></h1>
         <span class="post-date">Jan 2 2015</span>
         <h3 id="参考">参考</h3>
@@ -137,23 +152,6 @@
 <p>OpenELEC 当前版本为6.0.6，下载：
 &gt; <a href="http://mirror.overthewire.com.au/openelec/OpenELEC-RPi.arm-6.0.3.tar">http://mirror.overthewire.com.au/openelec/OpenELEC-RPi.arm-6.0.3.tar</a>
 </p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2014/10/02/%E4%BD%BF%E7%94%A8mongodb/">使用MongoDB</a></h1>
-        <span class="post-date">Oct 2 2014</span>
-        <h3 id="参考">参考</h3>
-
-<ul>
-<li><a href="http://www.ibm.com/developerworks/cn/opensource/os-mongodb4/">探索 MongoDB</a></li>
-<li><a href="http://www.cnblogs.com/hangxin1940/archive/2012/07/29/2806471.html">PyMongo 教程</a></li>
-</ul>
-
-<h3 id="简介">简介</h3>
-
-<p>MongoDB是一个流行的NoSQL数据库程序，MongoDB使用起来比较像关系数据库，比较容易上手，由于使用BSON(一种二进制的json)格式数据，所以能使用python原生的字典数据类型来存储，相比MySQL操作跟简单。</p>
-
-<p></p>
     </div>
   
 </div>

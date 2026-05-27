@@ -78,6 +78,22 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/08/14/flask-jinja2-i18n%E5%9B%BD%E9%99%85%E5%8C%96%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/">flask jinja2 i18n国际化简单实现</a></h1>
+        <span class="post-date">Aug 14 2015</span>
+        <p>前两个星期,公司有需求要实现APP内嵌网页的英文版,因为要急着上线,所有就没有折腾i18n国际化,直接出了英文的模板,在view函数里面判断语言选择模板来实现.这周有空下来重新整了一下项目的国际化,使用通用的<code>gettext</code>来实现.</p>
+
+<p>flask使用的是jinja2模板,jinja2自带了i18n扩展支持,但是需要Flask-Babel扩展的支持,有学习成本,所以没有使用,直接用了python内置的gettext来实现,而且jinja2引擎也提供了gettext的钩子来处理不同的语言.</p>
+
+<h2 id="gettext">gettext</h2>
+
+<p><code>gettext</code>是*nix下的标准i18n实现,Python的标准库内置<code>gettext</code>,简单的理解一下,就是通过已有的字典映射文件,然后获取环境的语言信息来判断当前使用哪一个语言映射,最终渲染出不同的语言文本,这里就不详细研究<code>gettext</code>了,提供我的参考文档:</p>
+
+<blockquote>
+<p><a href="http://underthehood.blog.51cto.com/2531780/1663604">http://underthehood.blog.51cto.com/2531780/1663604</a>
+</p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/07/20/docker%E5%88%9D%E6%8E%A2/">Docker初探</a></h1>
         <span class="post-date">Jul 20 2015</span>
         <p>听闻Docker很久了,一直也没有动手玩一下,只知道是Linux的新的虚拟技术容器,比以往的虚拟机轻量很多,能最大化利用硬件资源.</p>
@@ -135,20 +151,6 @@
 <li>链接要有过期时间,过期以后无效;</li>
 <li>后台在链接被请求时,必须验证链接是否有效.</li>
 </ol>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2015/03/16/django%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95oauth2.0%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1/">Django实现简单OAuth2.0认证服务</a></h1>
-        <span class="post-date">Mar 16 2015</span>
-        <p>开始写<a href="https://github.com/zhu327/forum">Django forum</a>的RESTful api，首先解决用户认证的问题，使用OAuth2.0协议实现。</p>
-
-<h3 id="参考">参考</h3>
-
-<p><a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html">理解OAuth 2.0</a></p>
-
-<h3 id="授权">授权</h3>
-
-<p>OAuth2.0协议定义了4种授权模式，为了学习OAuth2.0授权协议，这里只实现简化模式。以下为简化模式授权过程。</p>
     </div>
   
 </div>

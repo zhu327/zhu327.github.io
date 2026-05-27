@@ -6,10 +6,30 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 09 May 2026 10:16:00 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 27 May 2026 09:16:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>用LLM Wiki构建SRE知识库</title>
+      <link>https://zhu327.github.io/2026/05/27/%E7%94%A8llm-wiki%E6%9E%84%E5%BB%BAsre%E7%9F%A5%E8%AF%86%E5%BA%93/</link>
+      <pubDate>Wed, 27 May 2026 09:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/05/27/%E7%94%A8llm-wiki%E6%9E%84%E5%BB%BAsre%E7%9F%A5%E8%AF%86%E5%BA%93/</guid>
+      <description>&lt;p&gt;前段时间，部门leader交给我一个任务：公司SRE平台的工单系统已经累积了7019个人工工单，这些工单里沉淀了大量运维过程中的实际问题和解决经验，leader希望我能用这些数据建立一个SRE领域的专属知识库。&lt;/p&gt;
+
+&lt;p&gt;接到任务后，我初步盘算了一下，制定了一个看似顺理成章的计划：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;把这7000多个工单全部格式化为Markdown文件，提取工单标题、内容、处理会话以及审批详情。&lt;/li&gt;
+&lt;li&gt;选型知识库的检索方案，在传统的 RAG（检索增强生成）和最近比较火的 LLM Wiki 之间做个抉择。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;但随着项目的推进，我发现事情并没有那么简单。在这个过程中，我对“如何用大模型解决实际工程问题”又有了一些新的体悟，在这里复盘总结一下。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>打造适合自己的 AI Harness 工程：从开发流、E2E 测试到自动排障</title>
