@@ -78,6 +78,35 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2017/03/31/%E5%9C%A8django%E4%B8%AD%E4%BD%BF%E7%94%A8zerorpc/">在Django中使用zerorpc</a></h1>
+        <span class="post-date">Mar 31 2017</span>
+        <h3 id="前言">前言</h3>
+
+<p>随着系统架构从集中式单点服务器到分布式微服务方向的迁移,RPC是一个不可回避的话题.如何在系统中引入对开发者友好,性能可靠的RPC服务是一个值得深思的问题.</p>
+
+<p>在调研了Thrift,gRPC,zerorpc等方案后,基于以下2点最后选择了zerorpc:</p>
+
+<ul>
+<li>Thrift,gRPC学习成本高,开发者需要重新定义返回结构增加了工作量</li>
+<li>zerorpc完美契合Python,能快速开发,并且支持Node.js,适用于当前技术栈</li>
+</ul>
+
+<h3 id="问题">问题</h3>
+
+<p>虽然zerorpc可以直接嵌入当前系统框架中,但是还是有一些问题需要去考虑解决</p>
+
+<ul>
+<li><p>rpc 接口如何定义</p></li>
+
+<li><p>rpc 服务如何启动</p></li>
+
+<li><p>高并发情况下客户端的可靠性</p></li>
+</ul>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2017/03/14/%E7%94%A8python%E8%A7%A3%E5%86%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/">用Python解决数据结构与算法问题</a></h1>
         <span class="post-date">Mar 14 2017</span>
         <blockquote>
@@ -137,24 +166,6 @@
 <p>通过<a href="https://github.com/zhu327/greentor">greentor</a>实现了pymysql在Tornado上异步调用的过程后发现，每次建立数据库连接都会经过socket 3次握手，而每一次socket读写都会伴随着greenlet的切换，以及ioloop的callback过程，虽然是异步了，但是IO性能并没有提升，所以在研究了<a href="https://github.com/snower/TorMySQL">TorMySQL</a>连接池的实现后，实现了greentor自己的连接池。</p>
 
 <p><a href="https://github.com/zhu327/greentor/blob/master/greentor/green.py">https://github.com/zhu327/greentor/blob/master/greentor/green.py</a></p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2016/06/24/greentor%E5%A1%AB%E5%9D%91%E8%AE%B0/">greentor填坑记</a></h1>
-        <span class="post-date">Jun 24 2016</span>
-        <p>经过2周的学习开发，Tornado + Django ORM的环境搭好了，这阶段的学习告一段落，虽然这个环境是一个玩具环境，没有经过生产的检验，但是在搭环境的过程中学习了Tornado，greenlet，Django数据库相关的姿势，感觉还是有不少提升。</p>
-
-<p>在这2天的调试中，暴露出了2个比较严重的问题，记录下填坑过程。</p>
-
-<h3 id="1-线程安全">1. 线程安全</h3>
-
-<p>WSGI服务器在接受到新的http请求时会开一个新线程来调用application进行处理，Django ORM在有数据库查询的时候，会在当前线程中创建一个新的数据库连接并保存到线程local空间中，在同一个线程中的连接是可以被复用的。不同的线程持有不同的连接，这样就保证Django ORM是线程安全的。</p>
-
-<p>Tornado是单线程的，在Tornado中使用Django ORM无论处理多少请求，都会用同一个保存在当前local()中的连接，这样就必然会产生连接使用的冲突。比如同时并发的2个请求，第一个请求关闭了连接，第二个请求还在继续使用这个连接就会抛出异常。</p>
-
-<p>在greentor的配合下，Tornado涉及数据库连接的请求都运行在greenlet中，如果有一个greenlet local来对每个请求的数据库连接进行隔离，就能避免线程安全问题，在这里的greenlet协程完全可以类比为线程。然而greenlet并没有local，那我们就造一个local出来。</p>
 
 <p></p>
     </div>

@@ -78,6 +78,24 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/09/django%E8%87%AA%E5%AE%9A%E4%B9%89user%E7%B1%BB/">Django自定义User类</a></h1>
+        <span class="post-date">Jan 9 2015</span>
+        <h3 id="参考">参考</h3>
+
+<blockquote>
+<p><a href="https://docs.djangoproject.com/en/1.5/ref/contrib/auth/#django.contrib.auth.models.User">Substituting a custom User model</a><br />
+<a href="http://django-china.cn/topic/133/">django（v1.5） 自定义用户基础</a></p>
+</blockquote>
+
+<h3 id="实现">实现</h3>
+
+<p><a href="https://github.com/zhu327/forum">Django forum</a>，学习Django了，准备写一个论坛，想法是实现一个如 <a href="http://f2e.im/">http://f2e.im/</a> 这样的现代论坛，数据驱动开发，第一步就是设计数据库表结构，Django自带了用户模块，但是定义的字段太少，所以需要自定义扩展下。</p>
+
+<p>在<code>settings.py</code>下新增自定义用户类:
+</p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2015/01/02/rss-factory%E7%9A%84%E5%9D%91/">RSS Factory的坑</a></h1>
         <span class="post-date">Jan 2 2015</span>
         <p>花了一天时间把<a href="https://github.com/zhu327/rss">RSS Factory</a>更新了下，把Tornado默认的模版引擎换为jinja2，解析html第三方库换为lxml。遇到了几个坑，纪录下。</p>
@@ -136,22 +154,6 @@
 <p>Web2.0时代产生了很多的实时通知需求，也就是Ajax请求特别多，最初是用轮询实现，但是对服务器的开销很大，所以产生了长连接轮询。</p>
 
 <p>客户的也就是浏览器请求一个api，Tornado不会立即返回，而是等到有变化的时候返回，浏览器获取响应后，循环再请求api，这样就省掉了很多请求，而且实现了实时通知。</p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2014/11/06/%E6%A0%91%E8%8E%93%E6%B4%BE%E4%B8%8Exbmc/">树莓派与XBMC</a></h1>
-        <span class="post-date">Nov 6 2014</span>
-        <p>Raspberry Pi刚开卖的时候，我就买了，那时候买来就是为了玩Linux，装了Raspbian，写写Python程序，玩玩GPIO什么的，很Geek范，然后就放在角落里落灰了。</p>
-
-<p>直到去年双11在淘宝抢了个天猫魔盒送给我姐，才发现原来在电视上看电影，看美剧真心比电脑爽多了。立马就买了个二手22寸显示器跟树莓派组合成网络电视。折腾了1年多这里总结我用XBMC的经验。</p>
-
-<h3 id="openelec">OpenELEC</h3>
-
-<p>支持Raspi的XBMC系统有OpenELEC，Raspbmc，XBian。一直以来都是用的OpenELEC，在支持XBMC的几个发行版中，OpenELEC是最快的。</p>
-
-<p>OpenELEC 当前版本为6.0.6，下载：
-&gt; <a href="http://mirror.overthewire.com.au/openelec/OpenELEC-RPi.arm-6.0.3.tar">http://mirror.overthewire.com.au/openelec/OpenELEC-RPi.arm-6.0.3.tar</a>
-</p>
     </div>
   
 </div>

@@ -6,10 +6,25 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 27 May 2026 09:16:00 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 17 Jun 2026 09:16:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Loop Engineering 实践: Pi Coding Agent</title>
+      <link>https://zhu327.github.io/2026/06/17/loop-engineering-%E5%AE%9E%E8%B7%B5-pi-coding-agent/</link>
+      <pubDate>Wed, 17 Jun 2026 09:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/06/17/loop-engineering-%E5%AE%9E%E8%B7%B5-pi-coding-agent/</guid>
+      <description>我在之前写过一些关于AI Agent在开发流程中应用的经验，比如《打造适合自己的 AI Harness 工程：从开发流、E2E 测试到自动排障》。随着对AI Agent的深入实践，我发现人肉打Prompt的日子快要到头了，未来我们更多是设计一个系统，让系统来自动化地与Agent交互。最近我一直在研究 Loop Engineering，并尝试将它落地到我的日常工作中，特别是用 Pi Coding Agent 来实现自动化巡检和代码修复。
+1. Loop Engineering 是什么，由哪些环境组成 以前，我们程序员和AI编码Agent的交互模式是这样的：我写一个Prompt，提供上下文，Agent返回结果，我再根据结果写下一个Prompt。Agent就像一个工具，始终在我手里。但现在这种模式正在被 Loop Engineering 所取代。
+Loop Engineering 的核心思想是构建一个小型系统，让这个系统自己去发现工作、把工作交给Agent、检查Agent的产出、记录发生的一切，并自主决定下一步行动。我们只需要设计好这个系统一次，之后系统就会自动地与Agent交互。Addy Osmani 将其分解为六个部分：
+ Automation (自动化): 触发器，在特定时间、事件或条件发生时启动循环。 State file (状态文件): 记录循环的进度和历史，让Agent在每次运行时都能从上次中断的地方继续。 Verifier (验证器): 自动化检查Agent产出的质量，判断工作是否完成或需要返工。 Skill (技能): 封装项目特定的知识、规则和最佳实践，避免Agent重复学习上下文。 Connector (连接器): 让Agent能与外部工具（如Git、Jira、Slack、监控系统）交互，使其能在真实环境中执行操作。 Sub-agent (子Agent): 将复杂任务分解给多个Agent并行处理，通常会有一个“生成者”和一个“检查者”Agent，避免“自说自话”。  Anthropic 的工程师们在 2024 年实现了每天合并的代码量翻了八倍（虽然他们自己也承认这可能有些夸大）。但无论数字如何，核心机制是明确的：杠杆点已经从“编写Prompt”转移到了“设计驱动Prompt的循环”。
+当然，不是所有任务都适合 Loop Engineering。在投入资源构建之前，我们需要进行一个“4条件测试”：
+ 任务可重复：循环的设置成本需要通过多次运行来摊销。一次性任务手动Prompt会更快更便宜。 验证自动化：循环需要有无需人工干预就能判断工作是否失败的机制（例如测试套件、类型检查、Linter、构建）。 Token 预算充足：循环会重新读取上下文，尝试和探索，这会消耗大量Token。 Agent 拥有资深工程师的工具：日志、可复现的环境、运行和调试代码的能力。  如果这四个条件有一个不满足，那么构建循环的成本很可能高于其带来的收益。
+2. goal/loop 命令意味着什么，分别有什么职能 在 Loop Engineering 中，loop 和 goal 是两个非常核心的命令，它们赋予了Agent持续运行和自我验证的能力。</description>
+    </item>
     
     <item>
       <title>用LLM Wiki构建SRE知识库</title>

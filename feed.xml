@@ -7,7 +7,240 @@
     <language>zh-cn</language>
     
     
-    <updated>Wed, 27 May 2026 09:16:00 &#43;0800</updated>
+    <updated>Wed, 17 Jun 2026 09:16:00 &#43;0800</updated>
+    
+    <item>
+      <title>Loop Engineering 实践: Pi Coding Agent</title>
+      <link>https://zhu327.github.io/2026/06/17/loop-engineering-%E5%AE%9E%E8%B7%B5-pi-coding-agent/</link>
+      <pubDate>Wed, 17 Jun 2026 09:16:00 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/06/17/loop-engineering-%E5%AE%9E%E8%B7%B5-pi-coding-agent/</guid>
+      <description>
+
+&lt;p&gt;我在之前写过一些关于AI Agent在开发流程中应用的经验，比如《&lt;a href=&#34;https://zhu327.github.io/2026/05/09/%E6%89%93%E9%80%A0%E9%80%82%E5%90%88%E8%87%AA%E5%B7%B1%E7%9A%84-ai-harness-%E5%B7%A5%E7%A8%8B%E4%BB%8E%E5%BC%80%E5%8F%91%E6%B5%81e2e-%E6%B5%8B%E8%AF%95%E5%88%B0%E8%87%AA%E5%8A%A8%E6%8E%92%E9%9A%9C/&#34;&gt;打造适合自己的 AI Harness 工程：从开发流、E2E 测试到自动排障&lt;/a&gt;》。随着对AI Agent的深入实践，我发现人肉打Prompt的日子快要到头了，未来我们更多是设计一个系统，让系统来自动化地与Agent交互。最近我一直在研究 Loop Engineering，并尝试将它落地到我的日常工作中，特别是用 Pi Coding Agent 来实现自动化巡检和代码修复。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-loop-engineering-是什么-由哪些环境组成&#34;&gt;1. Loop Engineering 是什么，由哪些环境组成&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/fe3cb3a5-3b7f-4cbf-8121-474b8f645540&#34; alt=&#34;Image1&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;以前，我们程序员和AI编码Agent的交互模式是这样的：我写一个Prompt，提供上下文，Agent返回结果，我再根据结果写下一个Prompt。Agent就像一个工具，始终在我手里。但现在这种模式正在被 Loop Engineering 所取代。&lt;/p&gt;
+
+&lt;p&gt;Loop Engineering 的核心思想是&lt;strong&gt;构建一个小型系统，让这个系统自己去发现工作、把工作交给Agent、检查Agent的产出、记录发生的一切，并自主决定下一步行动&lt;/strong&gt;。我们只需要设计好这个系统一次，之后系统就会自动地与Agent交互。Addy Osmani 将其分解为六个部分：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Automation (自动化)&lt;/strong&gt;: 触发器，在特定时间、事件或条件发生时启动循环。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;State file (状态文件)&lt;/strong&gt;: 记录循环的进度和历史，让Agent在每次运行时都能从上次中断的地方继续。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Verifier (验证器)&lt;/strong&gt;: 自动化检查Agent产出的质量，判断工作是否完成或需要返工。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Skill (技能)&lt;/strong&gt;: 封装项目特定的知识、规则和最佳实践，避免Agent重复学习上下文。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Connector (连接器)&lt;/strong&gt;: 让Agent能与外部工具（如Git、Jira、Slack、监控系统）交互，使其能在真实环境中执行操作。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sub-agent (子Agent)&lt;/strong&gt;: 将复杂任务分解给多个Agent并行处理，通常会有一个“生成者”和一个“检查者”Agent，避免“自说自话”。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Anthropic 的工程师们在 2024 年实现了每天合并的代码量翻了八倍（虽然他们自己也承认这可能有些夸大）。但无论数字如何，核心机制是明确的：&lt;strong&gt;杠杆点已经从“编写Prompt”转移到了“设计驱动Prompt的循环”&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;当然，不是所有任务都适合 Loop Engineering。在投入资源构建之前，我们需要进行一个“4条件测试”：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;任务可重复&lt;/strong&gt;：循环的设置成本需要通过多次运行来摊销。一次性任务手动Prompt会更快更便宜。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;验证自动化&lt;/strong&gt;：循环需要有无需人工干预就能判断工作是否失败的机制（例如测试套件、类型检查、Linter、构建）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Token 预算充足&lt;/strong&gt;：循环会重新读取上下文，尝试和探索，这会消耗大量Token。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Agent 拥有资深工程师的工具&lt;/strong&gt;：日志、可复现的环境、运行和调试代码的能力。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果这四个条件有一个不满足，那么构建循环的成本很可能高于其带来的收益。&lt;/p&gt;
+
+&lt;h3 id=&#34;2-goal-loop-命令意味着什么-分别有什么职能&#34;&gt;2. goal/loop 命令意味着什么，分别有什么职能&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/4dc6a454-afa2-46fe-89a3-7690b87ee44f&#34; alt=&#34;Image2&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在 Loop Engineering 中，&lt;code&gt;loop&lt;/code&gt; 和 &lt;code&gt;goal&lt;/code&gt; 是两个非常核心的命令，它们赋予了Agent持续运行和自我验证的能力。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/loop&lt;/code&gt;：定义了循环的** cadence (节奏)**，比如每隔 30 分钟运行一次，或者每天固定时间运行。它专注于“何时”运行任务，无论之前的任务是否完成，都会按时触发。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/goal&lt;/code&gt;：则定义了一个&lt;strong&gt;任务的最终结束条件&lt;/strong&gt;。它会持续运行，直到你设定的某个条件真正满足为止。这意味着一个单独的小模型会检查完成情况，确保“制造者”Agent不会自己给自己批改作业。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我通常会将它们结合起来使用，比如：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;/loop 30m /goal All tests in test/auth pass and lint is clean. Scan src/auth for new failures, propose fixes in claude/auth-fixes, open draft PR when goal condition holds.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这个命令的含义是：每隔 30 分钟，Agent 就会检查 &lt;code&gt;src/auth&lt;/code&gt; 目录，扫描新的故障，并尝试在 &lt;code&gt;claude/auth-fixes&lt;/code&gt; 分支中提出修复方案，直到 &lt;code&gt;test/auth&lt;/code&gt; 中的所有测试都通过且 Lint 干净为止，然后才会打开一个 PR。这实现了任务的自动化执行和验证的 maker-checker 分离。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-我的-loop-engineering-的思路&#34;&gt;3. 我的 Loop Engineering 的思路&lt;/h3&gt;
+
+&lt;p&gt;在了解了 Loop Engineering 的基本概念和工作原理后，我开始思考如何将它与我现有的 AI Harness 工程结合起来。在《&lt;a href=&#34;https://zhu327.github.io/2026/05/09/%E6%89%93%E9%80%A0%E9%80%82%E5%90%88%E8%87%AA%E5%B7%B1%E7%9A%84-ai-harness-%E5%B7%A5%E7%A8%8B%E4%BB%8E%E5%BC%80%E5%8F%91%E6%B5%81e2e-%E6%B5%8B%E8%AF%95%E5%88%B0%E8%87%AA%E5%8A%A8%E6%8E%92%E9%9A%9C/&#34;&gt;打造适合自己的 AI Harness 工程：从开发流、E2E 测试到自动排障&lt;/a&gt;》 这篇文章中，我曾提到在建设 &lt;code&gt;srecli&lt;/code&gt; 的过程中，CLI 已经具备了查询指标（metrics）和日志（logs）的能力。现在，我又加入了 Sentry API 的事件查询功能，这三者的结合，补齐了 Loop Engineering 中“Trigger（触发器）”的部分。通过生成&lt;strong&gt;巡检报告&lt;/strong&gt;，我们可以触发一个自动化的循环来识别并改进代码。&lt;/p&gt;
+
+&lt;p&gt;我的 Loop Engineering 思路大致分为以下几个步骤：&lt;/p&gt;
+
+&lt;h4 id=&#34;1-app-inspection-创建了一个巡检用的-skill&#34;&gt;1. &lt;code&gt;app-inspection&lt;/code&gt; 创建了一个巡检用的 skill&lt;/h4&gt;
+
+&lt;p&gt;这个 &lt;code&gt;app-inspection&lt;/code&gt; skill 是整个循环的起点，它负责对应用程序进行全面的健康检查。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;执行 &lt;code&gt;make lint/make test/make e2e&lt;/code&gt;&lt;/strong&gt;: 这是最基础的静态代码检查和自动化测试，确保代码质量和功能正确性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;查询 24 小时内 metrics 5xx 请求路径，应用 ERROR 日志&lt;/strong&gt;: 通过 &lt;code&gt;srecli&lt;/code&gt; 接入的监控系统，我会让 Agent 检查过去 24 小时内服务的 5xx 错误率和具体的出错路径，以及应用程序的 ERROR 级别日志，从中识别潜在的运行时问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;查询 24 小时 Sentry events&lt;/strong&gt;: Sentry 作为错误监控工具，能够捕获应用程序的异常和错误。Agent 会查询 Sentry 中的新事件，及时发现未被其他监控捕获的问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;出巡检报告&lt;/strong&gt;: 综合以上所有信息，Agent 会生成一份结构化的巡检报告，这份报告是后续判断是否需要代码修复的关键依据。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这个 &lt;code&gt;app-inspection&lt;/code&gt; skill 扮演了“Trigger”的角色，它自动化地检查了代码和服务的健康状况，作为自动化的发起条件触发为代码改进提供决策前提条件。&lt;/p&gt;
+
+&lt;h4 id=&#34;2-记忆-loop-md-记录每次执行结果&#34;&gt;2. 记忆 &lt;code&gt;LOOP.md&lt;/code&gt; 记录每次执行结果&lt;/h4&gt;
+
+&lt;p&gt;为了让 Agent 拥有“记忆”，我引入了一个仓库根目录下的 &lt;code&gt;LOOP.md&lt;/code&gt; 文件作为&lt;strong&gt;状态文件 (State File)&lt;/strong&gt;。Agent 每次执行循环前，都会读取 &lt;code&gt;LOOP.md&lt;/code&gt; 的内容，特别是其中的 &lt;code&gt;In progress / Escalated to humans / Lessons learned&lt;/code&gt; 这三段。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;In progress&lt;/code&gt; (进行中)&lt;/strong&gt;：记录上次循环中识别但尚未完成修复的问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;Escalated to humans&lt;/code&gt; (已升级至人工处理)&lt;/strong&gt;：记录 Agent 尝试修复但无法自动解决，需要人工干预的问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;Lessons learned&lt;/code&gt; (经验教训)&lt;/strong&gt;：沉淀每次修复的经验，避免 Agent 重复犯错。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;正如 Addy Osmani 所说，“Agent 会遗忘，但仓库不会”。&lt;code&gt;LOOP.md&lt;/code&gt; 确保了 Agent 在每次运行时都能恢复到之前的状态，而不是从零开始，这极大地提升了循环的效率和可靠性。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-markdown&#34; data-lang=&#34;markdown&#34;&gt;&lt;span class=&#34;gh&#34;&gt;#&lt;/span&gt; Loop state · ci-triage
+&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Last run
+2026-06-09 03:30 UTC · 7 failures classified, 3 fixes drafted, 4 escalated&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; In progress
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; claude/fix-auth-token-refresh — tests passing locally, awaiting CI&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; claude/fix-flaky-payment-webhook — retry pattern applied, monitoring&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Completed today
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; claude/bump-axios-1.7.4 → merged (CI green, deps loop verified)&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; claude/lint-fix-pass-june-9 → merged&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Escalated to humans
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; src/billing/refund.ts — tests failing in 3 ways, root cause unclear&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; ci/staging-runner — infra timeouts, not a code issue&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Lessons learned (write here, not in chat)
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 2026-06-08: PowerShell hits TLS 1.2 issue on this Windows runner. Use bash.&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; 2026-06-07: tests/e2e/checkout requires Stripe webhook secret in env. Skip if missing.&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Stop conditions met since last review
+- /goal “all tests pass + lint clean” achieved on commit 3a7b8c1 at 02:14 UTC&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&#34;3-判断跟进巡检报告-以及记忆内容-判断哪些问题需要代码修复&#34;&gt;3. 判断跟进巡检报告，以及记忆内容，判断哪些问题需要代码修复&lt;/h4&gt;
+
+&lt;p&gt;这是整个循环的“决策中心”。Agent 会综合分析 &lt;code&gt;app-inspection&lt;/code&gt; 生成的巡检报告和 &lt;code&gt;LOOP.md&lt;/code&gt; 中的历史记录：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;优先接续 &lt;code&gt;In progress&lt;/code&gt; 中未完成项&lt;/strong&gt;：确保上次循环中开始修复的问题能够继续推进。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;复核 &lt;code&gt;Escalated to humans&lt;/code&gt; 是否已可处理&lt;/strong&gt;：检查之前需要人工介入的问题，看是否已具备自动处理的条件。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;避免重复已完成项&lt;/strong&gt;：通过 &lt;code&gt;LOOP.md&lt;/code&gt; 中的记录，避免重复处理已经解决的问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果巡检报告没有告警或异常，并且 &lt;code&gt;LOOP.md&lt;/code&gt; 中也没有任何待处理或待复核的开放项，那么 Agent 会判断本期无需处理，直接在 &lt;code&gt;LOOP.md&lt;/code&gt; 顶部写入“本期无需处理的代码问题”并结束本次循环，不进行后续的代码修复流程。这就像一个“早退闸门”，避免不必要的Token消耗和资源占用。&lt;/p&gt;
+
+&lt;h4 id=&#34;4-切分支-走-go-md-的-writing-plan-后续流程完成代码修复&#34;&gt;4. 切分支，走 &lt;code&gt;go.md&lt;/code&gt; 的 writing plan 后续流程完成代码修复&lt;/h4&gt;
+
+&lt;p&gt;如果 Agent 判断存在需要修复的代码问题，那么它会基于 &lt;code&gt;master&lt;/code&gt; 分支切出一个新的修复分支，然后进入我之前文章中提到的 &lt;code&gt;go&lt;/code&gt; 启动 Prompt 流程。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-markdown&#34; data-lang=&#34;markdown&#34;&gt;&lt;span class=&#34;gu&#34;&gt;##&lt;/span&gt; Required Go Gates
+&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;Maintain these gates visibly and include their final statuses in the final report:
+
+&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`GO-1: Brainstorming design approved`&lt;/span&gt; — status: &lt;span class=&#34;sb&#34;&gt;`completed`&lt;/span&gt;, &lt;span class=&#34;sb&#34;&gt;`blocked: &amp;lt;reason&amp;gt;`&lt;/span&gt;, or &lt;span class=&#34;sb&#34;&gt;`skipped: &amp;lt;valid reason&amp;gt;`&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`GO-2: Design document saved`&lt;/span&gt; — status: &lt;span class=&#34;sb&#34;&gt;`completed`&lt;/span&gt;, &lt;span class=&#34;sb&#34;&gt;`blocked: &amp;lt;reason&amp;gt;`&lt;/span&gt;, or &lt;span class=&#34;sb&#34;&gt;`skipped: &amp;lt;valid reason&amp;gt;`&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`GO-3: Implementation plan saved`&lt;/span&gt; — status: &lt;span class=&#34;sb&#34;&gt;`completed`&lt;/span&gt;, &lt;span class=&#34;sb&#34;&gt;`blocked: &amp;lt;reason&amp;gt;`&lt;/span&gt;, or &lt;span class=&#34;sb&#34;&gt;`skipped: &amp;lt;valid reason&amp;gt;`&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`GO-4: Subagent execution completed`&lt;/span&gt; — status: &lt;span class=&#34;sb&#34;&gt;`completed`&lt;/span&gt; or &lt;span class=&#34;sb&#34;&gt;`blocked: &amp;lt;reason&amp;gt;`&lt;/span&gt;; may not be skipped&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`GO-5: Validation completed`&lt;/span&gt; — status: &lt;span class=&#34;sb&#34;&gt;`completed`&lt;/span&gt;, &lt;span class=&#34;sb&#34;&gt;`blocked: &amp;lt;reason&amp;gt;`&lt;/span&gt;, or &lt;span class=&#34;sb&#34;&gt;`skipped: &amp;lt;valid reason&amp;gt;`&lt;/span&gt; only when no applicable validation commands are available&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`GO-6: Whole-change review completed and required fixes handled`&lt;/span&gt; — status: &lt;span class=&#34;sb&#34;&gt;`completed`&lt;/span&gt; or &lt;span class=&#34;sb&#34;&gt;`blocked: &amp;lt;reason&amp;gt;`&lt;/span&gt;; may not be skipped&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`GO-7: Simplifier completed`&lt;/span&gt; — status: &lt;span class=&#34;sb&#34;&gt;`completed`&lt;/span&gt; or &lt;span class=&#34;sb&#34;&gt;`blocked: &amp;lt;reason&amp;gt;`&lt;/span&gt;; may not be skipped&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;- &lt;span class=&#34;sb&#34;&gt;`GO-8: Final report delivered`&lt;/span&gt; — status: &lt;span class=&#34;sb&#34;&gt;`completed`&lt;/span&gt;, &lt;span class=&#34;sb&#34;&gt;`blocked: &amp;lt;reason&amp;gt;`&lt;/span&gt;, or &lt;span class=&#34;sb&#34;&gt;`skipped: &amp;lt;valid reason&amp;gt;`&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在 Loop Engineering 的场景下，我会明确要求 Agent &lt;strong&gt;跳过 &lt;code&gt;GO-1: Brainstorming design approved&lt;/code&gt; 阶段&lt;/strong&gt;。因为问题已经通过巡检报告和 &lt;code&gt;LOOP.md&lt;/code&gt; 明确识别并锁定了，Agent 无需再进行额外的用户确认。它会直接将“巡检报告 + LOOP.md 判定出的待修复问题”作为锁定需求，从 &lt;code&gt;GO-2&lt;/code&gt;（Design document saved）阶段开始，自动完成后续的 &lt;code&gt;writing-plans&lt;/code&gt;、执行、验证、review 和 simplify 等所有流程，不再向用户提问。这极大地减少了人工介入，实现了开发流程的高度自动化。&lt;/p&gt;
+
+&lt;h4 id=&#34;5-提交-pr&#34;&gt;5. 提交 PR&lt;/h4&gt;
+
+&lt;p&gt;当 &lt;code&gt;go.md&lt;/code&gt; 的所有流程（从 &lt;code&gt;GO-2&lt;/code&gt; 到 &lt;code&gt;GO-7&lt;/code&gt;）都顺利完成后，Agent 会自动提交 Git Commit，并使用 &lt;code&gt;kgit mr master&lt;/code&gt; 发起合并请求 (Pull Request)。最后，它会在 &lt;code&gt;LOOP.md&lt;/code&gt; 中写入本次运行的摘要，并根据本轮结果更新 &lt;code&gt;In progress / Completed today / Escalated to humans / Lessons learned / Stop conditions&lt;/code&gt; 各段。&lt;/p&gt;
+
+&lt;h3 id=&#34;4-pi-coding-agent-的实战&#34;&gt;4. Pi Coding Agent 的实战&lt;/h3&gt;
+
+&lt;p&gt;为了实现上述 Loop Engineering 的思路，我选择了 &lt;code&gt;earendil-works/pi&lt;/code&gt; 这个 Agent 框架。&lt;/p&gt;
+
+&lt;h4 id=&#34;1-配置-pi-coding-agent&#34;&gt;1. 配置 Pi Coding Agent&lt;/h4&gt;
+
+&lt;p&gt;我的 &lt;code&gt;pi&lt;/code&gt; 配置仓库 (&lt;a href=&#34;https://github.com/zhu327/pi&#34;&gt;https://github.com/zhu327/pi&lt;/a&gt;) 结构如下:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;.pi/agent/
+├── AGENTS.md              # Karpathy 风格的 agent 行为准则
+├── extensions/            # 自定义扩展
+│   ├── goal.ts            # 长时间目标跟踪与自动续跑（/goal 命令）
+│   ├── grep-find.ts       # 确保 grep、find 工具始终激活
+│   ├── model-patches.ts   # 模型级 patch（qwen3.7-max xhigh reasoning）
+│   ├── question.ts        # 结构化多问题 UI（chips、多选、预览）
+│   ├── todo.ts            # 4 状态任务管理 + overlay widget（/todos 命令）
+│   └── web-fetch.ts       # URL 抓取转 markdown，含 SSRF 防护
+├── prompts/
+│   └── handoff.md         # 会话交接 prompt（替代上下文压缩）
+└── skills/
+    └── skill-creator/     # Skill 创建、评估、迭代优化工具链
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;通过 &lt;code&gt;pi install&lt;/code&gt; 命令，我安装了两个关键的插件：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;@gotgenes/pi-subagents&lt;/code&gt;: 实现了 Claude Code 风格的子代理，支持并行执行任务、隔离会话。这对于实现“制造者”和“检查者”分离的子 Agent 模式至关重要。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@koltmcbride/pi-loop&lt;/code&gt;: 提供了定时/循环 Prompt 调度功能，可以按时间间隔或 Cron 表达式反复执行任务，是整个 Loop Engineering 的核心调度器。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在设计选择上，我遵循了几个原则：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;交接优于上下文压缩&lt;/strong&gt;：使用 &lt;code&gt;prompts/handoff.md&lt;/code&gt; 生成结构化交接文档，让新的 Agent 会话能够无缝接续工作，而不是在单个超长会话中压缩上下文，有效避免了上下文丢失和Token浪费。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Karpathy 行为准则&lt;/strong&gt;：&lt;code&gt;AGENTS.md&lt;/code&gt; 约束 Agent 的行为，要求“先想再写、最简实现、手术式改动、目标驱动执行”，减少过度工程和不必要的修改。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;2-用-goal-meta-出一个-goal-的-prompt&#34;&gt;2. 用 goal meta 出一个 &lt;code&gt;goal&lt;/code&gt; 的 Prompt&lt;/h4&gt;
+
+&lt;p&gt;&lt;code&gt;goal&lt;/code&gt; 最重要的职能是控制持续运行任务的最终结束验证条件以及一系列约束。为此，我利用了 &lt;code&gt;https://github.com/joeseesun/qiaomu-goal-meta-skill&lt;/code&gt; 这个技能，它能够很好地实现 &lt;code&gt;goal&lt;/code&gt; 的各种约束定义。&lt;/p&gt;
+
+&lt;p&gt;以下是我为 &lt;code&gt;kfinops CI&lt;/code&gt; 分诊循环设计的一个 &lt;code&gt;/goal&lt;/code&gt; Prompt，它详细定义了 Agent 的目标、验证、约束、边界、迭代策略以及完成/暂停条件：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;/goal 运行一次 kfinops CI 分诊循环：用 app-inspection skill 跑完整巡检拿到报告；读取仓库根目录 LOOP.md 全文（重点 In progress / Escalated to humans / Lessons learned 三段），结合巡检报告判定本期要处理的真实代码问题——优先接续 In progress 中未完成项、复核 Escalated 是否已可处理、避免重复已完成项。早退闸门：若巡检报告无告警/异常，且 LOOP.md 三段（In progress / Escalated to humans / Lessons learned）中也没有任何可处理或待复核的开放项，则判定本期无需处理，立即在 LOOP.md 顶部 Last run 写明「本期无需处理的代码问题（巡检无异常 + LOOP.md 无开放项）」并直接结束 goal，不切分支、不进入 go.md 流程。否则基于 master 用 `kgit new master &amp;lt;task_name&amp;gt;` 切出修复分支；走 `.pi/prompts/go.md` 的 writing-plans 及后续全流程并自动跑完；提交 git commit 后用 `kgit mr master` 发起合并请求；最后在 LOOP.md 写入新的 Last run 条目，并将 In progress / Completed today / Escalated to humans / Lessons learned / Stop conditions 各段按本轮结果更新（保留历史已完成与已积累的 lessons，只追加不覆盖）。
+验证：app-inspection 报告已生成；已读取 LOOP.md 旧状态；修复分支已存在（`git branch` 可见）；go.md 的 GO-2/GO-3/GO-4/GO-5/GO-6/GO-7 各 gate 状态已记录；`git log` 显示本次 commit；`kgit mr master` 返回 MR 编号或 URL；LOOP.md 顶部 Last run 已替换为本次时间戳与摘要，且 Completed today 或 Escalated to humans 已追加本轮分支/MR/结果。
+约束：使用 go.md 流程，但跳过 brainstorming 阶段的 `question` 用户确认——把「巡检报告 + LOOP.md 判定出的待修复问题」作为锁定需求直接进入 writing-plans，之后的执行、验证、review、simplify 全部自动完成，不再向用户询问；不直接 push 或提交到 master；不修改 .pi/ 目录、巡检脚本、CI 配置、生产配置和任何密钥；不改动与本问题无关的模块；LOOP.md 只追加/更新本轮相关行，不删除历史记录与已沉淀的 lessons；判定无问题时只更新 LOOP.md 的 Last run 一行即退出，不做其他写入。
+边界：只允许写入当前修复分支内的业务代码文件 + LOOP.md（仓库根目录）；禁止触碰 master 分支、其他进行中分支、.pi/、infra/生产 manifest、以及修复目标之外的破坏性操作。
+迭代策略：一次只修一个被选中的真实问题；go.md 子代理执行后按验证命令（make lint-full / go test / make e2e 中与改动相关的最小集合）重跑检查；同一问题在 lint/test 上连续 2 次仍不绿必须换证据来源或降级为 escalated；单次循环最多 3 轮聚焦修复，超出则暂停并报告，并把降级项写入 LOOP.md 的 Escalated to humans。
+完成条件：本次选中的修复有「分支 + commit + MR + 检查通过或明确失败原因 + LOOP.md 已更新」五项证据齐全；或在巡检 + 读 LOOP.md 后判定本期无真实可处理问题，已仅在 LOOP.md 的 Last run 写明「本期无需处理的代码问题（巡检无异常 + LOOP.md 无开放项）」后立即结束，不切分支、不进入 go.md 流程。
+暂停条件：Sentry token 失效或 srecli 不可用导致巡检拿不到数据；修复需要破坏性变更、DB 迁移、付费服务、凭证或产品决策；同一问题连续 2 次无法变绿；MR 发起失败或需要人工审批；所有权或责任归属不清。&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&#34;3-配置到-pi-coding-agent-的-loop-流程中&#34;&gt;3. 配置到 Pi Coding Agent 的 Loop 流程中&lt;/h4&gt;
+
+&lt;p&gt;在实际的 Pi Coding Agent 运行中，我们不能直接使用 &lt;code&gt;/loop 0 8 * * * /goal &amp;lt;prompt&amp;gt;&lt;/code&gt; 这种方式来同时激活 &lt;code&gt;loop&lt;/code&gt; 和 &lt;code&gt;goal&lt;/code&gt;。因为 &lt;code&gt;pi&lt;/code&gt; 的 &lt;code&gt;loop&lt;/code&gt; 插件和 &lt;code&gt;goal&lt;/code&gt; 扩展是分开工作的，&lt;code&gt;loop&lt;/code&gt; 负责定时触发一个 Prompt，而 &lt;code&gt;goal&lt;/code&gt; 负责持续推进一个长期目标。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/9a872786-0343-4bb5-b4e6-5d6f210bacea&#34; alt=&#34;Image3&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;所以，我通过 &lt;code&gt;LoopCreate&lt;/code&gt; 工具创建了一个更加复杂的 &lt;code&gt;loop&lt;/code&gt; 定义，它会在每次触发时，借助 &lt;code&gt;goal&lt;/code&gt; 扩展的 &lt;code&gt;get_goal/create_goal/update_goal&lt;/code&gt; 工具来管理 &lt;code&gt;goal&lt;/code&gt; 的状态。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-json&#34; data-lang=&#34;json&#34;&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+  &lt;span class=&#34;nt&#34;&gt;&amp;#34;nextId&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+  &lt;span class=&#34;nt&#34;&gt;&amp;#34;loops&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+      &lt;span class=&#34;nt&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;1&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+      &lt;span class=&#34;nt&#34;&gt;&amp;#34;prompt&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;这是每天 08:00 自动触发的 kfinops CI 分诊循环（cron: 0 8 * * *）。全程自动完成，不要向用户提问。\n\n第一步——goal 状态检查：调用 get_goal 工具。若存在 status 非 complete 的 goal 且其 objective 仍是本 CI 分诊任务（通常是昨天未跑完的遗留），直接继续推进它，跳到第三步；若遗留 goal 与当前任务无关或明显卡死，先把情况记入 LOOP.md 的 Escalated to humans，然后用 update_goal 标记 complete 以便新建。\n\n第二步——创建 goal（仅当无 active goal 时）：调用 create_goal 工具，objective 使用下方 === GOAL OBJECTIVE === 与 === END === 之间的整段原文（不要改写、不要省略）。\n\n=== GOAL OBJECTIVE ===\n运行一次 kfinops CI 分诊循环：用 app-inspection skill 跑完整巡检拿到报告；读取仓库根目录 LOOP.md 全文（重点 In progress / Escalated to humans / Lessons learned 三段），结合巡检报告判定本期要处理的真实代码问题——优先接续 In progress 中未完成项、复核 Escalated 是否已可处理、避免重复已完成项。早退闸门：若巡检报告无告警/异常，且 LOOP.md 三段中也没有任何可处理或待复核的开放项，则判定本期无需处理，立即在 LOOP.md 顶部 Last run 写明「本期无需处理的代码问题（巡检无异常 + LOOP.md 无开放项）」并直接结束 goal，不切分支、不进入 go.md 流程。否则基于 master 用 `kgit new master &amp;lt;task_name&amp;gt;` 切出修复分支；走 `.pi/prompts/go.md` 的 writing-plans 及后续全流程并自动跑完；提交 git commit 后用 `kgit mr master` 发起合并请求；最后在 LOOP.md 写入新的 Last run 条目，并将 In progress / Completed today / Escalated to humans / Lessons learned / Stop conditions 各段按本轮结果更新（保留历史已完成与已积累的 lessons，只追加不覆盖）。\n验证：app-inspection 报告已生成；已读取 LOOP.md 旧状态；修复分支已存在（`git branch` 可见）；go.md 的 GO-2/GO-3/GO-4/GO-5/GO-6/GO-7 各 gate 状态已记录；`git log` 显示本次 commit；`kgit mr master` 返回 MR 编号或 URL；LOOP.md 顶部 Last run 已替换为本次时间戳与摘要，且 Completed today 或 Escalated to humans 已追加本轮分支/MR/结果。\n约束：使用 go.md 流程，但跳过 brainstorming 阶段的 `question` 用户确认——把「巡检报告 + LOOP.md 判定出的待修复问题」作为锁定需求直接进入 writing-plans，之后的执行、验证、review、simplify 全部自动完成，不再向用户询问；不直接 push 或提交到 master；不修改 .pi/ 目录、巡检脚本、CI 配置、生产配置和任何密钥；不改动与本问题无关的模块；LOOP.md 只追加/更新本轮相关行，不删除历史记录与已沉淀的 lessons；判定无问题时只更新 LOOP.md 的 Last run 一行即退出，不做其他写入。\n边界：只允许写入当前修复分支内的业务代码文件 + LOOP.md（仓库根目录）；禁止触碰 master 分支、其他进行中分支、.pi/、infra/生产 manifest、以及修复目标之外的破坏性操作。\n迭代策略：一次只修一个被选中的真实问题；go.md 子代理执行后按验证命令（make lint-full / go test / make e2e 中与改动相关的最小集合）重跑检查；同一问题在 lint/test 上连续 2 次仍不绿必须换证据来源或降级为 escalated；单次循环最多 3 轮聚焦修复，超出则暂停并报告，并把降级项写入 LOOP.md 的 Escalated to humans。\n完成条件：本次选中的修复有「分支 + commit + MR + 检查通过或明确失败原因 + LOOP.md 已更新」五项证据齐全；或在巡检 + 读 LOOP.md 后判定本期无真实可处理问题，已仅在 LOOP.md 的 Last run 写明「本期无需处理的代码问题（巡检无异常 + LOOP.md 无开放项）」后立即结束，不切分支、不进入 go.md 流程。\n暂停条件：Sentry token 失效或 srecli 不可用导致巡检拿不到数据；修复需要破坏性变更、DB 迁移、付费服务、凭证或产品决策；同一问题连续 2 次无法变绿；MR 发起失败或需要人工审批；所有权或责任归属不清。\n=== END ===\n\n第三步——执行：goal 创建（或接续）后，立即按 objective 中的 验证/约束/边界/迭代策略 推进；走 .pi/prompts/go.md 流程但跳过 brainstorming 的 question 确认。\n\n第四步——收尾：达到 objective 的完成条件后，调用 update_goal 工具标记 complete。&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+      &lt;span class=&#34;nt&#34;&gt;&amp;#34;trigger&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;nt&#34;&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;cron&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;nt&#34;&gt;&amp;#34;schedule&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;0 8 * * *&amp;#34;&lt;/span&gt;
+      &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+      &lt;span class=&#34;nt&#34;&gt;&amp;#34;status&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;active&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+      &lt;span class=&#34;nt&#34;&gt;&amp;#34;recurring&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+      &lt;span class=&#34;nt&#34;&gt;&amp;#34;createdAt&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1781595119955&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+      &lt;span class=&#34;nt&#34;&gt;&amp;#34;updatedAt&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1781654404411&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+      &lt;span class=&#34;nt&#34;&gt;&amp;#34;expiresAt&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1782199919955&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+      &lt;span class=&#34;nt&#34;&gt;&amp;#34;source&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;tool&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+      &lt;span class=&#34;nt&#34;&gt;&amp;#34;fireCount&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这个 JSON 配置定义了一个每天早上 8 点触发的循环。每次循环启动时，它会首先检查是否存在未完成的 &lt;code&gt;goal&lt;/code&gt;，如果存在，则继续推进；否则，它会创建一个新的 &lt;code&gt;goal&lt;/code&gt;，其 &lt;code&gt;objective&lt;/code&gt; 就是上面那段长 Prompt。然后，Agent 会按照 &lt;code&gt;objective&lt;/code&gt; 中定义的验证、约束、边界和迭代策略来执行，并最终在 &lt;code&gt;goal&lt;/code&gt; 完成时将其标记为 &lt;code&gt;complete&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;通过这种方式，我成功地让我的 Pi Coding Agent 实现了：每天自动进行应用巡检，根据巡检报告和历史记录判断是否需要代码修复，如果需要则全自动地切分支、走完整个代码编写、测试、审查流程，并最终提交 PR。&lt;/p&gt;
+
+&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
+
+&lt;p&gt;在过去的两年里，与编码 Agent 协作的重心一直放在 Prompt 上，我们追求更好的 Prompt、更精确的上下文、更优秀的单次输出。但现在，这个阶段正在结束。Agent 已经足够强大，下一个杠杆点已经提升了一个层次：&lt;strong&gt;它转变为设计一个系统，由这个系统来决定 Agent 何时工作、做什么、通过什么门槛、以及哪些状态需要在不同运行之间持久化&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;但坦率地说，并非所有开发者都应该立即冲向 Loop Engineering。只有当任务重复、验证自动化、预算能够承受消耗、并且 Agent 拥有资深工程师的工具时，Loop Engineering 才能发挥其价值。如果错过其中任何一个条件，那么构建循环的成本可能远高于其回报。&lt;/p&gt;
+
+&lt;p&gt;如果这些条件都符合，那么就从小处着手：一个自动化、一个技能、一个状态文件、一个验证门。先让手动运行变得可靠，然后将其封装成技能，再用循环来调度。顺序至关重要。跳过这些步骤，你最终可能会为一套无人理解的系统买单。&lt;/p&gt;
+
+&lt;p&gt;杠杆点已经移动，我们的工作职责也随之改变。构建循环，但要始终保持工程师的思维。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>用LLM Wiki构建SRE知识库</title>
@@ -2490,178 +2723,6 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 &lt;p&gt;希望我分享的这些学习资源和路径建议，能对正在入门或打算入门云原生开发的你有所帮助。我自己也是在不断学习中，云原生技术日新月异，保持好奇心和动手实践的热情非常重要。&lt;/p&gt;
 
 &lt;p&gt;如果你在学习过程中有任何问题或心得，也欢迎一起交流。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>从《软件设计的哲学》谈代码的复杂性与应对</title>
-      <link>https://zhu327.github.io/2025/01/10/%E4%BB%8E%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%93%B2%E5%AD%A6%E8%B0%88%E4%BB%A3%E7%A0%81%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E4%B8%8E%E5%BA%94%E5%AF%B9/</link>
-      <pubDate>Fri, 10 Jan 2025 10:55:52 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2025/01/10/%E4%BB%8E%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%93%B2%E5%AD%A6%E8%B0%88%E4%BB%A3%E7%A0%81%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E4%B8%8E%E5%BA%94%E5%AF%B9/</guid>
-      <description>&lt;p&gt;几个月前读完了《软件设计的哲学》这本书，在结合自己多年的工作体会，对于代码的可读性，可维护性有了系统性的体会，然后基于我记录的读书笔记然后经过AI的润色，形成了这篇笔记。希望对你也有所帮助。&lt;/p&gt;
-
-&lt;p&gt;读完《软件设计的哲学》，感觉像经历了一次代码的“深度体检”。这本书没有讲解具体的编码技巧，而是从更高的维度帮助我们重新审视代码复杂性的问题，并提出了许多实用的建议。今天，我想结合自己的理解，分享这本书带来的启发。&lt;/p&gt;
-
-&lt;h3 id=&#34;什么是代码的复杂性&#34;&gt;什么是代码的复杂性？&lt;/h3&gt;
-
-&lt;p&gt;简单来说，复杂性就是那些让系统难以理解和修改的因素。它不仅仅指代码的行数或逻辑深度，还包括：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;难以理解&lt;/strong&gt;：即便是自己写的代码，过一段时间可能也看不懂，更别提其他人。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;修改成本高&lt;/strong&gt;：一个小改动需要改动多个地方，甚至引发新的问题。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;模糊的改动范围&lt;/strong&gt;：不知道该修改哪些模块才能实现目标，或者不确定修改后是否会引发其他问题。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;难以修复的错误&lt;/strong&gt;：修复一个 bug 可能需要大量时间，还可能引入新的问题。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;复杂性的表现形式&#34;&gt;复杂性的表现形式&lt;/h3&gt;
-
-&lt;p&gt;复杂性并非抽象概念，它常以以下形式体现：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;变更放大&lt;/strong&gt;：一个简单需求改动需要修改多个模块甚至代码库。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;认知负荷&lt;/strong&gt;：完成一个任务需要了解大量背景知识或复杂细节。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;未知的未知&lt;/strong&gt;：修改代码时，不确定是否会引入新的问题。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;复杂性的来源&#34;&gt;复杂性的来源&lt;/h3&gt;
-
-&lt;p&gt;复杂性通常来源于以下几点：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;模块之间的依赖&lt;/strong&gt;：一个模块的改动可能需要同步修改依赖它的其他模块。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;晦涩难懂的代码&lt;/strong&gt;：不清晰的变量名、函数名以及缺乏注释的逻辑。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;文档不足&lt;/strong&gt;：缺乏解释代码意图和约束的文档。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;面对复杂性的两大策略&#34;&gt;面对复杂性的两大策略&lt;/h3&gt;
-
-&lt;p&gt;书中提到了解决代码复杂性的两种核心策略：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;让代码更简单、更直观&lt;/strong&gt;
-
-&lt;ul&gt;
-&lt;li&gt;通过清晰的命名、简洁的逻辑、规范的实现，让代码易于理解。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;封装复杂性&lt;/strong&gt;
-
-&lt;ul&gt;
-&lt;li&gt;将复杂逻辑封装起来，通过简洁的接口暴露给外部，用户无需关心内部细节。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;如何应对复杂性&#34;&gt;如何应对复杂性？&lt;/h3&gt;
-
-&lt;p&gt;以下是书中提到的一些有效方法：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;模块化设计&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;将系统分解为独立模块，减少模块间的依赖。每个模块应只负责一个明确任务，提供清晰接口。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;抽象&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;忽略不重要的细节，只暴露必要的信息。好的抽象能降低认知负荷并提高代码复用性。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;信息隐藏&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;隐藏模块的内部实现细节，只暴露接口。这样能减少模块之间的耦合，降低修改风险。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;设计通用接口&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;通用接口能隐藏细节并提高代码复用性。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;专注于任务的知识&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;设计模块时，应关注任务所需的知识，而非任务发生的顺序。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;注释代码&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;注释应解释代码的“为什么”，而非“是什么”。例如，描述变量单位、边界条件等。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;清晰命名&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;使用准确且一致的命名，避免歧义。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;先写注释，再写代码&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;先用注释明确表达代码意图，然后再实现。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;设计两次&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;初步完成代码后，重新审视设计，思考是否有更好的接口和实现方式。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;统一规范&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;制定团队代码规范，保持一致性，提高可读性。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;显式代码优于隐式代码&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;代码应尽可能清晰易懂，避免晦涩技巧。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;危险信号-什么时候该警惕复杂性&#34;&gt;危险信号：什么时候该警惕复杂性？&lt;/h3&gt;
-
-&lt;p&gt;以下是书中提到的一些“危险信号”，遇到这些情况时，需要考虑重构：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;浅模块&lt;/strong&gt;：接口与实现的复杂性相差无几。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;信息泄漏&lt;/strong&gt;：设计决策导致多个模块之间耦合。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;时间分解&lt;/strong&gt;：代码结构依赖操作执行顺序，而非基于信息隐藏。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;过度暴露&lt;/strong&gt;：API 暴露了不常用的功能。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;重复代码&lt;/strong&gt;：相同代码反复出现。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;联合方法&lt;/strong&gt;：两个方法间依赖性强，难以单独理解。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;注释重复代码&lt;/strong&gt;：注释仅重复代码内容。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;含糊不清的名称&lt;/strong&gt;：变量或方法名称传递不了有用信息。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;难以描述&lt;/strong&gt;：需要冗长文档解释变量或方法意图。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;非显而易见的代码&lt;/strong&gt;：代码行为或意图不直观。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;软件设计的核心原则&#34;&gt;软件设计的核心原则&lt;/h3&gt;
-
-&lt;p&gt;书中总结了以下关键原则：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;复杂性是逐步增加的&lt;/strong&gt;：从小事做起，持续改进。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;代码跑起来并不够&lt;/strong&gt;：还需关注可读性和可维护性。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;持续投入改善系统设计&lt;/strong&gt;：不要忽视代码的长期维护成本。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;模块应该足够深&lt;/strong&gt;：接口要比实现简单得多。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;简化接口&lt;/strong&gt;：接口设计应尽可能简化最常见用法。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;通用与专用分离&lt;/strong&gt;：通用代码与专用代码应明确区分。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;层次分明&lt;/strong&gt;：不同层次应有不同抽象。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;降低复杂性&lt;/strong&gt;：始终关注减少认知负荷和模块耦合。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;先设计，再实现&lt;/strong&gt;：避免仓促决策，多次设计迭代。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;注释不明显内容&lt;/strong&gt;：好的注释可显著降低认知负荷。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;代码是写给人看的&lt;/strong&gt;：清晰性优先于实现技巧。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;结语&#34;&gt;结语&lt;/h3&gt;
-
-&lt;p&gt;《软件设计的哲学》让我意识到，软件开发不仅是实现功能，更是一门需要深思熟虑的艺术。它提醒我们，代码的核心目标是&lt;strong&gt;易于理解和维护&lt;/strong&gt;。毕竟，&lt;strong&gt;代码是写给人看的，其次才是给机器看的&lt;/strong&gt;。希望这些心得对你有所启发，让我们一起写出更清晰、更优雅的代码！&lt;/p&gt;</description>
     </item>
     
   </channel>
