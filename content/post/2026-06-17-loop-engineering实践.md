@@ -224,6 +224,8 @@ Maintain these gates visibly and include their final statuses in the final repor
 
 通过这种方式，我成功地让我的 Pi Coding Agent 实现了：每天自动进行应用巡检，根据巡检报告和历史记录判断是否需要代码修复，如果需要则全自动地切分支、走完整个代码编写、测试、审查流程，并最终提交 PR。
 
+<img src="https://github.com/user-attachments/assets/c12d2fc6-092c-40cd-9a99-5c1ffddfffcb" alt="Image4" width="700px" />
+
 ### 总结
 
 在过去的两年里，与编码 Agent 协作的重心一直放在 Prompt 上，我们追求更好的 Prompt、更精确的上下文、更优秀的单次输出。但现在，这个阶段正在结束。Agent 已经足够强大，下一个杠杆点已经提升了一个层次：**它转变为设计一个系统，由这个系统来决定 Agent 何时工作、做什么、通过什么门槛、以及哪些状态需要在不同运行之间持久化**。
