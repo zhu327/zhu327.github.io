@@ -19,7 +19,7 @@
 
 &lt;h3 id=&#34;1-loop-engineering-是什么-由哪些环境组成&#34;&gt;1. Loop Engineering 是什么，由哪些环境组成&lt;/h3&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/fe3cb3a5-3b7f-4cbf-8121-474b8f645540&#34; alt=&#34;Image1&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/fe3cb3a5-3b7f-4cbf-8121-474b8f645540&#34; alt=&#34;Image1&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;以前，我们程序员和AI编码Agent的交互模式是这样的：我写一个Prompt，提供上下文，Agent返回结果，我再根据结果写下一个Prompt。Agent就像一个工具，始终在我手里。但现在这种模式正在被 Loop Engineering 所取代。&lt;/p&gt;
 
@@ -51,7 +51,7 @@
 
 &lt;h3 id=&#34;2-goal-loop-命令意味着什么-分别有什么职能&#34;&gt;2. goal/loop 命令意味着什么，分别有什么职能&lt;/h3&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/4dc6a454-afa2-46fe-89a3-7690b87ee44f&#34; alt=&#34;Image2&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/4dc6a454-afa2-46fe-89a3-7690b87ee44f&#34; alt=&#34;Image2&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;在 Loop Engineering 中，&lt;code&gt;loop&lt;/code&gt; 和 &lt;code&gt;goal&lt;/code&gt; 是两个非常核心的命令，它们赋予了Agent持续运行和自我验证的能力。&lt;/p&gt;
 
@@ -203,7 +203,7 @@
 
 &lt;p&gt;在实际的 Pi Coding Agent 运行中，我们不能直接使用 &lt;code&gt;/loop 0 8 * * * /goal &amp;lt;prompt&amp;gt;&lt;/code&gt; 这种方式来同时激活 &lt;code&gt;loop&lt;/code&gt; 和 &lt;code&gt;goal&lt;/code&gt;。因为 &lt;code&gt;pi&lt;/code&gt; 的 &lt;code&gt;loop&lt;/code&gt; 插件和 &lt;code&gt;goal&lt;/code&gt; 扩展是分开工作的，&lt;code&gt;loop&lt;/code&gt; 负责定时触发一个 Prompt，而 &lt;code&gt;goal&lt;/code&gt; 负责持续推进一个长期目标。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/9a872786-0343-4bb5-b4e6-5d6f210bacea&#34; alt=&#34;Image3&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/9a872786-0343-4bb5-b4e6-5d6f210bacea&#34; alt=&#34;Image3&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;所以，我借助 &lt;code&gt;goal&lt;/code&gt; 扩展的 &lt;code&gt;get_goal/create_goal/update_goal&lt;/code&gt; 工具来管理 &lt;code&gt;goal&lt;/code&gt; 的状态。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;/loop 0 8 * * * 这是每天 08:00 自动触发的 kfinops CI 分诊循环（cron: 0 8 * * *）。全程自动完成，不要向用户提问。\n\n第一步——goal 状态检查：调用 get_goal 工具。若存在 status 非 complete 的 goal 且其 objective 仍是本 CI 分诊任务（通常是昨天未跑完的遗留），直接继续推进它，跳到第三步；若遗留 goal 与当前任务无关或明显卡死，先把情况记入 LOOP.md 的 Escalated to humans，然后用 update_goal 标记 complete 以便新建。\n\n第二步——创建 goal（仅当无 active goal 时）：调用 create_goal 工具，objective 使用下方 === GOAL OBJECTIVE === 与 === END === 之间的整段原文（不要改写、不要省略）。\n\n=== GOAL OBJECTIVE ===\n运行一次 kfinops CI 分诊循环：用 app-inspection skill 跑完整巡检拿到报告；读取仓库根目录 LOOP.md 全文（重点 In progress / Escalated to humans / Lessons learned 三段），结合巡检报告判定本期要处理的真实代码问题——优先接续 In progress 中未完成项、复核 Escalated 是否已可处理、避免重复已完成项。早退闸门：若巡检报告无告警/异常，且 LOOP.md 三段中也没有任何可处理或待复核的开放项，则判定本期无需处理，立即在 LOOP.md 顶部 Last run 写明「本期无需处理的代码问题（巡检无异常 + LOOP.md 无开放项）」并直接结束 goal，不切分支、不进入 go.md 流程。否则基于 master 用 `kgit new master &amp;lt;task_name&amp;gt;` 切出修复分支；走 `.pi/prompts/go.md` 的 writing-plans 及后续全流程并自动跑完；提交 git commit 后用 `kgit mr master` 发起合并请求；最后在 LOOP.md 写入新的 Last run 条目，并将 In progress / Completed today / Escalated to humans / Lessons learned / Stop conditions 各段按本轮结果更新（保留历史已完成与已积累的 lessons，只追加不覆盖）。\n验证：app-inspection 报告已生成；已读取 LOOP.md 旧状态；修复分支已存在（`git branch` 可见）；go.md 的 GO-2/GO-3/GO-4/GO-5/GO-6/GO-7 各 gate 状态已记录；`git log` 显示本次 commit；`kgit mr master` 返回 MR 编号或 URL；LOOP.md 顶部 Last run 已替换为本次时间戳与摘要，且 Completed today 或 Escalated to humans 已追加本轮分支/MR/结果。\n约束：使用 go.md 流程，但跳过 brainstorming 阶段的 `question` 用户确认——把「巡检报告 + LOOP.md 判定出的待修复问题」作为锁定需求直接进入 writing-plans，之后的执行、验证、review、simplify 全部自动完成，不再向用户询问；不直接 push 或提交到 master；不修改 .pi/ 目录、巡检脚本、CI 配置、生产配置和任何密钥；不改动与本问题无关的模块；LOOP.md 只追加/更新本轮相关行，不删除历史记录与已沉淀的 lessons；判定无问题时只更新 LOOP.md 的 Last run 一行即退出，不做其他写入。\n边界：只允许写入当前修复分支内的业务代码文件 + LOOP.md（仓库根目录）；禁止触碰 master 分支、其他进行中分支、.pi/、infra/生产 manifest、以及修复目标之外的破坏性操作。\n迭代策略：一次只修一个被选中的真实问题；go.md 子代理执行后按验证命令（make lint-full / go test / make e2e 中与改动相关的最小集合）重跑检查；同一问题在 lint/test 上连续 2 次仍不绿必须换证据来源或降级为 escalated；单次循环最多 3 轮聚焦修复，超出则暂停并报告，并把降级项写入 LOOP.md 的 Escalated to humans。\n完成条件：本次选中的修复有「分支 + commit + MR + 检查通过或明确失败原因 + LOOP.md 已更新」五项证据齐全；或在巡检 + 读 LOOP.md 后判定本期无真实可处理问题，已仅在 LOOP.md 的 Last run 写明「本期无需处理的代码问题（巡检无异常 + LOOP.md 无开放项）」后立即结束，不切分支、不进入 go.md 流程。\n暂停条件：Sentry token 失效或 srecli 不可用导致巡检拿不到数据；修复需要破坏性变更、DB 迁移、付费服务、凭证或产品决策；同一问题连续 2 次无法变绿；MR 发起失败或需要人工审批；所有权或责任归属不清。\n=== END ===\n\n第三步——执行：goal 创建（或接续）后，立即按 objective 中的 验证/约束/边界/迭代策略 推进；走 .pi/prompts/go.md 流程但跳过 brainstorming 的 question 确认。\n\n第四步——收尾：达到 objective 的完成条件后，调用 update_goal 工具标记 complete。&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -211,7 +211,7 @@
 
 &lt;p&gt;通过这种方式，我成功地让我的 Pi Coding Agent 实现了：每天自动进行应用巡检，根据巡检报告和历史记录判断是否需要代码修复，如果需要则全自动地切分支、走完整个代码编写、测试、审查流程，并最终提交 PR。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/c12d2fc6-092c-40cd-9a99-5c1ffddfffcb&#34; alt=&#34;Image4&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/c12d2fc6-092c-40cd-9a99-5c1ffddfffcb&#34; alt=&#34;Image4&#34; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
 
@@ -425,7 +425,7 @@
 
 &lt;p&gt;通过引入新的启动机制，现在的流程流畅了很多：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/86b82482-a907-4bc0-b7b5-f90d9fde95ec&#34; alt=&#34;Image1&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/86b82482-a907-4bc0-b7b5-f90d9fde95ec&#34; alt=&#34;Image1&#34; /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/go-clean-arch/blob/main/.cursor/skills/go/SKILL.md&#34;&gt;https://github.com/zhu327/go-clean-arch/blob/main/.cursor/skills/go/SKILL.md&lt;/a&gt;&lt;/p&gt;
@@ -659,7 +659,7 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 
 &lt;p&gt;最后，在 CMDB 平台上统一调用 &lt;code&gt;tfengine&lt;/code&gt; 和 &lt;code&gt;cloudkit&lt;/code&gt;，走同一套账号体系进行纳管。这套方案非常灵活，开发极快。目前我们已经顺利实现了云主机和对象存储的全生命周期管理。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/f21c7ad1-a5bd-4ff6-be7d-2302eaaf866e&#34; alt=&#34;Image2&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/f21c7ad1-a5bd-4ff6-be7d-2302eaaf866e&#34; alt=&#34;Image2&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;回过头看，无论是流程的演进，还是屎山代码的重构，AI 都在以一种不可逆的方式改变着我们的工作模式。从最初的“测试转开发”，到如今的“写规范让 Agent 开发”，我们解决问题的方式一直在变，但作为程序员，那种对系统掌控感和抽象设计的追求，始终如一。&lt;/p&gt;</description>
     </item>
@@ -698,7 +698,7 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 
 &lt;p&gt;初期架构流转图大概是这样的：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/b2a7c58f-0a49-4a92-a9fe-ce11bf989f73&#34; alt=&#34;Image3&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/b2a7c58f-0a49-4a92-a9fe-ce11bf989f73&#34; alt=&#34;Image3&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;除此之外，我还实现了一个&lt;strong&gt;多用户的Cron任务管理服务&lt;/strong&gt;。系统会遍历每个用户的Workspace，拉起Cron实例。AgentLoop中会记录用户的 &lt;code&gt;last channel&lt;/code&gt;，以此决定定时任务的执行结果该推送到Web还是WPS（由于Web没有主动推送能力，还需要做特殊处理屏蔽Web Channel记录）。&lt;/p&gt;
 
@@ -775,7 +775,7 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 
 &lt;p&gt;新的架构图将变得异常清晰且易于维护：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/a3867f4b-3fdf-4616-a69c-0404cde65ad7&#34; alt=&#34;Image3&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/a3867f4b-3fdf-4616-a69c-0404cde65ad7&#34; alt=&#34;Image3&#34; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;5-结语&#34;&gt;5. 结语&lt;/h3&gt;
 
@@ -1218,7 +1218,7 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 
 &lt;h3 id=&#34;1-apisix-ingress-controller架构&#34;&gt;1. apisix-ingress-controller架构&lt;/h3&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/1ecf116a-378f-4357-a597-5bafb56991fd&#34; alt=&#34;Image1&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/1ecf116a-378f-4357-a597-5bafb56991fd&#34; alt=&#34;Image1&#34; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&#34;1-k8s-resources-watch-layer-资源监听层&#34;&gt;1. K8s Resources Watch Layer (资源监听层)&lt;/h4&gt;
 
@@ -1713,7 +1713,7 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 
 &lt;p&gt;然后我在apisix-ingress-controller 1.8.x 版本的代码下找到了这个这个实现方式, 只是当前的 2.0.x 版本在引入了ADC相关的功能后去掉了&lt;a href=&#34;https://github.com/api7/etcd-adapter&#34;&gt;etcd-adapter&lt;/a&gt;, 那我在考虑实现我的pingsix-ingress-controller时, 为了避免直接改动pingsix的代码, 并且也不希望在ingress启动时依赖etcd, 所以决定重新引入etcd-adapter, 然后为了后续pingsix-ingress-controller能同步apisix-ingress-controller的上游更新, 我决定在现有的ADC Executor的接口的基础上, 实现pingsix的Executor, 这样就可以在避免直接修改apisix的逻辑代码, 使用一种adapter的方式来实现我们自己的pingsix-ingress-controller.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/a10a7162-ea7d-4407-b7a6-b5481823592b&#34; alt=&#34;Image2&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/a10a7162-ea7d-4407-b7a6-b5481823592b&#34; alt=&#34;Image2&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;可以看到我们实现的这个Executor, 其实就是重复了一遍ADC http serve的逻辑, 但是最终资源的数据是写入到etcd-adapter中的, 我们实现了一个apisix-ingress-controller最底层的抽象, 通过这种低成本的改造我们后续还可以继续同步apisix-ingress-controller的变更, 并不会造成代码冲突.&lt;/p&gt;
 
@@ -1763,7 +1763,7 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 
 &lt;h4 id=&#34;p4-我们的敌人是谁-是-耦合-这头怪兽&#34;&gt;&lt;strong&gt;P4: 我们的敌人是谁？——是“耦合”这头怪兽！&lt;/strong&gt;&lt;/h4&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/67458592-6307-44ed-a991-a6def7f53bf8&#34; alt=&#34;Image3&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/67458592-6307-44ed-a991-a6def7f53bf8&#34; alt=&#34;Image3&#34; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;(🖼️ 视觉元素占位符: 此处放置一张生动的图片，比如一个身上贴满“耦合”标签的小怪兽 🐲)&lt;/strong&gt;&lt;/li&gt;
@@ -1774,7 +1774,7 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 &lt;li&gt;&lt;strong&gt;(🖼️ 视觉元素占位符: 此处展示完整的整洁架构“洋葱图”，并快速解释四个环：Entities -&amp;gt; Use Cases -&amp;gt; Adapters -&amp;gt; Frameworks)&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/fb504fdb-4ba4-4dc8-8d01-c869da9be03d&#34; alt=&#34;Image3&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/fb504fdb-4ba4-4dc8-8d01-c869da9be03d&#34; alt=&#34;Image3&#34; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&#34;p5-问题一-我只想改个业务规则-为什么还要动数据库和api的代码&#34;&gt;&lt;strong&gt;P5: 问题一：“我只想改个业务规则，为什么还要动数据库和API的代码？”&lt;/strong&gt;&lt;/h4&gt;
 
@@ -1864,7 +1864,7 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 
 &lt;h4 id=&#34;p8-问题四-这代码根本没法写单元测试&#34;&gt;&lt;strong&gt;P8: 问题四：“这代码根本没法写单元测试！”&lt;/strong&gt;&lt;/h4&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/7271b7b0-f51e-40ce-8fe0-dfad4850ed7e&#34; alt=&#34;Image3&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/7271b7b0-f51e-40ce-8fe0-dfad4850ed7e&#34; alt=&#34;Image3&#34; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;(🖼️ 视觉元素占位符: 一张图片，左边是混乱的毛线球代表紧耦合，右边是整齐的乐高积木代表可测试)&lt;/strong&gt;&lt;/li&gt;
@@ -1893,7 +1893,7 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 
 &lt;h4 id=&#34;p9-可维护性的延伸-构建强大的可观测性&#34;&gt;&lt;strong&gt;P9: 可维护性的延伸：构建强大的可观测性&lt;/strong&gt;&lt;/h4&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/297e1818-ea6e-4a33-8747-5ad78e004e40&#34; alt=&#34;Image3&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/297e1818-ea6e-4a33-8747-5ad78e004e40&#34; alt=&#34;Image3&#34; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;作为SRE团队，我们不仅要写出可维护的代码，更要确保系统在生产环境中是‘可理解’、‘可诊断’的。&lt;/li&gt;
@@ -1909,7 +1909,7 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 
 &lt;h4 id=&#34;p10-面向ai编程-架构即契约-约束即指导&#34;&gt;&lt;strong&gt;P10: 面向AI编程：架构即契约，约束即指导&lt;/strong&gt;&lt;/h4&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/640a4f7e-5ef3-4ec6-806e-5e72fd31cb26&#34; alt=&#34;Image3&#34; width=&#34;700px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/user-attachments/assets/640a4f7e-5ef3-4ec6-806e-5e72fd31cb26&#34; alt=&#34;Image3&#34; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;(🖼️ 视觉元素占位符: 一个对比图)&lt;/strong&gt;

@@ -102,7 +102,7 @@
 
 <p>初期架构流转图大概是这样的：</p>
 
-<p><img src="https://github.com/user-attachments/assets/b2a7c58f-0a49-4a92-a9fe-ce11bf989f73" alt="Image3" width="700px" /></p>
+<p><img src="https://github.com/user-attachments/assets/b2a7c58f-0a49-4a92-a9fe-ce11bf989f73" alt="Image3" /></p>
 
 <p>除此之外，我还实现了一个<strong>多用户的Cron任务管理服务</strong>。系统会遍历每个用户的Workspace，拉起Cron实例。AgentLoop中会记录用户的 <code>last channel</code>，以此决定定时任务的执行结果该推送到Web还是WPS（由于Web没有主动推送能力，还需要做特殊处理屏蔽Web Channel记录）。</p>
 
@@ -179,7 +179,7 @@
 
 <p>新的架构图将变得异常清晰且易于维护：</p>
 
-<p><img src="https://github.com/user-attachments/assets/a3867f4b-3fdf-4616-a69c-0404cde65ad7" alt="Image3" width="700px" /></p>
+<p><img src="https://github.com/user-attachments/assets/a3867f4b-3fdf-4616-a69c-0404cde65ad7" alt="Image3" /></p>
 
 <h3 id="5-结语">5. 结语</h3>
 

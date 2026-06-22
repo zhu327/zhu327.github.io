@@ -76,7 +76,7 @@
   <span class="post-date">Mar 30 2022</span>
   <p>半年前还是2021年春节的时候, 在家休假的我, 在B站上发现了一门叫<a href="https://www.bilibili.com/video/BV1hp4y1k7SV">RUST语言的课程</a>, 学习的过程中, 发现RUST语言为了绝对的安全性, 在语法本身上做了很多的妥协, 所以想着等我学完这门课, 再基于自己以往编程语言的学习经历, 写一篇&lt;如何学习一门新的编程语言&gt;的文章. 但是时过境迁, 我并没有学完这门RUST课, 所以&lt;如何学习一门新的编程语言&gt;也就无疾而终了. 回过头来再思考下以往我学习的那些编程语言, 就有了这篇文章&lt;编程语言漫谈&gt;. 我希望以一种比较轻松的散文的形式来阐述我过完学习的一些经验与思考.</p>
 
-<p><img src="https://user-images.githubusercontent.com/873883/160806614-07709f0a-add6-464b-a76a-bbaffdeab727.jpg" alt="rust" width="720px"></p>
+<p><img src="https://user-images.githubusercontent.com/873883/160806614-07709f0a-add6-464b-a76a-bbaffdeab727.jpg" alt="rust"></p>
 
 <p></p>
 
@@ -146,7 +146,7 @@
 
 <p>从以上CPU结构, 我们可以看出无论是取指令还是输出结果, CPU都依赖于总线与外部存储, 也就是内存做交互. 那么程序是如何使用内存的呢, 这里以Linux的程序内存布局为例来说明.</p>
 
-<p><img src="https://user-images.githubusercontent.com/873883/160808304-cffa5cad-f5d9-443d-9a52-eb565c25c3dd.png" alt="memory" width="720px"></p>
+<p><img src="https://user-images.githubusercontent.com/873883/160808304-cffa5cad-f5d9-443d-9a52-eb565c25c3dd.png" alt="memory"></p>
 
 <p>在Linux系统中, 每个程序在运行时, 都会由操作系统将自己的可执行二进制文件载入到内存中, 通过虚拟内存地址空间, 每个程序看到的自己的内存高地址与低地址都是一样的, 其中用于运行函数本地变量的地址空间叫栈, 而需要程序自行管理内存的空间叫堆. 每个函数运行时都会在栈上创建一块栈帧, 函数返回时pop出栈帧, 空间被回收. 在堆上的内存分配则需要手动管理, 程序自行申请空间, 回收空间.</p>
 
@@ -246,7 +246,7 @@
 <li>标记清除</li>
 </ol>
 
-<p><img src="https://user-images.githubusercontent.com/873883/160809972-6b6d53fc-a132-4cb3-8fc1-b68a1c0dc8d1.png" alt="python" width="720px"></p>
+<p><img src="https://user-images.githubusercontent.com/873883/160809972-6b6d53fc-a132-4cb3-8fc1-b68a1c0dc8d1.png" alt="python"></p>
 
 <p>Python解释器隔一段时间会进行一次全对象的扫描, 对于隔离于ROOT节点的孤立引用, 执行回收, 没有被ROOT节点引用的孤立节点, 即使引用计数大于0, 也会被回收.</p>
 
@@ -277,7 +277,7 @@
 
 <p>Golang是一门编译型的语言, 同C语言一样它也是通过编译器把代码直接编译为二进制的机器码来保证执行性能, 与C语言不同的时, 它在编译时会在二进制中插入一个Golang的Runtime, Runtime帮助做用户态的Goroutine的调度, 做自动内存管理. 可以说Golang继承了C语言的精华, 并对C语言程序容易出错的点, 提出了自己的改进方案.</p>
 
-<p><img src="https://img.draveness.me/2020-02-02-15805792666151-golang-gmp.png" alt="golang" width="720px"></p>
+<p><img src="https://img.draveness.me/2020-02-02-15805792666151-golang-gmp.png" alt="golang"></p>
 
 <p><img src="https://qiankunli.github.io/public/upload/go/go_memory_layout.jpeg" alt="Golang内存分配" /></p>
 

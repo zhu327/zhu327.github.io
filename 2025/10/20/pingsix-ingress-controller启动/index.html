@@ -98,7 +98,7 @@
 
 <h3 id="1-apisix-ingress-controller架构">1. apisix-ingress-controller架构</h3>
 
-<p><img src="https://github.com/user-attachments/assets/1ecf116a-378f-4357-a597-5bafb56991fd" alt="Image1" width="700px" /></p>
+<p><img src="https://github.com/user-attachments/assets/1ecf116a-378f-4357-a597-5bafb56991fd" alt="Image1" /></p>
 
 <h4 id="1-k8s-resources-watch-layer-资源监听层">1. K8s Resources Watch Layer (资源监听层)</h4>
 
@@ -593,7 +593,7 @@
 
 <p>然后我在apisix-ingress-controller 1.8.x 版本的代码下找到了这个这个实现方式, 只是当前的 2.0.x 版本在引入了ADC相关的功能后去掉了<a href="https://github.com/api7/etcd-adapter">etcd-adapter</a>, 那我在考虑实现我的pingsix-ingress-controller时, 为了避免直接改动pingsix的代码, 并且也不希望在ingress启动时依赖etcd, 所以决定重新引入etcd-adapter, 然后为了后续pingsix-ingress-controller能同步apisix-ingress-controller的上游更新, 我决定在现有的ADC Executor的接口的基础上, 实现pingsix的Executor, 这样就可以在避免直接修改apisix的逻辑代码, 使用一种adapter的方式来实现我们自己的pingsix-ingress-controller.</p>
 
-<p><img src="https://github.com/user-attachments/assets/a10a7162-ea7d-4407-b7a6-b5481823592b" alt="Image2" width="700px" /></p>
+<p><img src="https://github.com/user-attachments/assets/a10a7162-ea7d-4407-b7a6-b5481823592b" alt="Image2" /></p>
 
 <p>可以看到我们实现的这个Executor, 其实就是重复了一遍ADC http serve的逻辑, 但是最终资源的数据是写入到etcd-adapter中的, 我们实现了一个apisix-ingress-controller最底层的抽象, 通过这种低成本的改造我们后续还可以继续同步apisix-ingress-controller的变更, 并不会造成代码冲突.</p>
 
