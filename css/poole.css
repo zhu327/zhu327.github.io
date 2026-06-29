@@ -165,6 +165,8 @@ pre {
   line-height: 1.4;
   white-space: pre;
   word-break: normal;
+  overflow-wrap: normal;
+  word-wrap: normal;
   overflow-x: auto;
   background-color: #f9f9f9;
 }
@@ -173,6 +175,10 @@ pre code {
   font-size: 100%;
   color: inherit;
   background-color: transparent;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+  word-wrap: inherit;
 }
 .highlight {
   margin-bottom: 1rem;
