@@ -77,6 +77,20 @@
 <div class="posts">
   
     <div class="post">
+        <h1 class="post-title"><a href="https://zhu327.github.io/2026/06/30/lexideck-%E8%83%8C%E5%8D%95%E8%AF%8D%E5%B0%8F%E5%BA%94%E7%94%A8ai-%E6%97%B6%E4%BB%A3%E7%9A%84-vibe-coding-%E5%AE%9E%E8%B7%B5/">Lexideck 背单词小应用：AI 时代的 Vibe Coding 实践</a></h1>
+        <span class="post-date">Jun 30 2026</span>
+        <p>我平时习惯通过 RSS 订阅 Hacker News，后来随着 Twitter 上线了默认翻译功能，我对直接阅读第一手英文资讯的需求越发强烈。然而现实很骨感：词汇量实在太低。因为现在机器翻译过于方便，我一般都是直接依赖浏览器翻译来看文章；有时候也会强迫自己不用全篇翻译，而是借助划词翻译来硬啃。</p>
+
+<p>硬啃倒是能啃下来，但问题在于：读完了，生词该不认识还是不认识，英语水平并没有实质性的提升。</p>
+
+<p>我觉得关键的痛点在于，我没有把这些在真实阅读场景中遇到的生词记录下来，也没有去反复背诵。所以我一直有个执念：做一个记录生词的工具。在划词翻译发现生词时，顺手把它记录下来，然后可以在手机上同步，随时随地利用碎片时间背单词。一旦这个“阅读发现 -&gt; 记录 -&gt; 间隔重复背诵”的数据飞轮转起来，我相信我的英语水平肯定会逐步提升。</p>
+
+<p>不过，因为我自己一直是个偏后端的程序员，没怎么写过前端和 UI，这个计划就一直停留在脑海里，没有真正落地。</p>
+
+<p></p>
+    </div>
+  
+    <div class="post">
         <h1 class="post-title"><a href="https://zhu327.github.io/2026/06/17/loop-engineering-%E5%AE%9E%E8%B7%B5-pi-coding-agent/">Loop Engineering 实践: Pi Coding Agent</a></h1>
         <span class="post-date">Jun 17 2026</span>
         <p>我在之前写过一些关于AI Agent在开发流程中应用的经验，比如《<a href="https://zhu327.github.io/2026/05/09/%E6%89%93%E9%80%A0%E9%80%82%E5%90%88%E8%87%AA%E5%B7%B1%E7%9A%84-ai-harness-%E5%B7%A5%E7%A8%8B%E4%BB%8E%E5%BC%80%E5%8F%91%E6%B5%81e2e-%E6%B5%8B%E8%AF%95%E5%88%B0%E8%87%AA%E5%8A%A8%E6%8E%92%E9%9A%9C/">打造适合自己的 AI Harness 工程：从开发流、E2E 测试到自动排障</a>》。随着对AI Agent的深入实践，我发现人肉打Prompt的日子快要到头了，未来我们更多是设计一个系统，让系统来自动化地与Agent交互。最近我一直在研究 Loop Engineering，并尝试将它落地到我的日常工作中，特别是用 Pi Coding Agent 来实现自动化巡检和代码修复。</p>
@@ -139,30 +153,6 @@
 <p>起因是我准备在内部做一个公共的“运维AI机器人”。我满怀热情地规划了多租户架构、复杂的并发控制、MCP（Model Context Protocol）对接以及各种内部系统的打通。然而，经过两周的爆肝，项目上线没多久就被平台团队勒令下线，而从业务价值来看，老板其实也并不需要这样一个东西。</p>
 
 <p>俗话说，失败是成功之母。虽然项目黄了，但这两周踩过的坑、写过的废代码，都是技术架构演进路上的宝贵经验。我在这里复盘一下整个过程，聊聊我的技术实现、妥协，以及如果让我重新设计，我会怎么做。</p>
-
-<p></p>
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="https://zhu327.github.io/2026/02/11/ai%E5%B7%A5%E7%A8%8B%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/">AI工程落地实践</a></h1>
-        <span class="post-date">Feb 11 2026</span>
-        <p>前几天在整理项目代码的时候，看着 commit log 里那些由 AI 生成的代码，突然有点感慨。以前写代码是体力和脑力的双重劳动，现在好像变成了单纯的脑力博弈——跟 AI 的博弈。</p>
-
-<p>这篇想絮絮叨叨聊一下从传统的开发模式转变为 Vibe Coding 的过程中，我踩过的坑以及现在摸索出来的一套还算顺手的 SOP。</p>
-
-<h4 id="1-回顾-前ai时代的手工作坊">1. 回顾：前AI时代的手工作坊</h4>
-
-<p>在那时候，我接一个大需求，流程基本是雷打不动的：</p>
-
-<ol>
-<li><strong>拆解</strong>：把大需求掰碎了，变成一个个小任务。</li>
-<li><strong>设计</strong>：看老代码，定方案。哪里要改，哪里要加，脑子里或者纸上得有个谱。</li>
-<li><strong>搬砖</strong>：按计划写代码，写单测。</li>
-<li><strong>验证</strong>：跑通端对端流程。</li>
-<li><strong>Code Review</strong>：提 PR，等同事挑刺，改代码，合并。</li>
-</ol>
-
-<p>这个过程里，最重要的一步其实往往被忽视，就是<strong>复盘</strong>。这波开发里学到了什么新模式？引入了什么新坑？怎么避免下次再犯？这种“复利”思维才是工程师成长的关键。</p>
 
 <p></p>
     </div>

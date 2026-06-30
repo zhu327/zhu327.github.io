@@ -6,10 +6,27 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 17 Jun 2026 09:16:00 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 30 Jun 2026 19:16:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Lexideck 背单词小应用：AI 时代的 Vibe Coding 实践</title>
+      <link>https://zhu327.github.io/2026/06/30/lexideck-%E8%83%8C%E5%8D%95%E8%AF%8D%E5%B0%8F%E5%BA%94%E7%94%A8ai-%E6%97%B6%E4%BB%A3%E7%9A%84-vibe-coding-%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Tue, 30 Jun 2026 19:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/06/30/lexideck-%E8%83%8C%E5%8D%95%E8%AF%8D%E5%B0%8F%E5%BA%94%E7%94%A8ai-%E6%97%B6%E4%BB%A3%E7%9A%84-vibe-coding-%E5%AE%9E%E8%B7%B5/</guid>
+      <description>&lt;p&gt;我平时习惯通过 RSS 订阅 Hacker News，后来随着 Twitter 上线了默认翻译功能，我对直接阅读第一手英文资讯的需求越发强烈。然而现实很骨感：词汇量实在太低。因为现在机器翻译过于方便，我一般都是直接依赖浏览器翻译来看文章；有时候也会强迫自己不用全篇翻译，而是借助划词翻译来硬啃。&lt;/p&gt;
+
+&lt;p&gt;硬啃倒是能啃下来，但问题在于：读完了，生词该不认识还是不认识，英语水平并没有实质性的提升。&lt;/p&gt;
+
+&lt;p&gt;我觉得关键的痛点在于，我没有把这些在真实阅读场景中遇到的生词记录下来，也没有去反复背诵。所以我一直有个执念：做一个记录生词的工具。在划词翻译发现生词时，顺手把它记录下来，然后可以在手机上同步，随时随地利用碎片时间背单词。一旦这个“阅读发现 -&amp;gt; 记录 -&amp;gt; 间隔重复背诵”的数据飞轮转起来，我相信我的英语水平肯定会逐步提升。&lt;/p&gt;
+
+&lt;p&gt;不过，因为我自己一直是个偏后端的程序员，没怎么写过前端和 UI，这个计划就一直停留在脑海里，没有真正落地。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Loop Engineering 实践: Pi Coding Agent</title>
