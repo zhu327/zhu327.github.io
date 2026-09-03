@@ -223,10 +223,13 @@
 
 <p>这套流最舒服的地方在于：<strong>不再需要人肉去判断什么时候调什么 Skill，模型根据任务复杂度和文件边界自己决定。</strong> 人退到后面，负责定边界和做裁决。</p>
 
-<p>回顾这大半年的编码心路：
-- 最开始：不信任 Agent，每一行代码都要人肉过目才敢合入；
-- 中期：自己退出来只管出方案，安排模型之间交叉 Review；
-- 现在：<strong>我只负责跟 Agent 把需求和边界磨清楚，剩下的实现、校验、单测、对齐，全权交给 Agent 自己搞定。</strong></p>
+<p>回顾这大半年的编码心路：</p>
+
+<ul>
+<li>最开始：不信任 Agent，每一行代码都要人肉过目才敢合入；</li>
+<li>中期：自己退出来只管出方案，安排模型之间交叉 Review；</li>
+<li>现在：<strong>我只负责跟 Agent 把需求和边界磨清楚，剩下的实现、校验、单测、对齐，全权交给 Agent 自己搞定。</strong></li>
+</ul>
 
 <hr />
 
@@ -234,13 +237,16 @@
 
 <p>放下了写具体语法的包袱，我终于敢去碰一些以前一直想做却不敢涉足的领域。</p>
 
-<p>以前在腾讯 IEG，虽然身处 PaaS 平台相关的组，但由于各种分工限制，我并没有真正从底层写过一套完整的 PaaS 调度面。这些年我一直是 Fly.io 的重度拥趸，打心眼里喜欢他们基于轻量级虚拟机 Firecracker 搭建的那套极速启停的平台架构。</p>
+<p>以前在腾讯 IEG，虽然身处 PaaS 平台组，但由于各种分工限制，我并没有真正从底层写过一套完整的 PaaS 调度面。这些年我一直是 Fly.io 的重度拥趸，打心眼里喜欢他们基于轻量级虚拟机 Firecracker 搭建的那套极速启停的平台架构。</p>
 
 <p>但这一套工程量太浩大了。Firecracker 生态在开源界一直比较分散，要把 Docker 镜像剥开转成 rootfs，还要管虚拟机的生命周期，再加上跨节点的调度网络……以往在团队里，这种规模的项目没三四个资深工程师死磕小半年，根本别想看到可运行的原型。所以这个念想在脑子里落了灰，一放就是好几年。</p>
 
-<p>直到今年，我在刷 X 时注意到了两个关键拼图：
-1. <a href="https://github.com/kernel/hypeman"><code>kernel/hypeman</code></a>：它能直接把普通 Docker 镜像解包并转化为虚拟机所需的 rootfs，天然就是一个绝佳的 MicroVM Runtime。
-2. <a href="https://github.com/e2b-dev/infra"><code>e2b-dev/infra</code></a>：现在 AI Agent 跑沙箱（Sandbox）的标杆。他们基于 Nomad 做底层机器生命周期管理，而在虚拟机调度层面吸收了 Kubernetes 的 Reconcile 思想。</p>
+<p>直到今年，我在刷 X 时注意到了两个关键拼图：</p>
+
+<ol>
+<li><a href="https://github.com/kernel/hypeman"><code>kernel/hypeman</code></a>：它能直接把普通 Docker 镜像解包并转化为虚拟机所需的 rootfs，天然就是一个绝佳的 MicroVM Runtime。</li>
+<li><a href="https://github.com/e2b-dev/infra"><code>e2b-dev/infra</code></a>：现在 AI Agent 跑沙箱（Sandbox）的标杆。他们基于 Nomad 做底层机器生命周期管理，而在虚拟机调度层面吸收了 Kubernetes 的 Reconcile 思想。</li>
+</ol>
 
 <p>底层的思路一下子全串通了。借着 Agent 的产能杠杆，我用了一周时间，把这套平台给手搓了出来：<a href="https://github.com/zhu327/firepaas"><code>zhu327/firepaas</code></a>。</p>
 
@@ -248,9 +254,12 @@
 
 <p>在调试容器网桥和虚拟网卡通信的那个深夜，看着终端里秒级弹出的虚拟机，心里百感交集。写代码这门手艺，在某种纯粹的生产力层面上，大模型确实已经超越我了。</p>
 
-<p>顺带着，这几个月我还完成了两块重要的拼图：
-- <a href="https://github.com/zhu327/pingsix"><code>zhu327/pingsix</code></a>：之前用 Rust 写的一个 API 网关玩具。在大模型的反复 Review、边缘 Case 爆破和重构下，被硬生生拉扯到了具备生产可用度的状态。
-- <a href="https://github.com/zhu327/tfengine"><code>zhu327/tfengine</code></a>：一个完全由 Agent 生成交付的 Terraform Engine。</p>
+<p>顺带着，这几个月我还完成了两块重要的拼图：</p>
+
+<ul>
+<li><a href="https://github.com/zhu327/pingsix"><code>zhu327/pingsix</code></a>：之前用 Rust 写的一个 API 网关玩具。在大模型的反复 Review、边缘 Case 爆破和重构下，被硬生生拉扯到了具备生产可用度的状态。</li>
+<li><a href="https://github.com/zhu327/tfengine"><code>zhu327/tfengine</code></a>：一个完全由 Agent 生成交付的 Terraform Engine。</li>
+</ul>
 
 <p>至此，由 PaaS、网关、IaC 构成的平台基础设施矩阵，在我手里算是拼齐了。当年离开鹅厂时心里那点未竟的遗憾，终于在 2026 年的夏天画上了一个圆满的句号。</p>
 
@@ -266,10 +275,13 @@
 
 <p>如果放在以前，这确实是个致命的工程锁死问题。但我现在完全不在意了——<strong>因为在 Coding Agent 普及的当下，代码翻译和重写的边际成本已经无限趋近于零。</strong></p>
 
-<p>我不懂 TypeScript，但这丝毫不影响我指挥 Agent 把几个轻量服务重写并丢到 Workers 上稳定跑着：
-- <a href="https://github.com/zhu327/pocket-id-lite"><code>pocket-id-lite</code></a>
-- <a href="https://github.com/linkding-workers"><code>linkding-workers</code></a>
-- <a href="https://github.com/zhu327/lexideck"><code>lexideck</code></a></p>
+<p>我不懂 TypeScript，但这丝毫不影响我指挥 Agent 把几个轻量服务重写并丢到 Workers 上稳定跑着：</p>
+
+<ul>
+<li><a href="https://github.com/zhu327/pocket-id-lite"><code>pocket-id-lite</code></a></li>
+<li><a href="https://github.com/linkding-workers"><code>linkding-workers</code></a></li>
+<li><a href="https://github.com/zhu327/lexideck"><code>lexideck</code></a></li>
+</ul>
 
 <p>退一万步说，就算未来不想用 Cloudflare，开源社区也早有人填平了退路。比如最近发现的 <a href="https://github.com/denoland/celld"><code>denoland/celld</code></a>，它用 Rust 和 V8 引擎构建，完全兼容 Cloudflare Workers API，并且底层还集成我非常欣赏的 Litestream LTX 技术来做持久化。你想私有化部署，拉起来就是一个独立可控的 Edge Runtime。</p>
 
