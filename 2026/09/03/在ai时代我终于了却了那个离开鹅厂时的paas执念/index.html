@@ -200,10 +200,13 @@
 
 <h4 id="1-架构宪章-agents-md">1. 架构宪章：AGENTS.md</h4>
 
-<p>给项目定下绝对不可动摇的边界：
-- 领域与分层（Domain -&gt; Usecase -&gt; Adapter，严格向内依赖）。
-- 绝不手工改生成代码（<code>wire_gen.go</code>、mocks、Swagger），违者必须从源头重新生成。
-- 设定了明确的“验证阶梯（Verification Ladder）”：改了逻辑先写红灯用例再修代码，改了外部协议必须跑 <code>make e2e</code>。</p>
+<p>给项目定下绝对不可动摇的边界：</p>
+
+<ul>
+<li>领域与分层（Domain -&gt; Usecase -&gt; Adapter，严格向内依赖）。</li>
+<li>绝不手工改生成代码（<code>wire_gen.go</code>、mocks、Swagger），违者必须从源头重新生成。</li>
+<li>设定了明确的“验证阶梯（Verification Ladder）”：改了逻辑先写红灯用例再修代码，改了外部协议必须跑 <code>make e2e</code>。</li>
+</ul>
 
 <h4 id="2-精炼后的-4-个-skill">2. 精炼后的 4 个 Skill</h4>
 

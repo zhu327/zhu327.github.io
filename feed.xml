@@ -142,10 +142,13 @@
 
 &lt;h4 id=&#34;1-架构宪章-agents-md&#34;&gt;1. 架构宪章：AGENTS.md&lt;/h4&gt;
 
-&lt;p&gt;给项目定下绝对不可动摇的边界：
-- 领域与分层（Domain -&amp;gt; Usecase -&amp;gt; Adapter，严格向内依赖）。
-- 绝不手工改生成代码（&lt;code&gt;wire_gen.go&lt;/code&gt;、mocks、Swagger），违者必须从源头重新生成。
-- 设定了明确的“验证阶梯（Verification Ladder）”：改了逻辑先写红灯用例再修代码，改了外部协议必须跑 &lt;code&gt;make e2e&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;给项目定下绝对不可动摇的边界：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;领域与分层（Domain -&amp;gt; Usecase -&amp;gt; Adapter，严格向内依赖）。&lt;/li&gt;
+&lt;li&gt;绝不手工改生成代码（&lt;code&gt;wire_gen.go&lt;/code&gt;、mocks、Swagger），违者必须从源头重新生成。&lt;/li&gt;
+&lt;li&gt;设定了明确的“验证阶梯（Verification Ladder）”：改了逻辑先写红灯用例再修代码，改了外部协议必须跑 &lt;code&gt;make e2e&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h4 id=&#34;2-精炼后的-4-个-skill&#34;&gt;2. 精炼后的 4 个 Skill&lt;/h4&gt;
 
