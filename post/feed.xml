@@ -6,10 +6,29 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 30 Jun 2026 19:16:00 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 03 Sep 2026 16:30:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>在AI时代，我终于了却了那个离开鹅厂时的PaaS执念</title>
+      <link>https://zhu327.github.io/2026/09/03/%E5%9C%A8ai%E6%97%B6%E4%BB%A3%E6%88%91%E7%BB%88%E4%BA%8E%E4%BA%86%E5%8D%B4%E4%BA%86%E9%82%A3%E4%B8%AA%E7%A6%BB%E5%BC%80%E9%B9%85%E5%8E%82%E6%97%B6%E7%9A%84paas%E6%89%A7%E5%BF%B5/</link>
+      <pubDate>Thu, 03 Sep 2026 16:30:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/09/03/%E5%9C%A8ai%E6%97%B6%E4%BB%A3%E6%88%91%E7%BB%88%E4%BA%8E%E4%BA%86%E5%8D%B4%E4%BA%86%E9%82%A3%E4%B8%AA%E7%A6%BB%E5%BC%80%E9%B9%85%E5%8E%82%E6%97%B6%E7%9A%84paas%E6%89%A7%E5%BF%B5/</guid>
+      <description>&lt;p&gt;一晃到了 2026 年的 9 月初。&lt;/p&gt;
+
+&lt;p&gt;坐在珠海的办公室里，翻看着终端里的会话统计数据，才猛然发觉这大半年过得有多魔幻。如果在 2024 年底我刚开始折腾 Cursor 的时候，有人跟我说：“老朱，再过一年半，你自己基本上不用动手写代码了，一个人一个星期就能把一个分布式 PaaS 平台从零拉起来”，我大概率会觉得他在扯淡。&lt;/p&gt;
+
+&lt;p&gt;但翻开后台的数据，现实就是这么冷冰冰又热腾腾地摆在面前：从 6 月初到现在，仅仅 3 个月的时间，我本机加远程两台机器，跑了 1400 多个 Coding Agent 会话，消耗了超过 &lt;strong&gt;60 亿&lt;/strong&gt; 的 Token。&lt;/p&gt;
+
+&lt;p&gt;这大半年里，我的主力工具从 Cursor 全面切到了 Pi，硬啃了无数国产模型的坑，把以前写得臃肿的 Agent 工作流砍到只剩骨架，甚至顺手做完了当年离开鹅厂时埋在心底的一个夙愿。&lt;/p&gt;
+
+&lt;p&gt;今天有些空闲，就按照惯例，絮絮叨叨地复盘一下这半年的折腾历程。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Lexideck 背单词小应用：AI 时代的 Vibe Coding 实践</title>
