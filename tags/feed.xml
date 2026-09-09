@@ -6,10 +6,28 @@
     <description>Recent content in Tags on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 13 Apr 2016 21:08:11 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 07 Sep 2026 09:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/tags/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Api Gateway</title>
+      <link>https://zhu327.github.io/tags/api-gateway/</link>
+      <pubDate>Mon, 07 Sep 2026 09:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/api-gateway/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Apisix</title>
+      <link>https://zhu327.github.io/tags/apisix/</link>
+      <pubDate>Mon, 07 Sep 2026 09:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/apisix/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Blog</title>
@@ -111,6 +129,15 @@
     </item>
     
     <item>
+      <title>Kong</title>
+      <link>https://zhu327.github.io/tags/kong/</link>
+      <pubDate>Mon, 07 Sep 2026 09:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/kong/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Lxml</title>
       <link>https://zhu327.github.io/tags/lxml/</link>
       <pubDate>Fri, 02 Jan 2015 19:41:03 +0800</pubDate>
@@ -156,6 +183,15 @@
     </item>
     
     <item>
+      <title>Pingora</title>
+      <link>https://zhu327.github.io/tags/pingora/</link>
+      <pubDate>Mon, 07 Sep 2026 09:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/pingora/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Python</title>
       <link>https://zhu327.github.io/tags/python/</link>
       <pubDate>Thu, 16 Jun 2016 17:51:21 +0800</pubDate>
@@ -194,7 +230,7 @@
     <item>
       <title>Rust</title>
       <link>https://zhu327.github.io/tags/rust/</link>
-      <pubDate>Thu, 19 Dec 2024 10:55:52 +0800</pubDate>
+      <pubDate>Mon, 07 Sep 2026 09:00:00 +0800</pubDate>
       
       <guid>https://zhu327.github.io/tags/rust/</guid>
       <description></description>

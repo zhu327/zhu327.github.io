@@ -7,7 +7,279 @@
     <language>zh-cn</language>
     
     
-    <updated>Thu, 03 Sep 2026 16:30:00 &#43;0800</updated>
+    <updated>Mon, 07 Sep 2026 09:00:00 &#43;0800</updated>
+    
+    <item>
+      <title>网关十年：从Kong插件到PingSIX</title>
+      <link>https://zhu327.github.io/2026/09/07/%E7%BD%91%E5%85%B3%E5%8D%81%E5%B9%B4%E4%BB%8Ekong%E6%8F%92%E4%BB%B6%E5%88%B0pingsix/</link>
+      <pubDate>Mon, 07 Sep 2026 09:00:00 &#43;0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/09/07/%E7%BD%91%E5%85%B3%E5%8D%81%E5%B9%B4%E4%BB%8Ekong%E6%8F%92%E4%BB%B6%E5%88%B0pingsix/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;最近在 Pingora 上把 &lt;code&gt;ai_proxy&lt;/code&gt; 插件写完了。加上这个，pingsix 的插件数凑到了第 29 个。提交完代码看了一眼提交记录，突然意识到从 2017 年在前公司写第一个 Kong 的 Lua 认证插件开始，断断续续折腾网关这玩意儿，居然快十年了。&lt;/p&gt;
+
+&lt;p&gt;从早年小公司几十台机器的 SaaS，到后来在腾讯蓝鲸扛日均 3.5 亿请求的流量入口，再到现在用 Rust 和 Pingora 把这些东西从头重写一遍。这十年里，技术选型换了一轮又一轮，但回过头看，踩过的坑和底层的思考逻辑，倒是惊人地相似。&lt;/p&gt;
+
+&lt;p&gt;趁着最近刚把代码重构完，记录一下这十年里我做网关的一些经历和取舍。想看代码的可以直接去翻 &lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;pingsix&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;Image1&#34; src=&#34;https://github.com/user-attachments/assets/4f2a85cc-95c4-4715-a5de-9d90f39244bd&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;一-2017-2019-为什么是-kong&#34;&gt;一、2017-2019：为什么是 Kong&lt;/h3&gt;
+
+&lt;h4 id=&#34;从-nginx-到-kong-小团队的务实选型&#34;&gt;从 Nginx 到 Kong：小团队的务实选型&lt;/h4&gt;
+
+&lt;p&gt;2017 年我在前公司做 HR SaaS，后端最开始是 Django 单体，后来业务膨胀，慢慢拆成了微服务。服务拆出来之后，接入层的 Nginx 配置就成了事故高发区：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;改一次 Nginx 配置得手动推到多台机器，经常因为手抖改错配置引发调用故障；&lt;/li&gt;
+&lt;li&gt;每个服务都在自己的代码里搞一套认证，逻辑散落到处都是；&lt;/li&gt;
+&lt;li&gt;服务间靠内网 HTTP + 配置 hosts 互相调用，没有限流、没有重试、也没有熔断。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;接入层急需一个统一的入口，把认证、限流、日志这些通用的脏活从业务代码里剥离出来。这就是我折腾网关的起点。&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;Image2&#34; src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/v2-8fec1c067dae33c7fcaeb95f5e3a3792_r.jpg&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;Image3&#34; src=&#34;https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/v2-501318fe25b9852cf72270a20c783db0_r.jpg&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;当时开源网关主要就是两个方向：Go 和 OpenResty(Lua)。我花了一个月时间把这两门技术都学了下，还顺手用 OpenResty 写了个短网址服务 &lt;code&gt;shorturl&lt;/code&gt; 丢到生产去跑，最后给团队敲定的选型是 Kong。&lt;/p&gt;
+
+&lt;p&gt;选 Kong 倒真不是因为性能有多无敌，那时候的流量体量根本谈不上性能瓶颈，主要还是出于非常务实的几点考虑：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Lua 改完热重载直接生效&lt;/strong&gt;，不需要重新编译二进制，也不用重启进程；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Kong 的开箱即用程度高&lt;/strong&gt;，常用的认证、限流、日志插件社区都有，团队当时总共就几个后端，没精力从零自研；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;插件机制简单&lt;/strong&gt;，无非就是在 request/response 阶段挂钩子函数，团队水平参差不齐，这套方案最容易在团队内推广和维护。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;至于并发，当时直接挂在云厂商的 LB 后面，分发到两台 Kong 服务器组成的集群，就足以抗住业务了。&lt;/p&gt;
+
+&lt;h4 id=&#34;集群踩坑与东西流量&#34;&gt;集群踩坑与东西流量&lt;/h4&gt;
+
+&lt;p&gt;刚开始以为搞两台 Kong 跑起来就是个高可用集群了，真正上线后才发现，&lt;strong&gt;配置管理本身就是个大坑&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;有一次发新版本，同一个接口在不同客户端下表现不一致，有的通、有的直接报 404。排查半天才发现两台机器的路由配置没完全同步。后来我们吸取教训，把所有变更收拢到发布脚本里，统一调 Admin API 执行，并且发布完成后强制做一次多节点的配置校验。这让我第一次意识到：网关做成集群后，配置下发和一致性才是真正考验工程能力的地方。&lt;/p&gt;
+
+&lt;p&gt;另外，当时 Kong 只管南北向的公网入口。内部服务之间互相调用的东西向流量，因为没有现成轻量的 Python RPC 框架（饿了么的 thriftpy 全家桶对小团队学习成本实在太高，我们果断放弃了），我基于 MPRPC + gevent 自己造了个轮子 &lt;code&gt;doge&lt;/code&gt;。用 etcd 做服务注册和 TTL 心跳，客户端实现了限流、重试和熔断。&lt;/p&gt;
+
+&lt;p&gt;这种“南北走网关、东西走轻量 RPC”的模式，我从 2018 年一直用到后来进大厂，受用了很多年。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&#34;二-2021-2024-在-3-5-亿请求里学到的深水区&#34;&gt;二、2021-2024：在 3.5 亿请求里学到的深水区&lt;/h3&gt;
+
+&lt;p&gt;2018 年底我去了腾讯，后来调到蓝鲸团队，一呆就是 6 年多。蓝鲸是腾讯内部做研运一体化的 PaaS 平台，我主要负责 BK-IAM（权限中心）和 BK-APIGW（API网关）。&lt;/p&gt;
+
+&lt;p&gt;在这里，网关是整个 PaaS 平台的流量底座，日均请求在 3.5 亿左右。在这个体量下，我才意识到很多以前在小公司完全不会碰到的“深水区”问题：网关的壁垒根本不在单纯的请求转发，而在于发布、灰度、优雅下线，以及怎么保证运维晚上能睡个好觉。&lt;/p&gt;
+
+&lt;h4 id=&#34;一次发布事故倒逼的-operator-重构&#34;&gt;一次发布事故倒逼的 Operator 重构&lt;/h4&gt;
+
+&lt;p&gt;早期我们的配置管理形态也比较传统：控制面生成配置，推送到数据面。随着测试、预发、生产、多地域环境越来越多，不同环境的配置漂移成了家常便饭，回滚基本全靠人工去翻历史配置手动还原。&lt;/p&gt;
+
+&lt;p&gt;真正促使我彻底重构发布机制的，是一次夜间发布的故障：&lt;/p&gt;
+
+&lt;p&gt;当时网关数据面做滚动更新，新 Pod 刚拉起来，流量切进去就瞬间爆出大量 5xx。最后排查下来，根因是旧 Pod 收到 Kubernetes 的 SIGTERM 信号后直接退出了，原本还在处理中的连接被强行掐断；而新 Pod 还没完全通过健康检查，流量就已经导了过去。那一晚我们只能紧急暂停发布，把流量硬切回旧集群才止损。&lt;/p&gt;
+
+&lt;p&gt;复盘的时候我意识到：&lt;strong&gt;大流量网关出事，十次有八次不是转发性能出了瓶颈，而是生命周期管理没做好。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;后来我们把发布流程彻底规范化，并写成了 Operator：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;配置全部改成声明式 CRD（Route、Upstream、SSL、Plugin），由 Controller 监听并负责收敛状态；&lt;/li&gt;
+&lt;li&gt;发布走 Reconcile 机制，不再依赖不可靠的临时脚本；&lt;/li&gt;
+&lt;li&gt;在 Pod 的 &lt;code&gt;preStop&lt;/code&gt; 阶段严格做优雅下线：先摘除流量 -&amp;gt; 排空在途请求 -&amp;gt; 延迟退出；新 Pod 必须等 readinessProbe 探针完全就绪才承接流量；&lt;/li&gt;
+&lt;li&gt;回滚不再靠手动改配置，改回上一个版本的 CR 即可。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;把生命周期做成闭环之后，夜间发布的事故率断崖式下降。&lt;/p&gt;
+
+&lt;h4 id=&#34;几个难啃的骨头&#34;&gt;几个难啃的骨头&lt;/h4&gt;
+
+&lt;p&gt;除了发布机制，在 3.5 亿请求的场景下，我们还啃下了几个硬骨头：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;L4 协议的支持&lt;/strong&gt;：蓝鲸体系里有大量的非 HTTP 流量，比如 Agent 的长连接、作业平台的下发通道、监控数据上报等。以前这些流量全靠独立的 LB 直连，没有鉴权也没有审计。后来我们依托 APISIX 的 stream 模块把 L4 流量收敛进网关。代价是把端口规划、TLS/非TLS识别、健康检查以及按连接限流的整套逻辑在架构上全部铺了一遍。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;收敛入口做 APISIX Ingress&lt;/strong&gt;：集群越来越多后，入口各自为政，维护成本极高。我们把南北向 API 和集群内部的 Ingress 统一收敛到了 APISIX Ingress Controller。存量资源的迁移全靠“旁路同步 + 双跑对比”，确认无误后才分批切流。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可观测性治理&lt;/strong&gt;：3.5 亿的日志和 Trace 全量采集会瞬间把后端 ES 和监控打爆。我们做了一套精细的采样治理：正常 200 请求按极低比例采样，慢请求和错误请求 100% 采样并附带链路信息，告警收敛从“单机单报错”降噪为“集群维度的聚合报警”。单 Pod 2 万 QPS、P99 50ms 这类数据，不是靠压测打出来的，都是在火焰图前抠连接池复用、TLS 缓存和日志异步刷盘抠出来的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这期间其实跟我之前做 BK-IAM 的思路是通的：BK-IAM 每天 1 亿多鉴权请求，本地缓存扛了 70%，Redis 扛了 25%，真正到 MySQL 的只有 5%。&lt;strong&gt;读多写少的公共设施，性能瓶颈永远在配置分发和数据一致性上。别让读路径去加锁或者频繁查库，把配置变更当成不可变的版本快照来推，是唯一的正解。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&#34;三-2024-2026-用-rust-重写一遍&#34;&gt;三、2024-2026：用 Rust 重写一遍&lt;/h3&gt;
+
+&lt;p&gt;2024 年离开腾讯后，在重新找工作和歇着的空隙里，我开始认真学 Rust。一方面是出于技术人员对抗年龄危机的折腾劲儿，另一方面我也一直在琢磨：如果让我抛开历史包袱，重新实现一个兼顾性能与安全的企业级网关，会是什么样？&lt;/p&gt;
+
+&lt;p&gt;后来 Cloudflare 开源了 Pingora。Pingora 把网络 IO、连接池、TLS、HTTP/2 这些底层脏活都封装得很扎实，我就决定基于它写一个 APISIX 功能子集的网关，也就是 &lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;pingsix&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&#34;核心架构设计&#34;&gt;核心架构设计&lt;/h4&gt;
+
+&lt;p&gt;pingsix 的源码结构比较克制，大部分核心逻辑都在 &lt;code&gt;src/&lt;/code&gt; 下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;src/
+├── core/         插件内核：plugin trait、执行 pipeline、verdict、错误模型
+├── config/       配置解析/校验/默认值 + etcd 客户端与热加载
+├── proxy/        数据面：route 匹配、upstream 发现/负载均衡/健康检查、SSL、global rule
+│   ├── control_plane/   编译期：校验全图引用、准备 DNS、产出不可变 RuntimeSnapshot
+│   └── graph_mutation/  图权威：唯一持有配置图状态、CAS 冲突处理、secret 脱敏
+├── plugins/      29+ 插件（jwt/key/basic auth、限流、缓存、ai_proxy...）
+├── service/      HTTP 服务装配（http/status）
+├── admin/        Admin API
+├── logging/      日志
+└── utils/        公共工具
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里我没把控制面拆成单独的进程，而是收敛在 &lt;code&gt;proxy/&lt;/code&gt; 模块内。etcd 监听到变更后，由 &lt;code&gt;graph_mutation&lt;/code&gt; 处理冲突并生成配置图，再由 &lt;code&gt;control_plane&lt;/code&gt; 编译成一份不可变的 &lt;code&gt;RuntimeSnapshot&lt;/code&gt;，最后通过 &lt;code&gt;arc-swap&lt;/code&gt; 原子替换给数据面。&lt;/p&gt;
+
+&lt;p&gt;这样设计的好处是：&lt;strong&gt;读路径完全无锁，永远只读一份原子发布的不可变快照，写路径在后台编译完成后直接单指针切换&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;顺便提一句，我在 README 里写的设计目标是“100K+ RPS / P99 &amp;lt; 10ms”（基于 AWS c5.xlarge）。说实话，这目前只是开发阶段设立的方向，仓库里现在跑的还主要是 &lt;code&gt;plugin_pipeline&lt;/code&gt; 和 &lt;code&gt;route_matching&lt;/code&gt; 的基准微压测，端到端严丝合缝的大规模生产级压测环境还没完全搭好。做技术的还是务实一点，别把设计目标当成最终成绩单。&lt;/p&gt;
+
+&lt;h4 id=&#34;几个折磨人但有价值的细节&#34;&gt;几个折磨人但有价值的细节&lt;/h4&gt;
+
+&lt;p&gt;写 Rust 的这两年，踩过无数坑。挑三个我认为最值得聊的代码细节：&lt;/p&gt;
+
+&lt;h5 id=&#34;1-后台任务的生命周期-drop&#34;&gt;1. 后台任务的生命周期（Drop）&lt;/h5&gt;
+
+&lt;p&gt;在 Go 里面跑后台心跳检查，直接 &lt;code&gt;go func()&lt;/code&gt; 启动一个 goroutine 就可以不管了。但在 Rust 里，如果不把 runtime 显式保存在对象中，离开当前作用域后后台任务就会直接退场：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span class=&#34;k&#34;&gt;impl&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ProxyUpstream&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;pub&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;fn&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;new_with_health_check&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;upstream&lt;/span&gt;: &lt;span class=&#34;nc&#34;&gt;config&lt;/span&gt;::&lt;span class=&#34;n&#34;&gt;Upstream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;work_stealing&lt;/span&gt;: &lt;span class=&#34;kt&#34;&gt;bool&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-&amp;gt; &lt;span class=&#34;nb&#34;&gt;Result&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;mut&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;proxy_upstream&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Self&lt;/span&gt;::&lt;span class=&#34;n&#34;&gt;try_from&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;upstream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;proxy_upstream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;start_health_check&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;work_stealing&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Ok&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;proxy_upstream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;fn&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;start_health_check&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;mut&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;work_stealing&lt;/span&gt;: &lt;span class=&#34;kt&#34;&gt;bool&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runtime&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;create_runtime&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;work_stealing&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;threads&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;service&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;());&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runtime&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_handle&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;spawn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;async&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;move&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;            &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;service&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;start_service&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;watch_rx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;await&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 必须显式持有 runtime，否则函数退出后后台健康检查立即终止
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runtime&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Some&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runtime&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;impl&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Drop&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ProxyUpstream&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;fn&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;drop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;mut&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;stop_health_check&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 显式停止，避免对象析构时产生运行中任务 panic
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id=&#34;2-反转-host-解决前缀树的通配符难题&#34;&gt;2. 反转 Host 解决前缀树的通配符难题&lt;/h5&gt;
+
+&lt;p&gt;在 Radix Tree 路由匹配里，&lt;code&gt;matchit&lt;/code&gt; 这类库天生只支持前缀匹配，但 Web 域名通配符通常是后缀匹配（比如 &lt;code&gt;*.example.com&lt;/code&gt;）。&lt;/p&gt;
+
+&lt;p&gt;pingsix 里的解法是把 host 倒过来存，把后缀问题转化为前缀问题：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span class=&#34;k&#34;&gt;fn&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;reverse_ascii_lowercase&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;input&lt;/span&gt;: &lt;span class=&#34;kp&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;str&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-&amp;gt; &lt;span class=&#34;nb&#34;&gt;String&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;mut&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reversed&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;String&lt;/span&gt;::&lt;span class=&#34;n&#34;&gt;with_capacity&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;input&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;());&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ch&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;in&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;input&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;chars&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rev&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reversed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;push&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;to_ascii_lowercase&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;());&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reversed&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;fn&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;reverse_host&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;host&lt;/span&gt;: &lt;span class=&#34;kp&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;str&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;-&amp;gt; &lt;span class=&#34;nb&#34;&gt;String&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Some&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;domain_part&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;host&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strip_prefix&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;*&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reversed_domain&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Self&lt;/span&gt;::&lt;span class=&#34;n&#34;&gt;reverse_ascii_lowercase&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;domain_part&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;format&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;{reversed_domain}{{*subdomain}}&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Self&lt;/span&gt;::&lt;span class=&#34;n&#34;&gt;reverse_ascii_lowercase&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;host&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;匹配的时候，进来的请求域名也先反转，一次树查找就能通吃精确域名和通配域名。&lt;/p&gt;
+
+&lt;p&gt;不过这里有个有意思的协议细节：TLS SNI 的证书匹配规范（RFC 6125）明确规定通配符只匹配单层域名，而 HTTP 路由的泛域名很多时候需要支持多级。所以在 &lt;code&gt;ssl.rs&lt;/code&gt; 里虽然也用了反转，但不能直接用 matchit 的子域名通配，而是用了“反转精确匹配 + 单层正则列表 + catch-all”的三层兜底。同一个小技巧在两个协议层上的语义差异，很有意思。&lt;/p&gt;
+
+&lt;h5 id=&#34;3-借用检查器的毒打&#34;&gt;3. 借用检查器的毒打&lt;/h5&gt;
+
+&lt;p&gt;刚从动态语言或者 Go 转过来写 Rust，被借用检查器卡住是日常：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 典型的编译报错：同时存在可变借用与不可变借用
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;http_session&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;req_header&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;uri&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;to_string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 借用
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;http_session&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set_keepalive&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;                            &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 可变借用，直接编译失败
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 正确做法：利用代码块限制借用作用域，把数据 clone 出来后再做修改
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;req_header&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;http_session&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;req_header&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;req_header&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;uri&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;to_string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(),&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;req_header&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;clone&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;http_session&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set_keepalive&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;一开始觉得这纯属没事找事，但写久了会发现，这种别扭的限制彻底封死了并发场景下“读着读着数据被别人改了”的线上幽灵 Bug。&lt;/p&gt;
+
+&lt;h4 id=&#34;ai-辅助与-ingress-路线&#34;&gt;AI 辅助与 Ingress 路线&lt;/h4&gt;
+
+&lt;p&gt;2025 年下半年我用 Cursor 对 pingsix 做过一次大重构（+6636 / -3578 行）。我的工作流基本上是：用 Cursor + Claude 写具体模块，用 gitingest 打包代码让 Gemini 2.5 Pro 做全局 Review，然后再把意见搬回 Cursor 逐个修。&lt;/p&gt;
+
+&lt;p&gt;折腾完这一圈我的感触是：AI 写局部逻辑的效率确实比人快，但在系统架构的边界划分、协议规范的取舍上，还是得靠自己心里那张图，不能全听它的。&lt;/p&gt;
+
+&lt;p&gt;另外在 Ingress 方案上，我调研完 proxy-wasm 后直接放弃了。Pingora 本身设计偏向 CDN 代理，对拦截和原地修改 request/response body 的支持非常别扭，强行实现 wasm ABI 得不偿失。&lt;/p&gt;
+
+&lt;p&gt;最后我选择了 Adapter 路线：用 &lt;code&gt;api7/etcd-adapter&lt;/code&gt;（kine）把 Kubernetes 资源转存进 etcd，pingsix 的数据面代码一行都不需要为了 K8s 妥协。为了保证可靠性，我们在 Controller 里做了几处细节：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;etcd adapter 只在 Leader 节点启动，避免 Follower 暴露空数据；&lt;/li&gt;
+&lt;li&gt;只有成功完成第一次全量同步的 Pod 才会打上 Serving 标签供流量调度；&lt;/li&gt;
+&lt;li&gt;增加了 Barrier 机制，确保本地缓存更新前 adapter 已经完整把这一批配置刷完了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这些思路后来收敛成了单独的 &lt;a href=&#34;https://github.com/zhu327/pingsix-ingress-controller&#34;&gt;pingsix-ingress-controller&lt;/a&gt;。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&#34;四-网关的下一跳-ai-网关与算账&#34;&gt;四、网关的下一跳：AI 网关与算账&lt;/h3&gt;
+
+&lt;p&gt;最近大模型越来越火，网关领域也冒出了一堆“AI 网关”。pingsix 也顺势支持了 &lt;code&gt;ai_proxy&lt;/code&gt; 插件，支持 OpenAI、DeepSeek、Anthropic 等主流协议的抹平和转换。&lt;/p&gt;
+
+&lt;h4 id=&#34;ai-proxy-踩坑实录&#34;&gt;ai_proxy 踩坑实录&lt;/h4&gt;
+
+&lt;p&gt;真正写这个插件的时候，才发现细节全是坑：&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;Image4&#34; src=&#34;https://github.com/user-attachments/assets/7cc1f68f-cd05-4658-90f3-dd997275eb3a&#34; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Pingora 的死锁陷阱&lt;/strong&gt;：原本我想在 &lt;code&gt;request_filter&lt;/code&gt; 钩子里直接把 Body 读出来做转换，结果在线上压测时直接把 Pingora 0.8 的 h1 代理循环搞死锁了。后来把思路调整为：Header 阶段只做 provider 协商和鉴权，Body 阶段流式处理；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;强制使用 Chunked 编码&lt;/strong&gt;：因为我们要在网关层把 OpenAI 的入参转换成 Anthropic 的 Messages 结构，改写后的 Body 长度肯定会变。而在请求头发送之前根本拿不到最终长度，所以改写 &lt;code&gt;Content-Length&lt;/code&gt; 是死路一条，必须强制走 &lt;code&gt;Transfer-Encoding: chunked&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;读超时下限设到 600 秒&lt;/strong&gt;：大模型无论是推理还是思考，中间合法“静默”的时间非常长。Pingora 的 &lt;code&gt;read_timeout&lt;/code&gt; 卡的是两个 Chunk 之间的时间间隔，如果用常规 Web 网关默认的 30s/60s 超时，思考模型只要推理慢一点就会直接被网关断开；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模型方的细节差异&lt;/strong&gt;：比如 OpenAI 会把同时带 &lt;code&gt;max_tokens&lt;/code&gt; 和 &lt;code&gt;max_completion_tokens&lt;/code&gt; 的请求拒掉；DeepSeek 的官方接口路径没有 &lt;code&gt;/v1&lt;/code&gt;；Anthropic 必须要注入特定的 &lt;code&gt;anthropic-version&lt;/code&gt; 头等等。这些转换逻辑我都剥离到了纯函数 &lt;code&gt;transform.rs&lt;/code&gt; 里，单测覆盖完整，不和网络运行时搅在一起。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;概念背后-全是老问题换皮&#34;&gt;概念背后：全是老问题换皮&lt;/h4&gt;
+
+&lt;p&gt;写完 &lt;code&gt;ai_proxy&lt;/code&gt;，我最大的体会就是：&lt;strong&gt;先不要被各种新概念吓住，AI 网关绝大部分需求，本质上都是传统网关老问题换了层皮&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;所谓的“LLM 智能路由”，底层就是我们搞了十年的按权重、按优先级的 Upstream 调度；&lt;/li&gt;
+&lt;li&gt;所谓的“Token 限流”，底层不过是把 QPS 计数器换成了基于消耗 Token 数量的令牌桶；&lt;/li&gt;
+&lt;li&gt;所谓的“语义缓存”，无非就是把原本计算 URL/参数哈希的缓存 Key，换成向量 Embedding 的距离比对，底层缓存失效和剔除的机制该怎么写还是怎么写。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;网关的核心并没有颠覆，它依然是一个反向代理，只是处理的 payload 从普通 JSON 变成了由 Token 组成的流。&lt;/p&gt;
+
+&lt;h4 id=&#34;唯一的真变量-算账-finops&#34;&gt;唯一的真变量：算账（FinOps）&lt;/h4&gt;
+
+&lt;p&gt;如果说 AI 真的给网关带来了什么本质改变，我认为是&lt;strong&gt;网关的定位从单纯的“技术基础设施”，第一次变成了“业务算账的中心”&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;在传统 Web 时代，一个接口调用一万次，服务器的成本几乎是固定的，网关关注的是机器抗不抗得住；但在大模型时代，调用每次都要折算成 Token 计费，Token 的消耗直接对应真实的账单支出。&lt;/p&gt;
+
+&lt;p&gt;最近几年我在金山做多云 FinOps，整套成本闭环无非就是：&lt;strong&gt;发现异常波动 -&amp;gt; 定位责任业务 -&amp;gt; 对比预算水位 -&amp;gt; 生成报告推进治理&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;把这套逻辑搬到 AI 网关上完全顺理成章：哪个团队的 Token 异常激增？用了便宜的模型还是昂贵的模型？有没有撞上预算红线？网关第一次掌握了业务调用中最敏感的财务数据。未来网关的护城河，很可能不再是“我能转多快”，而是“我能帮你把模型调用的账算得多清楚”。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&#34;结尾&#34;&gt;结尾&lt;/h3&gt;
+
+&lt;p&gt;从 2017 年在小公司对着 Nginx 配置文件发愁、搞两台 Kong 做集群，到在蓝鲸天天盯着监控面板看 3.5 亿请求的心惊肉跳，再到现在自己一个人用 Rust 把这些逻辑推翻了重新写，这一路折腾了将近十年。&lt;/p&gt;
+
+&lt;p&gt;技术栈从 Python/Lua 走到了 Rust，架构理念从最初粗暴的限流转发，走到大流量下的生命周期管理，再走到如今面向 Token 的计费治理。&lt;/p&gt;
+
+&lt;p&gt;以前年轻的时候，总觉得牛逼的技术就是写出单机并发几万、架构多么炫酷的系统；折腾了这么多年，踩了无数次深夜发布的坑之后，反而觉得最踏实的技术，永远是在团队水平、业务现状和稳定性之间做好妥协，把系统做得足够皮实，让大家晚上不用被告警叫醒。&lt;/p&gt;
+
+&lt;p&gt;网关这门老手艺大概率还会继续演进下去。只要系统之间还需要打交道，不管是服务调用还是模型交互，这个入口就始终有用武之地。慢慢写，持续迭代吧。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>在AI时代，我终于了却了那个离开鹅厂时的PaaS执念</title>
@@ -2626,97 +2898,6 @@ ralph-once.sh / ralph-loop.sh  -- AFK 智能体逐 Issue 实现（TDD）
 &lt;p&gt;通过这次实践，我对依赖倒置、接口隔离等 SOLID 原则有了远比书本上更深刻的理解。当你真正理解了“为什么”要这么做，而不是仅仅停留在“是什么”和“怎么做”的层面时，你会发现，写出整洁、健壮的代码，其实是一件充满乐趣的事情。&lt;/p&gt;
 
 &lt;p&gt;希望这篇文章能为同样在重构道路上探索的你，提供一些有价值的参考与启发。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>打造一个属于自己的AI书签</title>
-      <link>https://zhu327.github.io/2025/07/07/%E6%89%93%E9%80%A0%E4%B8%80%E4%B8%AA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84ai%E4%B9%A6%E7%AD%BE/</link>
-      <pubDate>Mon, 07 Jul 2025 14:55:52 &#43;0800</pubDate>
-      
-      <guid>https://zhu327.github.io/2025/07/07/%E6%89%93%E9%80%A0%E4%B8%80%E4%B8%AA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84ai%E4%B9%A6%E7%AD%BE/</guid>
-      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
-
-&lt;p&gt;我一直是个重度的书签使用者，多年来都依赖 Pocket 来收藏和沉淀那些在网上看到的、值得一读的文章。然而，最近 Pocket 宣布其通知服务即将关闭，这对我来说像是一个信号，是时候去寻找一个更稳定、更可控的替代品了。&lt;/p&gt;
-
-&lt;p&gt;我的探索之旅就这样开始了：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Raindrop.io&lt;/strong&gt;：社区里很多人推荐，功能也确实强大。但不知道是不是网络原因，我这边访问起来总是感觉有点慢，而且用惯了 Pocket 的我，对它的界面和交互逻辑始终有些不太习惯。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;自建服务&lt;/strong&gt;：作为程序员，第一反应自然是自己动手。我找到了像 &lt;a href=&#34;https://github.com/sissbruecker/linkding&#34;&gt;linkding&lt;/a&gt; 这样的优秀开源项目。我尝试把它部署在 &lt;a href=&#34;https://fly.io/&#34;&gt;fly.io&lt;/a&gt; 的免费实例上，但 linkding 对资源的要求不低，最低配的 256M 内存实例直接就 OOM (Out of Memory) 了，升级配置又意味着成本。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;从零开始写一个？&lt;/strong&gt; 这个念头一闪而过。我甚至构思好了技术选型：参照 linkding 的功能，用我最近在学习的 &lt;strong&gt;Rust&lt;/strong&gt; 实现后端，部署在 &lt;strong&gt;Cloudflare Workers&lt;/strong&gt; 上，再配上 &lt;strong&gt;Cloudflare D1&lt;/strong&gt; 的 SQLite 数据库。这套方案 Serverless、成本极低，堪称完美。但转念一想，这工程量可不小，对于业余项目来说，我实在没有那么多时间投入进去。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;就在我快要放弃，准备将就着用某个方案时，我想起了一篇以前收藏过的文章。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;1-灵感乍现-llm-x-github-书签&#34;&gt;1. 灵感乍现：LLM x GitHub 书签&lt;/h3&gt;
-
-&lt;p&gt;那篇文章是 &lt;a href=&#34;https://nekonull.me/posts/llm_x_bookmark/&#34;&gt;LLM x 书签收藏：摘要 &amp;amp; 全文索引&lt;/a&gt;，作者提供了一个极具创意的思路：通过一个浏览器插件 &lt;a href=&#34;https://github.com/osmoscraft/osmosmemo&#34;&gt;osmos::memo&lt;/a&gt;，可以将书签直接保存到指定 GitHub 仓库的 &lt;code&gt;README.md&lt;/code&gt; 文件里。&lt;/p&gt;
-
-&lt;p&gt;这个方案瞬间击中了我！它足够&lt;strong&gt;简单&lt;/strong&gt;，没有多余的功能，完美符合我的需求。数据就躺在自己的 GitHub 仓库里，再也不用担心服务关停。虽然原文后续介绍了如何利用 LLM 对书签进行摘要和索引，但我觉得还可以更进一步，改造成一个完全自动化、更符合我使用习惯的流程。&lt;/p&gt;
-
-&lt;p&gt;说干就干，我立刻创建了一个新的仓库 &lt;a href=&#34;https://github.com/zhu327/bookmark&#34;&gt;bookmark&lt;/a&gt;，准备开始我的改造计划。&lt;/p&gt;
-
-&lt;h3 id=&#34;2-存量数据的漫漫迁移路&#34;&gt;2. 存量数据的漫漫迁移路&lt;/h3&gt;
-
-&lt;p&gt;要打造新家，首先得把老家的家当搬过去。第一步，就是处理从 Pocket 导出的几百条存量书签。&lt;/p&gt;
-
-&lt;p&gt;我写了一个简单的 Python 脚本，将 Pocket 导出的 HTML 文件解析成 Markdown 格式，然后一股脑儿地塞进了 &lt;code&gt;README.md&lt;/code&gt;。但这只是万里长征的第一步。我的目标是让每个书签都有 &lt;strong&gt;AI 生成的摘要和分类&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;我想到了最近很火的 Gemini，它的命令行工具 &lt;code&gt;gemini-cli&lt;/code&gt; 看起来很适合用来做批处理。于是，我开始了我的踩坑之旅：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;初次尝试（失败）&lt;/strong&gt;：我用 &lt;strong&gt;Playwright&lt;/strong&gt; 写了个脚本，模拟浏览器去访问我的 230 个书签链接，把每个页面的完整 HTML 都抓取下来。结果，所有内容加起来足足有 &lt;strong&gt;165MB&lt;/strong&gt;。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;分割文件 + Gemini CLI（失败）&lt;/strong&gt;：我把这 165MB 的内容按每个网页一个文件进行分割，然后尝试用 &lt;code&gt;gemini-cli&lt;/code&gt; 遍历所有文件，让它为每个 HTML 生成摘要和分类。结果，Gemini 的上下文窗口有限，而且 API 调用非常非常慢，一个下午过去，才处理了不到 80 个。果断放弃。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;打包上传 AI Studio（失败）&lt;/strong&gt;：我想，单个处理不行，那就打包处理。我用 Python 脚本把网页按每 20 个一组进行打包，但每个包的文件大小仍在 5MB ~ 14MB 之间。这个大小对于直接上传到 Google AI Studio 来说还是太大了，此路不通。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;精简内容 + 手动处理（成功！）&lt;/strong&gt;：看来问题出在原始 HTML 内容太庞杂了。我再次修改脚本，在分割文件的同时，引入 &lt;strong&gt;&lt;code&gt;html2text&lt;/code&gt;&lt;/strong&gt; 库，将臃肿的 HTML 转换成纯文本。这下效果立竿见影，每 20 个网页打包成的文件只有 &lt;strong&gt;400KB ~ 600KB&lt;/strong&gt;。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;AI 手工操作&lt;/strong&gt;：我将这 13 个（230/20 ≈ 13）处理过的文本文件，&lt;strong&gt;手动一个个上传&lt;/strong&gt;到 Google AI Studio。然后，通过精心设计的 Prompt，让 AI 为文件里的每一个链接都生成摘要，并整理成我想要的 Markdown 格式。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;最终分类&lt;/strong&gt;：我把 AI 生成的所有摘要内容汇总到一个 &lt;code&gt;summary.md&lt;/code&gt; 文件里。最后，再把这个汇总文件上传给 AI Studio，给它下达最终指令：“请根据这些内容的摘要，将所有链接按技术领域、生活、思考等类别进行分类整理。”&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;最终，我得到了完美的分类归档文件：&lt;a href=&#34;https://github.com/zhu327/bookmark/blob/main/category.md&#34;&gt;category.md&lt;/a&gt;。虽然过程曲折，但看到整齐划一的成果时，一切都值了。&lt;/p&gt;
-
-&lt;h3 id=&#34;3-新增书签-交给-github-actions-吧&#34;&gt;3. 新增书签？交给 GitHub Actions 吧！&lt;/h3&gt;
-
-&lt;p&gt;处理完存量数据，接下来就要考虑如何自动化地处理每一个新增的书签了。我的思路是，让万能的 &lt;strong&gt;GitHub Actions&lt;/strong&gt; 来扮演这个智能管家的角色。&lt;/p&gt;
-
-&lt;p&gt;整个流程如下：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;触发&lt;/strong&gt;：每当我通过 &lt;code&gt;osmos::memo&lt;/code&gt; 插件向 &lt;code&gt;README.md&lt;/code&gt; 添加新链接并推送到 GitHub 时，就会自动触发 GitHub Actions 的 workflow。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;解析&lt;/strong&gt;：在 workflow 中运行的 Python 脚本 (&lt;code&gt;process_bookmarks.py&lt;/code&gt;) 会使用 &lt;code&gt;git diff&lt;/code&gt; 命令，精准地找出 &lt;code&gt;README.md&lt;/code&gt; 中新增加的那一行书签链接。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;抓取内容&lt;/strong&gt;：为了避免自己写爬虫遇到的各种反爬问题，我选择了一个非常棒的工具——&lt;a href=&#34;https://jina.ai/reader/&#34;&gt;jina reader&lt;/a&gt;。通过调用它的 API (&lt;code&gt;https://r.jina.ai/URL&lt;/code&gt;)，可以直接获取到目标链接页面的干净、规范的 Markdown 文本。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;生成摘要&lt;/strong&gt;：将获取到的 Markdown 文本发送给 LLM API，让它生成一段简洁的摘要。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;智能分类&lt;/strong&gt;：将链接的原始标题和 AI 生成的摘要再次组合，发送给 LLM API，让它判断这个链接应该属于哪个分类。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;写入归档&lt;/strong&gt;：最后，脚本会按照 &lt;code&gt;[标题](链接) - 摘要&lt;/code&gt; 的格式，将这条全新的、处理好的书签信息，追加到 &lt;code&gt;category.md&lt;/code&gt; 文件对应的分类下。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;就这样，一套完全自动化的 AI 书签整理流程就诞生了。我只需要在浏览器上点一下收藏，剩下的抓取、摘要、分类、归档工作，都由我的 AI 管家在云端默默完成。&lt;/p&gt;
-
-&lt;h3 id=&#34;4-拥有你自己的-ai-书签&#34;&gt;4. 拥有你自己的 AI 书签&lt;/h3&gt;
-
-&lt;p&gt;这套方案我已经开源在 GitHub 上：&lt;a href=&#34;https://github.com/zhu327/bookmark&#34;&gt;https://github.com/zhu327/bookmark&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;目前我使用的 LLM API 是由硅基流动提供的免费模型 &lt;strong&gt;deepseek-ai/DeepSeek-R1-0528-Qwen3-8B&lt;/strong&gt;，效果相当不错。如果你也对这个方案感兴趣，可以非常简单地拥有自己的 AI 书签：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Fork&lt;/strong&gt; 这个仓库。&lt;/li&gt;
-&lt;li&gt;在你的仓库 &lt;code&gt;Settings -&amp;gt; Secrets and variables -&amp;gt; Actions&lt;/code&gt; 中，添加两个 &lt;code&gt;Repository secrets&lt;/code&gt;：
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;LLM_API_URL&lt;/code&gt;: 兼容 OpenAI API 格式的大模型接口地址，例如 &lt;code&gt;https://api.siliconflow.cn/v1/chat/completions&lt;/code&gt;。&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;OPENAI_API_KEY&lt;/code&gt;: 调用该 API 所需的 Key。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;当然，这个方案也并非完美。比如对于有严格反爬策略的网站（点名微信公众号），&lt;code&gt;jina reader&lt;/code&gt; 也无能为力，无法直接获取到文章内容。&lt;/p&gt;
-
-&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
-
-&lt;p&gt;在后 Pocket 时代，借助 LLM 的强大能力，我的个人书签系统完成了一次有趣的进化。它不再是一个依赖于第三方在线服务的传统书签，而是变成了一个由我自己掌控、活在 GitHub 上的智能知识库。所有数据都以 Markdown 格式清晰地存储，检索也变得前所未有的简单——打开 &lt;code&gt;category.md&lt;/code&gt;，按下 &lt;code&gt;CTRL + F&lt;/code&gt; 即可。&lt;/p&gt;
-
-&lt;p&gt;这个小项目让我再次感受到，将 AI 作为一种工具融入到个人工作流中，能够迸发出巨大的能量。它不仅解决了我的实际问题，也让整个过程充满了探索和创造的乐趣。&lt;/p&gt;</description>
     </item>
     
   </channel>

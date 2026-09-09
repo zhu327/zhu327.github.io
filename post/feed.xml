@@ -6,10 +6,29 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 03 Sep 2026 16:30:00 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 07 Sep 2026 09:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>网关十年：从Kong插件到PingSIX</title>
+      <link>https://zhu327.github.io/2026/09/07/%E7%BD%91%E5%85%B3%E5%8D%81%E5%B9%B4%E4%BB%8Ekong%E6%8F%92%E4%BB%B6%E5%88%B0pingsix/</link>
+      <pubDate>Mon, 07 Sep 2026 09:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/09/07/%E7%BD%91%E5%85%B3%E5%8D%81%E5%B9%B4%E4%BB%8Ekong%E6%8F%92%E4%BB%B6%E5%88%B0pingsix/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;最近在 Pingora 上把 &lt;code&gt;ai_proxy&lt;/code&gt; 插件写完了。加上这个，pingsix 的插件数凑到了第 29 个。提交完代码看了一眼提交记录，突然意识到从 2017 年在前公司写第一个 Kong 的 Lua 认证插件开始，断断续续折腾网关这玩意儿，居然快十年了。&lt;/p&gt;
+
+&lt;p&gt;从早年小公司几十台机器的 SaaS，到后来在腾讯蓝鲸扛日均 3.5 亿请求的流量入口，再到现在用 Rust 和 Pingora 把这些东西从头重写一遍。这十年里，技术选型换了一轮又一轮，但回过头看，踩过的坑和底层的思考逻辑，倒是惊人地相似。&lt;/p&gt;
+
+&lt;p&gt;趁着最近刚把代码重构完，记录一下这十年里我做网关的一些经历和取舍。想看代码的可以直接去翻 &lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;pingsix&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;Image1&#34; src=&#34;https://github.com/user-attachments/assets/4f2a85cc-95c4-4715-a5de-9d90f39244bd&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>在AI时代，我终于了却了那个离开鹅厂时的PaaS执念</title>
