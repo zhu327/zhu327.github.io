@@ -1,0 +1,270 @@
+---
+title: "网关十年：从Kong插件到PingSIX"
+date: 2026-09-07T09:00:00+08:00
+draft: false
+tags: ["API Gateway", "Rust", "Pingora", "Kong", "APISIX"]
+---
+
+### 前言
+
+最近在 Pingora 上把 `ai_proxy` 插件写完了。加上这个，pingsix 的插件数凑到了第 29 个。提交完代码看了一眼提交记录，突然意识到从 2017 年在前公司写第一个 Kong 的 Lua 认证插件开始，断断续续折腾网关这玩意儿，居然快十年了。
+
+从早年小公司几十台机器的 SaaS，到后来在腾讯蓝鲸扛日均 3.5 亿请求的流量入口，再到现在用 Rust 和 Pingora 把这些东西从头重写一遍。这十年里，技术选型换了一轮又一轮，但回过头看，踩过的坑和底层的思考逻辑，倒是惊人地相似。
+
+趁着最近刚把代码重构完，记录一下这十年里我做网关的一些经历和取舍。想看代码的可以直接去翻 [pingsix](https://github.com/zhu327/pingsix)。
+
+<img alt="Image1" src="https://github.com/user-attachments/assets/4f2a85cc-95c4-4715-a5de-9d90f39244bd" />
+
+<!--more-->
+
+### 一、2017-2019：为什么是 Kong
+
+#### 从 Nginx 到 Kong：小团队的务实选型
+
+2017 年我在前公司做 HR SaaS，后端最开始是 Django 单体，后来业务膨胀，慢慢拆成了微服务。服务拆出来之后，接入层的 Nginx 配置就成了事故高发区：
+
+- 改一次 Nginx 配置得手动推到多台机器，经常因为手抖改错配置引发调用故障；
+- 每个服务都在自己的代码里搞一套认证，逻辑散落到处都是；
+- 服务间靠内网 HTTP + 配置 hosts 互相调用，没有限流、没有重试、也没有熔断。
+
+接入层急需一个统一的入口，把认证、限流、日志这些通用的脏活从业务代码里剥离出来。这就是我折腾网关的起点。
+
+<img alt="Image2" src="https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/v2-8fec1c067dae33c7fcaeb95f5e3a3792_r.jpg" />
+
+<img alt="Image3" src="https://blog-1251544432.cos.ap-guangzhou.myqcloud.com/blog/v2-501318fe25b9852cf72270a20c783db0_r.jpg" />
+
+当时开源网关主要就是两个方向：Go 和 OpenResty(Lua)。我花了一个月时间把这两门技术都学了下，还顺手用 OpenResty 写了个短网址服务 `shorturl` 丢到生产去跑，最后给团队敲定的选型是 Kong。
+
+选 Kong 倒真不是因为性能有多无敌，那时候的流量体量根本谈不上性能瓶颈，主要还是出于非常务实的几点考虑：
+
+1. **Lua 改完热重载直接生效**，不需要重新编译二进制，也不用重启进程；
+2. **Kong 的开箱即用程度高**，常用的认证、限流、日志插件社区都有，团队当时总共就几个后端，没精力从零自研；
+3. **插件机制简单**，无非就是在 request/response 阶段挂钩子函数，团队水平参差不齐，这套方案最容易在团队内推广和维护。
+
+至于并发，当时直接挂在云厂商的 LB 后面，分发到两台 Kong 服务器组成的集群，就足以抗住业务了。
+
+#### 集群踩坑与东西流量
+
+刚开始以为搞两台 Kong 跑起来就是个高可用集群了，真正上线后才发现，**配置管理本身就是个大坑**。
+
+有一次发新版本，同一个接口在不同客户端下表现不一致，有的通、有的直接报 404。排查半天才发现两台机器的路由配置没完全同步。后来我们吸取教训，把所有变更收拢到发布脚本里，统一调 Admin API 执行，并且发布完成后强制做一次多节点的配置校验。这让我第一次意识到：网关做成集群后，配置下发和一致性才是真正考验工程能力的地方。
+
+另外，当时 Kong 只管南北向的公网入口。内部服务之间互相调用的东西向流量，因为没有现成轻量的 Python RPC 框架（饿了么的 thriftpy 全家桶对小团队学习成本实在太高，我们果断放弃了），我基于 MPRPC + gevent 自己造了个轮子 `doge`。用 etcd 做服务注册和 TTL 心跳，客户端实现了限流、重试和熔断。
+
+这种“南北走网关、东西走轻量 RPC”的模式，我从 2018 年一直用到后来进大厂，受用了很多年。
+
+---
+
+### 二、2021-2024：在 3.5 亿请求里学到的深水区
+
+2018 年底我去了腾讯，后来调到蓝鲸团队，一呆就是 6 年多。蓝鲸是腾讯内部做研运一体化的 PaaS 平台，我主要负责 BK-IAM（权限中心）和 BK-APIGW（API网关）。
+
+在这里，网关是整个 PaaS 平台的流量底座，日均请求在 3.5 亿左右。在这个体量下，我才意识到很多以前在小公司完全不会碰到的“深水区”问题：网关的壁垒根本不在单纯的请求转发，而在于发布、灰度、优雅下线，以及怎么保证运维晚上能睡个好觉。
+
+#### 一次发布事故倒逼的 Operator 重构
+
+早期我们的配置管理形态也比较传统：控制面生成配置，推送到数据面。随着测试、预发、生产、多地域环境越来越多，不同环境的配置漂移成了家常便饭，回滚基本全靠人工去翻历史配置手动还原。
+
+真正促使我彻底重构发布机制的，是一次夜间发布的故障：
+
+当时网关数据面做滚动更新，新 Pod 刚拉起来，流量切进去就瞬间爆出大量 5xx。最后排查下来，根因是旧 Pod 收到 Kubernetes 的 SIGTERM 信号后直接退出了，原本还在处理中的连接被强行掐断；而新 Pod 还没完全通过健康检查，流量就已经导了过去。那一晚我们只能紧急暂停发布，把流量硬切回旧集群才止损。
+
+复盘的时候我意识到：**大流量网关出事，十次有八次不是转发性能出了瓶颈，而是生命周期管理没做好。**
+
+后来我们把发布流程彻底规范化，并写成了 Operator：
+
+1. 配置全部改成声明式 CRD（Route、Upstream、SSL、Plugin），由 Controller 监听并负责收敛状态；
+2. 发布走 Reconcile 机制，不再依赖不可靠的临时脚本；
+3. 在 Pod 的 `preStop` 阶段严格做优雅下线：先摘除流量 -> 排空在途请求 -> 延迟退出；新 Pod 必须等 readinessProbe 探针完全就绪才承接流量；
+4. 回滚不再靠手动改配置，改回上一个版本的 CR 即可。
+
+把生命周期做成闭环之后，夜间发布的事故率断崖式下降。
+
+#### 几个难啃的骨头
+
+除了发布机制，在 3.5 亿请求的场景下，我们还啃下了几个硬骨头：
+
+- **L4 协议的支持**：蓝鲸体系里有大量的非 HTTP 流量，比如 Agent 的长连接、作业平台的下发通道、监控数据上报等。以前这些流量全靠独立的 LB 直连，没有鉴权也没有审计。后来我们依托 APISIX 的 stream 模块把 L4 流量收敛进网关。代价是把端口规划、TLS/非TLS识别、健康检查以及按连接限流的整套逻辑在架构上全部铺了一遍。
+- **收敛入口做 APISIX Ingress**：集群越来越多后，入口各自为政，维护成本极高。我们把南北向 API 和集群内部的 Ingress 统一收敛到了 APISIX Ingress Controller。存量资源的迁移全靠“旁路同步 + 双跑对比”，确认无误后才分批切流。
+- **可观测性治理**：3.5 亿的日志和 Trace 全量采集会瞬间把后端 ES 和监控打爆。我们做了一套精细的采样治理：正常 200 请求按极低比例采样，慢请求和错误请求 100% 采样并附带链路信息，告警收敛从“单机单报错”降噪为“集群维度的聚合报警”。单 Pod 2 万 QPS、P99 50ms 这类数据，不是靠压测打出来的，都是在火焰图前抠连接池复用、TLS 缓存和日志异步刷盘抠出来的。
+
+这期间其实跟我之前做 BK-IAM 的思路是通的：BK-IAM 每天 1 亿多鉴权请求，本地缓存扛了 70%，Redis 扛了 25%，真正到 MySQL 的只有 5%。**读多写少的公共设施，性能瓶颈永远在配置分发和数据一致性上。别让读路径去加锁或者频繁查库，把配置变更当成不可变的版本快照来推，是唯一的正解。**
+
+---
+
+### 三、2024-2026：用 Rust 重写一遍
+
+2024 年离开腾讯后，在重新找工作和歇着的空隙里，我开始认真学 Rust。一方面是出于技术人员对抗年龄危机的折腾劲儿，另一方面我也一直在琢磨：如果让我抛开历史包袱，重新实现一个兼顾性能与安全的企业级网关，会是什么样？
+
+后来 Cloudflare 开源了 Pingora。Pingora 把网络 IO、连接池、TLS、HTTP/2 这些底层脏活都封装得很扎实，我就决定基于它写一个 APISIX 功能子集的网关，也就是 [pingsix](https://github.com/zhu327/pingsix)。
+
+#### 核心架构设计
+
+pingsix 的源码结构比较克制，大部分核心逻辑都在 `src/` 下：
+
+```
+src/
+├── core/         插件内核：plugin trait、执行 pipeline、verdict、错误模型
+├── config/       配置解析/校验/默认值 + etcd 客户端与热加载
+├── proxy/        数据面：route 匹配、upstream 发现/负载均衡/健康检查、SSL、global rule
+│   ├── control_plane/   编译期：校验全图引用、准备 DNS、产出不可变 RuntimeSnapshot
+│   └── graph_mutation/  图权威：唯一持有配置图状态、CAS 冲突处理、secret 脱敏
+├── plugins/      29+ 插件（jwt/key/basic auth、限流、缓存、ai_proxy...）
+├── service/      HTTP 服务装配（http/status）
+├── admin/        Admin API
+├── logging/      日志
+└── utils/        公共工具
+```
+
+这里我没把控制面拆成单独的进程，而是收敛在 `proxy/` 模块内。etcd 监听到变更后，由 `graph_mutation` 处理冲突并生成配置图，再由 `control_plane` 编译成一份不可变的 `RuntimeSnapshot`，最后通过 `arc-swap` 原子替换给数据面。
+
+这样设计的好处是：**读路径完全无锁，永远只读一份原子发布的不可变快照，写路径在后台编译完成后直接单指针切换**。
+
+顺便提一句，我在 README 里写的设计目标是“100K+ RPS / P99 < 10ms”（基于 AWS c5.xlarge）。说实话，这目前只是开发阶段设立的方向，仓库里现在跑的还主要是 `plugin_pipeline` 和 `route_matching` 的基准微压测，端到端严丝合缝的大规模生产级压测环境还没完全搭好。做技术的还是务实一点，别把设计目标当成最终成绩单。
+
+#### 几个折磨人但有价值的细节
+
+写 Rust 的这两年，踩过无数坑。挑三个我认为最值得聊的代码细节：
+
+##### 1. 后台任务的生命周期（Drop）
+
+在 Go 里面跑后台心跳检查，直接 `go func()` 启动一个 goroutine 就可以不管了。但在 Rust 里，如果不把 runtime 显式保存在对象中，离开当前作用域后后台任务就会直接退场：
+
+```rust
+impl ProxyUpstream {
+    pub fn new_with_health_check(upstream: config::Upstream, work_stealing: bool) -> Result<Self> {
+        let mut proxy_upstream = Self::try_from(upstream)?;
+        proxy_upstream.start_health_check(work_stealing);
+        Ok(proxy_upstream)
+    }
+
+    fn start_health_check(&mut self, work_stealing: bool) {
+        let runtime = self.create_runtime(work_stealing, threads, service.name());
+        runtime.get_handle().spawn(async move {
+            service.start_service(None, watch_rx).await;
+        });
+        // 必须显式持有 runtime，否则函数退出后后台健康检查立即终止
+        self.runtime = Some(runtime);
+    }
+}
+
+impl Drop for ProxyUpstream {
+    fn drop(&mut self) {
+        self.stop_health_check();
+        // 显式停止，避免对象析构时产生运行中任务 panic
+    }
+}
+```
+
+##### 2. 反转 Host 解决前缀树的通配符难题
+
+在 Radix Tree 路由匹配里，`matchit` 这类库天生只支持前缀匹配，但 Web 域名通配符通常是后缀匹配（比如 `*.example.com`）。
+
+pingsix 里的解法是把 host 倒过来存，把后缀问题转化为前缀问题：
+
+```rust
+fn reverse_ascii_lowercase(input: &str) -> String {
+    let mut reversed = String::with_capacity(input.len());
+    for ch in input.chars().rev() {
+        reversed.push(ch.to_ascii_lowercase());
+    }
+    reversed
+}
+
+fn reverse_host(host: &str) -> String {
+    if let Some(domain_part) = host.strip_prefix("*") {
+        let reversed_domain = Self::reverse_ascii_lowercase(domain_part);
+        format!("{reversed_domain}{{*subdomain}}")
+    } else {
+        Self::reverse_ascii_lowercase(host)
+    }
+}
+```
+
+匹配的时候，进来的请求域名也先反转，一次树查找就能通吃精确域名和通配域名。
+
+不过这里有个有意思的协议细节：TLS SNI 的证书匹配规范（RFC 6125）明确规定通配符只匹配单层域名，而 HTTP 路由的泛域名很多时候需要支持多级。所以在 `ssl.rs` 里虽然也用了反转，但不能直接用 matchit 的子域名通配，而是用了“反转精确匹配 + 单层正则列表 + catch-all”的三层兜底。同一个小技巧在两个协议层上的语义差异，很有意思。
+
+##### 3. 借用检查器的毒打
+
+刚从动态语言或者 Go 转过来写 Rust，被借用检查器卡住是日常：
+
+```rust
+// 典型的编译报错：同时存在可变借用与不可变借用
+let path = http_session.req_header().uri.path().to_string(); // 借用
+http_session.set_keepalive(None);                            // 可变借用，直接编译失败
+
+// 正确做法：利用代码块限制借用作用域，把数据 clone 出来后再做修改
+let (path, method) = {
+    let req_header = http_session.req_header();
+    (req_header.uri.path().to_string(), req_header.method.clone())
+};
+http_session.set_keepalive(None);
+```
+
+一开始觉得这纯属没事找事，但写久了会发现，这种别扭的限制彻底封死了并发场景下“读着读着数据被别人改了”的线上幽灵 Bug。
+
+#### AI 辅助与 Ingress 路线
+
+2025 年下半年我用 Cursor 对 pingsix 做过一次大重构（+6636 / -3578 行）。我的工作流基本上是：用 Cursor + Claude 写具体模块，用 gitingest 打包代码让 Gemini 2.5 Pro 做全局 Review，然后再把意见搬回 Cursor 逐个修。
+
+折腾完这一圈我的感触是：AI 写局部逻辑的效率确实比人快，但在系统架构的边界划分、协议规范的取舍上，还是得靠自己心里那张图，不能全听它的。
+
+另外在 Ingress 方案上，我调研完 proxy-wasm 后直接放弃了。Pingora 本身设计偏向 CDN 代理，对拦截和原地修改 request/response body 的支持非常别扭，强行实现 wasm ABI 得不偿失。
+
+最后我选择了 Adapter 路线：用 `api7/etcd-adapter`（kine）把 Kubernetes 资源转存进 etcd，pingsix 的数据面代码一行都不需要为了 K8s 妥协。为了保证可靠性，我们在 Controller 里做了几处细节：
+
+- etcd adapter 只在 Leader 节点启动，避免 Follower 暴露空数据；
+- 只有成功完成第一次全量同步的 Pod 才会打上 Serving 标签供流量调度；
+- 增加了 Barrier 机制，确保本地缓存更新前 adapter 已经完整把这一批配置刷完了。
+
+这些思路后来收敛成了单独的 [pingsix-ingress-controller](https://github.com/zhu327/pingsix-ingress-controller)。
+
+---
+
+### 四、网关的下一跳：AI 网关与算账
+
+最近大模型越来越火，网关领域也冒出了一堆“AI 网关”。pingsix 也顺势支持了 `ai_proxy` 插件，支持 OpenAI、DeepSeek、Anthropic 等主流协议的抹平和转换。
+
+#### ai_proxy 踩坑实录
+
+真正写这个插件的时候，才发现细节全是坑：
+
+<img alt="Image4" src="https://github.com/user-attachments/assets/7cc1f68f-cd05-4658-90f3-dd997275eb3a" />
+
+1. **Pingora 的死锁陷阱**：原本我想在 `request_filter` 钩子里直接把 Body 读出来做转换，结果在线上压测时直接把 Pingora 0.8 的 h1 代理循环搞死锁了。后来把思路调整为：Header 阶段只做 provider 协商和鉴权，Body 阶段流式处理；
+2. **强制使用 Chunked 编码**：因为我们要在网关层把 OpenAI 的入参转换成 Anthropic 的 Messages 结构，改写后的 Body 长度肯定会变。而在请求头发送之前根本拿不到最终长度，所以改写 `Content-Length` 是死路一条，必须强制走 `Transfer-Encoding: chunked`；
+3. **读超时下限设到 600 秒**：大模型无论是推理还是思考，中间合法“静默”的时间非常长。Pingora 的 `read_timeout` 卡的是两个 Chunk 之间的时间间隔，如果用常规 Web 网关默认的 30s/60s 超时，思考模型只要推理慢一点就会直接被网关断开；
+4. **模型方的细节差异**：比如 OpenAI 会把同时带 `max_tokens` 和 `max_completion_tokens` 的请求拒掉；DeepSeek 的官方接口路径没有 `/v1`；Anthropic 必须要注入特定的 `anthropic-version` 头等等。这些转换逻辑我都剥离到了纯函数 `transform.rs` 里，单测覆盖完整，不和网络运行时搅在一起。
+
+#### 概念背后：全是老问题换皮
+
+写完 `ai_proxy`，我最大的体会就是：**先不要被各种新概念吓住，AI 网关绝大部分需求，本质上都是传统网关老问题换了层皮**。
+
+- 所谓的“LLM 智能路由”，底层就是我们搞了十年的按权重、按优先级的 Upstream 调度；
+- 所谓的“Token 限流”，底层不过是把 QPS 计数器换成了基于消耗 Token 数量的令牌桶；
+- 所谓的“语义缓存”，无非就是把原本计算 URL/参数哈希的缓存 Key，换成向量 Embedding 的距离比对，底层缓存失效和剔除的机制该怎么写还是怎么写。
+
+网关的核心并没有颠覆，它依然是一个反向代理，只是处理的 payload 从普通 JSON 变成了由 Token 组成的流。
+
+#### 唯一的真变量：算账（FinOps）
+
+如果说 AI 真的给网关带来了什么本质改变，我认为是**网关的定位从单纯的“技术基础设施”，第一次变成了“业务算账的中心”**。
+
+在传统 Web 时代，一个接口调用一万次，服务器的成本几乎是固定的，网关关注的是机器抗不抗得住；但在大模型时代，调用每次都要折算成 Token 计费，Token 的消耗直接对应真实的账单支出。
+
+最近几年我在金山做多云 FinOps，整套成本闭环无非就是：**发现异常波动 -> 定位责任业务 -> 对比预算水位 -> 生成报告推进治理**。
+
+把这套逻辑搬到 AI 网关上完全顺理成章：哪个团队的 Token 异常激增？用了便宜的模型还是昂贵的模型？有没有撞上预算红线？网关第一次掌握了业务调用中最敏感的财务数据。未来网关的护城河，很可能不再是“我能转多快”，而是“我能帮你把模型调用的账算得多清楚”。
+
+---
+
+### 结尾
+
+从 2017 年在小公司对着 Nginx 配置文件发愁、搞两台 Kong 做集群，到在蓝鲸天天盯着监控面板看 3.5 亿请求的心惊肉跳，再到现在自己一个人用 Rust 把这些逻辑推翻了重新写，这一路折腾了将近十年。
+
+技术栈从 Python/Lua 走到了 Rust，架构理念从最初粗暴的限流转发，走到大流量下的生命周期管理，再走到如今面向 Token 的计费治理。
+
+以前年轻的时候，总觉得牛逼的技术就是写出单机并发几万、架构多么炫酷的系统；折腾了这么多年，踩了无数次深夜发布的坑之后，反而觉得最踏实的技术，永远是在团队水平、业务现状和稳定性之间做好妥协，把系统做得足够皮实，让大家晚上不用被告警叫醒。
+
+网关这门老手艺大概率还会继续演进下去。只要系统之间还需要打交道，不管是服务调用还是模型交互，这个入口就始终有用武之地。慢慢写，持续迭代吧。
