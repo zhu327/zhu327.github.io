@@ -6,10 +6,49 @@
     <description>Recent content in Rss on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 15 Dec 2023 14:32:52 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 30 Aug 2024 10:55:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/tags/rss/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>自动化自己的生活：创造自己的小工具</title>
+      <link>https://zhu327.github.io/2024/08/30/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E6%B4%BB%E5%88%9B%E9%80%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B0%8F%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Fri, 30 Aug 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/08/30/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E6%B4%BB%E5%88%9B%E9%80%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B0%8F%E5%B7%A5%E5%85%B7/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;作为一位程序员，我写的大部分当然都是用来赚钱生活的代码，赚钱的代码都是非常规范的，一般都是复杂业务逻辑在程序上映射，很多时候都只有在解决了复杂的业务问题，才能获得打怪升级的成就感。&lt;/p&gt;
+
+&lt;p&gt;但是我也会在业余时间学习一些工作无关的技术，比如最近半年我学习了Rust，每当我学习一门新的技术，我总是希望把之前实现的一些程序改用新技术来实现，这样就可以更快的上手。平常生活中也没什么用到Rust的场景，那就只能先把之前用Bash，Python写的小工具用Rust重写一遍。然后最近我也自己发掘了一些生活上的场景，这些场景很多时候都是重复的，手动的，如果能改成自动化能够节省很多时间。想起了不知道哪里看过的一个说法：懒惰是程序员的第一生产力，因为懒，我们会把各种重复手动的工作自动化。&lt;/p&gt;
+
+&lt;p&gt;下面的内容就是我在今年自动化生活的一部分，通过自己创造的这些小工具，我解决了自己生活中的一些小痛点。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>玩转 HackNews：如何正确订阅科技新闻</title>
+      <link>https://zhu327.github.io/2024/04/10/%E7%8E%A9%E8%BD%AC-hacknews%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%A2%E9%98%85%E7%A7%91%E6%8A%80%E6%96%B0%E9%97%BB/</link>
+      <pubDate>Wed, 10 Apr 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/04/10/%E7%8E%A9%E8%BD%AC-hacknews%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%A2%E9%98%85%E7%A7%91%E6%8A%80%E6%96%B0%E9%97%BB/</guid>
+      <description>&lt;p&gt;近日，我在探索 HackNews 的过程中，收获了大量的新知识。然而，我发现自动订阅的 HackNews RSS 源并没有对热门话题进行筛选，导致我的 RSS 阅读器里充斥着我不感兴趣的话题。于是，我开始寻找适合自己的 HackNews RSS 订阅源。在众多选择中，我发现了 &lt;a href=&#34;https://hnrss.org/newest?points=100&#34;&gt;https://hnrss.org/newest?points=100&lt;/a&gt;，这个源只推送热门话题，非常适合我。然而，由于全英文阅读有些繁琐，我又找到了 &lt;a href=&#34;https://rsstranslator.com/&#34;&gt;https://rsstranslator.com/&lt;/a&gt; 这个提供翻译服务的网站，能将 HackNews 翻译成中文标题，非常便捷。但不幸的是，由于访问量过大，该网站已关闭服务并开源代码。在尝试了各种工具后未果，我决定自己动手解决这个问题。然而，我又不希望维护独立的服务，而刚好 &lt;a href=&#34;https://blog.cloudflare.com/python-workers&#34;&gt;Cloudflare Workers 开始支持 Python&lt;/a&gt;，于是我决定使用 Cloudflare Workers 来实现这个服务。在评估了各种翻译 API 后，我选择了 Microsoft Azure 翻译 API，实现了免费翻译的功能。最终，我完成了这个项目 &lt;a href=&#34;https://github.com/zhu327/workers-hnrss&#34;&gt;workers-hnrss&lt;/a&gt;，并且完全零成本部署。但在部署过程中，我发现 Cloudflare Workers 还不支持 &lt;code&gt;requirements.txt&lt;/code&gt;，不过据他们的文档称，再过几周就会支持，所以我决定再等等，然后就可以在我的 RSS 阅读器上读到中文标题的 HackNews 了。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>2023年阅读分享：深度挖掘编程之道</title>
+      <link>https://zhu327.github.io/2024/01/10/2023%E5%B9%B4%E9%98%85%E8%AF%BB%E5%88%86%E4%BA%AB%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98%E7%BC%96%E7%A8%8B%E4%B9%8B%E9%81%93/</link>
+      <pubDate>Wed, 10 Jan 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/01/10/2023%E5%B9%B4%E9%98%85%E8%AF%BB%E5%88%86%E4%BA%AB%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98%E7%BC%96%E7%A8%8B%E4%B9%8B%E9%81%93/</guid>
+      <description>&lt;p&gt;作为一个热衷于技术的程序员博主，我在2023年迎来了全新的阅读体验，将RSS作为我的主要信息源，并通过订阅Hacker News热门主题，持续深入英文技术文章的阅读。在这个过程中，我发现了一些真正精彩的文章，这些不仅仅是知识的积累，更是对编程之路的深刻思考。在这里，我将其中一些我认为值得分享的文章整理出来，推荐给各位看官，希望你们在学习中找到灵感，不断进步。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>RSS文艺复兴</title>

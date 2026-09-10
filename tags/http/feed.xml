@@ -6,10 +6,27 @@
     <description>Recent content in Http on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 21 Sep 2014 12:39:04 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 31 Jan 2015 11:23:21 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/tags/http/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Cookie与Session</title>
+      <link>https://zhu327.github.io/2015/01/31/cookie%E4%B8%8Esession/</link>
+      <pubDate>Sat, 31 Jan 2015 11:23:21 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/01/31/cookie%E4%B8%8Esession/</guid>
+      <description>&lt;p&gt;前面学习了Cookie，知道Cookie是在浏览器端保存的用户状态，但是对Session一直没什么概念。学习Django的过程中直接使用了Django的认证系统，虽然用到了Session但是没有接触到Session的直接使用，然后在学习F2E.im的代码中，发现Tornado自带的secret cookie其实也能加密传递cookie，通过cookie传递一个userid到用户浏览器，认证的时候使用userid到数据库中查找用户信息，也能很好的认证用户。那为什么要使用session呢。&lt;/p&gt;
+
+&lt;p&gt;Tonado中认证示例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 重写tornado.web.RequestHandler中get_current_user方法用于认证&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;get_current_user&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_secure_cookie&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;user&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;None&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user_model&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_user_by_uid&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 从数据库中取用户信息&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>HTTP Cookie</title>
@@ -29,6 +46,25 @@
             [; expires=&amp;lt;date&amp;gt;][; domain=&amp;lt;domain_name&amp;gt;]
             [; path=&amp;lt;some_path&amp;gt;][; secure][; httponly]
 &lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>urllib2 使用</title>
+      <link>https://zhu327.github.io/2014/09/17/urllib2-%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Wed, 17 Sep 2014 21:46:29 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2014/09/17/urllib2-%E4%BD%BF%E7%94%A8/</guid>
+      <description>&lt;h3 id=&#34;基础用法&#34;&gt;基础用法&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;urllib2&lt;/code&gt;是用来发送http请求，获取响应数据的库。基础用法:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;urllib2&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;# urlopen返回类文件对象，可选参数data与请求头header&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;response&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;urllib2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;urlopen&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;http://bozpy.sinaapp.com&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;header&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]])&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;body&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;response&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 类文件对象有与文件对象类似的方法，read，readline等&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;heade&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;response&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;info&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 获取响应的头，字典&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;url&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;response&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;geturl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 获取响应的真实url，如果有重定向，url会改变&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

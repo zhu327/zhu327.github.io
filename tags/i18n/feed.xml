@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>I18n on </title>
+    <link>https://zhu327.github.io/tags/i18n/</link>
+    <description>Recent content in I18n on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 14 Aug 2015 16:28:42 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/i18n/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>flask jinja2 i18n国际化简单实现</title>
+      <link>https://zhu327.github.io/2015/08/14/flask-jinja2-i18n%E5%9B%BD%E9%99%85%E5%8C%96%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Fri, 14 Aug 2015 16:28:42 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/08/14/flask-jinja2-i18n%E5%9B%BD%E9%99%85%E5%8C%96%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/</guid>
+      <description>&lt;p&gt;前两个星期,公司有需求要实现APP内嵌网页的英文版,因为要急着上线,所有就没有折腾i18n国际化,直接出了英文的模板,在view函数里面判断语言选择模板来实现.这周有空下来重新整了一下项目的国际化,使用通用的&lt;code&gt;gettext&lt;/code&gt;来实现.&lt;/p&gt;
+
+&lt;p&gt;flask使用的是jinja2模板,jinja2自带了i18n扩展支持,但是需要Flask-Babel扩展的支持,有学习成本,所以没有使用,直接用了python内置的gettext来实现,而且jinja2引擎也提供了gettext的钩子来处理不同的语言.&lt;/p&gt;
+
+&lt;h2 id=&#34;gettext&#34;&gt;gettext&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;gettext&lt;/code&gt;是*nix下的标准i18n实现,Python的标准库内置&lt;code&gt;gettext&lt;/code&gt;,简单的理解一下,就是通过已有的字典映射文件,然后获取环境的语言信息来判断当前使用哪一个语言映射,最终渲染出不同的语言文本,这里就不详细研究&lt;code&gt;gettext&lt;/code&gt;了,提供我的参考文档:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://underthehood.blog.51cto.com/2531780/1663604&#34;&gt;http://underthehood.blog.51cto.com/2531780/1663604&lt;/a&gt;
+&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

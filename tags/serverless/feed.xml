@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Serverless on </title>
+    <link>https://zhu327.github.io/tags/serverless/</link>
+    <description>Recent content in Serverless on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 03 Sep 2026 16:30:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/serverless/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>在AI时代，我终于了却了那个离开鹅厂时的PaaS执念</title>
+      <link>https://zhu327.github.io/2026/09/03/%E5%9C%A8ai%E6%97%B6%E4%BB%A3%E6%88%91%E7%BB%88%E4%BA%8E%E4%BA%86%E5%8D%B4%E4%BA%86%E9%82%A3%E4%B8%AA%E7%A6%BB%E5%BC%80%E9%B9%85%E5%8E%82%E6%97%B6%E7%9A%84paas%E6%89%A7%E5%BF%B5/</link>
+      <pubDate>Thu, 03 Sep 2026 16:30:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/09/03/%E5%9C%A8ai%E6%97%B6%E4%BB%A3%E6%88%91%E7%BB%88%E4%BA%8E%E4%BA%86%E5%8D%B4%E4%BA%86%E9%82%A3%E4%B8%AA%E7%A6%BB%E5%BC%80%E9%B9%85%E5%8E%82%E6%97%B6%E7%9A%84paas%E6%89%A7%E5%BF%B5/</guid>
+      <description>&lt;p&gt;一晃到了 2026 年的 9 月初。&lt;/p&gt;
+
+&lt;p&gt;坐在珠海的办公室里，翻看着终端里的会话统计数据，才猛然发觉这大半年过得有多魔幻。如果在 2024 年底我刚开始折腾 Cursor 的时候，有人跟我说：“老朱，再过一年半，你自己基本上不用动手写代码了，一个人一个星期就能把一个分布式 PaaS 平台从零拉起来”，我大概率会觉得他在扯淡。&lt;/p&gt;
+
+&lt;p&gt;但翻开后台的数据，现实就是这么冷冰冰又热腾腾地摆在面前：从 6 月初到现在，仅仅 3 个月的时间，我本机加远程两台机器，跑了 1400 多个 Coding Agent 会话，消耗了超过 &lt;strong&gt;60 亿&lt;/strong&gt; 的 Token。&lt;/p&gt;
+
+&lt;p&gt;这大半年里，我的主力工具从 Cursor 全面切到了 Pi，硬啃了无数国产模型的坑，把以前写得臃肿的 Agent 工作流砍到只剩骨架，甚至顺手做完了当年离开鹅厂时埋在心底的一个夙愿。&lt;/p&gt;
+
+&lt;p&gt;今天有些空闲，就按照惯例，絮絮叨叨地复盘一下这半年的折腾历程。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Lexideck 背单词小应用：AI 时代的 Vibe Coding 实践</title>
+      <link>https://zhu327.github.io/2026/06/30/lexideck-%E8%83%8C%E5%8D%95%E8%AF%8D%E5%B0%8F%E5%BA%94%E7%94%A8ai-%E6%97%B6%E4%BB%A3%E7%9A%84-vibe-coding-%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Tue, 30 Jun 2026 19:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/06/30/lexideck-%E8%83%8C%E5%8D%95%E8%AF%8D%E5%B0%8F%E5%BA%94%E7%94%A8ai-%E6%97%B6%E4%BB%A3%E7%9A%84-vibe-coding-%E5%AE%9E%E8%B7%B5/</guid>
+      <description>&lt;p&gt;我平时习惯通过 RSS 订阅 Hacker News，后来随着 Twitter 上线了默认翻译功能，我对直接阅读第一手英文资讯的需求越发强烈。然而现实很骨感：词汇量实在太低。因为现在机器翻译过于方便，我一般都是直接依赖浏览器翻译来看文章；有时候也会强迫自己不用全篇翻译，而是借助划词翻译来硬啃。&lt;/p&gt;
+
+&lt;p&gt;硬啃倒是能啃下来，但问题在于：读完了，生词该不认识还是不认识，英语水平并没有实质性的提升。&lt;/p&gt;
+
+&lt;p&gt;我觉得关键的痛点在于，我没有把这些在真实阅读场景中遇到的生词记录下来，也没有去反复背诵。所以我一直有个执念：做一个记录生词的工具。在划词翻译发现生词时，顺手把它记录下来，然后可以在手机上同步，随时随地利用碎片时间背单词。一旦这个“阅读发现 -&amp;gt; 记录 -&amp;gt; 间隔重复背诵”的数据飞轮转起来，我相信我的英语水平肯定会逐步提升。&lt;/p&gt;
+
+&lt;p&gt;不过，因为我自己一直是个偏后端的程序员，没怎么写过前端和 UI，这个计划就一直停留在脑海里，没有真正落地。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>以Vaultwarden为例使用SQLite Litestream实现无数据库服务</title>
+      <link>https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Tue, 03 Sep 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;Vaultwarden是一个非官方实现的Bitwarden Server，用于密码管理，支持Web端、桌面端和移动端。它支持多种数据来存储数据，包括SQLite、PostgreSQL和MySQL等。当我们想把它部署在一个容器服务平台时，如果容器服务本身没有提供持久挂载的卷，那我们就只能使用PostgreSQL或者MySQL外部数据来存储数据。&lt;/p&gt;
+
+&lt;p&gt;但是我们并不想额外再买资源来运行一个数据库，那我们就可以使用SQLite来存储数据，并且使用Litestream来实现容灾备份。这样虽然容器服务没有持久存储，但是数据还是安全的。下面以Vaultwarden为例，使用SQLite和Litestream来实现无数据库服务。其它可以使用SQLite的程序也可以使用这种方式来实现无数据库服务。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>微信公众号迁移Serverless详解</title>
+      <link>https://zhu327.github.io/2018/07/17/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Tue, 17 Jul 2018 00:12:12 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2018/07/17/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3/</guid>
+      <description>&lt;p&gt;3月腾讯云函数计算开放测试, 看到的第一反应是这种Serverless太适合做微信公众号的后端来实现自动应答了, 尝试把我服务了3年的一个公众号迁移到腾讯云函数计算, 结果因为API gateway的一个功能缺失搁置了, 这周腾讯云API gateway终于补上了集成响应的能力, 能正常服务我的公众号, 这里记录下实现过程.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

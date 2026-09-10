@@ -30,5 +30,85 @@
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
+    <item>
+      <title>pingsix-ingress-controller启动</title>
+      <link>https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/</link>
+      <pubDate>Mon, 20 Oct 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;https://github.com/zhu327/pingsix&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;PingSIX 自从上次重构之后, 我一直在考虑如何扩展这个项目的功能与使用场景, 有2个方向可以考虑:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;支持proxy-wasm插件&lt;/li&gt;
+&lt;li&gt;实现pingsix-ingress-controller&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在调研了proxy-wasm的相关功能后, 结论是由于pingora面向的场景是CDN的反向代理, 所以没有考虑过方便的修改请求体与响应体, 这就造成很难基于pingora来实现proxy-wasm的ABI, 如果我要自己定义一个wasm的接口协议, 没法复用社区现有的proxy-wasm插件, 那就没必要了, 不如直接写Rust的插件. 相关参考内容:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/cloudflare/pingora/issues/17&#34;&gt;proxy-wasm support&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://segmentfault.com/a/1190000045232953&#34;&gt;pingora 能做什么和不能做什么&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在放弃了proxy-wasm的支持后, 我开始调研如何实现pingsix-ingress-controller, 由于pingsix的的资源定义是参考apisix来实现的, 所以就直接参考&lt;a href=&#34;https://github.com/apache/apisix-ingress-controller&#34;&gt;apisix-ingress-controller&lt;/a&gt;来实现我们自己的&lt;a href=&#34;https://github.com/zhu327/pingsix-ingress-controller&#34;&gt;pingsix-ingress-controller&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Vibe Coding有感: 从PingSIX重构说起</title>
+      <link>https://zhu327.github.io/2025/09/02/vibe-coding%E6%9C%89%E6%84%9F-%E4%BB%8Epingsix%E9%87%8D%E6%9E%84%E8%AF%B4%E8%B5%B7/</link>
+      <pubDate>Tue, 02 Sep 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/09/02/vibe-coding%E6%9C%89%E6%84%9F-%E4%BB%8Epingsix%E9%87%8D%E6%9E%84%E8%AF%B4%E8%B5%B7/</guid>
+      <description>&lt;p&gt;说到“Vibe Coding”，这个词最近在开发者圈子里越来越流行。在过去，我的实践很大程度上还停留在比较初级的阶段：把需求和代码片段在 ChatGPT、Google AI Studio 或是 Grok 之间来回地复制粘贴。来到新公司后，虽然开通了 GitHub Copilot，体验有所提升，但感觉它更多时候还是一个“超级智能补全”工具。直到今年7月份，公司给配上了 Cursor，我的编程体验才真正开启了一场变革，正式进入了 Vibe Coding 的奇妙旅程。&lt;/p&gt;
+
+&lt;p&gt;恰好，距离我上次更新个人项目 &lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;PingSIX&lt;/a&gt; 已经有一段时间了。PingSIX 是一个我基于 Cloudflare 高性能框架 Pingora 开发的 API 网关。两周前，Pingora 发布了 0.6.0 版本，这给了我一个绝佳的契机。我决定利用这个机会，彻底实践一次全程使用 Cursor 的 Vibe Coding，对 PingSIX 进行一次大重构。&lt;/p&gt;
+
+&lt;p&gt;这次重构断断续续花了一周时间，最终新增了 6636 行代码，删除了 3578 行。这不仅仅是数字上的变化，整个项目在架构、可维护性、可读性、安全性及性能上，都达到了一个我自己非常满意的状态。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从Pingora到API网关：总结</title>
+      <link>https://zhu327.github.io/2024/12/19/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Thu, 19 Dec 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/12/19/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3%E6%80%BB%E7%BB%93/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/pingisx&#34;&gt;https://github.com/zhu327/pingisx&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;经过一个多月的开发，终于完成了使用Rust实现一个API网关的目标，通过这个项目，我基本上把Pingora的核心功能都摸透了，然后也再次加深了对APISIX的理解。总的来说PingSIX基于Pingora实现了APISIX的核心功能，是APISIX功能的一个子集。&lt;/p&gt;
+
+&lt;p&gt;开发这个项目本身也是为了学习Rust的使用，在开发的过程中确实也遇到了很多的问题，在ChatGPT的帮助下，这些问题得到了解决，也让我对Rust有了更深刻的理解。下面我通过4个方面来总结一下在这个项目中我的收获。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从Pingora到API网关：Rust实战</title>
+      <link>https://zhu327.github.io/2024/11/15/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3rust%E5%AE%9E%E6%88%98/</link>
+      <pubDate>Fri, 15 Nov 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/11/15/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3rust%E5%AE%9E%E6%88%98/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;在学习Rust的过程中，我主要进行了一些小工具的练习，对Rust的内存安全性和性能优势有了初步的体会，但始终没有实现过一个完整的大型项目。最近随着Rust在高性能计算领域的应用不断拓展，尤其是Pingora等项目的发布，让我看到了Rust在网络通信领域中的潜力，也激发了我用Rust来实现一个API网关的兴趣。&lt;/p&gt;
+
+&lt;p&gt;在加入腾讯之前，我曾使用OpenResty和Kong进行API网关的开发工作，后来在腾讯进一步深入参与了APISix的云原生网关项目，逐步积累了关于API网关设计、实现以及性能调优方面的经验。API网关是一个兼具架构复杂度与性能要求的系统，涉及请求路由、流量控制、身份验证等多个关键模块，恰好可以充分发挥Rust的优势。因此，我决定以Rust为基础开发一个API网关，这不仅是为了提升自己的Rust技术，更希望通过此项目进一步巩固和提升在API网关方面的知识。&lt;/p&gt;
+
+&lt;p&gt;在具体实现中，我计划基于Pingora的设计思路，打造一个APISix网关的子集功能。我已在GitHub上发布了该项目的初始版本 &lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;https://github.com/zhu327/pingsix&lt;/a&gt;，目前实现了基础的standalone模式，包括基本的路由与反向代理功能。接下来，我将扩展插件定义，逐步实现一些典型的功能插件，最终目标是支持基于etcd的动态配置加载，以便适应多场景的API网关需求。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
   </channel>
 </rss>

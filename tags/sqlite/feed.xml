@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sqlite on </title>
+    <link>https://zhu327.github.io/tags/sqlite/</link>
+    <description>Recent content in Sqlite on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 22 Oct 2024 10:55:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/sqlite/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>k8s云原生程序实现CRD的搜索查询分页</title>
+      <link>https://zhu327.github.io/2024/10/22/k8s%E4%BA%91%E5%8E%9F%E7%94%9F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0crd%E7%9A%84%E6%90%9C%E7%B4%A2%E6%9F%A5%E8%AF%A2%E5%88%86%E9%A1%B5/</link>
+      <pubDate>Tue, 22 Oct 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/10/22/k8s%E4%BA%91%E5%8E%9F%E7%94%9F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0crd%E7%9A%84%E6%90%9C%E7%B4%A2%E6%9F%A5%E8%AF%A2%E5%88%86%E9%A1%B5/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;来新公司还是在做云原生平台的开发，基本的业务逻辑就是通过一系列的CRD资源，走Operator的模式来实现平台的各种业务部署。但是CRD在apiserver中是以key-value的形式存储在etcd中，虽然labels可以实现简单的查询，但是并不能满足复杂的查询条件。在我来之前CRD资源的列表查询都是直接全量返回由前端自行筛选，随着业务量的增加，查询的效率越来越低。&lt;/p&gt;
+
+&lt;p&gt;本来这个项目的前任开发者决策使用MySQL来双写CRD资源，来实现辅助查询，代码也写了很多了，双写带来了一些代码结构上的耦合，但是其实也不是个问题。更恶心的问题是有一个客户由于信创方面的政治问题，要求我们不能引入MySQL！虽然客户有建议用他们自己的数据库，但是从我们的角度来说，我们不希望自己的服务依赖外部客户组件，所以就必须考虑下其它的方案了，比如不用数据库服务。&lt;/p&gt;
+
+&lt;p&gt;基于以往在SQLite上的学习经验，以当前CRD资源的体量完全可以使用SQLite来实现CRD资源的辅助查询，那么是不是要引入持久存储呢？其实还是不用，因为CRD本身已经存储在etcd中了，我们只需要在程序启动时通过k8s的List-Watch的方式将CRD资源同步到SQLite中，这样就可以实现CRD资源的辅助查询了。具体到实现上完全可以使用k8s client中的informer来实现CRD资源的同步，这样可以使用到informer的缓存机制减少apiserver的查询压力。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>以Vaultwarden为例使用SQLite Litestream实现无数据库服务</title>
+      <link>https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Tue, 03 Sep 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/09/03/%E4%BB%A5vaultwarden%E4%B8%BA%E4%BE%8B%E4%BD%BF%E7%94%A8sqlite-litestream%E5%AE%9E%E7%8E%B0%E6%97%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;Vaultwarden是一个非官方实现的Bitwarden Server，用于密码管理，支持Web端、桌面端和移动端。它支持多种数据来存储数据，包括SQLite、PostgreSQL和MySQL等。当我们想把它部署在一个容器服务平台时，如果容器服务本身没有提供持久挂载的卷，那我们就只能使用PostgreSQL或者MySQL外部数据来存储数据。&lt;/p&gt;
+
+&lt;p&gt;但是我们并不想额外再买资源来运行一个数据库，那我们就可以使用SQLite来存储数据，并且使用Litestream来实现容灾备份。这样虽然容器服务没有持久存储，但是数据还是安全的。下面以Vaultwarden为例，使用SQLite和Litestream来实现无数据库服务。其它可以使用SQLite的程序也可以使用这种方式来实现无数据库服务。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

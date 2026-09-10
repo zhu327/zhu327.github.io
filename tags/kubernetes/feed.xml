@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes on </title>
+    <link>https://zhu327.github.io/tags/kubernetes/</link>
+    <description>Recent content in Kubernetes on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 20 Oct 2025 10:00:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/kubernetes/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>pingsix-ingress-controller启动</title>
+      <link>https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/</link>
+      <pubDate>Mon, 20 Oct 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;https://github.com/zhu327/pingsix&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;PingSIX 自从上次重构之后, 我一直在考虑如何扩展这个项目的功能与使用场景, 有2个方向可以考虑:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;支持proxy-wasm插件&lt;/li&gt;
+&lt;li&gt;实现pingsix-ingress-controller&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在调研了proxy-wasm的相关功能后, 结论是由于pingora面向的场景是CDN的反向代理, 所以没有考虑过方便的修改请求体与响应体, 这就造成很难基于pingora来实现proxy-wasm的ABI, 如果我要自己定义一个wasm的接口协议, 没法复用社区现有的proxy-wasm插件, 那就没必要了, 不如直接写Rust的插件. 相关参考内容:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/cloudflare/pingora/issues/17&#34;&gt;proxy-wasm support&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://segmentfault.com/a/1190000045232953&#34;&gt;pingora 能做什么和不能做什么&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在放弃了proxy-wasm的支持后, 我开始调研如何实现pingsix-ingress-controller, 由于pingsix的的资源定义是参考apisix来实现的, 所以就直接参考&lt;a href=&#34;https://github.com/apache/apisix-ingress-controller&#34;&gt;apisix-ingress-controller&lt;/a&gt;来实现我们自己的&lt;a href=&#34;https://github.com/zhu327/pingsix-ingress-controller&#34;&gt;pingsix-ingress-controller&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>云原生开发入门</title>
+      <link>https://zhu327.github.io/2025/03/28/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Fri, 28 Mar 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/03/28/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8/</guid>
+      <description>&lt;p&gt;作为一名在云原生领域摸爬滚打了一段时间的开发者，我时常会遇到一些刚接触这个领域的朋友，他们面对 Kubernetes (K8s)、容器这些概念时，常常感到有些迷茫，不知道从何学起。这篇文章，我想结合自己的一些学习体会，为想要入门云原生开发的同学提供一个相对清晰的指引。&lt;/p&gt;
+
+&lt;p&gt;我自己并非科班出身，从最初接触软件测试写 Lua 脚本，到后来学习 Python 做后端，再到进入腾讯接触 Golang 和 K8s 相关开发，一路走来也踩了不少坑。云原生技术栈确实庞大，但核心的理念是利用容器、微服务、声明式 API 等方式，去构建更可靠、更具弹性的分布式系统。而 K8s 作为这个生态的核心编排引擎，可以说是我们必须掌握的关键技能。&lt;/p&gt;
+
+&lt;p&gt;这篇文章，我会从基础概念聊起，分享几本我学习过程中觉得非常有帮助的书籍，一个不错的社区文章集合，以及两个可以动手实践的代码项目。最后，还会结合实际工作经验，聊聊 K8s 运维实践中一些重要的事情。希望这些能帮助大家在学习云原生的路上少走一些弯路。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;一-云原生与-kubernetes-从基础概念开始&#34;&gt;一、云原生与 Kubernetes：从基础概念开始&lt;/h2&gt;
+
+&lt;h3 id=&#34;云原生到底是什么&#34;&gt;云原生到底是什么？&lt;/h3&gt;
+
+&lt;p&gt;我理解的云原生（Cloud Native），它不是指某一个具体的技术，更像是一种面向云环境的应用设计、开发和部署的最佳实践集合。它鼓励我们使用像容器、微服务、不可变基础设施、声明式 API 这些技术和方法，目标是让我们的应用能更好地利用云计算的弹性、分布式、自动化等优势。根据 CNCF（云原生计算基金会）的定义，这些是关键要素。简单说，就是让应用为云而生，能在云上运行得更好。&lt;/p&gt;
+
+&lt;h3 id=&#34;为什么-kubernetes-这么重要&#34;&gt;为什么 Kubernetes 这么重要？&lt;/h3&gt;
+
+&lt;p&gt;容器技术（比如 Docker）解决了环境一致性的问题，但当你有成百上千个容器需要管理时，手动操作就变得不现实了。Kubernetes 就是来解决这个问题的。它是一个开源的容器编排平台，最初由 Google 开发，现在由 CNCF 维护。它可以自动化地完成应用的部署、扩缩容、服务发现、负载均衡、故障恢复等一系列复杂工作。在我看来，掌握 K8s 是进入现代后端开发、特别是平台工程领域的一张重要门票。&lt;/p&gt;
+
+&lt;h3 id=&#34;我的学习路径建议&#34;&gt;我的学习路径建议：&lt;/h3&gt;
+
+&lt;p&gt;回顾我自己的学习过程，我建议可以按以下步骤来：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;先搞懂容器&lt;/strong&gt;：理解 Docker 的基本概念，比如镜像（Image）、容器（Container）、Dockerfile，能自己动手构建、运行一个简单的容器化应用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;再深入 K8s 核心&lt;/strong&gt;：学习 K8s 的核心组件（比如 Pod、Service、Deployment、StatefulSet、Namespace 等）都是做什么的，它们之间是如何协作的。了解控制平面（Master）和数据平面（Node）的基本工作原理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;动手实践是关键&lt;/strong&gt;：理论学习后，一定要动手实践。尝试编写 YAML 文件部署应用，使用 &lt;code&gt;kubectl&lt;/code&gt; 与集群交互。然后可以去探索存储（Volumes, PV, PVC）、网络（Ingress, CNI）、配置（ConfigMap, Secret）等更深入的主题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;理解运维视角&lt;/strong&gt;：开发的应用最终要跑在生产环境。了解 K8s 集群的监控、日志、告警、排错等运维实践，对于写出更健壮、更易于维护的应用非常有帮助。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;接下来，分享一些我在学习过程中用过且觉得不错的资源。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>k8s云原生程序实现CRD的搜索查询分页</title>
+      <link>https://zhu327.github.io/2024/10/22/k8s%E4%BA%91%E5%8E%9F%E7%94%9F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0crd%E7%9A%84%E6%90%9C%E7%B4%A2%E6%9F%A5%E8%AF%A2%E5%88%86%E9%A1%B5/</link>
+      <pubDate>Tue, 22 Oct 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/10/22/k8s%E4%BA%91%E5%8E%9F%E7%94%9F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0crd%E7%9A%84%E6%90%9C%E7%B4%A2%E6%9F%A5%E8%AF%A2%E5%88%86%E9%A1%B5/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;来新公司还是在做云原生平台的开发，基本的业务逻辑就是通过一系列的CRD资源，走Operator的模式来实现平台的各种业务部署。但是CRD在apiserver中是以key-value的形式存储在etcd中，虽然labels可以实现简单的查询，但是并不能满足复杂的查询条件。在我来之前CRD资源的列表查询都是直接全量返回由前端自行筛选，随着业务量的增加，查询的效率越来越低。&lt;/p&gt;
+
+&lt;p&gt;本来这个项目的前任开发者决策使用MySQL来双写CRD资源，来实现辅助查询，代码也写了很多了，双写带来了一些代码结构上的耦合，但是其实也不是个问题。更恶心的问题是有一个客户由于信创方面的政治问题，要求我们不能引入MySQL！虽然客户有建议用他们自己的数据库，但是从我们的角度来说，我们不希望自己的服务依赖外部客户组件，所以就必须考虑下其它的方案了，比如不用数据库服务。&lt;/p&gt;
+
+&lt;p&gt;基于以往在SQLite上的学习经验，以当前CRD资源的体量完全可以使用SQLite来实现CRD资源的辅助查询，那么是不是要引入持久存储呢？其实还是不用，因为CRD本身已经存储在etcd中了，我们只需要在程序启动时通过k8s的List-Watch的方式将CRD资源同步到SQLite中，这样就可以实现CRD资源的辅助查询了。具体到实现上完全可以使用k8s client中的informer来实现CRD资源的同步，这样可以使用到informer的缓存机制减少apiserver的查询压力。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lua on </title>
+    <link>https://zhu327.github.io/tags/lua/</link>
+    <description>Recent content in Lua on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 26 Jun 2018 21:35:01 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/lua/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>像OpenResty一样使用Golang开发Web App</title>
+      <link>https://zhu327.github.io/2018/06/26/%E5%83%8Fopenresty%E4%B8%80%E6%A0%B7%E4%BD%BF%E7%94%A8golang%E5%BC%80%E5%8F%91web-app/</link>
+      <pubDate>Tue, 26 Jun 2018 21:35:01 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2018/06/26/%E5%83%8Fopenresty%E4%B8%80%E6%A0%B7%E4%BD%BF%E7%94%A8golang%E5%BC%80%E5%8F%91web-app/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/glualor&#34;&gt;https://github.com/zhu327/glualor&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;最近在公司内网读过一篇Gopher Lua的文章, 感觉在Golang中使用Lua VM的模式跟OpenResty是一样一样的. 在Github上找了一圈net/http的到Gopher Lua的绑定, 然而并没有. 造轮子的机会来了 ^_^&lt;/p&gt;
+
+&lt;h3 id=&#34;gluaweb&#34;&gt;gluaweb&lt;/h3&gt;
+
+&lt;p&gt;虽然看过几本Golang的书, 也读过几个开源项目的代码, 来腾讯后还上过两门Golang的课, 但是却没有写过一个Golang的项目, 从新读过net/http标准库的文档, 再看看Gopher Lua的例子就写了&lt;a href=&#34;https://github.com/zhu327/gluaweb&#34;&gt;gluaweb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>OpenResty与API Gateway</title>
+      <link>https://zhu327.github.io/2017/11/27/openresty%E4%B8%8Eapi-gateway/</link>
+      <pubDate>Mon, 27 Nov 2017 18:20:31 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/11/27/openresty%E4%B8%8Eapi-gateway/</guid>
+      <description>&lt;p&gt;公司业务向微服务方向迁移实践中, API Gateway成为接入层最重要的部分, 在完成开发的同时给同事做了一次OpenResty的分享, 以下是分享的内容整理.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&#34;当我谈论高性能时我们谈论什么&#34;&gt;当我谈论高性能时我们谈论什么 ?&lt;/h3&gt;
+
+&lt;p&gt;讨论时间, 大家自由发挥&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;机器&lt;/li&gt;
+&lt;li&gt;语言&lt;/li&gt;
+&lt;li&gt;架构
+
+&lt;ul&gt;
+&lt;li&gt;reactor&lt;/li&gt;
+&lt;li&gt;coroutine&lt;/li&gt;
+&lt;li&gt;cache&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>记</title>
+      <link>https://zhu327.github.io/2017/09/11/%E8%AE%B0/</link>
+      <pubDate>Mon, 11 Sep 2017 13:43:35 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/09/11/%E8%AE%B0/</guid>
+      <description>&lt;p&gt;好几个月都没写过Blog,写个小记&lt;/p&gt;
+
+&lt;h3 id=&#34;openresty&#34;&gt;Openresty&lt;/h3&gt;
+
+&lt;p&gt;公司业务向微服务迁移过程中接触到API Gateway这种中间件,评估了各种开源方案后,选择了在Openresty基础上实现的&lt;a href=&#34;https://github.com/Mashape/kong&#34;&gt;Kong&lt;/a&gt;.为了在Kong的基础上做二次开发,开始学习Openresty.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://moonbingbing.gitbooks.io/openresty-best-practices/content/&#34;&gt;OpenResty 最佳实践&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://openresty.org/download/agentzh-nginx-tutorials-zhcn.html&#34;&gt;agentzh 的 Nginx 教程&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://jinnianshilongnian.iteye.com/blog/2190344&#34;&gt;跟开涛学OpenResty(Nginx+Lua)开发&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;还是在好几年做测试的时候用过lua语言写测试脚本,lua语言特性很简单,想捡起来也很快.更多的感触是由于学习过Torando的源码,理解了Reactor模型,协程这些概念.学起Openresty只需要把相关概念套上去就很好理解了.这就是知识体系建立的好处,虽然不同语言,不同框架,还是能快速上手.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/shorturl&#34;&gt;https://github.com/zhu327/shorturl&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;正好公司有个生成短链接的小项目,不限语言,先拿Openresty练练手,写了个shorturl.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

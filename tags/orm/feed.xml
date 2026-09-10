@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Orm on </title>
+    <link>https://zhu327.github.io/tags/orm/</link>
+    <description>Recent content in Orm on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 16 Sep 2014 22:51:10 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/orm/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ORM 对象关系映射</title>
+      <link>https://zhu327.github.io/2014/09/16/orm-%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%84/</link>
+      <pubDate>Tue, 16 Sep 2014 22:51:10 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2014/09/16/orm-%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%84/</guid>
+      <description>&lt;h3 id=&#34;orm概念&#34;&gt;ORM概念&lt;/h3&gt;
+
+&lt;p&gt;wikipedia: &lt;a href=&#34;http://zh.wikipedia.org/wiki/对象关系映射&#34;&gt;对象关系映射&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;简单的说ORM就是通过操作Python中的对象来实现对关系数据库(MySQL)中数据的操作。&lt;code&gt;Model&lt;/code&gt;类与数据库表映射，&lt;code&gt;Model&lt;/code&gt;对象与数据库中的行映射，对象的属性与表中的字段映射。&lt;/p&gt;
+
+&lt;h3 id=&#34;用python实现基本功能的orm&#34;&gt;用Python实现基本功能的ORM&lt;/h3&gt;
+
+&lt;p&gt;首先定义&lt;code&gt;Field&lt;/code&gt;类，代表DB中tabale的每一个字段，对象初始化的时候需要定义的属性有，字段名称，字段数据类型，是否为主键，是否可为空，字段默认值，是否可更改等字段属性&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

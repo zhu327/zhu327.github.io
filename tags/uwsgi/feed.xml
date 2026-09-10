@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Uwsgi on </title>
+    <link>https://zhu327.github.io/tags/uwsgi/</link>
+    <description>Recent content in Uwsgi on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 29 Aug 2018 23:23:20 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/uwsgi/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Gunicorn与uWSGI之我见</title>
+      <link>https://zhu327.github.io/2018/08/29/gunicorn%E4%B8%8Euwsgi%E4%B9%8B%E6%88%91%E8%A7%81/</link>
+      <pubDate>Wed, 29 Aug 2018 23:23:20 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2018/08/29/gunicorn%E4%B8%8Euwsgi%E4%B9%8B%E6%88%91%E8%A7%81/</guid>
+      <description>&lt;p&gt;昨天前同事问我&lt;a href=&#34;https://github.com/zhu327/doge&#34;&gt;doge&lt;/a&gt;的服务端怎么是单进程跑的, 其实在生产环境下我们参考&lt;a href=&#34;https://github.com/eleme/gunicorn_thrift&#34;&gt;gunicorn_thrift&lt;/a&gt;实现了一个定制的master/worker模型的Gunicorn服务器. 昨天也写了一个&lt;a href=&#34;https://github.com/zhu327/doge/tree/master/doge/gunicorn&#34;&gt;简化版本&lt;/a&gt;集成到doge, 实际代码不超过20行就能利用到Gunicorn的进程管理功能. 有感于Gunicorn简洁优雅的模型, 这里聊聊我理解的Gunicorn与uWSGI.&lt;/p&gt;
+
+&lt;h2 id=&#34;perfork&#34;&gt;perfork&lt;/h2&gt;
+
+&lt;p&gt;perfork是一种服务端编程模型, Nginx, Gunicorn, uWSGI都是这种模型的实现, 简单的说perfok就是master进程启动注册一堆信号处理函数, 创建listen socket fd, fork出多个worker子进程, 子进程执行accept循环处理请求(这里简化模型, 当然也可以用select, epoll多路复用), master进程只负责监控worker进程状态, 通过pipeline通信来控制worker进程.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

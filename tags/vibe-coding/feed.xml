@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Vibe Coding on </title>
+    <link>https://zhu327.github.io/tags/vibe-coding/</link>
+    <description>Recent content in Vibe Coding on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 03 Sep 2026 16:30:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/vibe-coding/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>在AI时代，我终于了却了那个离开鹅厂时的PaaS执念</title>
+      <link>https://zhu327.github.io/2026/09/03/%E5%9C%A8ai%E6%97%B6%E4%BB%A3%E6%88%91%E7%BB%88%E4%BA%8E%E4%BA%86%E5%8D%B4%E4%BA%86%E9%82%A3%E4%B8%AA%E7%A6%BB%E5%BC%80%E9%B9%85%E5%8E%82%E6%97%B6%E7%9A%84paas%E6%89%A7%E5%BF%B5/</link>
+      <pubDate>Thu, 03 Sep 2026 16:30:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/09/03/%E5%9C%A8ai%E6%97%B6%E4%BB%A3%E6%88%91%E7%BB%88%E4%BA%8E%E4%BA%86%E5%8D%B4%E4%BA%86%E9%82%A3%E4%B8%AA%E7%A6%BB%E5%BC%80%E9%B9%85%E5%8E%82%E6%97%B6%E7%9A%84paas%E6%89%A7%E5%BF%B5/</guid>
+      <description>&lt;p&gt;一晃到了 2026 年的 9 月初。&lt;/p&gt;
+
+&lt;p&gt;坐在珠海的办公室里，翻看着终端里的会话统计数据，才猛然发觉这大半年过得有多魔幻。如果在 2024 年底我刚开始折腾 Cursor 的时候，有人跟我说：“老朱，再过一年半，你自己基本上不用动手写代码了，一个人一个星期就能把一个分布式 PaaS 平台从零拉起来”，我大概率会觉得他在扯淡。&lt;/p&gt;
+
+&lt;p&gt;但翻开后台的数据，现实就是这么冷冰冰又热腾腾地摆在面前：从 6 月初到现在，仅仅 3 个月的时间，我本机加远程两台机器，跑了 1400 多个 Coding Agent 会话，消耗了超过 &lt;strong&gt;60 亿&lt;/strong&gt; 的 Token。&lt;/p&gt;
+
+&lt;p&gt;这大半年里，我的主力工具从 Cursor 全面切到了 Pi，硬啃了无数国产模型的坑，把以前写得臃肿的 Agent 工作流砍到只剩骨架，甚至顺手做完了当年离开鹅厂时埋在心底的一个夙愿。&lt;/p&gt;
+
+&lt;p&gt;今天有些空闲，就按照惯例，絮絮叨叨地复盘一下这半年的折腾历程。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Lexideck 背单词小应用：AI 时代的 Vibe Coding 实践</title>
+      <link>https://zhu327.github.io/2026/06/30/lexideck-%E8%83%8C%E5%8D%95%E8%AF%8D%E5%B0%8F%E5%BA%94%E7%94%A8ai-%E6%97%B6%E4%BB%A3%E7%9A%84-vibe-coding-%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Tue, 30 Jun 2026 19:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/06/30/lexideck-%E8%83%8C%E5%8D%95%E8%AF%8D%E5%B0%8F%E5%BA%94%E7%94%A8ai-%E6%97%B6%E4%BB%A3%E7%9A%84-vibe-coding-%E5%AE%9E%E8%B7%B5/</guid>
+      <description>&lt;p&gt;我平时习惯通过 RSS 订阅 Hacker News，后来随着 Twitter 上线了默认翻译功能，我对直接阅读第一手英文资讯的需求越发强烈。然而现实很骨感：词汇量实在太低。因为现在机器翻译过于方便，我一般都是直接依赖浏览器翻译来看文章；有时候也会强迫自己不用全篇翻译，而是借助划词翻译来硬啃。&lt;/p&gt;
+
+&lt;p&gt;硬啃倒是能啃下来，但问题在于：读完了，生词该不认识还是不认识，英语水平并没有实质性的提升。&lt;/p&gt;
+
+&lt;p&gt;我觉得关键的痛点在于，我没有把这些在真实阅读场景中遇到的生词记录下来，也没有去反复背诵。所以我一直有个执念：做一个记录生词的工具。在划词翻译发现生词时，顺手把它记录下来，然后可以在手机上同步，随时随地利用碎片时间背单词。一旦这个“阅读发现 -&amp;gt; 记录 -&amp;gt; 间隔重复背诵”的数据飞轮转起来，我相信我的英语水平肯定会逐步提升。&lt;/p&gt;
+
+&lt;p&gt;不过，因为我自己一直是个偏后端的程序员，没怎么写过前端和 UI，这个计划就一直停留在脑海里，没有真正落地。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>AI工程落地实践</title>
+      <link>https://zhu327.github.io/2026/02/11/ai%E5%B7%A5%E7%A8%8B%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Wed, 11 Feb 2026 14:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/02/11/ai%E5%B7%A5%E7%A8%8B%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</guid>
+      <description>&lt;p&gt;前几天在整理项目代码的时候，看着 commit log 里那些由 AI 生成的代码，突然有点感慨。以前写代码是体力和脑力的双重劳动，现在好像变成了单纯的脑力博弈——跟 AI 的博弈。&lt;/p&gt;
+
+&lt;p&gt;这篇想絮絮叨叨聊一下从传统的开发模式转变为 Vibe Coding 的过程中，我踩过的坑以及现在摸索出来的一套还算顺手的 SOP。&lt;/p&gt;
+
+&lt;h4 id=&#34;1-回顾-前ai时代的手工作坊&#34;&gt;1. 回顾：前AI时代的手工作坊&lt;/h4&gt;
+
+&lt;p&gt;在那时候，我接一个大需求，流程基本是雷打不动的：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;拆解&lt;/strong&gt;：把大需求掰碎了，变成一个个小任务。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;设计&lt;/strong&gt;：看老代码，定方案。哪里要改，哪里要加，脑子里或者纸上得有个谱。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;搬砖&lt;/strong&gt;：按计划写代码，写单测。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;验证&lt;/strong&gt;：跑通端对端流程。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Code Review&lt;/strong&gt;：提 PR，等同事挑刺，改代码，合并。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这个过程里，最重要的一步其实往往被忽视，就是&lt;strong&gt;复盘&lt;/strong&gt;。这波开发里学到了什么新模式？引入了什么新坑？怎么避免下次再犯？这种“复利”思维才是工程师成长的关键。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Vibe Coding有感: 从PingSIX重构说起</title>
+      <link>https://zhu327.github.io/2025/09/02/vibe-coding%E6%9C%89%E6%84%9F-%E4%BB%8Epingsix%E9%87%8D%E6%9E%84%E8%AF%B4%E8%B5%B7/</link>
+      <pubDate>Tue, 02 Sep 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/09/02/vibe-coding%E6%9C%89%E6%84%9F-%E4%BB%8Epingsix%E9%87%8D%E6%9E%84%E8%AF%B4%E8%B5%B7/</guid>
+      <description>&lt;p&gt;说到“Vibe Coding”，这个词最近在开发者圈子里越来越流行。在过去，我的实践很大程度上还停留在比较初级的阶段：把需求和代码片段在 ChatGPT、Google AI Studio 或是 Grok 之间来回地复制粘贴。来到新公司后，虽然开通了 GitHub Copilot，体验有所提升，但感觉它更多时候还是一个“超级智能补全”工具。直到今年7月份，公司给配上了 Cursor，我的编程体验才真正开启了一场变革，正式进入了 Vibe Coding 的奇妙旅程。&lt;/p&gt;
+
+&lt;p&gt;恰好，距离我上次更新个人项目 &lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;PingSIX&lt;/a&gt; 已经有一段时间了。PingSIX 是一个我基于 Cloudflare 高性能框架 Pingora 开发的 API 网关。两周前，Pingora 发布了 0.6.0 版本，这给了我一个绝佳的契机。我决定利用这个机会，彻底实践一次全程使用 Cursor 的 Vibe Coding，对 PingSIX 进行一次大重构。&lt;/p&gt;
+
+&lt;p&gt;这次重构断断续续花了一周时间，最终新增了 6636 行代码，删除了 3578 行。这不仅仅是数字上的变化，整个项目在架构、可维护性、可读性、安全性及性能上，都达到了一个我自己非常满意的状态。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

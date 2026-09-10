@@ -31,6 +31,35 @@
     </item>
     
     <item>
+      <title>pingsix-ingress-controller启动</title>
+      <link>https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/</link>
+      <pubDate>Mon, 20 Oct 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;https://github.com/zhu327/pingsix&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;PingSIX 自从上次重构之后, 我一直在考虑如何扩展这个项目的功能与使用场景, 有2个方向可以考虑:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;支持proxy-wasm插件&lt;/li&gt;
+&lt;li&gt;实现pingsix-ingress-controller&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在调研了proxy-wasm的相关功能后, 结论是由于pingora面向的场景是CDN的反向代理, 所以没有考虑过方便的修改请求体与响应体, 这就造成很难基于pingora来实现proxy-wasm的ABI, 如果我要自己定义一个wasm的接口协议, 没法复用社区现有的proxy-wasm插件, 那就没必要了, 不如直接写Rust的插件. 相关参考内容:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/cloudflare/pingora/issues/17&#34;&gt;proxy-wasm support&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://segmentfault.com/a/1190000045232953&#34;&gt;pingora 能做什么和不能做什么&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在放弃了proxy-wasm的支持后, 我开始调研如何实现pingsix-ingress-controller, 由于pingsix的的资源定义是参考apisix来实现的, 所以就直接参考&lt;a href=&#34;https://github.com/apache/apisix-ingress-controller&#34;&gt;apisix-ingress-controller&lt;/a&gt;来实现我们自己的&lt;a href=&#34;https://github.com/zhu327/pingsix-ingress-controller&#34;&gt;pingsix-ingress-controller&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>从Pingora到API网关：总结</title>
       <link>https://zhu327.github.io/2024/12/19/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3%E6%80%BB%E7%BB%93/</link>
       <pubDate>Thu, 19 Dec 2024 10:55:52 +0800</pubDate>
@@ -62,6 +91,36 @@
 &lt;p&gt;在加入腾讯之前，我曾使用OpenResty和Kong进行API网关的开发工作，后来在腾讯进一步深入参与了APISix的云原生网关项目，逐步积累了关于API网关设计、实现以及性能调优方面的经验。API网关是一个兼具架构复杂度与性能要求的系统，涉及请求路由、流量控制、身份验证等多个关键模块，恰好可以充分发挥Rust的优势。因此，我决定以Rust为基础开发一个API网关，这不仅是为了提升自己的Rust技术，更希望通过此项目进一步巩固和提升在API网关方面的知识。&lt;/p&gt;
 
 &lt;p&gt;在具体实现中，我计划基于Pingora的设计思路，打造一个APISix网关的子集功能。我已在GitHub上发布了该项目的初始版本 &lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;https://github.com/zhu327/pingsix&lt;/a&gt;，目前实现了基础的standalone模式，包括基本的路由与反向代理功能。接下来，我将扩展插件定义，逐步实现一些典型的功能插件，最终目标是支持基于etcd的动态配置加载，以便适应多场景的API网关需求。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>自动化自己的生活：创造自己的小工具</title>
+      <link>https://zhu327.github.io/2024/08/30/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E6%B4%BB%E5%88%9B%E9%80%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B0%8F%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Fri, 30 Aug 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/08/30/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E6%B4%BB%E5%88%9B%E9%80%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B0%8F%E5%B7%A5%E5%85%B7/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;作为一位程序员，我写的大部分当然都是用来赚钱生活的代码，赚钱的代码都是非常规范的，一般都是复杂业务逻辑在程序上映射，很多时候都只有在解决了复杂的业务问题，才能获得打怪升级的成就感。&lt;/p&gt;
+
+&lt;p&gt;但是我也会在业余时间学习一些工作无关的技术，比如最近半年我学习了Rust，每当我学习一门新的技术，我总是希望把之前实现的一些程序改用新技术来实现，这样就可以更快的上手。平常生活中也没什么用到Rust的场景，那就只能先把之前用Bash，Python写的小工具用Rust重写一遍。然后最近我也自己发掘了一些生活上的场景，这些场景很多时候都是重复的，手动的，如果能改成自动化能够节省很多时间。想起了不知道哪里看过的一个说法：懒惰是程序员的第一生产力，因为懒，我们会把各种重复手动的工作自动化。&lt;/p&gt;
+
+&lt;p&gt;下面的内容就是我在今年自动化生活的一部分，通过自己创造的这些小工具，我解决了自己生活中的一些小痛点。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>编程语言漫谈</title>
+      <link>https://zhu327.github.io/2022/03/30/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%BC%AB%E8%B0%88/</link>
+      <pubDate>Wed, 30 Mar 2022 17:38:04 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2022/03/30/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%BC%AB%E8%B0%88/</guid>
+      <description>&lt;p&gt;半年前还是2021年春节的时候, 在家休假的我, 在B站上发现了一门叫&lt;a href=&#34;https://www.bilibili.com/video/BV1hp4y1k7SV&#34;&gt;RUST语言的课程&lt;/a&gt;, 学习的过程中, 发现RUST语言为了绝对的安全性, 在语法本身上做了很多的妥协, 所以想着等我学完这门课, 再基于自己以往编程语言的学习经历, 写一篇&amp;lt;如何学习一门新的编程语言&amp;gt;的文章. 但是时过境迁, 我并没有学完这门RUST课, 所以&amp;lt;如何学习一门新的编程语言&amp;gt;也就无疾而终了. 回过头来再思考下以往我学习的那些编程语言, 就有了这篇文章&amp;lt;编程语言漫谈&amp;gt;. 我希望以一种比较轻松的散文的形式来阐述我过完学习的一些经验与思考.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://user-images.githubusercontent.com/873883/160806614-07709f0a-add6-464b-a76a-bbaffdeab727.jpg&#34; alt=&#34;rust&#34;&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

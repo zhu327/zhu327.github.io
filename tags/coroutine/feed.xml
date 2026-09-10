@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Coroutine on </title>
+    <link>https://zhu327.github.io/tags/coroutine/</link>
+    <description>Recent content in Coroutine on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 16 Jun 2016 17:51:21 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/coroutine/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Python协程</title>
+      <link>https://zhu327.github.io/2016/06/16/python%E5%8D%8F%E7%A8%8B/</link>
+      <pubDate>Thu, 16 Jun 2016 17:51:21 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/06/16/python%E5%8D%8F%E7%A8%8B/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://zh.wikipedia.org/zh-cn/%E5%8D%8F%E7%A8%8B&#34;&gt;https://zh.wikipedia.org/zh-cn/%E5%8D%8F%E7%A8%8B&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;协程可以理解为线程中的微线程，通过手动挂起函数的执行状态，在合适的时机再次激活继续运行，而不需要上下文切换。所以在python中使用协程会比线程性能更好。&lt;/p&gt;
+
+&lt;h3 id=&#34;tornado协程&#34;&gt;Tornado协程&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://blog.csdn.net/wyx819/article/details/45420017&#34;&gt;http://blog.csdn.net/wyx819/article/details/45420017&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;上面有大牛分析的Tornado的线程实现，依赖与Tornado的IOLoop，所以不能单独拿出来使用。有几个需要理解的概念:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Future对象
+用来保存异步获取到的结果，并在set_reslut的时候调用callback方法，把对应的callback方法放到ioloop的callback列表中等待下一次ioloop循环再执行&lt;/li&gt;
+&lt;li&gt;装饰器coroutine
+在这个装饰器中实现了协程的调度，通过不断的调用next函数来不断获取Future对象，然后每次拿到Future对象在add_callback到ioloop上，等到Future被set_reslut后再次next，直到生成器中抛出Return的异常。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;具体的实现过程不是很好描述，调度过程比较复杂，还是看看参考文章大牛的解析吧。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

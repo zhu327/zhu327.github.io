@@ -6,10 +6,42 @@
     <description>Recent content in Mysql on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 24 Sep 2014 22:13:57 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 25 Sep 2016 16:41:33 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/tags/mysql/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Django db使用MySQL连接池</title>
+      <link>https://zhu327.github.io/2016/09/25/django-db%E4%BD%BF%E7%94%A8mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/</link>
+      <pubDate>Sun, 25 Sep 2016 16:41:33 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/09/25/django-db%E4%BD%BF%E7%94%A8mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/</guid>
+      <description>&lt;p&gt;Django db模块本身不支持MySQL连接池，只有一个配置&lt;code&gt;CONN_MAX_AGE&lt;/code&gt;连接最大存活时间，如果WSGI服务器使用了线程池技术，会达到连接复用的效果。但是如果WSGI服务如果是每个请求都创建新的线程，那么这个配置没有任何效果，因为连接保存在&lt;code&gt;Thread.local()&lt;/code&gt;名称空间中，在不同的线程中不能复用。&lt;/p&gt;
+
+&lt;p&gt;在上一篇&lt;a href=&#34;https://zhu327.github.io/2016/09/25/greentor-mysql连接池实现/&#34;&gt;greentor MySQL连接池实现&lt;/a&gt;中已经实现了MySQL连接池，只需要重写Django MySQL backend以支持连接池，就能达到连接复用的目的，减少socket 3次握手的开销，提高性能。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/greentor/blob/master/demo/core/base.py&#34;&gt;https://github.com/zhu327/greentor/blob/master/demo/core/base.py&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>greentor MySQL连接池实现</title>
+      <link>https://zhu327.github.io/2016/09/25/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Sun, 25 Sep 2016 15:56:21 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/09/25/greentor-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%AE%9E%E7%8E%B0/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Connection_pool&#34;&gt;https://en.wikipedia.org/wiki/Connection_pool&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;通过&lt;a href=&#34;https://github.com/zhu327/greentor&#34;&gt;greentor&lt;/a&gt;实现了pymysql在Tornado上异步调用的过程后发现，每次建立数据库连接都会经过socket 3次握手，而每一次socket读写都会伴随着greenlet的切换，以及ioloop的callback过程，虽然是异步了，但是IO性能并没有提升，所以在研究了&lt;a href=&#34;https://github.com/snower/TorMySQL&#34;&gt;TorMySQL&lt;/a&gt;连接池的实现后，实现了greentor自己的连接池。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/greentor/blob/master/greentor/green.py&#34;&gt;https://github.com/zhu327/greentor/blob/master/greentor/green.py&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Memcached 优化 MySQL 查询</title>

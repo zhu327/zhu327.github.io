@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Review on </title>
+    <link>https://zhu327.github.io/tags/review/</link>
+    <description>Recent content in Review on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 04 Jan 2026 10:00:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/review/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>我的2025</title>
+      <link>https://zhu327.github.io/2026/01/04/%E6%88%91%E7%9A%842025/</link>
+      <pubDate>Sun, 04 Jan 2026 10:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/01/04/%E6%88%91%E7%9A%842025/</guid>
+      <description>&lt;p&gt;今天是2026年的第一个周日，窗外是珠海特有的温润海风。这一年，我从深圳到珠海，从一家迷茫的小公司到了老牌的金山办公。如果说2024年是本命年的阵痛，那么2025年对我来说，更像是在这激荡的技术浪潮中，努力寻找平衡与自洽的一年。&lt;/p&gt;
+
+&lt;p&gt;依然按照惯例，絮絮叨叨地复盘下我的2025吧。&lt;/p&gt;
+
+&lt;h3 id=&#34;行云创新-及时止损的教训&#34;&gt;行云创新：及时止损的教训&lt;/h3&gt;
+
+&lt;p&gt;2025年的开头，我还在行云创新做云原生产品。当时做的是基于 K8s 的在线云 IDE，技术方案其实挺有意思：用 K8s 调度启动在线编辑器，用 code-server 和 selkies 暴露桌面 IDE，甚至还研究了 Docker Windows 容器。为了解决文件同步，我设计了 Sidecar 模式的文件服务，负责上传变更、初始化 git 目录这些活儿。&lt;/p&gt;
+
+&lt;p&gt;技术上虽然有成就感，但职场环境却让我第一次深刻体会到“庙小妖风大”。&lt;/p&gt;
+
+&lt;p&gt;先是内部莫名其妙的同事纠纷，随后是让人窒息的“服从性测试”。有一次我下班刚到家，就被领导一个电话叫回去值守，其实压根不是我的问题。最崩坏的是关于技术方向的讨论，领导要求我周末加班，把已经验证通过的方案改回到之前被废弃的死路上。我坚持了专业意见，并坦言周末搞不定，结果就是失去了所谓的“信任”。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>我的2024</title>
+      <link>https://zhu327.github.io/2024/12/31/%E6%88%91%E7%9A%842024/</link>
+      <pubDate>Tue, 31 Dec 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/12/31/%E6%88%91%E7%9A%842024/</guid>
+      <description>&lt;p&gt;今天是2024年的最后一天，我有这一下午的空闲时间，所以就让我来絮絮叨叨的写写我这神奇的2024年吧。&lt;/p&gt;
+
+&lt;p&gt;我是龙年出生的，所以2024年是我的本命年，年初的时候，老婆还有姐姐就给我准备了红内裤，红袜子。由于红袜子太过显眼了，所以这一年我的内裤都是红色的，哈哈。本命年，犯太岁，这一年工作上，心态上，都有一些变化，就让我在本命年的最后一天瞎写写吧。&lt;/p&gt;
+
+&lt;h3 id=&#34;我自己&#34;&gt;我自己&lt;/h3&gt;
+
+&lt;p&gt;我是80年代末生人，出生在一个小镇，是标准的小镇做题家。从高中开始基本就不怎么回家了，然后上大学，跑去了云南，双非一本，学的是热能与动力工程。我的同学大都找到了水电厂，火电厂的工作。工作好的去了三峡，一般就去了云南一些比较偏僻的电厂。而我呢毕业就失业了，后来找到一个海南的小电厂。工作2年后，我就来到了深圳，在躺了好几个月后，经一个亲戚的介绍到一个华为的软件外包公司学习做软件测试。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

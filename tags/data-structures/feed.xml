@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Data Structures on </title>
+    <link>https://zhu327.github.io/tags/data-structures/</link>
+    <description>Recent content in Data Structures on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 14 Mar 2017 22:29:18 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/data-structures/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>用Python解决数据结构与算法问题</title>
+      <link>https://zhu327.github.io/2017/03/14/%E7%94%A8python%E8%A7%A3%E5%86%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Tue, 14 Mar 2017 22:29:18 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/03/14/%E7%94%A8python%E8%A7%A3%E5%86%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://facert.gitbooks.io/python-data-structure-cn/&#34;&gt;用Python解决数据结构与算法问题&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;发现一本Python的好书被翻译了，利用下班时间学习了一下，把相关代码都实现了一遍，包括：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;栈，队列，双端队列&lt;/li&gt;
+&lt;li&gt;无序链表，有序链表&lt;/li&gt;
+&lt;li&gt;二叉树，堆，二叉搜索树，AVL树&lt;/li&gt;
+&lt;li&gt;图&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;以及一些算法&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

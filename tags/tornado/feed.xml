@@ -124,22 +124,23 @@
     </item>
     
     <item>
-      <title>记搜狗微信号搜索反爬虫</title>
-      <link>https://zhu327.github.io/2015/02/15/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB/</link>
-      <pubDate>Sun, 15 Feb 2015 18:44:28 +0800</pubDate>
+      <title>openshift平台DIY环境配置Tornado</title>
+      <link>https://zhu327.github.io/2015/07/02/openshift%E5%B9%B3%E5%8F%B0diy%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AEtornado/</link>
+      <pubDate>Thu, 02 Jul 2015 16:37:48 +0800</pubDate>
       
-      <guid>https://zhu327.github.io/2015/02/15/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB/</guid>
-      <description>&lt;h3 id=&#34;反爬虫&#34;&gt;反爬虫&lt;/h3&gt;
+      <guid>https://zhu327.github.io/2015/07/02/openshift%E5%B9%B3%E5%8F%B0diy%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AEtornado/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;openshift官方和社区提供不少配置好的环境，也包括python2.7和python3.3下的tornado套件。&lt;br /&gt;
+一方面希望拥有更高的使用自由，另一方面希望熟悉一下openshift的DIY环境，本着这个目的，自行创建一个DIY环境，在上面安装运行python 2.7.10和Tornado 3.2。&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/rss&#34;&gt;RSS Factory&lt;/a&gt;前段时间又出问题了，访问微信公众号RSS一直500，完全没法用了。&lt;/p&gt;
+&lt;p&gt;【Step1、创建DIY环境】&lt;/p&gt;
 
-&lt;p&gt;经调试，发现由于爬取数据太频繁，触发了搜狗微信公众号的反爬虫，探索了下反爬虫的规则:&lt;/p&gt;
+&lt;p&gt;【Step2、安装python 2.7.10】&lt;/p&gt;
 
-&lt;ol&gt;
-&lt;li&gt;没有带Cookie的情况下，频繁访问触发反爬虫&lt;/li&gt;
-&lt;li&gt;带Cookie的情况下，频繁访问偶尔触发反爬出，偶现500错误&lt;/li&gt;
-&lt;li&gt;不带Cookie情况下，隔几个小时范围一下不会触发反爬虫&lt;/li&gt;
-&lt;/ol&gt;</description>
+&lt;p&gt;通过&lt;code&gt;python -V&lt;/code&gt;看到系统已预装&lt;code&gt;python 2.6.6&lt;/code&gt;，直接在&lt;code&gt;$OPENSHIFT_DATA_DIR&lt;/code&gt;下安装2.7.10可以正常使用，但需要注意其调用路径为&lt;code&gt;$OPENSHIFT_DATA_DIR/bin/python&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>

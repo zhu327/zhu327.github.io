@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Career on </title>
+    <link>https://zhu327.github.io/tags/career/</link>
+    <description>Recent content in Career on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 10 May 2024 10:55:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/career/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>从鹅厂大佬身上学技术</title>
+      <link>https://zhu327.github.io/2024/05/10/%E4%BB%8E%E9%B9%85%E5%8E%82%E5%A4%A7%E4%BD%AC%E8%BA%AB%E4%B8%8A%E5%AD%A6%E6%8A%80%E6%9C%AF/</link>
+      <pubDate>Fri, 10 May 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/05/10/%E4%BB%8E%E9%B9%85%E5%8E%82%E5%A4%A7%E4%BD%AC%E8%BA%AB%E4%B8%8A%E5%AD%A6%E6%8A%80%E6%9C%AF/</guid>
+      <description>&lt;p&gt;2018下半年我加入鹅厂，2019年调岗到现在的组，一直跟着鹅厂11级大佬做事，为了提升自己能力，我开始学习大佬的做事方式，我发现大佬的能力往往体现在他的思维的层次上，简单的说就是解决某个问题的时候，我当时可能只看到第2层，但是大佬已经想到第4层上去了，这期间我也找大佬聊过天，也有一些收获，在这里通过一些具体的事例来分析一下大佬的技术能力。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>项目管理对话集</title>
+      <link>https://zhu327.github.io/2022/03/28/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%AF%B9%E8%AF%9D%E9%9B%86/</link>
+      <pubDate>Mon, 28 Mar 2022 17:38:04 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2022/03/28/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%AF%B9%E8%AF%9D%E9%9B%86/</guid>
+      <description>&lt;p&gt;老婆是一名具有4年工作经验的产品经理, 上一份工作聚焦在人力资源SaaS上, 现在的工作刚刚开始不到半年, 行业转向了智能家居跨境电商的内部ERP系统, 面对新的行业, 新的公司的工作流程上的一些问题, 有了以下这些对话. 通过这些对话我也回顾了一些自己工作中感悟, 这里总结一下.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>如何成为一名优秀的程序员</title>
+      <link>https://zhu327.github.io/2017/01/01/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98/</link>
+      <pubDate>Sun, 01 Jan 2017 13:42:01 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/01/01/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98/</guid>
+      <description>&lt;h4 id=&#34;前言&#34;&gt;前言&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://open.163.com/movie/2015/7/B/M/MATL76APV_MATL8FCBM.html&#34;&gt;罗子雄：如何成为一名优秀设计师&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.zhihu.com/lives/789840559912009728/messages&#34;&gt;董明伟：Python 工程师的入门和进阶&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;董明伟基于自己实践讲的知乎live为Python新人提供了很多实用建议，他推荐的&lt;a href=&#34;http://open.163.com/movie/2015/7/B/M/MATL76APV_MATL8FCBM.html&#34;&gt;罗子雄：如何成为一名优秀设计师&lt;/a&gt;的演讲讲的非常好，总结了设计师从入门到提高的优秀实践。&lt;br /&gt;
+罗子雄的演讲我看了三遍，再结合自己的程序员生涯，我想我也可以为Python新人提供一些建议，开了&lt;strong&gt;如何成为一名优秀的程序员&lt;/strong&gt;一题，讲讲我的Python工程师之路。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

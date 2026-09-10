@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Gunicorn on </title>
+    <link>https://zhu327.github.io/tags/gunicorn/</link>
+    <description>Recent content in Gunicorn on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 29 Aug 2018 23:23:20 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/gunicorn/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Gunicorn与uWSGI之我见</title>
+      <link>https://zhu327.github.io/2018/08/29/gunicorn%E4%B8%8Euwsgi%E4%B9%8B%E6%88%91%E8%A7%81/</link>
+      <pubDate>Wed, 29 Aug 2018 23:23:20 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2018/08/29/gunicorn%E4%B8%8Euwsgi%E4%B9%8B%E6%88%91%E8%A7%81/</guid>
+      <description>&lt;p&gt;昨天前同事问我&lt;a href=&#34;https://github.com/zhu327/doge&#34;&gt;doge&lt;/a&gt;的服务端怎么是单进程跑的, 其实在生产环境下我们参考&lt;a href=&#34;https://github.com/eleme/gunicorn_thrift&#34;&gt;gunicorn_thrift&lt;/a&gt;实现了一个定制的master/worker模型的Gunicorn服务器. 昨天也写了一个&lt;a href=&#34;https://github.com/zhu327/doge/tree/master/doge/gunicorn&#34;&gt;简化版本&lt;/a&gt;集成到doge, 实际代码不超过20行就能利用到Gunicorn的进程管理功能. 有感于Gunicorn简洁优雅的模型, 这里聊聊我理解的Gunicorn与uWSGI.&lt;/p&gt;
+
+&lt;h2 id=&#34;perfork&#34;&gt;perfork&lt;/h2&gt;
+
+&lt;p&gt;perfork是一种服务端编程模型, Nginx, Gunicorn, uWSGI都是这种模型的实现, 简单的说perfok就是master进程启动注册一堆信号处理函数, 创建listen socket fd, fork出多个worker子进程, 子进程执行accept循环处理请求(这里简化模型, 当然也可以用select, epoll多路复用), master进程只负责监控worker进程状态, 通过pipeline通信来控制worker进程.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Gunicorn运行Django时静态文件处理</title>
+      <link>https://zhu327.github.io/2015/09/29/gunicorn%E8%BF%90%E8%A1%8Cdjango%E6%97%B6%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/</link>
+      <pubDate>Tue, 29 Sep 2015 18:36:08 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/09/29/gunicorn%E8%BF%90%E8%A1%8Cdjango%E6%97%B6%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/</guid>
+      <description>&lt;h3 id=&#34;问题&#34;&gt;问题&lt;/h3&gt;
+
+&lt;p&gt;在用Gunicorn跑Django的时候,比较郁闷的是静态文件的处理,即使在settings设置DEBUG=True,静态文件也不会正常显示.生产环境下一般不会裸跑Gunicorn,一般都会在前面放一个Nginx反代到Gunicorn,而静态文件直接交给Nginx处理.&lt;/p&gt;
+
+&lt;p&gt;但是如heroku,coding.net的演示平台这种PaaS就不能自己配置反向代理,怎么样设置wsgi才能正常处理静态文件呢.这里总结下处理这个问题的经验.&lt;/p&gt;
+
+&lt;h3 id=&#34;方法1&#34;&gt;方法1&lt;/h3&gt;
+
+&lt;p&gt;强制使用Django的静态文件处理器,通过&lt;code&gt;python manage.py runserver&lt;/code&gt;的时候,如果DEBUG=True,Django会自动加载自带的静态文件处理器,但是在Gunicorn下,这个设置会失效,我们可以强制使用Django自带的静态文件处理器.
+&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

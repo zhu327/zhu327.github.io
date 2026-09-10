@@ -543,6 +543,24 @@
   </url>
   
   <url>
+    <loc>https://zhu327.github.io/tags/ai/</loc>
+    <lastmod>2026-09-03T16:30:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/ai-agent/</loc>
+    <lastmod>2026-06-17T09:16:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/algorithms/</loc>
+    <lastmod>2017-03-14T22:29:18+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://zhu327.github.io/tags/api-gateway/</loc>
     <lastmod>2026-09-07T09:00:00+08:00</lastmod>
     <priority>0</priority>
@@ -555,14 +573,116 @@
   </url>
   
   <url>
+    <loc>https://zhu327.github.io/tags/architecture/</loc>
+    <lastmod>2025-11-21T10:00:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/automation/</loc>
+    <lastmod>2024-08-30T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://zhu327.github.io/tags/blog/</loc>
     <lastmod>2016-04-13T21:08:11+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://zhu327.github.io/tags/data/</loc>
+    <loc>https://zhu327.github.io/tags/bookmark/</loc>
+    <lastmod>2025-07-07T14:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/c/</loc>
+    <lastmod>2022-03-30T17:38:04+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/career/</loc>
+    <lastmod>2024-05-10T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/chromeos/</loc>
+    <lastmod>2024-08-02T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/clean-architecture/</loc>
+    <lastmod>2025-08-04T14:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/clean-code/</loc>
+    <lastmod>2025-10-16T10:00:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/cloud-native/</loc>
+    <lastmod>2025-03-28T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/cloudflare-workers/</loc>
+    <lastmod>2024-04-10T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/code-quality/</loc>
+    <lastmod>2023-01-09T15:53:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/context-engineering/</loc>
+    <lastmod>2025-11-30T10:00:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/coroutine/</loc>
+    <lastmod>2016-06-16T17:51:21+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/crawler/</loc>
+    <lastmod>2015-02-15T18:44:28+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/cursor/</loc>
+    <lastmod>2026-02-11T14:00:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/data-analysis/</loc>
     <lastmod>2016-05-03T16:50:32+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/data-structures/</loc>
+    <lastmod>2017-03-14T22:29:18+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/ddd/</loc>
+    <lastmod>2020-10-22T17:38:04+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -574,7 +694,13 @@
   
   <url>
     <loc>https://zhu327.github.io/tags/docker/</loc>
-    <lastmod>2015-07-20T15:48:22+08:00</lastmod>
+    <lastmod>2024-09-03T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/e2e/</loc>
+    <lastmod>2026-05-09T10:16:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -585,19 +711,67 @@
   </url>
   
   <url>
+    <loc>https://zhu327.github.io/tags/english/</loc>
+    <lastmod>2026-06-30T19:16:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/essay/</loc>
+    <lastmod>2026-01-04T10:00:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://zhu327.github.io/fixed/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://zhu327.github.io/tags/go/</loc>
-    <lastmod>2018-06-26T21:35:01+08:00</lastmod>
+    <loc>https://zhu327.github.io/tags/flask/</loc>
+    <lastmod>2015-08-14T16:28:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/gemini/</loc>
+    <lastmod>2023-12-20T15:25:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/github-actions/</loc>
+    <lastmod>2025-07-07T14:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/golang/</loc>
+    <lastmod>2025-08-04T14:55:52+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://zhu327.github.io/tags/greentor/</loc>
-    <lastmod>2016-09-25T16:41:33+08:00</lastmod>
+    <lastmod>2016-09-25T15:56:21+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/gunicorn/</loc>
+    <lastmod>2018-08-29T23:23:20+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/hacker-news/</loc>
+    <lastmod>2024-04-10T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/harness/</loc>
+    <lastmod>2026-05-09T10:16:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -609,7 +783,19 @@
   
   <url>
     <loc>https://zhu327.github.io/tags/http/</loc>
-    <lastmod>2014-09-21T12:39:04+08:00</lastmod>
+    <lastmod>2015-01-31T11:23:21+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/i18n/</loc>
+    <lastmod>2015-08-14T16:28:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/javascript/</loc>
+    <lastmod>2015-07-20T15:00:48+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -620,8 +806,14 @@
   </url>
   
   <url>
-    <loc>https://zhu327.github.io/tags/json/</loc>
+    <loc>https://zhu327.github.io/tags/jsonp/</loc>
     <lastmod>2015-07-20T15:00:48+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/knowledge-base/</loc>
+    <lastmod>2026-05-27T09:16:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -632,14 +824,74 @@
   </url>
   
   <url>
+    <loc>https://zhu327.github.io/tags/kubernetes/</loc>
+    <lastmod>2025-10-20T10:00:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/learning/</loc>
+    <lastmod>2020-05-07T18:45:08+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/linux/</loc>
+    <lastmod>2024-08-02T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/litestream/</loc>
+    <lastmod>2024-09-03T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/llm/</loc>
+    <lastmod>2026-05-27T09:16:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/loop-engineering/</loc>
+    <lastmod>2026-06-17T09:16:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/lua/</loc>
+    <lastmod>2018-06-26T21:35:01+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://zhu327.github.io/tags/lxml/</loc>
     <lastmod>2015-01-02T19:41:03+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
+    <loc>https://zhu327.github.io/tags/management/</loc>
+    <lastmod>2025-11-21T10:00:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/mcp/</loc>
+    <lastmod>2026-03-07T12:00:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://zhu327.github.io/tags/memcached/</loc>
     <lastmod>2014-09-24T22:13:57+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/microservices/</loc>
+    <lastmod>2020-10-22T17:38:04+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -651,13 +903,79 @@
   
   <url>
     <loc>https://zhu327.github.io/tags/mysql/</loc>
-    <lastmod>2014-09-24T22:13:57+08:00</lastmod>
+    <lastmod>2016-09-25T16:41:33+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/network/</loc>
+    <lastmod>2023-12-23T15:25:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/numpy/</loc>
+    <lastmod>2016-05-03T11:12:51+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/oauth/</loc>
+    <lastmod>2016-05-15T10:49:01+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/onboarding/</loc>
+    <lastmod>2025-01-08T10:55:52+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://zhu327.github.io/tags/openai/</loc>
     <lastmod>2023-12-20T15:25:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/openresty/</loc>
+    <lastmod>2018-06-26T21:35:01+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/openshift/</loc>
+    <lastmod>2015-07-02T16:37:48+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/openwrt/</loc>
+    <lastmod>2023-12-23T15:25:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/orm/</loc>
+    <lastmod>2014-09-16T22:51:10+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/paas/</loc>
+    <lastmod>2026-09-03T16:30:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/pandas/</loc>
+    <lastmod>2016-05-03T16:50:32+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/pi/</loc>
+    <lastmod>2026-09-03T16:30:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -674,14 +992,50 @@
   </url>
   
   <url>
-    <loc>https://zhu327.github.io/tags/python/</loc>
-    <lastmod>2016-06-16T17:51:21+08:00</lastmod>
+    <loc>https://zhu327.github.io/tags/programming-language/</loc>
+    <lastmod>2022-03-30T17:38:04+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://zhu327.github.io/tags/raspi/</loc>
+    <loc>https://zhu327.github.io/tags/proxy/</loc>
+    <lastmod>2023-12-23T15:25:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/pyproject/</loc>
+    <lastmod>2023-01-09T15:53:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/python/</loc>
+    <lastmod>2023-01-09T15:53:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/rag/</loc>
+    <lastmod>2026-05-27T09:16:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/raspberry-pi/</loc>
     <lastmod>2014-11-06T00:15:01+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/reading/</loc>
+    <lastmod>2025-01-10T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/review/</loc>
+    <lastmod>2026-01-04T10:00:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -693,7 +1047,7 @@
   
   <url>
     <loc>https://zhu327.github.io/tags/rss/</loc>
-    <lastmod>2023-12-15T14:32:52+08:00</lastmod>
+    <lastmod>2024-08-30T10:55:52+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -704,14 +1058,50 @@
   </url>
   
   <url>
+    <loc>https://zhu327.github.io/tags/self-hosted/</loc>
+    <lastmod>2024-08-30T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/serverless/</loc>
+    <lastmod>2026-09-03T16:30:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/software-design/</loc>
+    <lastmod>2025-10-16T10:00:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/sqlite/</loc>
+    <lastmod>2024-10-22T10:55:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/sre/</loc>
+    <lastmod>2026-05-27T09:16:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://zhu327.github.io/tags/</loc>
-    <lastmod>2026-09-07T09:00:00+08:00</lastmod>
+    <lastmod>2026-09-03T16:30:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://zhu327.github.io/tags/tastypie/</loc>
     <lastmod>2016-05-15T10:49:01+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/thinking/</loc>
+    <lastmod>2025-11-21T10:00:52+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -728,6 +1118,18 @@
   </url>
   
   <url>
+    <loc>https://zhu327.github.io/tags/uwsgi/</loc>
+    <lastmod>2018-08-29T23:23:20+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhu327.github.io/tags/vibe-coding/</loc>
+    <lastmod>2026-09-03T16:30:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://zhu327.github.io/tags/web/</loc>
     <lastmod>2015-03-16T23:12:18+08:00</lastmod>
     <priority>0</priority>
@@ -735,13 +1137,13 @@
   
   <url>
     <loc>https://zhu327.github.io/tags/wechat/</loc>
-    <lastmod>2016-04-29T14:34:31+08:00</lastmod>
+    <lastmod>2018-07-17T00:12:12+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://zhu327.github.io/tags/wsgi/</loc>
-    <lastmod>2014-12-26T23:59:11+08:00</lastmod>
+    <lastmod>2018-08-29T23:23:20+08:00</lastmod>
     <priority>0</priority>
   </url>
   

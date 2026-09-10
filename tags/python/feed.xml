@@ -6,10 +6,201 @@
     <description>Recent content in Python on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 16 Jun 2016 17:51:21 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 09 Jan 2023 15:53:52 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/tags/python/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>使用pyproject.toml保证代码质量</title>
+      <link>https://zhu327.github.io/2023/01/09/%E4%BD%BF%E7%94%A8pyproject.toml%E4%BF%9D%E8%AF%81%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/</link>
+      <pubDate>Mon, 09 Jan 2023 15:53:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2023/01/09/%E4%BD%BF%E7%94%A8pyproject.toml%E4%BF%9D%E8%AF%81%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/</guid>
+      <description>&lt;h3 id=&#34;1-pyproject-toml是什么&#34;&gt;1. pyproject.toml是什么&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://python.freelycode.com/contribution/detail/1910&#34;&gt;https://python.freelycode.com/contribution/detail/1910&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在使用&lt;code&gt;pyproject.toml&lt;/code&gt;前, 我们的Python项目根目录下会存在很多项目相关的配置文件, 比如:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;requirements.txt&lt;/li&gt;
+&lt;li&gt;requirements_dev.txt&lt;/li&gt;
+&lt;li&gt;.flake8&lt;/li&gt;
+&lt;li&gt;mypy.ini&lt;/li&gt;
+&lt;li&gt;.isort.cfg&lt;/li&gt;
+&lt;li&gt;.bandit&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们的项目代码中充斥这这些与代码无关的配置, &lt;code&gt;pyproject.toml&lt;/code&gt;就是用来统一纳管Python项目的所有这些配置的东西, 得到了以上大部分工具的支持.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>编程语言漫谈</title>
+      <link>https://zhu327.github.io/2022/03/30/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%BC%AB%E8%B0%88/</link>
+      <pubDate>Wed, 30 Mar 2022 17:38:04 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2022/03/30/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%BC%AB%E8%B0%88/</guid>
+      <description>&lt;p&gt;半年前还是2021年春节的时候, 在家休假的我, 在B站上发现了一门叫&lt;a href=&#34;https://www.bilibili.com/video/BV1hp4y1k7SV&#34;&gt;RUST语言的课程&lt;/a&gt;, 学习的过程中, 发现RUST语言为了绝对的安全性, 在语法本身上做了很多的妥协, 所以想着等我学完这门课, 再基于自己以往编程语言的学习经历, 写一篇&amp;lt;如何学习一门新的编程语言&amp;gt;的文章. 但是时过境迁, 我并没有学完这门RUST课, 所以&amp;lt;如何学习一门新的编程语言&amp;gt;也就无疾而终了. 回过头来再思考下以往我学习的那些编程语言, 就有了这篇文章&amp;lt;编程语言漫谈&amp;gt;. 我希望以一种比较轻松的散文的形式来阐述我过完学习的一些经验与思考.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://user-images.githubusercontent.com/873883/160806614-07709f0a-add6-464b-a76a-bbaffdeab727.jpg&#34; alt=&#34;rust&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从Python到Golang</title>
+      <link>https://zhu327.github.io/2019/12/22/%E4%BB%8Epython%E5%88%B0golang/</link>
+      <pubDate>Sun, 22 Dec 2019 18:45:08 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2019/12/22/%E4%BB%8Epython%E5%88%B0golang/</guid>
+      <description>&lt;p&gt;是的, 从去年底开始, 我差不多写Golang一年了, 从最开始的视频流处理, 到Websocket远程控制, 再到现在写的高性能鉴权中间件. 为什么不用Python? 因为Python满足不了长连接或者高性能的需求. 为什么不用其它语言? 大概是因为Golang足够&lt;code&gt;简单&lt;/code&gt;吧. 这里分享下这一年多写Golang相对于Python的一些感想.&lt;/p&gt;
+
+&lt;h3 id=&#34;强类型&#34;&gt;强类型&lt;/h3&gt;
+
+&lt;h4 id=&#34;代码检查&#34;&gt;代码检查&lt;/h4&gt;
+
+&lt;p&gt;Golang是强类型语言, 配合IDE, Lint, 编译工具, 一些常见的, 马马虎虎的写代码的低级错误在代码提交之前就能被检测出来. 虽然Python也有flak8, 但是相对于Golang犯低级错误的可能性更大些, 特别是对于没有单元测试的代码(是的, 单元测试不是每个团队都会做的).&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Gunicorn与uWSGI之我见</title>
+      <link>https://zhu327.github.io/2018/08/29/gunicorn%E4%B8%8Euwsgi%E4%B9%8B%E6%88%91%E8%A7%81/</link>
+      <pubDate>Wed, 29 Aug 2018 23:23:20 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2018/08/29/gunicorn%E4%B8%8Euwsgi%E4%B9%8B%E6%88%91%E8%A7%81/</guid>
+      <description>&lt;p&gt;昨天前同事问我&lt;a href=&#34;https://github.com/zhu327/doge&#34;&gt;doge&lt;/a&gt;的服务端怎么是单进程跑的, 其实在生产环境下我们参考&lt;a href=&#34;https://github.com/eleme/gunicorn_thrift&#34;&gt;gunicorn_thrift&lt;/a&gt;实现了一个定制的master/worker模型的Gunicorn服务器. 昨天也写了一个&lt;a href=&#34;https://github.com/zhu327/doge/tree/master/doge/gunicorn&#34;&gt;简化版本&lt;/a&gt;集成到doge, 实际代码不超过20行就能利用到Gunicorn的进程管理功能. 有感于Gunicorn简洁优雅的模型, 这里聊聊我理解的Gunicorn与uWSGI.&lt;/p&gt;
+
+&lt;h2 id=&#34;perfork&#34;&gt;perfork&lt;/h2&gt;
+
+&lt;p&gt;perfork是一种服务端编程模型, Nginx, Gunicorn, uWSGI都是这种模型的实现, 简单的说perfok就是master进程启动注册一堆信号处理函数, 创建listen socket fd, fork出多个worker子进程, 子进程执行accept循环处理请求(这里简化模型, 当然也可以用select, epoll多路复用), master进程只负责监控worker进程状态, 通过pipeline通信来控制worker进程.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python后端架构演进</title>
+      <link>https://zhu327.github.io/2018/07/19/python%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B/</link>
+      <pubDate>Thu, 19 Jul 2018 00:15:07 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2018/07/19/python%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B/</guid>
+      <description>&lt;p&gt;来腾讯之前在前公司做了3年的后端开发, 经历一款SaaS产品从0到10(还没有到100, 哈哈哈)的过程, 3年间后端的架构逐步演变, 在微服务的实践过程中遇到的问题也越来越多, 在这里总结下.&lt;/p&gt;
+
+&lt;p&gt;产品是一款服务于人力资源的SaaS在线服务, 面向HR有Web Android/iOS 小程序多个客户端, 后端采用RESTful风格API来提供服务. 主要使用Python语言, 方便快速迭代.&lt;/p&gt;
+
+&lt;p&gt;架构的演进经历了4个大的阶段: 1. MVC 2. 服务拆分 3. 微服务架构 4. 领域驱动设计.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>微信公众号迁移Serverless详解</title>
+      <link>https://zhu327.github.io/2018/07/17/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Tue, 17 Jul 2018 00:12:12 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2018/07/17/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3/</guid>
+      <description>&lt;p&gt;3月腾讯云函数计算开放测试, 看到的第一反应是这种Serverless太适合做微信公众号的后端来实现自动应答了, 尝试把我服务了3年的一个公众号迁移到腾讯云函数计算, 结果因为API gateway的一个功能缺失搁置了, 这周腾讯云API gateway终于补上了集成响应的能力, 能正常服务我的公众号, 这里记录下实现过程.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>用Python解决数据结构与算法问题</title>
+      <link>https://zhu327.github.io/2017/03/14/%E7%94%A8python%E8%A7%A3%E5%86%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Tue, 14 Mar 2017 22:29:18 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/03/14/%E7%94%A8python%E8%A7%A3%E5%86%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://facert.gitbooks.io/python-data-structure-cn/&#34;&gt;用Python解决数据结构与算法问题&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;发现一本Python的好书被翻译了，利用下班时间学习了一下，把相关代码都实现了一遍，包括：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;栈，队列，双端队列&lt;/li&gt;
+&lt;li&gt;无序链表，有序链表&lt;/li&gt;
+&lt;li&gt;二叉树，堆，二叉搜索树，AVL树&lt;/li&gt;
+&lt;li&gt;图&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;以及一些算法&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>如何成为一名优秀的程序员</title>
+      <link>https://zhu327.github.io/2017/01/01/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98/</link>
+      <pubDate>Sun, 01 Jan 2017 13:42:01 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/01/01/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98/</guid>
+      <description>&lt;h4 id=&#34;前言&#34;&gt;前言&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://open.163.com/movie/2015/7/B/M/MATL76APV_MATL8FCBM.html&#34;&gt;罗子雄：如何成为一名优秀设计师&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.zhihu.com/lives/789840559912009728/messages&#34;&gt;董明伟：Python 工程师的入门和进阶&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;董明伟基于自己实践讲的知乎live为Python新人提供了很多实用建议，他推荐的&lt;a href=&#34;http://open.163.com/movie/2015/7/B/M/MATL76APV_MATL8FCBM.html&#34;&gt;罗子雄：如何成为一名优秀设计师&lt;/a&gt;的演讲讲的非常好，总结了设计师从入门到提高的优秀实践。&lt;br /&gt;
+罗子雄的演讲我看了三遍，再结合自己的程序员生涯，我想我也可以为Python新人提供一些建议，开了&lt;strong&gt;如何成为一名优秀的程序员&lt;/strong&gt;一题，讲讲我的Python工程师之路。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>greentor Tornado异步方案</title>
+      <link>https://zhu327.github.io/2016/06/21/greentor-tornado%E5%BC%82%E6%AD%A5%E6%96%B9%E6%A1%88/</link>
+      <pubDate>Tue, 21 Jun 2016 18:51:38 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/06/21/greentor-tornado%E5%BC%82%E6%AD%A5%E6%96%B9%E6%A1%88/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://emptysqua.re/blog/motor-internals-how-i-asynchronized-a-synchronous-library/&#34;&gt;https://emptysqua.re/blog/motor-internals-how-i-asynchronized-a-synchronous-library/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这篇文章是Motor的作者介绍Motor如何通过Greenlet来实现PyMongo在Tornado中异步调用的原理，总结来说就一下几点。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;使用Torando的IOStream包装socket以实现异步调度&lt;/li&gt;
+&lt;li&gt;把IOStream的读写操作放在greenlet中运行，并注册一个switch到当前greenlet的callback到IOStream的Futrue中&lt;/li&gt;
+&lt;li&gt;在发生读写操作是switch到当前greenlet的父greenlet继续执行，挂起当前greenlet&lt;/li&gt;
+&lt;li&gt;在IOStream的读写操作完成后调用callback switch到挂起的子greenlet中继续执行&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;tornado_motor_sock_method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;coro&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;gen&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;coroutine&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+    &lt;span class=&#34;nd&#34;&gt;@functools.wraps&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;wrapped&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;#当前greenlet是一个子greenlet&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;child_gr&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;greenlet&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getcurrent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;#获取当前greenlet的父greenlet，即之前代码提到过的asynchronize所在的greenlet&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;main&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;child_gr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;parent&lt;/span&gt;
+
+        &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;callback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exc_info&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;child_gr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;throw&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exc_info&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;elif&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;child_gr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;throw&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+                &lt;span class=&#34;c1&#34;&gt;#当future的结果到达，切换回挂起的子greenlet&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;child_gr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;switch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;future&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+
+        &lt;span class=&#34;c1&#34;&gt;#保证callback在当前greenlet的父greenlet中运行&lt;/span&gt;
+        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;io_loop&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;add_future&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;coro&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;kwargs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;callback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;#return这句会暂时挂起当前greenlet，将控制权切换回父greenlet，&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;#在上面的callback执行时，才会切换回当前greenlet，return语句返回&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;switch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;wrapped&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;使用greenlet的好处是我们可以通过这个挂起，唤醒的过程来中断当前的同步代码，而不需要用Tornado自己实现协程，每次都要yield出来，然后回调。通过使用greenlet可以很方便的把同步的网络IO库修改为支持Tornado的异步库。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Python协程</title>
@@ -40,6 +231,76 @@
 
 &lt;p&gt;具体的实现过程不是很好描述，调度过程比较复杂，还是看看参考文章大牛的解析吧。&lt;/p&gt;
 
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Tornado代码阅读笔记 IOLoop</title>
+      <link>https://zhu327.github.io/2016/06/14/tornado%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-ioloop/</link>
+      <pubDate>Tue, 14 Jun 2016 14:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/06/14/tornado%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-ioloop/</guid>
+      <description>&lt;p&gt;准备用Tornado + greenlet + Django ORM搭一个框架，大体上有个思路，在开始前再次阅读下Tornado的代码。目的是在学习Torndao使用的同时，了解下原理，以便在使用过程中少踩点坑。&lt;/p&gt;
+
+&lt;h3 id=&#34;准备&#34;&gt;准备&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;学习IO多路复用: epoll&lt;br /&gt;
+&lt;a href=&#34;http://scotdoyle.com/python-epoll-howto.html&#34;&gt;http://scotdoyle.com/python-epoll-howto.html&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;https://fukun.org/archives/10051470.html&#34;&gt;https://fukun.org/archives/10051470.html&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Reactor模型&lt;br /&gt;
+&lt;a href=&#34;http://blog.csdn.net/u013074465/article/details/46276967&#34;&gt;http://blog.csdn.net/u013074465/article/details/46276967&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;去年大概这个时候也硬着头皮读过Tornado的代码，当时没有经验，还不知道编程模型，在程序的理解上都是顺序执行的思路，所以看到Tornado的代码只会觉得特么的牛B，各种类，各种方法的调来调去。现在理解了Reactor模型以后，再回过头看Tornado，就比较容易理解了，所以在阅读代码前如果能在构架上先理解，读起来会快很多。&lt;/p&gt;
+
+&lt;p&gt;Tornado的代码基于2.0版本，最新的4.3版本读起来比较绕，抽象的更加细化，阅读代码的目的在于学习编程思路，不求新。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>python玩转数据笔记:数据处理</title>
+      <link>https://zhu327.github.io/2016/05/03/python%E7%8E%A9%E8%BD%AC%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/</link>
+      <pubDate>Tue, 03 May 2016 16:50:32 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/05/03/python%E7%8E%A9%E8%BD%AC%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/</guid>
+      <description>&lt;h3 id=&#34;时间索引&#34;&gt;时间索引&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pandas&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pd&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;index&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;date_range&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;20160503&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;periods&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;index&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;DatetimeIndex&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;([&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;2016-05-03&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;2016-05-04&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;2016-05-05&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;2016-05-06&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+               &lt;span class=&#34;s1&#34;&gt;&amp;#39;2016-05-07&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt;
+              &lt;span class=&#34;n&#34;&gt;dtype&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;datetime64[ns]&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;freq&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;D&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>python玩转数据笔记:数据结构</title>
+      <link>https://zhu327.github.io/2016/05/03/python%E7%8E%A9%E8%BD%AC%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+      <pubDate>Tue, 03 May 2016 11:12:51 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/05/03/python%E7%8E%A9%E8%BD%AC%E6%95%B0%E6%8D%AE%E7%AC%94%E8%AE%B0%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
+      <description>&lt;p&gt;想储备点数据分析相关知识，所以抽了1天时间上了1门数据分析入门的公开课，记录一下学到的东西。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.coursera.org/learn/hipython&#34;&gt;python玩转数据&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;ndarray-多维数组&#34;&gt;ndarray 多维数组&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;numpy&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;np&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;np&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ones&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;((&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 自动生成3*4的二维数组，全为1&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;array&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;([[&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;  &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;  &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;  &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt;
+       &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;  &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;  &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;  &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt;
+       &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;  &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;  &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;  &lt;span class=&#34;mf&#34;&gt;1.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]])&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;np&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;array&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;([[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]])&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;array&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;([[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt;
+       &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]])&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;np&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;zeros&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;((&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 生成全为0&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;array&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;([[&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;  &lt;span class=&#34;mf&#34;&gt;0.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]])&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;np&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arange&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 类似于range生成列表&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;array&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;([&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;9&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
@@ -79,6 +340,25 @@
 &lt;li&gt;每次生成的链接都必须不一样;&lt;/li&gt;
 &lt;li&gt;链接要有过期时间,过期以后无效;&lt;/li&gt;
 &lt;li&gt;后台在链接被请求时,必须验证链接是否有效.&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    
+    <item>
+      <title>记搜狗微信号搜索反爬虫</title>
+      <link>https://zhu327.github.io/2015/02/15/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB/</link>
+      <pubDate>Sun, 15 Feb 2015 18:44:28 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/02/15/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB/</guid>
+      <description>&lt;h3 id=&#34;反爬虫&#34;&gt;反爬虫&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/rss&#34;&gt;RSS Factory&lt;/a&gt;前段时间又出问题了，访问微信公众号RSS一直500，完全没法用了。&lt;/p&gt;
+
+&lt;p&gt;经调试，发现由于爬取数据太频繁，触发了搜狗微信公众号的反爬虫，探索了下反爬虫的规则:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;没有带Cookie的情况下，频繁访问触发反爬虫&lt;/li&gt;
+&lt;li&gt;带Cookie的情况下，频繁访问偶尔触发反爬出，偶现500错误&lt;/li&gt;
+&lt;li&gt;不带Cookie情况下，隔几个小时范围一下不会触发反爬虫&lt;/li&gt;
 &lt;/ol&gt;</description>
     </item>
     

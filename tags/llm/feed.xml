@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Llm on </title>
+    <link>https://zhu327.github.io/tags/llm/</link>
+    <description>Recent content in Llm on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 27 May 2026 09:16:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/llm/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>用LLM Wiki构建SRE知识库</title>
+      <link>https://zhu327.github.io/2026/05/27/%E7%94%A8llm-wiki%E6%9E%84%E5%BB%BAsre%E7%9F%A5%E8%AF%86%E5%BA%93/</link>
+      <pubDate>Wed, 27 May 2026 09:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/05/27/%E7%94%A8llm-wiki%E6%9E%84%E5%BB%BAsre%E7%9F%A5%E8%AF%86%E5%BA%93/</guid>
+      <description>&lt;p&gt;前段时间，部门leader交给我一个任务：公司SRE平台的工单系统已经累积了7019个人工工单，这些工单里沉淀了大量运维过程中的实际问题和解决经验，leader希望我能用这些数据建立一个SRE领域的专属知识库。&lt;/p&gt;
+
+&lt;p&gt;接到任务后，我初步盘算了一下，制定了一个看似顺理成章的计划：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;把这7000多个工单全部格式化为Markdown文件，提取工单标题、内容、处理会话以及审批详情。&lt;/li&gt;
+&lt;li&gt;选型知识库的检索方案，在传统的 RAG（检索增强生成）和最近比较火的 LLM Wiki 之间做个抉择。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;但随着项目的推进，我发现事情并没有那么简单。在这个过程中，我对“如何用大模型解决实际工程问题”又有了一些新的体悟，在这里复盘总结一下。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>AI Agent 工程化实践：从 Prompt 到 Context 的思维转变</title>
+      <link>https://zhu327.github.io/2025/11/30/ai-agent-%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AE%9E%E8%B7%B5%E4%BB%8E-prompt-%E5%88%B0-context-%E7%9A%84%E6%80%9D%E7%BB%B4%E8%BD%AC%E5%8F%98/</link>
+      <pubDate>Sun, 30 Nov 2025 10:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/11/30/ai-agent-%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%AE%9E%E8%B7%B5%E4%BB%8E-prompt-%E5%88%B0-context-%E7%9A%84%E6%80%9D%E7%BB%B4%E8%BD%AC%E5%8F%98/</guid>
+      <description>&lt;p&gt;最近在新公司这边，大部分精力都耗在了 AI Agent 的落地应用上。大家都在谈 Agent，网上的 Demo 也是满天飞，但当你真正把这玩意儿往生产环境搬的时候，会发现完全是两码事。&lt;/p&gt;
+
+&lt;p&gt;简单的说，AI Agent 的核心逻辑其实并不复杂，本质上就是一个基于 ReAct（Reasoning and Acting）范式的工程结构，程序在一个死循环里不断地调用 LLM 的 API，让它根据当前的观测去决策下一步是思考还是行动。&lt;/p&gt;
+
+&lt;p&gt;起初我也觉得这就跟写个脚本差不多，但在实际调试过程中，我发现让 Agent “跑通”不难，但要让它“跑好”、“省钱”且“不犯蠢”，这里面全是工程细节。我也复盘了一下这段时间的踩坑经历，总结了一些在工程实践中的“巧思”。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>打造一个属于自己的AI书签</title>
+      <link>https://zhu327.github.io/2025/07/07/%E6%89%93%E9%80%A0%E4%B8%80%E4%B8%AA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84ai%E4%B9%A6%E7%AD%BE/</link>
+      <pubDate>Mon, 07 Jul 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/07/07/%E6%89%93%E9%80%A0%E4%B8%80%E4%B8%AA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84ai%E4%B9%A6%E7%AD%BE/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;我一直是个重度的书签使用者，多年来都依赖 Pocket 来收藏和沉淀那些在网上看到的、值得一读的文章。然而，最近 Pocket 宣布其通知服务即将关闭，这对我来说像是一个信号，是时候去寻找一个更稳定、更可控的替代品了。&lt;/p&gt;
+
+&lt;p&gt;我的探索之旅就这样开始了：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Raindrop.io&lt;/strong&gt;：社区里很多人推荐，功能也确实强大。但不知道是不是网络原因，我这边访问起来总是感觉有点慢，而且用惯了 Pocket 的我，对它的界面和交互逻辑始终有些不太习惯。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;自建服务&lt;/strong&gt;：作为程序员，第一反应自然是自己动手。我找到了像 &lt;a href=&#34;https://github.com/sissbruecker/linkding&#34;&gt;linkding&lt;/a&gt; 这样的优秀开源项目。我尝试把它部署在 &lt;a href=&#34;https://fly.io/&#34;&gt;fly.io&lt;/a&gt; 的免费实例上，但 linkding 对资源的要求不低，最低配的 256M 内存实例直接就 OOM (Out of Memory) 了，升级配置又意味着成本。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;从零开始写一个？&lt;/strong&gt; 这个念头一闪而过。我甚至构思好了技术选型：参照 linkding 的功能，用我最近在学习的 &lt;strong&gt;Rust&lt;/strong&gt; 实现后端，部署在 &lt;strong&gt;Cloudflare Workers&lt;/strong&gt; 上，再配上 &lt;strong&gt;Cloudflare D1&lt;/strong&gt; 的 SQLite 数据库。这套方案 Serverless、成本极低，堪称完美。但转念一想，这工程量可不小，对于业余项目来说，我实在没有那么多时间投入进去。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;就在我快要放弃，准备将就着用某个方案时，我想起了一篇以前收藏过的文章。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>我理解的AI Agent与MCP</title>
+      <link>https://zhu327.github.io/2025/04/02/%E6%88%91%E7%90%86%E8%A7%A3%E7%9A%84ai-agent%E4%B8%8Emcp/</link>
+      <pubDate>Wed, 02 Apr 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/04/02/%E6%88%91%E7%90%86%E8%A7%A3%E7%9A%84ai-agent%E4%B8%8Emcp/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;最近AI圈子里Manus这个项目可以说是相当火了，连带着MCP（Model Context Protocol）这个概念也开始频繁出现在各种技术讨论区。作为一个程序员，自然也对这些新东西充满了好奇，于是花时间捣鼓了一下AI Agent和MCP相关的知识。这篇文章就是我学习和思考后，对这两个概念的一些个人理解和梳理。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-从workflow到ai-agent-大脑的进化&#34;&gt;1. 从Workflow到AI Agent：大脑的进化&lt;/h3&gt;
+
+&lt;p&gt;回顾我们以前做自动化任务，比如搞个自动抢票、自动下单之类的，思路基本都是围绕着一个固定的&lt;strong&gt;workflow&lt;/strong&gt;。我们会预先设定好一套流程逻辑：收到指令 -&amp;gt; 判断条件 -&amp;gt; 走对应分支 -&amp;gt; 调用特定工具（API、脚本等）。整个过程就像一个流程图，每个节点和路径都是我们程序员预先设计好的。在这个模式下，&lt;strong&gt;我们程序员就是这个workflow的“大脑”&lt;/strong&gt;，我们把执行计划通过代码逻辑，“硬编码”到系统里。比如预定机票这个场景，我们会写代码一步步调用查询接口、选择航班接口、填写乘机人信息接口、支付接口等等。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>零成本使用OpenAI API</title>
+      <link>https://zhu327.github.io/2023/12/20/%E9%9B%B6%E6%88%90%E6%9C%AC%E4%BD%BF%E7%94%A8openai-api/</link>
+      <pubDate>Wed, 20 Dec 2023 15:25:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2023/12/20/%E9%9B%B6%E6%88%90%E6%9C%AC%E4%BD%BF%E7%94%A8openai-api/</guid>
+      <description>&lt;h3 id=&#34;1-openai-chatgpt&#34;&gt;1. OpenAI ChatGPT&lt;/h3&gt;
+
+&lt;p&gt;ChatGPT已经发布了一年有余，成为有史以来用户增长最快的互联网产品。如果到了2023年你还没有使用过ChatGPT，可能你已经远离了互联网的中心。ChatGPT的发布与更新深刻改变了我的工作方式。我学到了如何撰写高效的提示，发现了ChatGPT的最佳应用场景，并在GitHub上探索了最佳实践。&lt;/p&gt;
+
+&lt;p&gt;一些影响我ChatGPT之旅的值得一提的资源包括&lt;a href=&#34;https://www.huxiu.com/article/2440157.html&#34;&gt;OpenAI官方指南：如何提高ChatGPT的输出质量&lt;/a&gt;，一篇关于&lt;a href=&#34;https://blog.wordbot.io/ai-artificial-intelligence/openai-gpt-3-top-22-trending-use-case-ideas-in-2022/&#34;&gt;2023年OpenAI GPT-3最热门应用案例的文章&lt;/a&gt;，以及GitHub上的&lt;a href=&#34;https://github.com/linexjlin/GPTs&#34;&gt;GPT提示列表&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;在我的日常工作中，我利用ChatGPT做了很多事情：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;它成为我在编写代码过程中查找相关文档的首选工具，替代了传统搜索引擎的需求。&lt;/li&gt;
+&lt;li&gt;它轻松帮助我进行中英文翻译，充分发挥了其语言处理能力。&lt;/li&gt;
+&lt;li&gt;在数据分析中，它高效地协助我处理复杂的SQL查询。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;尽管我已经是一个长时间的用户，但我仍然保持在免费计划上，没有选择Plus，也没有使用OpenAI API。由于ChatGPT的充值的限制，我尚未探索基于OpenAI API构建的众多AI工具和插件。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

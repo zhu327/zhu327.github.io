@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Learning on </title>
+    <link>https://zhu327.github.io/tags/learning/</link>
+    <description>Recent content in Learning on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 07 May 2020 18:45:08 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/learning/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>读书方法论</title>
+      <link>https://zhu327.github.io/2020/05/07/%E8%AF%BB%E4%B9%A6%E6%96%B9%E6%B3%95%E8%AE%BA/</link>
+      <pubDate>Thu, 07 May 2020 18:45:08 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2020/05/07/%E8%AF%BB%E4%B9%A6%E6%96%B9%E6%B3%95%E8%AE%BA/</guid>
+      <description>&lt;p&gt;从2017年决定补计算机基础开始, 至今已经读了50来本计算机书籍. 读书的时间总是很宝贵, 如何正确的读书呢? 下面是我的一些经验与总结.&lt;/p&gt;
+
+&lt;h3 id=&#34;读书的目的&#34;&gt;读书的目的&lt;/h3&gt;
+
+&lt;p&gt;我们读书的目的是什么? 概况起来可以分为以下2种:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;学习知识&lt;/li&gt;
+&lt;li&gt;提升自己的能力&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;我们在上学时专注与学习知识, 所以书本上的每一部分我们都需要了解, 所以我们需要一遍一遍的读, 抓住书本种每一个知识点.&lt;/p&gt;
+
+&lt;p&gt;但是在工作后, 我们读书是为了解决问题, 提升自己的能力, 知识 != 能力, 工作后我们读书的主语不再是知识, 而是自己, 面向自己读书需要一些方法.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

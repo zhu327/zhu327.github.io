@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Openshift on </title>
+    <link>https://zhu327.github.io/tags/openshift/</link>
+    <description>Recent content in Openshift on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 02 Jul 2015 16:37:48 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/openshift/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>openshift平台DIY环境配置Tornado</title>
+      <link>https://zhu327.github.io/2015/07/02/openshift%E5%B9%B3%E5%8F%B0diy%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AEtornado/</link>
+      <pubDate>Thu, 02 Jul 2015 16:37:48 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/07/02/openshift%E5%B9%B3%E5%8F%B0diy%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AEtornado/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;openshift官方和社区提供不少配置好的环境，也包括python2.7和python3.3下的tornado套件。&lt;br /&gt;
+一方面希望拥有更高的使用自由，另一方面希望熟悉一下openshift的DIY环境，本着这个目的，自行创建一个DIY环境，在上面安装运行python 2.7.10和Tornado 3.2。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;【Step1、创建DIY环境】&lt;/p&gt;
+
+&lt;p&gt;【Step2、安装python 2.7.10】&lt;/p&gt;
+
+&lt;p&gt;通过&lt;code&gt;python -V&lt;/code&gt;看到系统已预装&lt;code&gt;python 2.6.6&lt;/code&gt;，直接在&lt;code&gt;$OPENSHIFT_DATA_DIR&lt;/code&gt;下安装2.7.10可以正常使用，但需要注意其调用路径为&lt;code&gt;$OPENSHIFT_DATA_DIR/bin/python&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Golang on </title>
+    <link>https://zhu327.github.io/tags/golang/</link>
+    <description>Recent content in Golang on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 04 Aug 2025 14:55:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/golang/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>整洁架构落地实践</title>
+      <link>https://zhu327.github.io/2025/08/04/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Mon, 04 Aug 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/08/04/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</guid>
+      <description>&lt;p&gt;最近在新公司接手了一个历史悠久的项目，功能不多，代码量却不小。深入其中，才发现有太多太多的槽点，简直让人头大。每当要新增一个功能或者修复一个 Bug，都感觉像是在雷区里跳舞，步步惊心。&lt;/p&gt;
+
+&lt;p&gt;总结下来，这个项目主要有这么几个“硬伤”：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;代码逻辑不内聚&lt;/strong&gt;：同一个功能的实现，像天女散花一样分散在好几个不同的文件里，想理清完整的逻辑链条，得在 IDE 里跳来跳去，极其耗费心智。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分层过多且混乱&lt;/strong&gt;：一个简单的请求，要穿越重重关卡，经过好几个层级的调用才能抵达终点。有时你都分不清某一层到底是干嘛的，感觉纯粹是为了分层而分层。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内部自研框架不好用&lt;/strong&gt;：项目依赖了一个内部的 &lt;code&gt;kgo&lt;/code&gt; 框架，但文档缺失，设计理念也比较陈旧，出了问题排查起来非常困难。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;外部依赖离散&lt;/strong&gt;：对数据库、缓存、外部 API 的调用封装得五花八门，没有统一的规范和入口，整个项目像一个杂乱的“百宝箱”。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;恰好，Leader 对这个项目制定了新的方向与目标，之前这些遗留问题实实在在成了我们前进路上的绊脚石。因此，一次彻底的架构升级与重构势在必行。同时，部门内也正在推广项目规范化和最佳实践输出，这简直是天赐良机。&lt;/p&gt;
+
+&lt;p&gt;很久以前我就读过《架构整洁之道》这本书，在之前的项目中也或多或少受到一些启发，但从未有机会从一个项目初始就完整地贯彻整洁架构的理念。这次，我决定抓住机会，来一场彻彻底底的整洁架构实践。在这个过程中，我感觉自己对整洁架构的理解，以及对 SOLID 原则的落地方式，都有了前所未有的深入体会。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>k8s云原生程序实现CRD的搜索查询分页</title>
+      <link>https://zhu327.github.io/2024/10/22/k8s%E4%BA%91%E5%8E%9F%E7%94%9F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0crd%E7%9A%84%E6%90%9C%E7%B4%A2%E6%9F%A5%E8%AF%A2%E5%88%86%E9%A1%B5/</link>
+      <pubDate>Tue, 22 Oct 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/10/22/k8s%E4%BA%91%E5%8E%9F%E7%94%9F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0crd%E7%9A%84%E6%90%9C%E7%B4%A2%E6%9F%A5%E8%AF%A2%E5%88%86%E9%A1%B5/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;来新公司还是在做云原生平台的开发，基本的业务逻辑就是通过一系列的CRD资源，走Operator的模式来实现平台的各种业务部署。但是CRD在apiserver中是以key-value的形式存储在etcd中，虽然labels可以实现简单的查询，但是并不能满足复杂的查询条件。在我来之前CRD资源的列表查询都是直接全量返回由前端自行筛选，随着业务量的增加，查询的效率越来越低。&lt;/p&gt;
+
+&lt;p&gt;本来这个项目的前任开发者决策使用MySQL来双写CRD资源，来实现辅助查询，代码也写了很多了，双写带来了一些代码结构上的耦合，但是其实也不是个问题。更恶心的问题是有一个客户由于信创方面的政治问题，要求我们不能引入MySQL！虽然客户有建议用他们自己的数据库，但是从我们的角度来说，我们不希望自己的服务依赖外部客户组件，所以就必须考虑下其它的方案了，比如不用数据库服务。&lt;/p&gt;
+
+&lt;p&gt;基于以往在SQLite上的学习经验，以当前CRD资源的体量完全可以使用SQLite来实现CRD资源的辅助查询，那么是不是要引入持久存储呢？其实还是不用，因为CRD本身已经存储在etcd中了，我们只需要在程序启动时通过k8s的List-Watch的方式将CRD资源同步到SQLite中，这样就可以实现CRD资源的辅助查询了。具体到实现上完全可以使用k8s client中的informer来实现CRD资源的同步，这样可以使用到informer的缓存机制减少apiserver的查询压力。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从Python到Golang</title>
+      <link>https://zhu327.github.io/2019/12/22/%E4%BB%8Epython%E5%88%B0golang/</link>
+      <pubDate>Sun, 22 Dec 2019 18:45:08 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2019/12/22/%E4%BB%8Epython%E5%88%B0golang/</guid>
+      <description>&lt;p&gt;是的, 从去年底开始, 我差不多写Golang一年了, 从最开始的视频流处理, 到Websocket远程控制, 再到现在写的高性能鉴权中间件. 为什么不用Python? 因为Python满足不了长连接或者高性能的需求. 为什么不用其它语言? 大概是因为Golang足够&lt;code&gt;简单&lt;/code&gt;吧. 这里分享下这一年多写Golang相对于Python的一些感想.&lt;/p&gt;
+
+&lt;h3 id=&#34;强类型&#34;&gt;强类型&lt;/h3&gt;
+
+&lt;h4 id=&#34;代码检查&#34;&gt;代码检查&lt;/h4&gt;
+
+&lt;p&gt;Golang是强类型语言, 配合IDE, Lint, 编译工具, 一些常见的, 马马虎虎的写代码的低级错误在代码提交之前就能被检测出来. 虽然Python也有flak8, 但是相对于Golang犯低级错误的可能性更大些, 特别是对于没有单元测试的代码(是的, 单元测试不是每个团队都会做的).&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>像OpenResty一样使用Golang开发Web App</title>
+      <link>https://zhu327.github.io/2018/06/26/%E5%83%8Fopenresty%E4%B8%80%E6%A0%B7%E4%BD%BF%E7%94%A8golang%E5%BC%80%E5%8F%91web-app/</link>
+      <pubDate>Tue, 26 Jun 2018 21:35:01 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2018/06/26/%E5%83%8Fopenresty%E4%B8%80%E6%A0%B7%E4%BD%BF%E7%94%A8golang%E5%BC%80%E5%8F%91web-app/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/glualor&#34;&gt;https://github.com/zhu327/glualor&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;最近在公司内网读过一篇Gopher Lua的文章, 感觉在Golang中使用Lua VM的模式跟OpenResty是一样一样的. 在Github上找了一圈net/http的到Gopher Lua的绑定, 然而并没有. 造轮子的机会来了 ^_^&lt;/p&gt;
+
+&lt;h3 id=&#34;gluaweb&#34;&gt;gluaweb&lt;/h3&gt;
+
+&lt;p&gt;虽然看过几本Golang的书, 也读过几个开源项目的代码, 来腾讯后还上过两门Golang的课, 但是却没有写过一个Golang的项目, 从新读过net/http标准库的文档, 再看看Gopher Lua的例子就写了&lt;a href=&#34;https://github.com/zhu327/gluaweb&#34;&gt;gluaweb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

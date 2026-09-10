@@ -6,10 +6,21 @@
     <description>Recent content in Wechat on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 29 Apr 2016 14:34:31 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 17 Jul 2018 00:12:12 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/tags/wechat/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>微信公众号迁移Serverless详解</title>
+      <link>https://zhu327.github.io/2018/07/17/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Tue, 17 Jul 2018 00:12:12 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2018/07/17/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E8%BF%81%E7%A7%BBserverless%E8%AF%A6%E8%A7%A3/</guid>
+      <description>&lt;p&gt;3月腾讯云函数计算开放测试, 看到的第一反应是这种Serverless太适合做微信公众号的后端来实现自动应答了, 尝试把我服务了3年的一个公众号迁移到腾讯云函数计算, 结果因为API gateway的一个功能缺失搁置了, 这周腾讯云API gateway终于补上了集成响应的能力, 能正常服务我的公众号, 这里记录下实现过程.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>网站账号绑定微信方案</title>
@@ -37,6 +48,25 @@
 IFTTT = if this then that, IFWechat通过微信公众号实现了IFTTT中this的功能,通过微信发送到IFWechat的消息都会触发用户定义的IFTTT Recipes.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>记搜狗微信号搜索反爬虫</title>
+      <link>https://zhu327.github.io/2015/02/15/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB/</link>
+      <pubDate>Sun, 15 Feb 2015 18:44:28 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/02/15/%E8%AE%B0%E6%90%9C%E7%8B%97%E5%BE%AE%E4%BF%A1%E5%8F%B7%E6%90%9C%E7%B4%A2%E5%8F%8D%E7%88%AC%E8%99%AB/</guid>
+      <description>&lt;h3 id=&#34;反爬虫&#34;&gt;反爬虫&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/rss&#34;&gt;RSS Factory&lt;/a&gt;前段时间又出问题了，访问微信公众号RSS一直500，完全没法用了。&lt;/p&gt;
+
+&lt;p&gt;经调试，发现由于爬取数据太频繁，触发了搜狗微信公众号的反爬虫，探索了下反爬虫的规则:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;没有带Cookie的情况下，频繁访问触发反爬虫&lt;/li&gt;
+&lt;li&gt;带Cookie的情况下，频繁访问偶尔触发反爬出，偶现500错误&lt;/li&gt;
+&lt;li&gt;不带Cookie情况下，隔几个小时范围一下不会触发反爬虫&lt;/li&gt;
+&lt;/ol&gt;</description>
     </item>
     
   </channel>

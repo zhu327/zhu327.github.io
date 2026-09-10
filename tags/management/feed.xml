@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Management on </title>
+    <link>https://zhu327.github.io/tags/management/</link>
+    <description>Recent content in Management on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 21 Nov 2025 10:00:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/management/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>系统性思维的陷阱：从“完美方案”到“有效落地”</title>
+      <link>https://zhu327.github.io/2025/11/21/%E7%B3%BB%E7%BB%9F%E6%80%A7%E6%80%9D%E7%BB%B4%E7%9A%84%E9%99%B7%E9%98%B1%E4%BB%8E%E5%AE%8C%E7%BE%8E%E6%96%B9%E6%A1%88%E5%88%B0%E6%9C%89%E6%95%88%E8%90%BD%E5%9C%B0/</link>
+      <pubDate>Fri, 21 Nov 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/11/21/%E7%B3%BB%E7%BB%9F%E6%80%A7%E6%80%9D%E7%BB%B4%E7%9A%84%E9%99%B7%E9%98%B1%E4%BB%8E%E5%AE%8C%E7%BE%8E%E6%96%B9%E6%A1%88%E5%88%B0%E6%9C%89%E6%95%88%E8%90%BD%E5%9C%B0/</guid>
+      <description>&lt;p&gt;我做程序员已经 10 多年了。&lt;/p&gt;
+
+&lt;p&gt;回想刚入行那会儿，我的思维模式很简单：产品经理提什么，我就做什么。那时候追求的是“短平快”，像个执行指令的机器，代码写得快就是牛。&lt;/p&gt;
+
+&lt;p&gt;后来加入了腾讯，随着职级的提升，负责的系统越来越复杂，我开始意识到：写代码只是冰山一角，&lt;strong&gt;做方案才是真正的考验。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;所谓的“系统性思维”，一度让我受益匪浅，但最近我发现，如果一旦陷入对“完美”的执念，系统性思维反而会成为阻碍项目落地的最大陷阱。今天想和大家聊聊，如何在架构设计、风险控制和实际落地之间找到那个微妙的平衡点。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>如何快速上手项目</title>
+      <link>https://zhu327.github.io/2025/01/08/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E9%A1%B9%E7%9B%AE/</link>
+      <pubDate>Wed, 08 Jan 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/01/08/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E9%A1%B9%E7%9B%AE/</guid>
+      <description>&lt;p&gt;职业生涯中接手过很多项目了，各种项目都接触过，一个对新人友好的项目一般具备如下特征：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;完备的安装/功能文档&lt;/li&gt;
+&lt;li&gt;完备的技术方案，架构设计文档&lt;/li&gt;
+&lt;li&gt;合理的分层，清晰的代码目录结构&lt;/li&gt;
+&lt;li&gt;可读，可维护性高的代码&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;但是往往我们会忽略一个一个简单的指引性的文档：&lt;strong&gt;Quick Start&lt;/strong&gt;，这个文档不需要很详细，只需要说明，如何快速上手的过程，具体的步骤链接到对应的文档即可。一般我们会在Quick Start上写明：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;最简安装的步骤&lt;/li&gt;
+&lt;li&gt;主流程功能的使用&lt;/li&gt;
+&lt;li&gt;开发环境的搭建&lt;/li&gt;
+&lt;li&gt;开发注意事项
+
+&lt;ol&gt;
+&lt;li&gt;包含组件的架构图&lt;/li&gt;
+&lt;li&gt;包含代码的分层目录说明&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这个文档需要由项目的负责人编写，在后续由项目的新人实践的过程中逐步完善。&lt;/p&gt;
+
+&lt;p&gt;当然这都是比较理想的情况，实际情况中，我们可能遇到的项目可能根本就没有文档，然后只有一个代码仓库的情况，那怎么才能快速上手呢？其实还是按照Quick Start的思路，只不过需要自己来摸索来了。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从鹅厂大佬身上学技术</title>
+      <link>https://zhu327.github.io/2024/05/10/%E4%BB%8E%E9%B9%85%E5%8E%82%E5%A4%A7%E4%BD%AC%E8%BA%AB%E4%B8%8A%E5%AD%A6%E6%8A%80%E6%9C%AF/</link>
+      <pubDate>Fri, 10 May 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/05/10/%E4%BB%8E%E9%B9%85%E5%8E%82%E5%A4%A7%E4%BD%AC%E8%BA%AB%E4%B8%8A%E5%AD%A6%E6%8A%80%E6%9C%AF/</guid>
+      <description>&lt;p&gt;2018下半年我加入鹅厂，2019年调岗到现在的组，一直跟着鹅厂11级大佬做事，为了提升自己能力，我开始学习大佬的做事方式，我发现大佬的能力往往体现在他的思维的层次上，简单的说就是解决某个问题的时候，我当时可能只看到第2层，但是大佬已经想到第4层上去了，这期间我也找大佬聊过天，也有一些收获，在这里通过一些具体的事例来分析一下大佬的技术能力。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>项目管理对话集</title>
+      <link>https://zhu327.github.io/2022/03/28/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%AF%B9%E8%AF%9D%E9%9B%86/</link>
+      <pubDate>Mon, 28 Mar 2022 17:38:04 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2022/03/28/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%AF%B9%E8%AF%9D%E9%9B%86/</guid>
+      <description>&lt;p&gt;老婆是一名具有4年工作经验的产品经理, 上一份工作聚焦在人力资源SaaS上, 现在的工作刚刚开始不到半年, 行业转向了智能家居跨境电商的内部ERP系统, 面对新的行业, 新的公司的工作流程上的一些问题, 有了以下这些对话. 通过这些对话我也回顾了一些自己工作中感悟, 这里总结一下.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

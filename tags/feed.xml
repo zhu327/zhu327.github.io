@@ -6,10 +6,37 @@
     <description>Recent content in Tags on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 07 Sep 2026 09:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 03 Sep 2026 16:30:00 +0800</lastBuildDate>
     
 	<atom:link href="https://zhu327.github.io/tags/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ai</title>
+      <link>https://zhu327.github.io/tags/ai/</link>
+      <pubDate>Thu, 03 Sep 2026 16:30:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/ai/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ai Agent</title>
+      <link>https://zhu327.github.io/tags/ai-agent/</link>
+      <pubDate>Wed, 17 Jun 2026 09:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/ai-agent/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Algorithms</title>
+      <link>https://zhu327.github.io/tags/algorithms/</link>
+      <pubDate>Tue, 14 Mar 2017 22:29:18 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/algorithms/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Api Gateway</title>
@@ -30,6 +57,24 @@
     </item>
     
     <item>
+      <title>Architecture</title>
+      <link>https://zhu327.github.io/tags/architecture/</link>
+      <pubDate>Fri, 21 Nov 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/architecture/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Automation</title>
+      <link>https://zhu327.github.io/tags/automation/</link>
+      <pubDate>Fri, 30 Aug 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/automation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Blog</title>
       <link>https://zhu327.github.io/tags/blog/</link>
       <pubDate>Wed, 13 Apr 2016 21:08:11 +0800</pubDate>
@@ -39,11 +84,146 @@
     </item>
     
     <item>
-      <title>Data</title>
-      <link>https://zhu327.github.io/tags/data/</link>
+      <title>Bookmark</title>
+      <link>https://zhu327.github.io/tags/bookmark/</link>
+      <pubDate>Mon, 07 Jul 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/bookmark/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>C</title>
+      <link>https://zhu327.github.io/tags/c/</link>
+      <pubDate>Wed, 30 Mar 2022 17:38:04 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/c/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Career</title>
+      <link>https://zhu327.github.io/tags/career/</link>
+      <pubDate>Fri, 10 May 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/career/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Chromeos</title>
+      <link>https://zhu327.github.io/tags/chromeos/</link>
+      <pubDate>Fri, 02 Aug 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/chromeos/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Clean Architecture</title>
+      <link>https://zhu327.github.io/tags/clean-architecture/</link>
+      <pubDate>Mon, 04 Aug 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/clean-architecture/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Clean Code</title>
+      <link>https://zhu327.github.io/tags/clean-code/</link>
+      <pubDate>Thu, 16 Oct 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/clean-code/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cloud Native</title>
+      <link>https://zhu327.github.io/tags/cloud-native/</link>
+      <pubDate>Fri, 28 Mar 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/cloud-native/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cloudflare Workers</title>
+      <link>https://zhu327.github.io/tags/cloudflare-workers/</link>
+      <pubDate>Wed, 10 Apr 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/cloudflare-workers/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Code Quality</title>
+      <link>https://zhu327.github.io/tags/code-quality/</link>
+      <pubDate>Mon, 09 Jan 2023 15:53:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/code-quality/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Context Engineering</title>
+      <link>https://zhu327.github.io/tags/context-engineering/</link>
+      <pubDate>Sun, 30 Nov 2025 10:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/context-engineering/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Coroutine</title>
+      <link>https://zhu327.github.io/tags/coroutine/</link>
+      <pubDate>Thu, 16 Jun 2016 17:51:21 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/coroutine/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Crawler</title>
+      <link>https://zhu327.github.io/tags/crawler/</link>
+      <pubDate>Sun, 15 Feb 2015 18:44:28 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/crawler/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cursor</title>
+      <link>https://zhu327.github.io/tags/cursor/</link>
+      <pubDate>Wed, 11 Feb 2026 14:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/cursor/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Data Analysis</title>
+      <link>https://zhu327.github.io/tags/data-analysis/</link>
       <pubDate>Tue, 03 May 2016 16:50:32 +0800</pubDate>
       
-      <guid>https://zhu327.github.io/tags/data/</guid>
+      <guid>https://zhu327.github.io/tags/data-analysis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Data Structures</title>
+      <link>https://zhu327.github.io/tags/data-structures/</link>
+      <pubDate>Tue, 14 Mar 2017 22:29:18 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/data-structures/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ddd</title>
+      <link>https://zhu327.github.io/tags/ddd/</link>
+      <pubDate>Thu, 22 Oct 2020 17:38:04 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/ddd/</guid>
       <description></description>
     </item>
     
@@ -59,9 +239,18 @@
     <item>
       <title>Docker</title>
       <link>https://zhu327.github.io/tags/docker/</link>
-      <pubDate>Mon, 20 Jul 2015 15:48:22 +0800</pubDate>
+      <pubDate>Tue, 03 Sep 2024 10:55:52 +0800</pubDate>
       
       <guid>https://zhu327.github.io/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>E2e</title>
+      <link>https://zhu327.github.io/tags/e2e/</link>
+      <pubDate>Sat, 09 May 2026 10:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/e2e/</guid>
       <description></description>
     </item>
     
@@ -75,20 +264,92 @@
     </item>
     
     <item>
-      <title>Go</title>
-      <link>https://zhu327.github.io/tags/go/</link>
-      <pubDate>Tue, 26 Jun 2018 21:35:01 +0800</pubDate>
+      <title>English</title>
+      <link>https://zhu327.github.io/tags/english/</link>
+      <pubDate>Tue, 30 Jun 2026 19:16:00 +0800</pubDate>
       
-      <guid>https://zhu327.github.io/tags/go/</guid>
+      <guid>https://zhu327.github.io/tags/english/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Essay</title>
+      <link>https://zhu327.github.io/tags/essay/</link>
+      <pubDate>Sun, 04 Jan 2026 10:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/essay/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Flask</title>
+      <link>https://zhu327.github.io/tags/flask/</link>
+      <pubDate>Fri, 14 Aug 2015 16:28:42 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/flask/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Gemini</title>
+      <link>https://zhu327.github.io/tags/gemini/</link>
+      <pubDate>Wed, 20 Dec 2023 15:25:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/gemini/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Github Actions</title>
+      <link>https://zhu327.github.io/tags/github-actions/</link>
+      <pubDate>Mon, 07 Jul 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/github-actions/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Golang</title>
+      <link>https://zhu327.github.io/tags/golang/</link>
+      <pubDate>Mon, 04 Aug 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/golang/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Greentor</title>
       <link>https://zhu327.github.io/tags/greentor/</link>
-      <pubDate>Sun, 25 Sep 2016 16:41:33 +0800</pubDate>
+      <pubDate>Sun, 25 Sep 2016 15:56:21 +0800</pubDate>
       
       <guid>https://zhu327.github.io/tags/greentor/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Gunicorn</title>
+      <link>https://zhu327.github.io/tags/gunicorn/</link>
+      <pubDate>Wed, 29 Aug 2018 23:23:20 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/gunicorn/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hacker News</title>
+      <link>https://zhu327.github.io/tags/hacker-news/</link>
+      <pubDate>Wed, 10 Apr 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/hacker-news/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Harness</title>
+      <link>https://zhu327.github.io/tags/harness/</link>
+      <pubDate>Sat, 09 May 2026 10:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/harness/</guid>
       <description></description>
     </item>
     
@@ -104,9 +365,27 @@
     <item>
       <title>Http</title>
       <link>https://zhu327.github.io/tags/http/</link>
-      <pubDate>Sun, 21 Sep 2014 12:39:04 +0800</pubDate>
+      <pubDate>Sat, 31 Jan 2015 11:23:21 +0800</pubDate>
       
       <guid>https://zhu327.github.io/tags/http/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>I18n</title>
+      <link>https://zhu327.github.io/tags/i18n/</link>
+      <pubDate>Fri, 14 Aug 2015 16:28:42 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/i18n/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Javascript</title>
+      <link>https://zhu327.github.io/tags/javascript/</link>
+      <pubDate>Mon, 20 Jul 2015 15:00:48 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/javascript/</guid>
       <description></description>
     </item>
     
@@ -120,11 +399,20 @@
     </item>
     
     <item>
-      <title>Json</title>
-      <link>https://zhu327.github.io/tags/json/</link>
+      <title>Jsonp</title>
+      <link>https://zhu327.github.io/tags/jsonp/</link>
       <pubDate>Mon, 20 Jul 2015 15:00:48 +0800</pubDate>
       
-      <guid>https://zhu327.github.io/tags/json/</guid>
+      <guid>https://zhu327.github.io/tags/jsonp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Knowledge Base</title>
+      <link>https://zhu327.github.io/tags/knowledge-base/</link>
+      <pubDate>Wed, 27 May 2026 09:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/knowledge-base/</guid>
       <description></description>
     </item>
     
@@ -138,6 +426,69 @@
     </item>
     
     <item>
+      <title>Kubernetes</title>
+      <link>https://zhu327.github.io/tags/kubernetes/</link>
+      <pubDate>Mon, 20 Oct 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Learning</title>
+      <link>https://zhu327.github.io/tags/learning/</link>
+      <pubDate>Thu, 07 May 2020 18:45:08 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>https://zhu327.github.io/tags/linux/</link>
+      <pubDate>Fri, 02 Aug 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Litestream</title>
+      <link>https://zhu327.github.io/tags/litestream/</link>
+      <pubDate>Tue, 03 Sep 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/litestream/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Llm</title>
+      <link>https://zhu327.github.io/tags/llm/</link>
+      <pubDate>Wed, 27 May 2026 09:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/llm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Loop Engineering</title>
+      <link>https://zhu327.github.io/tags/loop-engineering/</link>
+      <pubDate>Wed, 17 Jun 2026 09:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/loop-engineering/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Lua</title>
+      <link>https://zhu327.github.io/tags/lua/</link>
+      <pubDate>Tue, 26 Jun 2018 21:35:01 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/lua/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Lxml</title>
       <link>https://zhu327.github.io/tags/lxml/</link>
       <pubDate>Fri, 02 Jan 2015 19:41:03 +0800</pubDate>
@@ -147,11 +498,38 @@
     </item>
     
     <item>
+      <title>Management</title>
+      <link>https://zhu327.github.io/tags/management/</link>
+      <pubDate>Fri, 21 Nov 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/management/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Mcp</title>
+      <link>https://zhu327.github.io/tags/mcp/</link>
+      <pubDate>Sat, 07 Mar 2026 12:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/mcp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Memcached</title>
       <link>https://zhu327.github.io/tags/memcached/</link>
       <pubDate>Wed, 24 Sep 2014 22:13:57 +0800</pubDate>
       
       <guid>https://zhu327.github.io/tags/memcached/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Microservices</title>
+      <link>https://zhu327.github.io/tags/microservices/</link>
+      <pubDate>Thu, 22 Oct 2020 17:38:04 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/microservices/</guid>
       <description></description>
     </item>
     
@@ -167,9 +545,45 @@
     <item>
       <title>Mysql</title>
       <link>https://zhu327.github.io/tags/mysql/</link>
-      <pubDate>Wed, 24 Sep 2014 22:13:57 +0800</pubDate>
+      <pubDate>Sun, 25 Sep 2016 16:41:33 +0800</pubDate>
       
       <guid>https://zhu327.github.io/tags/mysql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Network</title>
+      <link>https://zhu327.github.io/tags/network/</link>
+      <pubDate>Sat, 23 Dec 2023 15:25:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/network/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Numpy</title>
+      <link>https://zhu327.github.io/tags/numpy/</link>
+      <pubDate>Tue, 03 May 2016 11:12:51 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/numpy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Oauth</title>
+      <link>https://zhu327.github.io/tags/oauth/</link>
+      <pubDate>Sun, 15 May 2016 10:49:01 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/oauth/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Onboarding</title>
+      <link>https://zhu327.github.io/tags/onboarding/</link>
+      <pubDate>Wed, 08 Jan 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/onboarding/</guid>
       <description></description>
     </item>
     
@@ -183,6 +597,69 @@
     </item>
     
     <item>
+      <title>Openresty</title>
+      <link>https://zhu327.github.io/tags/openresty/</link>
+      <pubDate>Tue, 26 Jun 2018 21:35:01 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/openresty/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Openshift</title>
+      <link>https://zhu327.github.io/tags/openshift/</link>
+      <pubDate>Thu, 02 Jul 2015 16:37:48 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/openshift/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Openwrt</title>
+      <link>https://zhu327.github.io/tags/openwrt/</link>
+      <pubDate>Sat, 23 Dec 2023 15:25:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/openwrt/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Orm</title>
+      <link>https://zhu327.github.io/tags/orm/</link>
+      <pubDate>Tue, 16 Sep 2014 22:51:10 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/orm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Paas</title>
+      <link>https://zhu327.github.io/tags/paas/</link>
+      <pubDate>Thu, 03 Sep 2026 16:30:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/paas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Pandas</title>
+      <link>https://zhu327.github.io/tags/pandas/</link>
+      <pubDate>Tue, 03 May 2016 16:50:32 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/pandas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Pi</title>
+      <link>https://zhu327.github.io/tags/pi/</link>
+      <pubDate>Thu, 03 Sep 2026 16:30:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/pi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Pingora</title>
       <link>https://zhu327.github.io/tags/pingora/</link>
       <pubDate>Mon, 07 Sep 2026 09:00:00 +0800</pubDate>
@@ -192,20 +669,74 @@
     </item>
     
     <item>
+      <title>Programming Language</title>
+      <link>https://zhu327.github.io/tags/programming-language/</link>
+      <pubDate>Wed, 30 Mar 2022 17:38:04 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/programming-language/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Proxy</title>
+      <link>https://zhu327.github.io/tags/proxy/</link>
+      <pubDate>Sat, 23 Dec 2023 15:25:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/proxy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Pyproject</title>
+      <link>https://zhu327.github.io/tags/pyproject/</link>
+      <pubDate>Mon, 09 Jan 2023 15:53:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/pyproject/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Python</title>
       <link>https://zhu327.github.io/tags/python/</link>
-      <pubDate>Thu, 16 Jun 2016 17:51:21 +0800</pubDate>
+      <pubDate>Mon, 09 Jan 2023 15:53:52 +0800</pubDate>
       
       <guid>https://zhu327.github.io/tags/python/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Raspi</title>
-      <link>https://zhu327.github.io/tags/raspi/</link>
+      <title>Rag</title>
+      <link>https://zhu327.github.io/tags/rag/</link>
+      <pubDate>Wed, 27 May 2026 09:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/rag/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Raspberry Pi</title>
+      <link>https://zhu327.github.io/tags/raspberry-pi/</link>
       <pubDate>Thu, 06 Nov 2014 00:15:01 +0800</pubDate>
       
-      <guid>https://zhu327.github.io/tags/raspi/</guid>
+      <guid>https://zhu327.github.io/tags/raspberry-pi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Reading</title>
+      <link>https://zhu327.github.io/tags/reading/</link>
+      <pubDate>Fri, 10 Jan 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/reading/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Review</title>
+      <link>https://zhu327.github.io/tags/review/</link>
+      <pubDate>Sun, 04 Jan 2026 10:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/review/</guid>
       <description></description>
     </item>
     
@@ -221,7 +752,7 @@
     <item>
       <title>Rss</title>
       <link>https://zhu327.github.io/tags/rss/</link>
-      <pubDate>Fri, 15 Dec 2023 14:32:52 +0800</pubDate>
+      <pubDate>Fri, 30 Aug 2024 10:55:52 +0800</pubDate>
       
       <guid>https://zhu327.github.io/tags/rss/</guid>
       <description></description>
@@ -237,11 +768,65 @@
     </item>
     
     <item>
+      <title>Self Hosted</title>
+      <link>https://zhu327.github.io/tags/self-hosted/</link>
+      <pubDate>Fri, 30 Aug 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/self-hosted/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Serverless</title>
+      <link>https://zhu327.github.io/tags/serverless/</link>
+      <pubDate>Thu, 03 Sep 2026 16:30:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/serverless/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Software Design</title>
+      <link>https://zhu327.github.io/tags/software-design/</link>
+      <pubDate>Thu, 16 Oct 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/software-design/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sqlite</title>
+      <link>https://zhu327.github.io/tags/sqlite/</link>
+      <pubDate>Tue, 22 Oct 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/sqlite/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sre</title>
+      <link>https://zhu327.github.io/tags/sre/</link>
+      <pubDate>Wed, 27 May 2026 09:16:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/sre/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Tastypie</title>
       <link>https://zhu327.github.io/tags/tastypie/</link>
       <pubDate>Sun, 15 May 2016 10:49:01 +0800</pubDate>
       
       <guid>https://zhu327.github.io/tags/tastypie/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Thinking</title>
+      <link>https://zhu327.github.io/tags/thinking/</link>
+      <pubDate>Fri, 21 Nov 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/thinking/</guid>
       <description></description>
     </item>
     
@@ -264,6 +849,24 @@
     </item>
     
     <item>
+      <title>Uwsgi</title>
+      <link>https://zhu327.github.io/tags/uwsgi/</link>
+      <pubDate>Wed, 29 Aug 2018 23:23:20 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/uwsgi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vibe Coding</title>
+      <link>https://zhu327.github.io/tags/vibe-coding/</link>
+      <pubDate>Thu, 03 Sep 2026 16:30:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/tags/vibe-coding/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Web</title>
       <link>https://zhu327.github.io/tags/web/</link>
       <pubDate>Mon, 16 Mar 2015 23:12:18 +0800</pubDate>
@@ -275,7 +878,7 @@
     <item>
       <title>Wechat</title>
       <link>https://zhu327.github.io/tags/wechat/</link>
-      <pubDate>Fri, 29 Apr 2016 14:34:31 +0800</pubDate>
+      <pubDate>Tue, 17 Jul 2018 00:12:12 +0800</pubDate>
       
       <guid>https://zhu327.github.io/tags/wechat/</guid>
       <description></description>
@@ -284,7 +887,7 @@
     <item>
       <title>Wsgi</title>
       <link>https://zhu327.github.io/tags/wsgi/</link>
-      <pubDate>Fri, 26 Dec 2014 23:59:11 +0800</pubDate>
+      <pubDate>Wed, 29 Aug 2018 23:23:20 +0800</pubDate>
       
       <guid>https://zhu327.github.io/tags/wsgi/</guid>
       <description></description>

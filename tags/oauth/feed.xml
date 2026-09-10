@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Oauth on </title>
+    <link>https://zhu327.github.io/tags/oauth/</link>
+    <description>Recent content in Oauth on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 15 May 2016 10:49:01 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/oauth/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Tastypie实现accesstoken认证</title>
+      <link>https://zhu327.github.io/2016/05/15/tastypie%E5%AE%9E%E7%8E%B0accesstoken%E8%AE%A4%E8%AF%81/</link>
+      <pubDate>Sun, 15 May 2016 10:49:01 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2016/05/15/tastypie%E5%AE%9E%E7%8E%B0accesstoken%E8%AE%A4%E8%AF%81/</guid>
+      <description>&lt;p&gt;Tastypie提供了几种基本的认证方式比如SessionAuthentication，Django实现的web站点一般都是基于cookie-session的认证方式，在Django中使用中间件的方式处理cookie与session，以及用户认证。使用起来是很方便的。&lt;/p&gt;
+
+&lt;p&gt;但是在api中就不能继续使用cookie了，我们会使用accesstoken的方式来实现认证。之前同事使用redis实现了一版accesstoken的认证，但是由于考虑不周全，导致在使用过程中出现了很多bug，然后为了解决bug又写了很多恶心的兼容代码，所以抽空直接使用熟悉的session重构了认证过程。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Django实现简单OAuth2.0认证服务</title>
+      <link>https://zhu327.github.io/2015/03/16/django%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95oauth2.0%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Mon, 16 Mar 2015 23:12:18 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2015/03/16/django%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95oauth2.0%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1/</guid>
+      <description>&lt;p&gt;开始写&lt;a href=&#34;https://github.com/zhu327/forum&#34;&gt;Django forum&lt;/a&gt;的RESTful api，首先解决用户认证的问题，使用OAuth2.0协议实现。&lt;/p&gt;
+
+&lt;h3 id=&#34;参考&#34;&gt;参考&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html&#34;&gt;理解OAuth 2.0&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;授权&#34;&gt;授权&lt;/h3&gt;
+
+&lt;p&gt;OAuth2.0协议定义了4种授权模式，为了学习OAuth2.0授权协议，这里只实现简化模式。以下为简化模式授权过程。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

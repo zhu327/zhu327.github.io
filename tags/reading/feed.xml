@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Reading on </title>
+    <link>https://zhu327.github.io/tags/reading/</link>
+    <description>Recent content in Reading on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 10 Jan 2025 10:55:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/reading/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>从《软件设计的哲学》谈代码的复杂性与应对</title>
+      <link>https://zhu327.github.io/2025/01/10/%E4%BB%8E%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%93%B2%E5%AD%A6%E8%B0%88%E4%BB%A3%E7%A0%81%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E4%B8%8E%E5%BA%94%E5%AF%B9/</link>
+      <pubDate>Fri, 10 Jan 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/01/10/%E4%BB%8E%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%93%B2%E5%AD%A6%E8%B0%88%E4%BB%A3%E7%A0%81%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E4%B8%8E%E5%BA%94%E5%AF%B9/</guid>
+      <description>&lt;p&gt;几个月前读完了《软件设计的哲学》这本书，在结合自己多年的工作体会，对于代码的可读性，可维护性有了系统性的体会，然后基于我记录的读书笔记然后经过AI的润色，形成了这篇笔记。希望对你也有所帮助。&lt;/p&gt;
+
+&lt;p&gt;读完《软件设计的哲学》，感觉像经历了一次代码的“深度体检”。这本书没有讲解具体的编码技巧，而是从更高的维度帮助我们重新审视代码复杂性的问题，并提出了许多实用的建议。今天，我想结合自己的理解，分享这本书带来的启发。&lt;/p&gt;
+
+&lt;h3 id=&#34;什么是代码的复杂性&#34;&gt;什么是代码的复杂性？&lt;/h3&gt;
+
+&lt;p&gt;简单来说，复杂性就是那些让系统难以理解和修改的因素。它不仅仅指代码的行数或逻辑深度，还包括：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;难以理解&lt;/strong&gt;：即便是自己写的代码，过一段时间可能也看不懂，更别提其他人。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;修改成本高&lt;/strong&gt;：一个小改动需要改动多个地方，甚至引发新的问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模糊的改动范围&lt;/strong&gt;：不知道该修改哪些模块才能实现目标，或者不确定修改后是否会引发其他问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;难以修复的错误&lt;/strong&gt;：修复一个 bug 可能需要大量时间，还可能引入新的问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>2023年阅读分享：深度挖掘编程之道</title>
+      <link>https://zhu327.github.io/2024/01/10/2023%E5%B9%B4%E9%98%85%E8%AF%BB%E5%88%86%E4%BA%AB%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98%E7%BC%96%E7%A8%8B%E4%B9%8B%E9%81%93/</link>
+      <pubDate>Wed, 10 Jan 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/01/10/2023%E5%B9%B4%E9%98%85%E8%AF%BB%E5%88%86%E4%BA%AB%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98%E7%BC%96%E7%A8%8B%E4%B9%8B%E9%81%93/</guid>
+      <description>&lt;p&gt;作为一个热衷于技术的程序员博主，我在2023年迎来了全新的阅读体验，将RSS作为我的主要信息源，并通过订阅Hacker News热门主题，持续深入英文技术文章的阅读。在这个过程中，我发现了一些真正精彩的文章，这些不仅仅是知识的积累，更是对编程之路的深刻思考。在这里，我将其中一些我认为值得分享的文章整理出来，推荐给各位看官，希望你们在学习中找到灵感，不断进步。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>读书方法论</title>
+      <link>https://zhu327.github.io/2020/05/07/%E8%AF%BB%E4%B9%A6%E6%96%B9%E6%B3%95%E8%AE%BA/</link>
+      <pubDate>Thu, 07 May 2020 18:45:08 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2020/05/07/%E8%AF%BB%E4%B9%A6%E6%96%B9%E6%B3%95%E8%AE%BA/</guid>
+      <description>&lt;p&gt;从2017年决定补计算机基础开始, 至今已经读了50来本计算机书籍. 读书的时间总是很宝贵, 如何正确的读书呢? 下面是我的一些经验与总结.&lt;/p&gt;
+
+&lt;h3 id=&#34;读书的目的&#34;&gt;读书的目的&lt;/h3&gt;
+
+&lt;p&gt;我们读书的目的是什么? 概况起来可以分为以下2种:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;学习知识&lt;/li&gt;
+&lt;li&gt;提升自己的能力&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;我们在上学时专注与学习知识, 所以书本上的每一部分我们都需要了解, 所以我们需要一遍一遍的读, 抓住书本种每一个知识点.&lt;/p&gt;
+
+&lt;p&gt;但是在工作后, 我们读书是为了解决问题, 提升自己的能力, 知识 != 能力, 工作后我们读书的主语不再是知识, 而是自己, 面向自己读书需要一些方法.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

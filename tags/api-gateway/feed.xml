@@ -30,5 +30,128 @@
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
+    <item>
+      <title>pingsix-ingress-controller启动</title>
+      <link>https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/</link>
+      <pubDate>Mon, 20 Oct 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/10/20/pingsix-ingress-controller%E5%90%AF%E5%8A%A8/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;https://github.com/zhu327/pingsix&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;PingSIX 自从上次重构之后, 我一直在考虑如何扩展这个项目的功能与使用场景, 有2个方向可以考虑:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;支持proxy-wasm插件&lt;/li&gt;
+&lt;li&gt;实现pingsix-ingress-controller&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在调研了proxy-wasm的相关功能后, 结论是由于pingora面向的场景是CDN的反向代理, 所以没有考虑过方便的修改请求体与响应体, 这就造成很难基于pingora来实现proxy-wasm的ABI, 如果我要自己定义一个wasm的接口协议, 没法复用社区现有的proxy-wasm插件, 那就没必要了, 不如直接写Rust的插件. 相关参考内容:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/cloudflare/pingora/issues/17&#34;&gt;proxy-wasm support&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://segmentfault.com/a/1190000045232953&#34;&gt;pingora 能做什么和不能做什么&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在放弃了proxy-wasm的支持后, 我开始调研如何实现pingsix-ingress-controller, 由于pingsix的的资源定义是参考apisix来实现的, 所以就直接参考&lt;a href=&#34;https://github.com/apache/apisix-ingress-controller&#34;&gt;apisix-ingress-controller&lt;/a&gt;来实现我们自己的&lt;a href=&#34;https://github.com/zhu327/pingsix-ingress-controller&#34;&gt;pingsix-ingress-controller&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从Pingora到API网关：总结</title>
+      <link>https://zhu327.github.io/2024/12/19/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Thu, 19 Dec 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/12/19/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3%E6%80%BB%E7%BB%93/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/pingisx&#34;&gt;https://github.com/zhu327/pingisx&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;经过一个多月的开发，终于完成了使用Rust实现一个API网关的目标，通过这个项目，我基本上把Pingora的核心功能都摸透了，然后也再次加深了对APISIX的理解。总的来说PingSIX基于Pingora实现了APISIX的核心功能，是APISIX功能的一个子集。&lt;/p&gt;
+
+&lt;p&gt;开发这个项目本身也是为了学习Rust的使用，在开发的过程中确实也遇到了很多的问题，在ChatGPT的帮助下，这些问题得到了解决，也让我对Rust有了更深刻的理解。下面我通过4个方面来总结一下在这个项目中我的收获。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从Pingora到API网关：Rust实战</title>
+      <link>https://zhu327.github.io/2024/11/15/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3rust%E5%AE%9E%E6%88%98/</link>
+      <pubDate>Fri, 15 Nov 2024 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2024/11/15/%E4%BB%8Epingora%E5%88%B0api%E7%BD%91%E5%85%B3rust%E5%AE%9E%E6%88%98/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;在学习Rust的过程中，我主要进行了一些小工具的练习，对Rust的内存安全性和性能优势有了初步的体会，但始终没有实现过一个完整的大型项目。最近随着Rust在高性能计算领域的应用不断拓展，尤其是Pingora等项目的发布，让我看到了Rust在网络通信领域中的潜力，也激发了我用Rust来实现一个API网关的兴趣。&lt;/p&gt;
+
+&lt;p&gt;在加入腾讯之前，我曾使用OpenResty和Kong进行API网关的开发工作，后来在腾讯进一步深入参与了APISix的云原生网关项目，逐步积累了关于API网关设计、实现以及性能调优方面的经验。API网关是一个兼具架构复杂度与性能要求的系统，涉及请求路由、流量控制、身份验证等多个关键模块，恰好可以充分发挥Rust的优势。因此，我决定以Rust为基础开发一个API网关，这不仅是为了提升自己的Rust技术，更希望通过此项目进一步巩固和提升在API网关方面的知识。&lt;/p&gt;
+
+&lt;p&gt;在具体实现中，我计划基于Pingora的设计思路，打造一个APISix网关的子集功能。我已在GitHub上发布了该项目的初始版本 &lt;a href=&#34;https://github.com/zhu327/pingsix&#34;&gt;https://github.com/zhu327/pingsix&lt;/a&gt;，目前实现了基础的standalone模式，包括基本的路由与反向代理功能。接下来，我将扩展插件定义，逐步实现一些典型的功能插件，最终目标是支持基于etcd的动态配置加载，以便适应多场景的API网关需求。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>OpenResty与API Gateway</title>
+      <link>https://zhu327.github.io/2017/11/27/openresty%E4%B8%8Eapi-gateway/</link>
+      <pubDate>Mon, 27 Nov 2017 18:20:31 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/11/27/openresty%E4%B8%8Eapi-gateway/</guid>
+      <description>&lt;p&gt;公司业务向微服务方向迁移实践中, API Gateway成为接入层最重要的部分, 在完成开发的同时给同事做了一次OpenResty的分享, 以下是分享的内容整理.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&#34;当我谈论高性能时我们谈论什么&#34;&gt;当我谈论高性能时我们谈论什么 ?&lt;/h3&gt;
+
+&lt;p&gt;讨论时间, 大家自由发挥&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;机器&lt;/li&gt;
+&lt;li&gt;语言&lt;/li&gt;
+&lt;li&gt;架构
+
+&lt;ul&gt;
+&lt;li&gt;reactor&lt;/li&gt;
+&lt;li&gt;coroutine&lt;/li&gt;
+&lt;li&gt;cache&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>记</title>
+      <link>https://zhu327.github.io/2017/09/11/%E8%AE%B0/</link>
+      <pubDate>Mon, 11 Sep 2017 13:43:35 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2017/09/11/%E8%AE%B0/</guid>
+      <description>&lt;p&gt;好几个月都没写过Blog,写个小记&lt;/p&gt;
+
+&lt;h3 id=&#34;openresty&#34;&gt;Openresty&lt;/h3&gt;
+
+&lt;p&gt;公司业务向微服务迁移过程中接触到API Gateway这种中间件,评估了各种开源方案后,选择了在Openresty基础上实现的&lt;a href=&#34;https://github.com/Mashape/kong&#34;&gt;Kong&lt;/a&gt;.为了在Kong的基础上做二次开发,开始学习Openresty.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://moonbingbing.gitbooks.io/openresty-best-practices/content/&#34;&gt;OpenResty 最佳实践&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://openresty.org/download/agentzh-nginx-tutorials-zhcn.html&#34;&gt;agentzh 的 Nginx 教程&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://jinnianshilongnian.iteye.com/blog/2190344&#34;&gt;跟开涛学OpenResty(Nginx+Lua)开发&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;还是在好几年做测试的时候用过lua语言写测试脚本,lua语言特性很简单,想捡起来也很快.更多的感触是由于学习过Torando的源码,理解了Reactor模型,协程这些概念.学起Openresty只需要把相关概念套上去就很好理解了.这就是知识体系建立的好处,虽然不同语言,不同框架,还是能快速上手.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/zhu327/shorturl&#34;&gt;https://github.com/zhu327/shorturl&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;正好公司有个生成短链接的小项目,不限语言,先拿Openresty练练手,写了个shorturl.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
   </channel>
 </rss>

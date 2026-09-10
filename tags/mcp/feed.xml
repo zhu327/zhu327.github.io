@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mcp on </title>
+    <link>https://zhu327.github.io/tags/mcp/</link>
+    <description>Recent content in Mcp on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 07 Mar 2026 12:00:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/mcp/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>复盘：ClawOps AI Agent</title>
+      <link>https://zhu327.github.io/2026/03/07/%E5%A4%8D%E7%9B%98clawops-ai-agent/</link>
+      <pubDate>Sat, 07 Mar 2026 12:00:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/03/07/%E5%A4%8D%E7%9B%98clawops-ai-agent/</guid>
+      <description>&lt;h4 id=&#34;前言&#34;&gt;前言&lt;/h4&gt;
+
+&lt;p&gt;过去的两周，我经历了一次充满激情的开发，也经历了一次彻底的失败。&lt;/p&gt;
+
+&lt;p&gt;起因是我准备在内部做一个公共的“运维AI机器人”。我满怀热情地规划了多租户架构、复杂的并发控制、MCP（Model Context Protocol）对接以及各种内部系统的打通。然而，经过两周的爆肝，项目上线没多久就被平台团队勒令下线，而从业务价值来看，老板其实也并不需要这样一个东西。&lt;/p&gt;
+
+&lt;p&gt;俗话说，失败是成功之母。虽然项目黄了，但这两周踩过的坑、写过的废代码，都是技术架构演进路上的宝贵经验。我在这里复盘一下整个过程，聊聊我的技术实现、妥协，以及如果让我重新设计，我会怎么做。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>我理解的AI Agent与MCP</title>
+      <link>https://zhu327.github.io/2025/04/02/%E6%88%91%E7%90%86%E8%A7%A3%E7%9A%84ai-agent%E4%B8%8Emcp/</link>
+      <pubDate>Wed, 02 Apr 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/04/02/%E6%88%91%E7%90%86%E8%A7%A3%E7%9A%84ai-agent%E4%B8%8Emcp/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;最近AI圈子里Manus这个项目可以说是相当火了，连带着MCP（Model Context Protocol）这个概念也开始频繁出现在各种技术讨论区。作为一个程序员，自然也对这些新东西充满了好奇，于是花时间捣鼓了一下AI Agent和MCP相关的知识。这篇文章就是我学习和思考后，对这两个概念的一些个人理解和梳理。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-从workflow到ai-agent-大脑的进化&#34;&gt;1. 从Workflow到AI Agent：大脑的进化&lt;/h3&gt;
+
+&lt;p&gt;回顾我们以前做自动化任务，比如搞个自动抢票、自动下单之类的，思路基本都是围绕着一个固定的&lt;strong&gt;workflow&lt;/strong&gt;。我们会预先设定好一套流程逻辑：收到指令 -&amp;gt; 判断条件 -&amp;gt; 走对应分支 -&amp;gt; 调用特定工具（API、脚本等）。整个过程就像一个流程图，每个节点和路径都是我们程序员预先设计好的。在这个模式下，&lt;strong&gt;我们程序员就是这个workflow的“大脑”&lt;/strong&gt;，我们把执行计划通过代码逻辑，“硬编码”到系统里。比如预定机票这个场景，我们会写代码一步步调用查询接口、选择航班接口、填写乘机人信息接口、支付接口等等。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

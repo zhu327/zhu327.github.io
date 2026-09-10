@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Github Actions on </title>
+    <link>https://zhu327.github.io/tags/github-actions/</link>
+    <description>Recent content in Github Actions on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 07 Jul 2025 14:55:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/github-actions/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>打造一个属于自己的AI书签</title>
+      <link>https://zhu327.github.io/2025/07/07/%E6%89%93%E9%80%A0%E4%B8%80%E4%B8%AA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84ai%E4%B9%A6%E7%AD%BE/</link>
+      <pubDate>Mon, 07 Jul 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/07/07/%E6%89%93%E9%80%A0%E4%B8%80%E4%B8%AA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84ai%E4%B9%A6%E7%AD%BE/</guid>
+      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+
+&lt;p&gt;我一直是个重度的书签使用者，多年来都依赖 Pocket 来收藏和沉淀那些在网上看到的、值得一读的文章。然而，最近 Pocket 宣布其通知服务即将关闭，这对我来说像是一个信号，是时候去寻找一个更稳定、更可控的替代品了。&lt;/p&gt;
+
+&lt;p&gt;我的探索之旅就这样开始了：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Raindrop.io&lt;/strong&gt;：社区里很多人推荐，功能也确实强大。但不知道是不是网络原因，我这边访问起来总是感觉有点慢，而且用惯了 Pocket 的我，对它的界面和交互逻辑始终有些不太习惯。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;自建服务&lt;/strong&gt;：作为程序员，第一反应自然是自己动手。我找到了像 &lt;a href=&#34;https://github.com/sissbruecker/linkding&#34;&gt;linkding&lt;/a&gt; 这样的优秀开源项目。我尝试把它部署在 &lt;a href=&#34;https://fly.io/&#34;&gt;fly.io&lt;/a&gt; 的免费实例上，但 linkding 对资源的要求不低，最低配的 256M 内存实例直接就 OOM (Out of Memory) 了，升级配置又意味着成本。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;从零开始写一个？&lt;/strong&gt; 这个念头一闪而过。我甚至构思好了技术选型：参照 linkding 的功能，用我最近在学习的 &lt;strong&gt;Rust&lt;/strong&gt; 实现后端，部署在 &lt;strong&gt;Cloudflare Workers&lt;/strong&gt; 上，再配上 &lt;strong&gt;Cloudflare D1&lt;/strong&gt; 的 SQLite 数据库。这套方案 Serverless、成本极低，堪称完美。但转念一想，这工程量可不小，对于业余项目来说，我实在没有那么多时间投入进去。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;就在我快要放弃，准备将就着用某个方案时，我想起了一篇以前收藏过的文章。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

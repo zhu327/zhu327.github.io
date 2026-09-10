@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Software Design on </title>
+    <link>https://zhu327.github.io/tags/software-design/</link>
+    <description>Recent content in Software Design on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 16 Oct 2025 10:00:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/software-design/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>编写可维护的代码 -- 面向AI编程</title>
+      <link>https://zhu327.github.io/2025/10/16/%E7%BC%96%E5%86%99%E5%8F%AF%E7%BB%B4%E6%8A%A4%E7%9A%84%E4%BB%A3%E7%A0%81----%E9%9D%A2%E5%90%91ai%E7%BC%96%E7%A8%8B/</link>
+      <pubDate>Thu, 16 Oct 2025 10:00:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/10/16/%E7%BC%96%E5%86%99%E5%8F%AF%E7%BB%B4%E6%8A%A4%E7%9A%84%E4%BB%A3%E7%A0%81----%E9%9D%A2%E5%90%91ai%E7%BC%96%E7%A8%8B/</guid>
+      <description>&lt;p&gt;这是最近在小组内做的一次技术分享的文字稿，总体来说我觉得没有表达出特别硬核的内容，我本身也希望说这次分享不用讲的太硬核，在分享的开头还设计了互动环节，分享的过程中也尝试加入一些问答来互动，奈何现公司的技术氛围确实比较沉闷，似乎同事都比较I，好在最后的问答环节有几个比较好的问题，总体来说还算是一次成功的分享吧，希望自己能输出更多的好内容。&lt;/p&gt;
+
+&lt;h4 id=&#34;p1-我们写的代码是写给谁看的&#34;&gt;&lt;strong&gt;P1: 我们写的代码是写给谁看的?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;(🎤 互动环节):&lt;/strong&gt; “大家有没有过接手一个项目时，看到的第一感觉是：我该从哪下手？结果花了三天才搞明白一个功能的逻辑。有过类似经历的兄弟举个手我看看？”&lt;/li&gt;
+&lt;li&gt;小说家写小说给读者，建筑师盖房子给业主&amp;hellip; 那我们程序员写代码，最终是写给未来的自己，和接手我们代码的同事看的。&lt;/li&gt;
+&lt;li&gt;代码的可维护性，决定了我们是在“创造价值”还是在“创造负债”。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;p2-举几个代码坏味道的例子&#34;&gt;&lt;strong&gt;P2: 举几个代码坏味道的例子?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;(🎤 互动环节):&lt;/strong&gt; “看过《重构》的同学应该都知道代码坏味道。来，大家一起吐槽一下，你在项目里见过最痛苦的代码坏味道是什么？” (引导大家说出几个)&lt;/li&gt;
+&lt;li&gt;其实按照我朴素的理解，能让我快速理清逻辑的就是好代码，理解起来很费劲的，那肯定就充满坏味道。&lt;/li&gt;
+&lt;li&gt;正如我在入职后接手的&lt;code&gt;kitam&lt;/code&gt;项目，它就充满了这些味道：
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;代码逻辑不内聚&lt;/strong&gt;：功能实现像天女散花。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分层过多且混乱&lt;/strong&gt;：一个请求要穿越重重关卡。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;外部依赖离散&lt;/strong&gt;：数据库、缓存的调用没有统一规范。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>整洁架构落地实践</title>
+      <link>https://zhu327.github.io/2025/08/04/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Mon, 04 Aug 2025 14:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/08/04/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5/</guid>
+      <description>&lt;p&gt;最近在新公司接手了一个历史悠久的项目，功能不多，代码量却不小。深入其中，才发现有太多太多的槽点，简直让人头大。每当要新增一个功能或者修复一个 Bug，都感觉像是在雷区里跳舞，步步惊心。&lt;/p&gt;
+
+&lt;p&gt;总结下来，这个项目主要有这么几个“硬伤”：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;代码逻辑不内聚&lt;/strong&gt;：同一个功能的实现，像天女散花一样分散在好几个不同的文件里，想理清完整的逻辑链条，得在 IDE 里跳来跳去，极其耗费心智。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分层过多且混乱&lt;/strong&gt;：一个简单的请求，要穿越重重关卡，经过好几个层级的调用才能抵达终点。有时你都分不清某一层到底是干嘛的，感觉纯粹是为了分层而分层。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内部自研框架不好用&lt;/strong&gt;：项目依赖了一个内部的 &lt;code&gt;kgo&lt;/code&gt; 框架，但文档缺失，设计理念也比较陈旧，出了问题排查起来非常困难。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;外部依赖离散&lt;/strong&gt;：对数据库、缓存、外部 API 的调用封装得五花八门，没有统一的规范和入口，整个项目像一个杂乱的“百宝箱”。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;恰好，Leader 对这个项目制定了新的方向与目标，之前这些遗留问题实实在在成了我们前进路上的绊脚石。因此，一次彻底的架构升级与重构势在必行。同时，部门内也正在推广项目规范化和最佳实践输出，这简直是天赐良机。&lt;/p&gt;
+
+&lt;p&gt;很久以前我就读过《架构整洁之道》这本书，在之前的项目中也或多或少受到一些启发，但从未有机会从一个项目初始就完整地贯彻整洁架构的理念。这次，我决定抓住机会，来一场彻彻底底的整洁架构实践。在这个过程中，我感觉自己对整洁架构的理解，以及对 SOLID 原则的落地方式，都有了前所未有的深入体会。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从《软件设计的哲学》谈代码的复杂性与应对</title>
+      <link>https://zhu327.github.io/2025/01/10/%E4%BB%8E%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%93%B2%E5%AD%A6%E8%B0%88%E4%BB%A3%E7%A0%81%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E4%B8%8E%E5%BA%94%E5%AF%B9/</link>
+      <pubDate>Fri, 10 Jan 2025 10:55:52 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2025/01/10/%E4%BB%8E%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%93%B2%E5%AD%A6%E8%B0%88%E4%BB%A3%E7%A0%81%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E4%B8%8E%E5%BA%94%E5%AF%B9/</guid>
+      <description>&lt;p&gt;几个月前读完了《软件设计的哲学》这本书，在结合自己多年的工作体会，对于代码的可读性，可维护性有了系统性的体会，然后基于我记录的读书笔记然后经过AI的润色，形成了这篇笔记。希望对你也有所帮助。&lt;/p&gt;
+
+&lt;p&gt;读完《软件设计的哲学》，感觉像经历了一次代码的“深度体检”。这本书没有讲解具体的编码技巧，而是从更高的维度帮助我们重新审视代码复杂性的问题，并提出了许多实用的建议。今天，我想结合自己的理解，分享这本书带来的启发。&lt;/p&gt;
+
+&lt;h3 id=&#34;什么是代码的复杂性&#34;&gt;什么是代码的复杂性？&lt;/h3&gt;
+
+&lt;p&gt;简单来说，复杂性就是那些让系统难以理解和修改的因素。它不仅仅指代码的行数或逻辑深度，还包括：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;难以理解&lt;/strong&gt;：即便是自己写的代码，过一段时间可能也看不懂，更别提其他人。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;修改成本高&lt;/strong&gt;：一个小改动需要改动多个地方，甚至引发新的问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模糊的改动范围&lt;/strong&gt;：不知道该修改哪些模块才能实现目标，或者不确定修改后是否会引发其他问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;难以修复的错误&lt;/strong&gt;：修复一个 bug 可能需要大量时间，还可能引入新的问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
