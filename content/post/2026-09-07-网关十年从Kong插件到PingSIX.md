@@ -2,7 +2,7 @@
 title: "网关十年：从Kong插件到PingSIX"
 date: 2026-09-07T09:00:00+08:00
 draft: false
-tags: ["API Gateway", "Rust", "Pingora", "Kong", "APISIX"]
+tags: ["api-gateway", "rust", "pingora", "kong", "apisix"]
 ---
 
 ### 前言

@@ -1,7 +1,7 @@
 ---
 date: 2015-01-31T13:22:55+08:00
 title: Django forum总结
-tags: ["Django"]
+tags: ["django"]
 ---
 
 <https://github.com/zhu327/forum>

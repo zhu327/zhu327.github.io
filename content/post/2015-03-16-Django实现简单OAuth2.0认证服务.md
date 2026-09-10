@@ -1,7 +1,7 @@
 ---
 date: 2015-03-16T23:12:18+08:00
 title: Django实现简单OAuth2.0认证服务
-tags: ["web", "django"]
+tags: ["web", "django", "oauth"]
 ---
 
 开始写[Django forum](https://github.com/zhu327/forum)的RESTful api，首先解决用户认证的问题，使用OAuth2.0协议实现。

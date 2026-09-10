@@ -1,7 +1,7 @@
 ---
 date: 2015-07-20T15:00:48+08:00
 title: Ajax中的jsonp理解
-tags: ["json"]
+tags: ["javascript", "jsonp"]
 ---
 
 公司自有服务都是后台api来实现,即使是website也是通过调用api获取来渲染网页,正常的Ajax中请求都是调用浏览器的XMLHttpRequest接口来异步请求数据,但是无论是Chrome,还是IE都有一个限制,就是不能跨域通过XMLHttpRequest来发请求.

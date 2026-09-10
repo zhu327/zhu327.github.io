@@ -2,6 +2,7 @@
 title: "Loop Engineering 实践: Pi Coding Agent"
 date: 2026-06-17T09:16:00+08:00
 draft: false
+tags: ["ai-agent", "loop-engineering", "pi"]
 ---
 
 我在之前写过一些关于AI Agent在开发流程中应用的经验，比如《[打造适合自己的 AI Harness 工程：从开发流、E2E 测试到自动排障](https://zhu327.github.io/2026/05/09/%E6%89%93%E9%80%A0%E9%80%82%E5%90%88%E8%87%AA%E5%B7%B1%E7%9A%84-ai-harness-%E5%B7%A5%E7%A8%8B%E4%BB%8E%E5%BC%80%E5%8F%91%E6%B5%81e2e-%E6%B5%8B%E8%AF%95%E5%88%B0%E8%87%AA%E5%8A%A8%E6%8E%92%E9%9A%9C/)》。随着对AI Agent的深入实践，我发现人肉打Prompt的日子快要到头了，未来我们更多是设计一个系统，让系统来自动化地与Agent交互。最近我一直在研究 Loop Engineering，并尝试将它落地到我的日常工作中，特别是用 Pi Coding Agent 来实现自动化巡检和代码修复。

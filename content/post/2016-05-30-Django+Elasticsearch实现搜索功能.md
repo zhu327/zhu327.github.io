@@ -1,7 +1,7 @@
 ---
 date: 2016-05-30T09:51:22+08:00
 title: Django-Elasticsearch实现搜索功能
-tags: ["haystack", "elasticsearch"]
+tags: ["django", "elasticsearch", "haystack"]
 ---
 
 在项目中实现了资讯搜索功能，用到了Django Tastypie haystack Elasticsearch ik分词，覆盖了我对搜索了解的所有姿势。其实也就了解一些简单的概念，不过haystack+elasticsearch并不需要太多搜索基础，只要看看haystack文档就就能实现简单的搜索需求了。

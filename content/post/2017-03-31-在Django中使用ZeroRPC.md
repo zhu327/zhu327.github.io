@@ -1,7 +1,7 @@
 ---
 date: 2017-03-31T15:59:13+08:00
 title: 在Django中使用zerorpc
-tags: ["django", "zerorpc"]
+tags: ["django", "zerorpc", "rpc"]
 
 ---
 

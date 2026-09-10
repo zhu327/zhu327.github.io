@@ -2,6 +2,7 @@
 title: "pingsix-ingress-controller启动"
 date: 2025-10-20T10:00:52+08:00
 draft: false
+tags: ["kubernetes", "api-gateway", "rust", "pingora"]
 ---
 
 > <https://github.com/zhu327/pingsix>

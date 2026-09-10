@@ -1,7 +1,7 @@
 ---
 date: 2016-05-15T10:49:01+08:00
 title: Tastypie实现accesstoken认证
-tags: ["django", "tastypie"]
+tags: ["django", "tastypie", "oauth"]
 ---
 
 Tastypie提供了几种基本的认证方式比如SessionAuthentication，Django实现的web站点一般都是基于cookie-session的认证方式，在Django中使用中间件的方式处理cookie与session，以及用户认证。使用起来是很方便的。

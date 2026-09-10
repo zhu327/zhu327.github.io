@@ -2,6 +2,7 @@
 title: "使用pyproject.toml保证代码质量"
 date: 2023-01-09T15:53:52+08:00
 draft: false
+tags: ["python", "pyproject", "code-quality"]
 ---
 
 ### 1. pyproject.toml是什么

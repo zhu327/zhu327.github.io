@@ -1,7 +1,7 @@
 ---
 title: "零成本使用OpenAI API"
 date: 2023-12-20T15:25:52+08:00
-tags: ["openai"]
+tags: ["openai", "gemini", "llm"]
 draft: false
 ---
 

@@ -2,7 +2,7 @@
 title: "从Pingora到API网关：Rust实战"
 date: 2024-11-15T10:55:52+08:00
 draft: false
-tags: ["Rust"]
+tags: ["rust", "pingora", "api-gateway"]
 ---
 
 ### 前言

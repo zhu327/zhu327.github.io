@@ -1,7 +1,7 @@
 ---
 date: 2016-09-25T16:41:33+08:00
 title: Django db使用MySQL连接池
-tags: ["django", "greentor"]
+tags: ["django", "mysql"]
 ---
 
 Django db模块本身不支持MySQL连接池，只有一个配置`CONN_MAX_AGE`连接最大存活时间，如果WSGI服务器使用了线程池技术，会达到连接复用的效果。但是如果WSGI服务如果是每个请求都创建新的线程，那么这个配置没有任何效果，因为连接保存在`Thread.local()`名称空间中，在不同的线程中不能复用。

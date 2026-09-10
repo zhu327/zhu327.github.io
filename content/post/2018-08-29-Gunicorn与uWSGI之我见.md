@@ -2,6 +2,7 @@
 title: "Gunicorn与uWSGI之我见"
 date: 2018-08-29T23:23:20+08:00
 draft: false
+tags: ["python", "gunicorn", "uwsgi", "wsgi"]
 ---
 
 昨天前同事问我[doge](https://github.com/zhu327/doge)的服务端怎么是单进程跑的, 其实在生产环境下我们参考[gunicorn_thrift](https://github.com/eleme/gunicorn_thrift)实现了一个定制的master/worker模型的Gunicorn服务器. 昨天也写了一个[简化版本](https://github.com/zhu327/doge/tree/master/doge/gunicorn)集成到doge, 实际代码不超过20行就能利用到Gunicorn的进程管理功能. 有感于Gunicorn简洁优雅的模型, 这里聊聊我理解的Gunicorn与uWSGI.

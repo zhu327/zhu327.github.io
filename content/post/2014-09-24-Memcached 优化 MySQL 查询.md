@@ -1,7 +1,7 @@
 ---
 date: 2014-09-24T22:13:57+08:00
 title: Memcached 优化 MySQL 查询
-tags: ["blog", "python", "memcached", "mysql"]
+tags: ["python", "mysql", "memcached"]
 ---
 
 ### 简介

@@ -1,7 +1,7 @@
 ---
 date: 2017-05-08T15:19:58+08:00
 title: zerorpc api设计指南
-tags: ["zerorpc"]
+tags: ["zerorpc", "rpc"]
 ---
 
 > [Google API 设计指南](http://tailnode.tk/2017/03/google-api-design-guide/contents/)  

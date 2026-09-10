@@ -1,7 +1,7 @@
 ---
 title: "像OpenResty一样使用Golang开发Web App"
 date: 2018-06-26T21:35:01+08:00
-tags: ["go"]
+tags: ["golang", "lua", "openresty"]
 ---
 
 <https://github.com/zhu327/glualor>

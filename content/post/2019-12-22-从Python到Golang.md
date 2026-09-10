@@ -2,6 +2,7 @@
 title: "从Python到Golang"
 date: 2019-12-22T18:45:08+08:00
 draft: false
+tags: ["golang", "python"]
 ---
 
 是的, 从去年底开始, 我差不多写Golang一年了, 从最开始的视频流处理, 到Websocket远程控制, 再到现在写的高性能鉴权中间件. 为什么不用Python? 因为Python满足不了长连接或者高性能的需求. 为什么不用其它语言? 大概是因为Golang足够`简单`吧. 这里分享下这一年多写Golang相对于Python的一些感想.

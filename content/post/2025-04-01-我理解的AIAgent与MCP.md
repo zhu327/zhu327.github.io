@@ -2,6 +2,7 @@
 title: "我理解的AI Agent与MCP"
 date: 2025-04-02T10:55:52+08:00
 draft: false
+tags: ["ai-agent", "mcp", "llm"]
 ---
 
 ### 前言

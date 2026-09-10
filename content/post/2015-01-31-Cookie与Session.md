@@ -1,7 +1,7 @@
 ---
 date: 2015-01-31T11:23:21+08:00
 title: Cookie与Session
-tags: ["web"]
+tags: ["web", "http"]
 ---
 
 前面学习了Cookie，知道Cookie是在浏览器端保存的用户状态，但是对Session一直没什么概念。学习Django的过程中直接使用了Django的认证系统，虽然用到了Session但是没有接触到Session的直接使用，然后在学习F2E.im的代码中，发现Tornado自带的secret cookie其实也能加密传递cookie，通过cookie传递一个userid到用户浏览器，认证的时候使用userid到数据库中查找用户信息，也能很好的认证用户。那为什么要使用session呢。

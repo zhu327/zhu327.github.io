@@ -1,7 +1,7 @@
 ---
 date: 2016-06-02T11:05:17+08:00
 title: haystack-Elasticsearch实现拼音搜索
-tags: ["haystack", "elasticsearch"]
+tags: ["django", "elasticsearch", "haystack"]
 ---
 
 前一篇[Django+Elasticsearch实现搜索功能](https://zhu327.github.io/2016/05/30/djangoelasticsearch%E5%AE%9E%E7%8E%B0%E6%90%9C%E7%B4%A2%E5%8A%9F%E8%83%BD/)已经实现了搜索的基本功能，但是其实还是有一些错误，这里先纠正一下。

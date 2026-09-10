@@ -2,6 +2,7 @@
 title: "Vibe Coding有感: 从PingSIX重构说起"
 date: 2025-09-02T14:55:52+08:00
 draft: false
+tags: ["vibe-coding", "ai", "cursor", "pingora"]
 ---
 
 说到“Vibe Coding”，这个词最近在开发者圈子里越来越流行。在过去，我的实践很大程度上还停留在比较初级的阶段：把需求和代码片段在 ChatGPT、Google AI Studio 或是 Grok 之间来回地复制粘贴。来到新公司后，虽然开通了 GitHub Copilot，体验有所提升，但感觉它更多时候还是一个“超级智能补全”工具。直到今年7月份，公司给配上了 Cursor，我的编程体验才真正开启了一场变革，正式进入了 Vibe Coding 的奇妙旅程。

@@ -1,7 +1,7 @@
 ---
 date: 2016-09-25T15:56:21+08:00
 title: greentor MySQL连接池实现
-tags: ["tornado", "django", "greentor"]
+tags: ["tornado", "mysql", "greentor"]
 ---
 
 > <https://en.wikipedia.org/wiki/Connection_pool>

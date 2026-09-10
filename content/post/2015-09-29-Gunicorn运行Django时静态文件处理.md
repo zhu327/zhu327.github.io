@@ -1,7 +1,7 @@
 ---
 date: 2015-09-29T18:36:08+08:00
 title: Gunicorn运行Django时静态文件处理
-tags: ["django"]
+tags: ["django", "gunicorn"]
 ---
 
 ### 问题

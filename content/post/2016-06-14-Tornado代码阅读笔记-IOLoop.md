@@ -1,7 +1,7 @@
 ---
 date: 2016-06-14T14:16:00+08:00
 title: Tornado代码阅读笔记 IOLoop
-tags: ["tornado"]
+tags: ["tornado", "python"]
 ---
 
 准备用Tornado + greenlet + Django ORM搭一个框架，大体上有个思路，在开始前再次阅读下Tornado的代码。目的是在学习Torndao使用的同时，了解下原理，以便在使用过程中少踩点坑。

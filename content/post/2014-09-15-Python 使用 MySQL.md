@@ -1,7 +1,7 @@
 ---
 date: 2014-09-15T19:36:00+08:00
 title: Python 使用 MySQL
-tags: ["python", "MySQL"]
+tags: ["python", "mysql"]
 ---
 
 ### MySQLdb基本使用方式

@@ -1,5 +1,6 @@
 ---
 date: 2017-11-27T18:20:31+08:00
+tags: ["openresty", "api-gateway", "kong", "lua"]
 title: OpenResty与API Gateway
 ---
 

@@ -1,7 +1,7 @@
 ---
 date: 2015-07-02T16:37:48+08:00
 title: openshift平台DIY环境配置Tornado
-tags: ["python"]
+tags: ["openshift", "tornado", "python"]
 ---
 
 > openshift官方和社区提供不少配置好的环境，也包括python2.7和python3.3下的tornado套件。  
