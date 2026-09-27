@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Jellyfin on </title>
+    <link>https://zhu327.github.io/tags/jellyfin/</link>
+    <description>Recent content in Jellyfin on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 27 Sep 2026 18:42:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhu327.github.io/tags/jellyfin/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>老树发新芽：TN3399v3折腾Jellyfin硬件转码全记录</title>
+      <link>https://zhu327.github.io/2026/09/27/%E8%80%81%E6%A0%91%E5%8F%91%E6%96%B0%E8%8A%BDtn3399v3%E6%8A%98%E8%85%BEjellyfin%E7%A1%AC%E4%BB%B6%E8%BD%AC%E7%A0%81%E5%85%A8%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Sun, 27 Sep 2026 18:42:00 +0800</pubDate>
+      
+      <guid>https://zhu327.github.io/2026/09/27/%E8%80%81%E6%A0%91%E5%8F%91%E6%96%B0%E8%8A%BDtn3399v3%E6%8A%98%E8%85%BEjellyfin%E7%A1%AC%E4%BB%B6%E8%BD%AC%E7%A0%81%E5%85%A8%E8%AE%B0%E5%BD%95/</guid>
+      <description>&lt;p&gt;2021年4月，我女儿刚出生那会儿，我在闲鱼花了300块钱收了一块 TN3399v3 开发板。据卖家说是从报废的商用广告机上拆下来的。当时看中它主要是图便宜，而且板载资源很扎实。一晃5年多过去了，家里很多数码设备换了一茬又一茬，但这块板子一直默默在角落里当我的家庭主力 NAS 和媒体服务器。&lt;/p&gt;
+
+&lt;p&gt;要说这块板子这几年用下来有什么遗憾，那就是 Jellyfin 的硬件转码一直没搞定。只要遇到客户端不兼容触发转码，6个核心瞬间拉满到 100%，画面卡成幻灯片。查遍了全网资料，基本结论都是“RK3399 驱动老旧，MPP 不支持编解一体，放弃吧”。&lt;/p&gt;
+
+&lt;p&gt;前几天有点闲暇时间，看着这几年大语言模型越来越强，我想着不如死马当活马医，让 AI 帮我一起啃啃这块硬骨头。没想到经过几天的折腾、打补丁、写 Wrapper，竟然真的把这条链路给彻底打通了。实测4路 1080p 视频并发硬转码，CPU 负载不到 30%。&lt;/p&gt;
+
+&lt;p&gt;在如今电子硬件普遍大涨价的时代，感觉这块老开发板还能再战好多年。这里把完整的折腾过程、原理分析和落地方案严谨记录下来，供有同款老设备的小伙伴们参考。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

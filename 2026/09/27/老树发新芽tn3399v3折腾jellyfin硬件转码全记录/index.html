@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    
+      老树发新芽：TN3399v3折腾Jellyfin硬件转码全记录 &middot; 跬步
+    
+  </title>
+
+  
+  <link rel="stylesheet" href="https://zhu327.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://zhu327.github.io/css/lanyon.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zhu327.github.io/assets/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="https://zhu327.github.io/assets/favicon.ico">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://zhu327.github.io/feed.xml">
+</head>
+
+
+  <body class="theme-base-0d">
+
+    
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>My notes and thoughts.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/">Home</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/post">Posts</a>
+    <a class="sidebar-nav-item " href="https://zhu327.github.io/tags">Tags</a>
+
+    
+        <a class="sidebar-nav-item " href="https://zhu327.github.io/about/">About</a>
+
+    <a class="sidebar-nav-item" href="https://github.com/zhu327" target="_blank">GitHub</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; 2026. All rights reserved.</p>
+  </div>
+</div>
+
+
+    
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://zhu327.github.io/" title="Home">跬步</a>
+            <small>On Coding</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+
+
+<div class="post">
+  <h1 class="post-title">老树发新芽：TN3399v3折腾Jellyfin硬件转码全记录</h1>
+  <span class="post-date">Sep 27 2026</span>
+  <p>2021年4月，我女儿刚出生那会儿，我在闲鱼花了300块钱收了一块 TN3399v3 开发板。据卖家说是从报废的商用广告机上拆下来的。当时看中它主要是图便宜，而且板载资源很扎实。一晃5年多过去了，家里很多数码设备换了一茬又一茬，但这块板子一直默默在角落里当我的家庭主力 NAS 和媒体服务器。</p>
+
+<p>要说这块板子这几年用下来有什么遗憾，那就是 Jellyfin 的硬件转码一直没搞定。只要遇到客户端不兼容触发转码，6个核心瞬间拉满到 100%，画面卡成幻灯片。查遍了全网资料，基本结论都是“RK3399 驱动老旧，MPP 不支持编解一体，放弃吧”。</p>
+
+<p>前几天有点闲暇时间，看着这几年大语言模型越来越强，我想着不如死马当活马医，让 AI 帮我一起啃啃这块硬骨头。没想到经过几天的折腾、打补丁、写 Wrapper，竟然真的把这条链路给彻底打通了。实测4路 1080p 视频并发硬转码，CPU 负载不到 30%。</p>
+
+<p>在如今电子硬件普遍大涨价的时代，感觉这块老开发板还能再战好多年。这里把完整的折腾过程、原理分析和落地方案严谨记录下来，供有同款老设备的小伙伴们参考。</p>
+
+<p></p>
+
+<h3 id="1-硬件规格与折腾背景">1. 硬件规格与折腾背景</h3>
+
+<p>TN3399v3 本质上就是一块基于瑞芯微 RK3399 的定制工控板，整体配置跟开源的 Rock Pi 4B 非常接近：</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">部件名称</th>
+<th align="center">芯片型号</th>
+<th align="left">备注说明</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center"><strong>CPU</strong></td>
+<td align="center">RK3399</td>
+<td align="left">双核 Cortex-A72 (最高 1.8GHz) + 四核 Cortex-A53 (最高 1.4GHz)；Mali-T864 GPU</td>
+</tr>
+
+<tr>
+<td align="center"><strong>RAM</strong></td>
+<td align="center">K4B8G16</td>
+<td align="left">双通道 DDR3 1GB * 4（共 4GB）</td>
+</tr>
+
+<tr>
+<td align="center"><strong>Flash</strong></td>
+<td align="center">SanDisk SDINBDG4-16G</td>
+<td align="left">板载 eMMC 5.1 16GB</td>
+</tr>
+
+<tr>
+<td align="center"><strong>PMU</strong></td>
+<td align="center">RK808D</td>
+<td align="left">供电管理单元</td>
+</tr>
+
+<tr>
+<td align="center"><strong>Ethernet</strong></td>
+<td align="center">RTL8211E</td>
+<td align="left">千兆以太网口</td>
+</tr>
+
+<tr>
+<td align="center"><strong>WIFI+BT</strong></td>
+<td align="center">AP6255</td>
+<td align="left">802.11 a/b/g/n/ac + 蓝牙 4.2</td>
+</tr>
+
+<tr>
+<td align="center"><strong>SATA 3.0</strong></td>
+<td align="center">JMS578</td>
+<td align="left">原生引出 SATA 接口（带 SATA 供电座）</td>
+</tr>
+
+<tr>
+<td align="center"><strong>USB</strong></td>
+<td align="center">FE1.1s + VL817-Q7</td>
+<td align="left">2 个 USB 3.0 + 多个 USB 2.0 引出</td>
+</tr>
+</tbody>
+</table>
+
+<p>很多 ARM 架构的小板子做 NAS 最大的痛点就是走 USB 挂移动硬盘，不仅不稳定，速度也受限。而 TN3399v3 最香的地方在于它板载了 JMS578 桥接芯片，自带原生标准的 SATA 接口和供电插针，直接插上一块闲鱼收来的 2.5 寸 2T 机械硬盘，就能严丝合缝组一套超低功耗的私有云。</p>
+
+<h4 id="软件系统基石">软件系统基石</h4>
+
+<p>在系统选型上，早期折腾时我就发现这块板子的设备树（DTB）和 Rock Pi 4B 基本通用，因此可以直接刷入 Armbian 官方提供的 Rock Pi 4B 固件。</p>
+
+<p>我选择长期停留在比较古老的 <code>Linux 4.4.213-rockchip64</code> 内核版本：</p>
+
+<blockquote>
+<p>镜像：<code>Armbian_21.08.1_Rockpi-4b_buster_legacy_4.4.213_xfce_desktop.img.xz</code></p>
+</blockquote>
+
+<p><a href="https://armbian.tnahosting.net/archive/rockpi-4b/archive/Armbian_21.08.1_Rockpi-4b_buster_legacy_4.4.213_xfce_desktop.img.xz">https://armbian.tnahosting.net/archive/rockpi-4b/archive/Armbian_21.08.1_Rockpi-4b_buster_legacy_4.4.213_xfce_desktop.img.xz</a></p>
+
+<p>之所以忍着不升主线高版本内核，核心原因就在于<strong>这套 4.4 版本的官方 BSP 内核保留了瑞芯微最完整的底层 VPU 驱动</strong>。当时通过安装社区打好补丁的 Kodi：</p>
+
+<blockquote>
+<p><code>media-buster-legacy-rk3399_20.11.7_arm64.deb</code></p>
+</blockquote>
+
+<p><a href="https://stpete-mirror.armbian.com/users.armbian.com/jmcc/output/Update-2021-04-09/media-buster-legacy-rk3399_20.11.7_arm64.deb">https://stpete-mirror.armbian.com/users.armbian.com/jmcc/output/Update-2021-04-09/media-buster-legacy-rk3399_20.11.7_arm64.deb</a></p>
+
+<p>在家里老电视还没换智能电视的那些年，我直接用板载 HDMI 接电视，挂载阿里云盘 WebDAV 看了无数部高清电影，全程 VPU 硬解，CPU 负载微乎其微。</p>
+
+<p>随着家里换了智能电视，Kodi 就功成身退了。这块板子被我彻底改造成了 Docker 服务器：</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">root@rockpi-4b:~# docker images
+REPOSITORY                 TAG       IMAGE ID       CREATED        SIZE
+photoprism/photoprism      arm64     391e4507fe13   7 days ago     2.35GB
+portainer/portainer-ce     latest    7a040d9261b0   10 days ago    148MB
+linuxserver/sonarr         latest    1e33bf358b9b   10 days ago    222MB
+linuxserver/jellyfin       latest    beb261220d30   11 days ago    816MB
+linuxserver/resilio-sync   latest    190c4473f1db   12 days ago    176MB
+filebrowser/filebrowser    latest    e9116d24fb8f   2 months ago   36.5MB
+containrrr/watchtower      latest    c352868a1654   2 years ago    14.2MB
+p3terx/aria2-pro           latest    0e54e38386ec   4 years ago    28MB</code></pre></div>
+<p>配合宿主机的 Samba、Tailscale 异地组网、Xray 旁路代理，这套服务体系一直稳定服役至今。但唯独 Jellyfin 的硬转码，始终是我心里拔不掉的一根刺。</p>
+
+<hr />
+
+<h3 id="2-问题定位与思路转变">2. 问题定位与思路转变</h3>
+
+<p>早年社区对于 RK3399 跑 Jellyfin 硬解的普遍结论是：即便能勉强通过 MPP 调用 VPU 硬解，在视频需要做尺寸缩小（Downscale）或者格式编码时，由于 FFmpeg 缺少对瑞芯微硬件缩放器（RGA）与硬件编码器（VEPU）的高效整合，整个流必须通过 <code>hwdownload</code> 回传给 CPU 做软缩放和软编码，瞬间把 6 个核心吃死。</p>
+
+<p>中途我甚至看到有人在飞牛 OS 下折腾出了部分硬件支持，但飞牛 OS 对老旧开发板的设备树驱动并不完整，刷机大概率遇到网卡、SATA 无法驱动的坑，风险太大。</p>
+
+<p>这次趁着空闲，我让 AI 帮我重新审视系统底层。AI 扫描内核配置后给出了一个定性结论：<strong>当前运行的 4.4.213 内核不仅有完整的 VPU 解码（rkvdec/vpu_service），也有 VEPU 硬件编码支持，甚至硬件 RGA（2D 图形加速引擎）驱动也是完好的</strong>。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">zcat /proc/config.gz <span class="p">|</span> grep -E <span class="s1">&#39;CONFIG_(VIDEO_ROCKCHIP_VPU|RK_VCODEC|ROCKCHIP_MPP_SERVICE|ROCKCHIP_MPP_DEVICE|ROCKCHIP_RGA|ION)=&#39;</span></code></pre></div>
+<p>输出显示：</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">CONFIG_VIDEO_ROCKCHIP_VPU=y
+CONFIG_RK_VCODEC=y
+CONFIG_ROCKCHIP_MPP_SERVICE=y
+CONFIG_ROCKCHIP_MPP_DEVICE=y
+CONFIG_ION=y</code></pre></div>
+<p><strong>底层能力一直都在，缺的只是用户态现代多媒体工具链的适配。</strong></p>
+
+<p>最近几年，以 <code>@nyanmisaka</code> 大佬为代表的社区力量，在比较新的 RK3568、RK3588 平台上构建了一套非常成熟的软硬件转码闭环（包括 MPP、librga、ffmpeg-rockchip）。只是因为 RK3399 时代太久远，没人愿意专门给老设备做适配维护而已。</p>
+
+<p>既然 RK3568/RK3588 的整套逻辑是基于 MPP 和 RGA 构建的，那么这套路径完全可以反向移植回 RK3399。</p>
+
+<hr />
+
+<h3 id="3-核心踩坑与架构妥协">3. 核心踩坑与架构妥协</h3>
+
+<p>在实际把新工具链拉回老内核时，我碰到了两个最核心的暗坑：</p>
+
+<h4 id="坑一-老内核的-rga2-驱动不支持新版异步-ioctl">坑一：老内核的 RGA2 驱动不支持新版异步 ioctl</h4>
+
+<p>新版 <code>librga</code> 和 <code>ffmpeg-rockchip</code> 针对较新的内核设计，默认会通过字符串查询硬件特性版本（<code>querystring(RGA_VERSION)</code>），并且在图像帧缩放 blit 处理时强制依赖异步栅栏（Fence）等待机制。</p>
+
+<p>但 4.4.213 内核下的 RGA 驱动非常老，本质上是 legacy 驱动。它根本不响应新版本的 ioctl 特性查询（会在 dmesg 里吐出 <code>rga2: unknown ioctl cmd!</code>），更不支持异步回调通知。如果不改源码，FFmpeg 会因为拿不到版本信息报错，或者进入死等崩溃状态。</p>
+
+<p><strong>解法</strong>：给 <code>ffmpeg-rockchip</code> 提交针对 legacy RGA2 的同步模式补丁，宏定义打开后跳过版本探测，直接硬编码指定设备为原生 RGA2，且强制使用 <code>RGA_BLIT_SYNC</code> 同步操作，不请求异步 Fence，处理完毕立刻把帧交出。</p>
+
+<h4 id="坑二-overlay-rkrga-导致的绿屏问题">坑二：<code>overlay_rkrga</code> 导致的绿屏问题</h4>
+
+<p>硬解（RKMPP）和硬缩放（RGA）都搞定后，遇到了一个更恶心的问题：一旦视频带有外挂/内嵌字幕，触发 Jellyfin 的字幕烧录（Subtitle Burn-in）逻辑时，如果试图走 RGA 硬件贴图滤镜（<code>overlay_rkrga</code>），把 CPU 渲染出的 BGRA 字幕贴在硬件 NV12 画面上，最终画面会直接变成大面积偏绿。</p>
+
+<p>排查发现，这是老版 RGA2 硬件驱动在处理带透明通道的 BGRA 混合贴图时的老 Bug。无论在用户态尝试 premultiplied alpha 还是 straight alpha，都无法避免。</p>
+
+<p><strong>解法（工程上的妥协与平衡）</strong>：</p>
+
+<p>做架构设计必须懂得妥协。Jellyfin 大多数现代客户端（如 Android TV、Web、手机端）都支持字幕直接外传，根本无需服务端烧录。退一步讲，即便真的需要服务端烧录字幕，CPU 纯跑 <code>libass</code> 渲染文本的开销非常小，真正卡脖子的是视频解码、画面分辨率缩放和视频重编码。</p>
+
+<p>因此我制定了一条混合转码流水线：</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">4K HEVC 10bit 输入 (DRM_PRIME)
+    ↓ 【RKMPP 硬件解码】
+RGA 显存直接缩放至 1080p (vpp_rkrga)
+    ↓ 【hwdownload 提取单帧到内存】
+libass CPU 烧录字幕（无字幕则跳过此步）
+    ↓ 【RKMPP 硬件编码】
+H.264 1080p 输出 (h264_rkmpp)</code></pre></div>
+<p>最终这套折中方案大获全胜。</p>
+
+<hr />
+
+<h3 id="4-完整编译与环境构建">4. 完整编译与环境构建</h3>
+
+<p>以下是在 Debian 10 (buster) 宿主机环境下的完整操作流水账。所有操作均需 root 权限。</p>
+
+<h4 id="4-1-编译与安装-mpp">4.1 编译与安装 MPP</h4>
+
+<p>瑞芯微的 Media Process Platform 是与内核通信的基础：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">apt-get update
+apt-get install -y git cmake pkg-config build-essential
+
+<span class="nb">cd</span> /tmp
+git clone --depth <span class="m">1</span> https://github.com/rockchip-linux/mpp.git mpp
+<span class="nb">cd</span> mpp
+mkdir -p build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+cmake .. -DCMAKE_BUILD_TYPE<span class="o">=</span>Release
+make -j6
+make install
+ldconfig</code></pre></div>
+<p>验证编码解码器动态库是否就绪：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>/usr/local/lib:<span class="nv">$LD_LIBRARY_PATH</span>
+mpi_enc_test -w <span class="m">640</span> -h <span class="m">360</span> -f <span class="m">0</span> -t <span class="m">7</span> -i input.nv12 -o out.h264 -n <span class="m">5</span>
+mpi_dec_test -t <span class="m">7</span> -w <span class="m">640</span> -h <span class="m">360</span> -i out.h264 -o out.yuv</code></pre></div>
+<h4 id="4-2-编译与安装-librga">4.2 编译与安装 librga</h4>
+
+<p>针对 RK 平台的 2D 缩放引擎，拉取带有 Jellyfin 适配的源码分支：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">apt-get install -y meson ninja-build pkg-config
+
+<span class="nb">cd</span> /tmp
+git clone --depth <span class="m">1</span> -b jellyfin-rga <span class="se">\
+</span><span class="se"></span>  https://github.com/nyanmisaka/rk-mirrors.git rkrga
+
+meson setup /tmp/rkrga_build <span class="se">\
+</span><span class="se"></span>  --prefix<span class="o">=</span>/usr/local <span class="se">\
+</span><span class="se"></span>  --libdir<span class="o">=</span>lib <span class="se">\
+</span><span class="se"></span>  --buildtype<span class="o">=</span>release <span class="se">\
+</span><span class="se"></span>  --default-library<span class="o">=</span>shared <span class="se">\
+</span><span class="se"></span>  -Dlibdrm<span class="o">=</span><span class="nb">false</span> <span class="se">\
+</span><span class="se"></span>  -Dlibrga_demo<span class="o">=</span><span class="nb">false</span>
+
+ninja -C /tmp/rkrga_build
+ninja -C /tmp/rkrga_build install
+ldconfig</code></pre></div>
+<p>安装完成后，确保能够读出版本：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">PKG_CONFIG_PATH</span><span class="o">=</span>/usr/local/lib/pkgconfig:<span class="nv">$PKG_CONFIG_PATH</span>
+pkg-config --modversion librga</code></pre></div>
+<h4 id="4-3-编译带-legacy-rga2-补丁的-ffmpeg">4.3 编译带 legacy RGA2 补丁的 FFmpeg</h4>
+
+<p>先安装必要的依赖项：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">apt-get install -y <span class="se">\
+</span><span class="se"></span>  git pkg-config yasm nasm patchelf <span class="se">\
+</span><span class="se"></span>  libdrm-dev zlib1g-dev <span class="se">\
+</span><span class="se"></span>  libx264-dev libx265-dev libvpx-dev <span class="se">\
+</span><span class="se"></span>  libass-dev</code></pre></div>
+<p>拉取 6.0 分支源码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">cd</span> /tmp
+git clone --depth <span class="m">1</span> --branch <span class="m">6</span>.0 <span class="se">\
+</span><span class="se"></span>  https://github.com/nyanmisaka/ffmpeg-rockchip.git ffmpeg-rockchip
+<span class="nb">cd</span> ffmpeg-rockchip</code></pre></div>
+<p><strong>应用 legacy RGA2 补丁</strong>：</p>
+
+<p>将以下补丁内容保存为 <code>legacy_rga2.patch</code> 并执行 <code>git apply legacy_rga2.patch</code>：</p>
+<div class="highlight"><pre class="chroma"><code class="language-patch" data-lang="patch"><span class="gh">diff --git a/libavfilter/rkrga_common.c b/libavfilter/rkrga_common.c
+</span><span class="gh">index cf51025..89dea75 100644
+</span><span class="gh"></span><span class="gd">--- a/libavfilter/rkrga_common.c
+</span><span class="gd"></span><span class="gi">+++ b/libavfilter/rkrga_common.c
+</span><span class="gi"></span><span class="gu">@@ -1071,15 +1071,25 @@ av_cold int ff_rkrga_init(AVFilterContext *avctx, RKRGAParam *param)
+</span><span class="gu"></span>     RKRGAContext *r = avctx-&gt;priv;
+     int i, ret;
+     int rga_core_mask = 0x7;
+<span class="gi">+#if FF_RKRGA_LEGACY_RGA2
+</span><span class="gi">+    /* Legacy RGA2: the driver does not support the RGA_VERSION querystring,
+</span><span class="gi">+     * so the hw version is assumed to be a plain RGA2. */
+</span><span class="gi">+    r-&gt;has_rga2  = 1;
+</span><span class="gi">+    r-&gt;has_rga2l = 0;
+</span><span class="gi">+    r-&gt;has_rga2e = 0;
+</span><span class="gi">+    r-&gt;has_rga2p = 0;
+</span><span class="gi">+    r-&gt;has_rga3  = 0;
+</span><span class="gi">+#else
+</span><span class="gi"></span>     const char *rga_ver = querystring(RGA_VERSION);
+
+<span class="gd">-    r-&gt;got_frame = 0;
+</span><span class="gd">-
+</span><span class="gd"></span>     r-&gt;has_rga2  = !!strstr(rga_ver, &#34;RGA_2&#34;);
+     r-&gt;has_rga2l = !!strstr(rga_ver, &#34;RGA_2_lite&#34;);
+     r-&gt;has_rga2e = !!strstr(rga_ver, &#34;RGA_2_Enhance&#34;);
+     r-&gt;has_rga2p = !!strstr(rga_ver, &#34;RGA_2_PRO&#34;);
+     r-&gt;has_rga3  = !!strstr(rga_ver, &#34;RGA_3&#34;);
+<span class="gi">+#endif
+</span><span class="gi">+
+</span><span class="gi">+    r-&gt;got_frame = 0;
+</span><span class="gi"></span>
+     if (!(r-&gt;has_rga2 || r-&gt;has_rga3)) {
+         av_log(avctx, AV_LOG_ERROR, &#34;No RGA2/RGA3 hw available\n&#34;);
+<span class="gu">@@ -1265,6 +1275,13 @@ static int call_rkrga_blit(AVFilterContext *avctx,
+</span><span class="gu"></span>     PRINT_RGA_INFO(avctx, pat_info, &#34;pat&#34;);
+ #undef PRINT_RGA_INFO
+
+<span class="gi">+#if FF_RKRGA_LEGACY_RGA2
+</span><span class="gi">+    /* Legacy RGA2 has no async support, and no output fence is delivered
+</span><span class="gi">+     * to userspace, so always use the synchronous blit interface. */
+</span><span class="gi">+    dst_info-&gt;sync_mode = RGA_BLIT_SYNC;
+</span><span class="gi">+    dst_info-&gt;out_fence_fd = -1;
+</span><span class="gi">+#endif
+</span><span class="gi">+
+</span><span class="gi"></span>     if ((ret = c_RkRgaBlit(src_info, dst_info, pat_info)) != 0) {
+         av_log(avctx, AV_LOG_ERROR, &#34;RGA blit failed: %d\n&#34;, ret);
+         return AVERROR_EXTERNAL;
+<span class="gu">@@ -1384,6 +1401,20 @@ int ff_rkrga_filter_frame(RKRGAContext *r,
+</span><span class="gu"></span>     if (ret &lt; 0)
+         return ret;
+
+<span class="gi">+#if FF_RKRGA_LEGACY_RGA2
+</span><span class="gi">+    /* The blit above is already synchronous, so output the frame right away
+</span><span class="gi">+     * instead of queueing it for an (unavailable) async fence wait. */
+</span><span class="gi">+    filter_ret = r-&gt;filter_frame(outlink, dst_frame-&gt;frame);
+</span><span class="gi">+    if (filter_ret &lt; 0) {
+</span><span class="gi">+        av_frame_free(&amp;dst_frame-&gt;frame);
+</span><span class="gi">+        return filter_ret;
+</span><span class="gi">+    }
+</span><span class="gi">+    dst_frame-&gt;queued--;
+</span><span class="gi">+    r-&gt;got_frame = 1;
+</span><span class="gi">+    dst_frame-&gt;frame = NULL;
+</span><span class="gi">+
+</span><span class="gi">+    return 0;
+</span><span class="gi">+#else
+</span><span class="gi"></span>     dst_frame-&gt;queued++;
+     aframe = (RGAAsyncFrame){ src_frame, dst_frame, pat_frame };
+     set_rga_async_frame_lock_status(&amp;aframe, 1);
+<span class="gu">@@ -1409,4 +1440,5 @@ int ff_rkrga_filter_frame(RKRGAContext *r,
+</span><span class="gu"></span>     }
+
+     return 0;
+<span class="gi">+#endif
+</span><span class="gi"></span> }
+<span class="gh">diff --git a/libavfilter/rkrga_common.h b/libavfilter/rkrga_common.h
+</span><span class="gh">index 9e88477..f548dc5 100644
+</span><span class="gh"></span><span class="gd">--- a/libavfilter/rkrga_common.h
+</span><span class="gd"></span><span class="gi">+++ b/libavfilter/rkrga_common.h
+</span><span class="gi"></span><span class="gu">@@ -34,6 +34,20 @@
+</span><span class="gu"></span> #include &#34;libavutil/hwcontext.h&#34;
+ #include &#34;libavutil/hwcontext_rkmpp.h&#34;
+
+<span class="gi">+/*
+</span><span class="gi">+ * Force the RGA filters to run in &#34;legacy RGA2&#34; mode.
+</span><span class="gi">+ *
+</span><span class="gi">+ * This is required for old vendor kernels/drivers (e.g. Linux 4.4 + rga
+</span><span class="gi">+ * v1 driver) where c_RkRgaBlit() has to go through the legacy
+</span><span class="gi">+ * RGA_BLIT_SYNC interface instead of the im2d async one, and where
+</span><span class="gi">+ * RGA_VERSION querystring() is not available.
+</span><span class="gi">+ *
+</span><span class="gi">+ * Build with: --extra-cflags=&#34;-DFF_RKRGA_LEGACY_RGA2=1&#34;
+</span><span class="gi">+ */
+</span><span class="gi">+#ifndef FF_RKRGA_LEGACY_RGA2
+</span><span class="gi">+#define FF_RKRGA_LEGACY_RGA2 0
+</span><span class="gi">+#endif
+</span><span class="gi">+
+</span><span class="gi"></span> #define RK_RGA_YUV_ALIGN                2
+ #define RK_RGA_AFBC_16x16_STRIDE_ALIGN  16
+ #define RK_RGA_RFBC_64x4_STRIDE_ALIGN_W 64
+<span class="gh">diff --git a/libavfilter/vf_vpp_rkrga.c b/libavfilter/vf_vpp_rkrga.c
+</span><span class="gh">index b382263..a8816a4 100644
+</span><span class="gh"></span><span class="gd">--- a/libavfilter/vf_vpp_rkrga.c
+</span><span class="gd"></span><span class="gi">+++ b/libavfilter/vf_vpp_rkrga.c
+</span><span class="gi"></span><span class="gu">@@ -305,8 +305,14 @@ static av_cold void config_force_format(AVFilterContext *ctx,
+</span><span class="gu"></span>         return;
+
+     /* Auto fallback to 8-bit fmts on RGA2 */
+<span class="gi">+#if FF_RKRGA_LEGACY_RGA2
+</span><span class="gi">+    /* Legacy RGA2: skip the RGA_VERSION querystring, RGA2 has no 10-bit output */
+</span><span class="gi">+    has_rga3 = 0;
+</span><span class="gi">+    (void)rga_ver;
+</span><span class="gi">+#else
+</span><span class="gi"></span>     rga_ver = querystring(RGA_VERSION);
+     has_rga3 = !!strstr(rga_ver, &#34;RGA_3&#34;);
+<span class="gi">+#endif
+</span><span class="gi"></span>     if (out_depth &gt;= 10 &amp;&amp; !has_rga3)
+         out_depth = 8;
+</code></pre></div>
+<p>配置编译参数（务必带上 <code>-DFF_RKRGA_LEGACY_RGA2=1</code>，且禁用 OpenCL）：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">PKG_CONFIG_PATH</span><span class="o">=</span>/usr/local/lib/pkgconfig:<span class="nv">$PKG_CONFIG_PATH</span>
+
+./configure <span class="se">\
+</span><span class="se"></span>  --prefix<span class="o">=</span>/usr/local <span class="se">\
+</span><span class="se"></span>  --enable-gpl <span class="se">\
+</span><span class="se"></span>  --enable-version3 <span class="se">\
+</span><span class="se"></span>  --enable-libdrm <span class="se">\
+</span><span class="se"></span>  --enable-rkmpp <span class="se">\
+</span><span class="se"></span>  --enable-rkrga <span class="se">\
+</span><span class="se"></span>  --enable-libx264 <span class="se">\
+</span><span class="se"></span>  --enable-libx265 <span class="se">\
+</span><span class="se"></span>  --enable-libvpx <span class="se">\
+</span><span class="se"></span>  --enable-libass <span class="se">\
+</span><span class="se"></span>  --enable-shared <span class="se">\
+</span><span class="se"></span>  --disable-static <span class="se">\
+</span><span class="se"></span>  --disable-doc <span class="se">\
+</span><span class="se"></span>  --disable-debug <span class="se">\
+</span><span class="se"></span>  --extra-cflags<span class="o">=</span><span class="s2">&#34;-DFF_RKRGA_LEGACY_RGA2=1&#34;</span>
+
+make -j6
+make install
+ldconfig</code></pre></div>
+<p>编译完成后确认滤镜是否正常打入：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">ffmpeg -hide_banner -filters <span class="p">|</span> grep -E <span class="s1">&#39;subtitles|overlay_rkrga|vpp_rkrga&#39;</span></code></pre></div>
+<p>能看到 <code>subtitles</code>、<code>vpp_rkrga</code> 即说明编译成功。</p>
+
+<h4 id="4-4-欺骗-jellyfin-修补-ffmpeg-版本字符串">4.4 欺骗 Jellyfin：修补 FFmpeg 版本字符串</h4>
+
+<p>Jellyfin 在启动调用 FFmpeg 前，会先执行 <code>ffmpeg -version</code> 嗅探程序版本。如果识别到不符合规范的 Git Commit 哈希串（如 <code>ad9403c</code>），Jellyfin 内部的 <code>EncodingHelper</code> 会武断地认为这是一个低版本的老工具，从而强制降级回落后的参数集，甚至丢弃某些硬件参数。</p>
+
+<p>用一段简单的 Python 脚本对编译出的二进制进行版本硬修补：</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># patch_ver.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">OLD</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;ad9403c&#34;</span>
+<span class="n">NEW</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;6.0.1</span><span class="se">\x00\x00</span><span class="s2">&#34;</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">OLD</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">NEW</span><span class="p">)</span> <span class="o">==</span> <span class="mi">7</span>
+
+<span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&#34;rb&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">OLD</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;NOOP&#34;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">continue</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">OLD</span><span class="p">,</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">before</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pos</span> <span class="o">-</span> <span class="mi">40</span><span class="p">):</span><span class="n">pos</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="sa">b</span><span class="s2">&#34;version &#34;</span> <span class="ow">in</span> <span class="n">before</span> <span class="ow">or</span> <span class="n">before</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x00</span><span class="s2">&#34;</span><span class="p">)</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&#34;wb&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">OLD</span><span class="p">,</span> <span class="n">NEW</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;PATCHED&#34;</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></code></pre></div>
+<p>执行修补：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">python3 patch_ver.py /usr/local/bin/ffmpeg /usr/local/bin/ffprobe</code></pre></div>
+<h4 id="4-5-构建自足-bundle-解耦容器与宿主机">4.5 构建自足 Bundle（解耦容器与宿主机）</h4>
+
+<p>我们的 Jellyfin 运行在 Docker 容器中（基于 Ubuntu 环境），如果直接把宿主机编译的二进制挂进去，容易碰到系统依赖库版本冲突。我们把编译出的二进制与相关 <code>.so</code> 依赖抽离打包成一个完整的 Bundle，并利用 <code>patchelf</code> 将动态链接指向内部相对路径：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># 替换为你的数据盘实际挂载路径
+</span><span class="c1"></span><span class="nv">B</span><span class="o">=</span>/srv/dev-disk-by-uuid-&lt;DISK-UUID&gt;/volumes/jellyfin-rkmpp-ffmpeg
+rm -rf <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">&#34;</span>
+mkdir -p <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">/lib&#34;</span>
+
+install -m <span class="m">0755</span> /usr/local/bin/ffmpeg  <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">/ffmpeg.real&#34;</span>
+install -m <span class="m">0755</span> /usr/local/bin/ffprobe <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">/ffprobe&#34;</span>
+
+<span class="c1"># 复制 8 个 FFmpeg 核心库
+</span><span class="c1"></span><span class="k">for</span> n in libavcodec.so.60 libavdevice.so.60 libavfilter.so.9 libavformat.so.60 <span class="se">\
+</span><span class="se"></span>         libavutil.so.58 libpostproc.so.57 libswresample.so.4 libswscale.so.7<span class="p">;</span> <span class="k">do</span>
+  cp -L <span class="s2">&#34;/usr/local/lib/</span><span class="nv">$n</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">/lib/</span><span class="nv">$n</span><span class="s2">&#34;</span>
+<span class="k">done</span>
+
+<span class="c1"># 复制 MPP/RGA 及 CPU 编解码器
+</span><span class="c1"></span><span class="k">for</span> n in librockchip_mpp.so.1 librga.so.2<span class="p">;</span> <span class="k">do</span>
+  cp -L <span class="s2">&#34;/usr/local/lib/</span><span class="nv">$n</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">/lib/</span><span class="nv">$n</span><span class="s2">&#34;</span>
+<span class="k">done</span>
+
+<span class="k">for</span> n in libx264.so.155 libx265.so.165 libvpx.so.5<span class="p">;</span> <span class="k">do</span>
+  cp -L <span class="s2">&#34;/lib/aarch64-linux-gnu/</span><span class="nv">$n</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">/lib/</span><span class="nv">$n</span><span class="s2">&#34;</span>
+<span class="k">done</span>
+
+<span class="c1"># 复制 libass 及其字体渲染链路依赖
+</span><span class="c1"></span><span class="k">for</span> n in libass.so.9 libfribidi.so.0 libfontconfig.so.1 libfreetype.so.6 <span class="se">\
+</span><span class="se"></span>         libharfbuzz.so.0 libexpat.so.1 libuuid.so.1 libpng16.so.16 <span class="se">\
+</span><span class="se"></span>         libglib-2.0.so.0 libgraphite2.so.3 libpcre.so.3 libz.so.1<span class="p">;</span> <span class="k">do</span>
+  cp -L <span class="s2">&#34;/lib/aarch64-linux-gnu/</span><span class="nv">$n</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">/lib/</span><span class="nv">$n</span><span class="s2">&#34;</span>
+<span class="k">done</span>
+
+<span class="c1"># 修正 RPATH，确保优先从内部 lib 加载
+</span><span class="c1"></span>patchelf --set-rpath <span class="s1">&#39;$ORIGIN/lib&#39;</span> <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">/ffmpeg.real&#34;</span>
+patchelf --set-rpath <span class="s1">&#39;$ORIGIN/lib&#39;</span> <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">/ffprobe&#34;</span>
+
+<span class="k">for</span> f in <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">&#34;</span>/lib/*.so*<span class="p">;</span> <span class="k">do</span>
+  patchelf --force-rpath --set-rpath <span class="s1">&#39;$ORIGIN&#39;</span> <span class="s2">&#34;</span><span class="nv">$f</span><span class="s2">&#34;</span> <span class="m">2</span>&gt;/dev/null <span class="o">||</span> <span class="nb">true</span>
+<span class="k">done</span></code></pre></div>
+<p>检查依赖隔离性，确保没有找不到的链接：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker run --rm --entrypoint /bin/sh <span class="se">\
+</span><span class="se"></span>  -v <span class="s2">&#34;</span><span class="nv">$B</span><span class="s2">:/opt/rkmpp-ffmpeg:ro&#34;</span> <span class="se">\
+</span><span class="se"></span>  linuxserver/jellyfin:latest <span class="se">\
+</span><span class="se"></span>  -c <span class="s1">&#39;ldd /opt/rkmpp-ffmpeg/ffmpeg.real 2&gt;&amp;1 | grep &#34;not found&#34;&#39;</span></code></pre></div>
+<p>输出必须为空。</p>
+
+<hr />
+
+<h3 id="5-jellyfin-容器部署与配置">5. Jellyfin 容器部署与配置</h3>
+
+<h4 id="5-1-docker-compose-配置">5.1 Docker Compose 配置</h4>
+
+<p>创建或修改你的 <code>docker-compose.yml</code>，重点在于映射底层的视频与图形设备节点，开放组权限，并且由于 MPP 需要读取 <code>/proc/device-tree</code>，必须带上 <code>security_opt: [systempaths=unconfined]</code>：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">version<span class="p">:</span><span class="w"> </span><span class="s2">&#34;2.0&#34;</span><span class="w">
+</span><span class="w"></span>services<span class="p">:</span><span class="w">
+</span><span class="w">  </span>jellyfin<span class="p">:</span><span class="w">
+</span><span class="w">    </span>image<span class="p">:</span><span class="w"> </span>linuxserver/jellyfin<span class="p">:</span>latest<span class="w">
+</span><span class="w">    </span>container_name<span class="p">:</span><span class="w"> </span>jellyfin<span class="w">
+</span><span class="w">    </span>mem_limit<span class="p">:</span><span class="w"> </span><span class="m">1.</span>5g<span class="w">
+</span><span class="w">    </span>environment<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>PUID=<span class="m">1000</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>PGID=<span class="m">1000</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>TZ=Asia/Shanghai<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>FFMPEG_PATH=/opt/rkmpp-ffmpeg/ffmpeg<span class="w">
+</span><span class="w">    </span>ports<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span><span class="s2">&#34;8096:8096&#34;</span><span class="w">
+</span><span class="w">    </span>devices<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>/dev/vpu_service<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>/dev/rkvdec<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>/dev/rga<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>/dev/dri<span class="w">
+</span><span class="w">    </span>group_add<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span><span class="s2">&#34;44&#34;</span><span class="w">   </span><span class="c"># video 用户组 GID</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span><span class="s2">&#34;108&#34;</span><span class="w">  </span><span class="c"># render 用户组 GID</span><span class="w">
+</span><span class="w">    </span>security_opt<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>systempaths=unconfined<span class="w">
+</span><span class="w">    </span>volumes<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>/srv/dev-disk-by-uuid-&lt;DISK-UUID&gt;/volumes/jellyfin<span class="p">:</span>/config<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>/srv/dev-disk-by-uuid-&lt;DISK-UUID&gt;/TvShows<span class="p">:</span>/data/tvshows<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>/srv/dev-disk-by-uuid-&lt;DISK-UUID&gt;/Movies<span class="p">:</span>/data/movies<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>/srv/dev-disk-by-uuid-&lt;DISK-UUID&gt;/volumes/jellyfin-rkmpp-ffmpeg<span class="p">:</span>/opt/rkmpp-ffmpeg<span class="p">:</span>ro<span class="w">
+</span><span class="w">    </span>network_mode<span class="p">:</span><span class="w"> </span>bridge<span class="w">
+</span><span class="w">    </span>restart<span class="p">:</span><span class="w"> </span>unless-stopped</code></pre></div>
+<h4 id="5-2-核心拦截转换脚本-wrapper">5.2 核心拦截转换脚本：Wrapper</h4>
+
+<p>Jellyfin 自身生成的滤镜链往往并不理解 RK3399 上的这套特殊限制，因此我们需要写一个智能的 Shell Wrapper 作为入口，在实际调用真实 FFmpeg 之前对命令行参数做动态重写。</p>
+
+<p>将以下脚本保存为 <code>$B/ffmpeg</code> 并赋予执行权限 <code>chmod +x $B/ffmpeg</code>：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1"># Jellyfin FFmpeg wrapper for RK3399/TN3399 v3.
+</span><span class="c1">#
+</span><span class="c1"># Modes:
+</span><span class="c1">#   rga             simple RKMPP -&gt; scale -&gt; H.264 RKMPP
+</span><span class="c1">#   rga-subtitles   text subtitle burn-in: RGA scale + safe CPU subtitle burn
+</span><span class="c1">#   software        conservative fallback with fast_bilinear
+</span><span class="c1">#
+</span><span class="c1"># Text subtitle mode is enabled only when the incoming Jellyfin graph
+</span><span class="c1"># contains an actual subtitles= filter. A separately delivered subtitle
+</span><span class="c1"># track does not contain that filter and therefore never enters this mode.
+</span><span class="c1"># The main video is scaled by RGA; subtitles are rendered by libass after a
+</span><span class="c1"># single hwdownload because legacy rga2 BGRA overlay can produce green frames.
+</span><span class="c1">#
+</span><span class="c1"># Debug:
+</span><span class="c1">#   JELLYFIN_RGA_WRAPPER=0          disable RGA rewrite
+</span><span class="c1">#   JELLYFIN_RGA_WRAPPER_DRYRUN=1  print argv and do not execute FFmpeg
+</span><span class="c1">#   JELLYFIN_RGA_WRAPPER_LOG=...   append rewritten argv to a log
+</span><span class="c1">#   JELLYFIN_RGA_REAL=...          override ffmpeg.real (testing)
+</span><span class="c1">#   JELLYFIN_RGA_PROBE=...         override ffprobe (testing)
+</span><span class="c1"></span>
+<span class="nv">REAL</span><span class="o">=</span><span class="si">${</span><span class="nv">JELLYFIN_RGA_REAL</span><span class="k">:-</span><span class="p">/opt/rkmpp-ffmpeg/ffmpeg.real</span><span class="si">}</span>
+<span class="nv">PROBE</span><span class="o">=</span><span class="si">${</span><span class="nv">JELLYFIN_RGA_PROBE</span><span class="k">:-</span><span class="p">/opt/rkmpp-ffmpeg/ffprobe</span><span class="si">}</span>
+<span class="nv">LOG</span><span class="o">=</span><span class="si">${</span><span class="nv">JELLYFIN_RGA_WRAPPER_LOG</span><span class="k">:-</span><span class="p">/tmp/jellyfin-rga-wrapper.log</span><span class="si">}</span>
+
+log_args<span class="o">()</span> <span class="o">{</span>
+    <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$LOG</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">0</span>
+    <span class="o">{</span>
+        <span class="nb">printf</span> <span class="s1">&#39;%s mode=%s&#39;</span> <span class="s2">&#34;</span><span class="k">$(</span>date <span class="s1">&#39;+%F %T&#39;</span><span class="k">)</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span>
+        <span class="nb">shift</span>
+        <span class="nb">printf</span> <span class="s1">&#39; %q&#39;</span> <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>
+        <span class="nb">printf</span> <span class="s1">&#39;\n&#39;</span>
+    <span class="o">}</span> &gt;&gt; <span class="s2">&#34;</span><span class="nv">$LOG</span><span class="s2">&#34;</span> <span class="m">2</span>&gt;/dev/null <span class="o">||</span> <span class="nb">true</span>
+<span class="o">}</span>
+
+has_exact_arg<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">local</span> <span class="nv">needle</span><span class="o">=</span><span class="nv">$1</span> a
+    <span class="nb">shift</span>
+    <span class="k">for</span> a in <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span><span class="p">;</span> <span class="k">do</span>
+        <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s2">&#34;</span><span class="nv">$needle</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="m">0</span>
+    <span class="k">done</span>
+    <span class="k">return</span> <span class="m">1</span>
+<span class="o">}</span>
+
+trim<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">local</span> <span class="nv">s</span><span class="o">=</span><span class="nv">$1</span>
+    <span class="nv">s</span><span class="o">=</span><span class="si">${</span><span class="nv">s</span><span class="p">#</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">s</span><span class="p">%%[![:</span><span class="nv">space</span><span class="p">:]]*</span><span class="si">}</span><span class="s2">&#34;</span><span class="si">}</span>
+    <span class="nv">s</span><span class="o">=</span><span class="si">${</span><span class="nv">s</span><span class="p">%</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">s</span><span class="p">##*[![:</span><span class="nv">space</span><span class="p">:]]</span><span class="si">}</span><span class="s2">&#34;</span><span class="si">}</span>
+    <span class="nb">printf</span> <span class="s1">&#39;%s&#39;</span> <span class="s2">&#34;</span><span class="nv">$s</span><span class="s2">&#34;</span>
+<span class="o">}</span>
+
+<span class="c1"># Split on commas not escaped as &#34;\,&#34;.
+</span><span class="c1"></span>split_filter_graph<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">local</span> <span class="nv">graph</span><span class="o">=</span><span class="nv">$1</span> <span class="nv">cur</span><span class="o">=</span><span class="s1">&#39;&#39;</span> i ch
+    <span class="nv">FILTER_PARTS</span><span class="o">=()</span>
+    <span class="nv">i</span><span class="o">=</span><span class="m">0</span>
+    <span class="k">while</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$i</span><span class="s2">&#34;</span> -lt <span class="s2">&#34;</span><span class="si">${#</span><span class="nv">graph</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">do</span>
+        <span class="nv">ch</span><span class="o">=</span><span class="si">${</span><span class="nv">graph</span><span class="p">:</span><span class="nv">i</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$ch</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;\&#39;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="k">$((</span>i <span class="o">+</span> <span class="m">1</span><span class="k">))</span><span class="s2">&#34;</span> -lt <span class="s2">&#34;</span><span class="si">${#</span><span class="nv">graph</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nv">cur</span><span class="o">+=</span><span class="si">${</span><span class="nv">graph</span><span class="p">:</span><span class="nv">i</span><span class="p">:</span><span class="nv">2</span><span class="si">}</span>
+            <span class="nv">i</span><span class="o">=</span><span class="k">$((</span>i <span class="o">+</span> <span class="m">2</span><span class="k">))</span>
+        <span class="k">elif</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$ch</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nv">FILTER_PARTS</span><span class="o">+=(</span><span class="s2">&#34;</span><span class="nv">$cur</span><span class="s2">&#34;</span><span class="o">)</span>
+            <span class="nv">cur</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+            <span class="nv">i</span><span class="o">=</span><span class="k">$((</span>i <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+        <span class="k">else</span>
+            <span class="nv">cur</span><span class="o">+=</span><span class="nv">$ch</span>
+            <span class="nv">i</span><span class="o">=</span><span class="k">$((</span>i <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+        <span class="k">fi</span>
+    <span class="k">done</span>
+    <span class="nv">FILTER_PARTS</span><span class="o">+=(</span><span class="s2">&#34;</span><span class="nv">$cur</span><span class="s2">&#34;</span><span class="o">)</span>
+<span class="o">}</span>
+
+parse_scale_geometry<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">local</span> <span class="nv">scale</span><span class="o">=</span><span class="nv">$1</span> geo width height
+    <span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$scale</span><span class="s2">&#34;</span> in
+        <span class="nv">scale</span><span class="o">=</span>*<span class="o">)</span> <span class="nv">geo</span><span class="o">=</span><span class="si">${</span><span class="nv">scale</span><span class="p">#scale=</span><span class="si">}</span> <span class="p">;;</span>
+        *<span class="o">)</span> <span class="k">return</span> <span class="m">1</span> <span class="p">;;</span>
+    <span class="k">esac</span>
+    <span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$geo</span><span class="s2">&#34;</span> in
+        *:flags<span class="o">=</span>*<span class="p">|</span>*flags<span class="o">=</span>*<span class="o">)</span> <span class="k">return</span> <span class="m">1</span> <span class="p">;;</span>
+    <span class="k">esac</span>
+    <span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$geo</span><span class="s2">&#34;</span> in
+        *:*<span class="o">)</span>
+            <span class="nv">width</span><span class="o">=</span><span class="si">${</span><span class="nv">geo</span><span class="p">%%:*</span><span class="si">}</span>
+            <span class="nv">height</span><span class="o">=</span><span class="si">${</span><span class="nv">geo</span><span class="p">#*:</span><span class="si">}</span>
+            <span class="p">;;</span>
+        *<span class="o">)</span> <span class="k">return</span> <span class="m">1</span> <span class="p">;;</span>
+    <span class="k">esac</span>
+    <span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$height</span><span class="s2">&#34;</span> in
+        *:*<span class="o">)</span> <span class="k">return</span> <span class="m">1</span> <span class="p">;;</span>
+    <span class="k">esac</span>
+    <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$width</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$height</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+    <span class="nv">SCALE_WIDTH</span><span class="o">=</span><span class="nv">$width</span>
+    <span class="nv">SCALE_HEIGHT</span><span class="o">=</span><span class="nv">$height</span>
+    <span class="nv">SCALE_GEO</span><span class="o">=</span><span class="nv">$geo</span>
+    <span class="k">return</span> <span class="m">0</span>
+<span class="o">}</span>
+
+probe_input_size<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">local</span> <span class="nv">input</span><span class="o">=</span><span class="nv">$1</span> result iw ih
+    <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$input</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+    <span class="o">[</span> -x <span class="s2">&#34;</span><span class="nv">$PROBE</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> -f <span class="s2">&#34;</span><span class="nv">$PROBE</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+    <span class="nv">result</span><span class="o">=</span><span class="k">$(</span><span class="s2">&#34;</span><span class="nv">$PROBE</span><span class="s2">&#34;</span> -v error -select_streams v:0 <span class="se">\
+</span><span class="se"></span>        -show_entries <span class="nv">stream</span><span class="o">=</span>width,height -of <span class="nv">csv</span><span class="o">=</span><span class="nv">p</span><span class="o">=</span><span class="m">0</span> <span class="s2">&#34;</span><span class="nv">$input</span><span class="s2">&#34;</span> <span class="m">2</span>&gt;/dev/null<span class="k">)</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+    <span class="nv">result</span><span class="o">=</span><span class="si">${</span><span class="nv">result</span><span class="p">//</span><span class="s1">$&#39;\r&#39;</span><span class="p">/</span><span class="si">}</span>
+    <span class="nv">result</span><span class="o">=</span><span class="si">${</span><span class="nv">result</span><span class="p">//</span><span class="s1">$&#39;\n&#39;</span><span class="p">/</span><span class="si">}</span>
+    <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$result</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+    <span class="nv">IFS</span><span class="o">=</span>, <span class="nb">read</span> -r iw ih <span class="o">&lt;&lt;&lt;</span> <span class="s2">&#34;</span><span class="nv">$result</span><span class="s2">&#34;</span>
+    <span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$iw</span><span class="s2">&#34;</span> in <span class="s1">&#39;&#39;</span><span class="p">|</span>*<span class="o">[</span>!0-9<span class="o">]</span>*<span class="o">)</span> <span class="k">return</span> <span class="m">1</span> <span class="p">;;</span> <span class="k">esac</span>
+    <span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$ih</span><span class="s2">&#34;</span> in <span class="s1">&#39;&#39;</span><span class="p">|</span>*<span class="o">[</span>!0-9<span class="o">]</span>*<span class="o">)</span> <span class="k">return</span> <span class="m">1</span> <span class="p">;;</span> <span class="k">esac</span>
+    <span class="nv">INPUT_WIDTH</span><span class="o">=</span><span class="nv">$iw</span>
+    <span class="nv">INPUT_HEIGHT</span><span class="o">=</span><span class="nv">$ih</span>
+    <span class="k">return</span> <span class="m">0</span>
+<span class="o">}</span>
+
+<span class="c1"># Build a hardware subtitle graph only for Jellyfin&#39;s text-subtitle shape:
+</span><span class="c1"># setparams, scale, format, subtitles=...
+</span><span class="c1"></span>try_text_subtitle_graph<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">local</span> <span class="nv">graph</span><span class="o">=</span><span class="nv">$1</span> part <span class="nv">main_pre</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="nv">scale_part</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="nv">subtitle_part</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+    <span class="nb">local</span> <span class="nv">scale_index</span><span class="o">=</span>-1 <span class="nv">subtitle_index</span><span class="o">=</span>-1 idx
+    <span class="nb">local</span> -a <span class="nv">parts</span><span class="o">=()</span>
+
+    split_filter_graph <span class="s2">&#34;</span><span class="nv">$graph</span><span class="s2">&#34;</span>
+    <span class="nv">parts</span><span class="o">=(</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">FILTER_PARTS</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span><span class="o">)</span>
+
+    <span class="k">for</span> idx in <span class="s2">&#34;</span><span class="si">${</span><span class="p">!parts[@]</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">;</span> <span class="k">do</span>
+        <span class="nv">part</span><span class="o">=</span><span class="k">$(</span>trim <span class="s2">&#34;</span><span class="si">${</span><span class="nv">parts</span><span class="p">[idx]</span><span class="si">}</span><span class="s2">&#34;</span><span class="k">)</span>
+        <span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$part</span><span class="s2">&#34;</span> in
+            <span class="nv">setparams</span><span class="o">=</span>*<span class="o">)</span>
+                <span class="o">[</span> -z <span class="s2">&#34;</span><span class="nv">$main_pre</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+                <span class="nv">main_pre</span><span class="o">=</span><span class="nv">$part</span>
+                <span class="p">;;</span>
+            <span class="nv">scale</span><span class="o">=</span>*<span class="o">)</span>
+                <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$scale_index</span><span class="s2">&#34;</span> -lt <span class="m">0</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+                <span class="nv">scale_index</span><span class="o">=</span><span class="nv">$idx</span>
+                <span class="nv">scale_part</span><span class="o">=</span><span class="nv">$part</span>
+                <span class="p">;;</span>
+            <span class="nv">format</span><span class="o">=</span>nv12<span class="p">|</span><span class="nv">format</span><span class="o">=</span>yuv420p<span class="o">)</span>
+                <span class="c1"># The RGA filter emits the output format itself.
+</span><span class="c1"></span>                <span class="p">;;</span>
+            <span class="nv">subtitles</span><span class="o">=</span>*<span class="o">)</span>
+                <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$subtitle_index</span><span class="s2">&#34;</span> -lt <span class="m">0</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+                <span class="nv">subtitle_index</span><span class="o">=</span><span class="nv">$idx</span>
+                <span class="nv">subtitle_part</span><span class="o">=</span><span class="nv">$part</span>
+                <span class="p">;;</span>
+            <span class="s1">&#39;&#39;</span><span class="o">)</span>
+                <span class="p">;;</span>
+            *<span class="o">)</span>
+                <span class="k">return</span> <span class="m">1</span>
+                <span class="p">;;</span>
+        <span class="k">esac</span>
+    <span class="k">done</span>
+
+    <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$scale_index</span><span class="s2">&#34;</span> -ge <span class="m">0</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+    <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$subtitle_index</span><span class="s2">&#34;</span> -gt <span class="s2">&#34;</span><span class="nv">$scale_index</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+    parse_scale_geometry <span class="s2">&#34;</span><span class="nv">$scale_part</span><span class="s2">&#34;</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+
+    <span class="nb">local</span> <span class="nv">main_scale</span><span class="o">=</span><span class="s2">&#34;vpp_rkrga=w=</span><span class="nv">$SCALE_WIDTH</span><span class="s2">:h=</span><span class="nv">$SCALE_HEIGHT</span><span class="s2">:format=nv12&#34;</span>
+    <span class="nb">local</span> <span class="nv">main_chain</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+    <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$main_pre</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nv">main_chain</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$main_pre</span><span class="s2">,&#34;</span>
+    <span class="nv">main_chain</span><span class="o">+=</span><span class="s2">&#34;</span><span class="nv">$main_scale</span><span class="s2">&#34;</span>
+
+    <span class="c1"># RGA scales the main video in DRM_PRIME. The scaled frame is then
+</span><span class="c1"></span>    <span class="c1"># downloaded once and subtitles are rendered by libass on CPU. This avoids
+</span><span class="c1"></span>    <span class="c1"># the green-frame bug observed when legacy rga2 overlays a BGRA surface.
+</span><span class="c1"></span>    <span class="nv">RGA_GRAPH</span><span class="o">=</span><span class="s2">&#34;[0:v]</span><span class="si">${</span><span class="nv">main_chain</span><span class="si">}</span><span class="s2">,hwdownload,format=nv12,</span><span class="si">${</span><span class="nv">subtitle_part</span><span class="si">}</span><span class="s2">[out]&#34;</span>
+    <span class="nv">RGA_SUBTITLE</span><span class="o">=</span><span class="m">1</span>
+    <span class="k">return</span> <span class="m">0</span>
+<span class="o">}</span>
+
+<span class="c1"># Simple no-subtitle graph: setparams, scale, format.
+</span><span class="c1"></span>try_simple_graph<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">local</span> <span class="nv">graph</span><span class="o">=</span><span class="nv">$1</span> part <span class="nv">scale_count</span><span class="o">=</span><span class="m">0</span> <span class="nv">format_count</span><span class="o">=</span><span class="m">0</span> <span class="nv">format_after_scale</span><span class="o">=</span><span class="m">0</span>
+    <span class="nb">local</span> scale_geo width height
+    <span class="nb">local</span> -a <span class="nv">parts</span><span class="o">=()</span>
+
+    split_filter_graph <span class="s2">&#34;</span><span class="nv">$graph</span><span class="s2">&#34;</span>
+    <span class="nv">parts</span><span class="o">=(</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">FILTER_PARTS</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span><span class="o">)</span>
+    <span class="nv">SIMPLE_GRAPH</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+
+    <span class="k">for</span> part in <span class="s2">&#34;</span><span class="si">${</span><span class="nv">parts</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">;</span> <span class="k">do</span>
+        <span class="nv">part</span><span class="o">=</span><span class="k">$(</span>trim <span class="s2">&#34;</span><span class="nv">$part</span><span class="s2">&#34;</span><span class="k">)</span>
+        <span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$part</span><span class="s2">&#34;</span> in
+            <span class="nv">scale</span><span class="o">=</span>*<span class="o">)</span>
+                <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$scale_count</span><span class="s2">&#34;</span> -eq <span class="m">0</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+                parse_scale_geometry <span class="s2">&#34;</span><span class="nv">$part</span><span class="s2">&#34;</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+                <span class="nv">scale_geo</span><span class="o">=</span><span class="nv">$SCALE_GEO</span>
+                <span class="nv">width</span><span class="o">=</span><span class="nv">$SCALE_WIDTH</span>
+                <span class="nv">height</span><span class="o">=</span><span class="nv">$SCALE_HEIGHT</span>
+                <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$SIMPLE_GRAPH</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nv">SIMPLE_GRAPH</span><span class="o">+=</span><span class="s1">&#39;,&#39;</span>
+                <span class="nv">SIMPLE_GRAPH</span><span class="o">+=</span><span class="s2">&#34;vpp_rkrga=w=</span><span class="nv">$width</span><span class="s2">:h=</span><span class="nv">$height</span><span class="s2">:format=nv12&#34;</span>
+                <span class="nv">scale_count</span><span class="o">=</span><span class="k">$((</span>scale_count <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+                <span class="nv">format_after_scale</span><span class="o">=</span><span class="m">0</span>
+                <span class="p">;;</span>
+            <span class="nv">format</span><span class="o">=</span>nv12<span class="p">|</span><span class="nv">format</span><span class="o">=</span>yuv420p<span class="o">)</span>
+                <span class="nv">format_count</span><span class="o">=</span><span class="k">$((</span>format_count <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+                <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$format_after_scale</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+                    <span class="k">continue</span>
+                <span class="k">fi</span>
+                <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$SIMPLE_GRAPH</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nv">SIMPLE_GRAPH</span><span class="o">+=</span><span class="s1">&#39;,&#39;</span>
+                <span class="nv">SIMPLE_GRAPH</span><span class="o">+=</span><span class="nv">$part</span>
+                <span class="p">;;</span>
+            <span class="nv">setparams</span><span class="o">=</span>*<span class="o">)</span>
+                <span class="o">[</span> -z <span class="s2">&#34;</span><span class="nv">$SIMPLE_GRAPH</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+                <span class="nv">SIMPLE_GRAPH</span><span class="o">=</span><span class="nv">$part</span>
+                <span class="p">;;</span>
+            <span class="s1">&#39;&#39;</span><span class="o">)</span>
+                <span class="p">;;</span>
+            *<span class="o">)</span>
+                <span class="k">return</span> <span class="m">1</span>
+                <span class="p">;;</span>
+        <span class="k">esac</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$scale_count</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[[</span> <span class="s2">&#34;</span><span class="nv">$SIMPLE_GRAPH</span><span class="s2">&#34;</span> <span class="o">==</span> *vpp_rkrga* <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nv">format_after_scale</span><span class="o">=</span><span class="m">1</span>
+        <span class="k">elif</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$format_after_scale</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[[</span> <span class="s2">&#34;</span><span class="nv">$part</span><span class="s2">&#34;</span> !<span class="o">=</span> <span class="nv">format</span><span class="o">=</span>nv12 <span class="o">&amp;&amp;</span> <span class="s2">&#34;</span><span class="nv">$part</span><span class="s2">&#34;</span> !<span class="o">=</span> <span class="nv">format</span><span class="o">=</span>yuv420p <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nv">format_after_scale</span><span class="o">=</span><span class="m">0</span>
+        <span class="k">fi</span>
+    <span class="k">done</span>
+
+    <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$scale_count</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$format_count</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+    <span class="k">return</span> <span class="m">0</span>
+<span class="o">}</span>
+
+find_vf_graph<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">local</span> -a <span class="nv">src</span><span class="o">=(</span><span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span><span class="o">)</span>
+    <span class="nb">local</span> i
+    <span class="nv">VF_INDEX</span><span class="o">=</span>-1
+    <span class="nv">VF_GRAPH</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+    <span class="nv">INPUT_PATH</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="o">((</span><span class="nv">i</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span> i &lt; <span class="si">${#</span><span class="nv">src</span><span class="p">[@]</span><span class="si">}</span><span class="p">;</span> i++<span class="o">))</span><span class="p">;</span> <span class="k">do</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;-vf&#39;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;-filter:v&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$VF_INDEX</span><span class="s2">&#34;</span> -lt <span class="m">0</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+            <span class="nv">VF_INDEX</span><span class="o">=</span><span class="nv">$i</span>
+            <span class="nv">VF_GRAPH</span><span class="o">=</span><span class="si">${</span><span class="nv">src</span><span class="p">[i+1]</span><span class="k">:-</span><span class="si">}</span>
+        <span class="k">fi</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;-i&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="o">[</span> -z <span class="s2">&#34;</span><span class="nv">$INPUT_PATH</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nv">INPUT_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">src</span><span class="p">[i+1]</span><span class="k">:-</span><span class="si">}</span>
+        <span class="k">fi</span>
+    <span class="k">done</span>
+    <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$VF_INDEX</span><span class="s2">&#34;</span> -ge <span class="m">0</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$VF_GRAPH</span><span class="s2">&#34;</span> <span class="o">]</span>
+<span class="o">}</span>
+
+find_video_map<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">local</span> -a <span class="nv">src</span><span class="o">=(</span><span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span><span class="o">)</span>
+    <span class="nb">local</span> i value
+    <span class="nv">VIDEO_MAP_INDEX</span><span class="o">=</span>-1
+    <span class="k">for</span> <span class="o">((</span><span class="nv">i</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span> i &lt; <span class="si">${#</span><span class="nv">src</span><span class="p">[@]</span><span class="si">}</span><span class="p">;</span> i++<span class="o">))</span><span class="p">;</span> <span class="k">do</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;-map&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nv">value</span><span class="o">=</span><span class="si">${</span><span class="nv">src</span><span class="p">[i+1]</span><span class="k">:-</span><span class="si">}</span>
+            <span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$value</span><span class="s2">&#34;</span> in
+                <span class="s1">&#39;0:0&#39;</span><span class="p">|</span><span class="s1">&#39;0:v:0&#39;</span><span class="o">)</span>
+                    <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$VIDEO_MAP_INDEX</span><span class="s2">&#34;</span> -lt <span class="m">0</span> <span class="o">]</span> <span class="o">||</span> <span class="k">return</span> <span class="m">1</span>
+                    <span class="nv">VIDEO_MAP_INDEX</span><span class="o">=</span><span class="nv">$i</span>
+                    <span class="p">;;</span>
+            <span class="k">esac</span>
+        <span class="k">fi</span>
+    <span class="k">done</span>
+    <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$VIDEO_MAP_INDEX</span><span class="s2">&#34;</span> -ge <span class="m">0</span> <span class="o">]</span>
+<span class="o">}</span>
+
+<span class="c1"># Rebuild argv for either simple or subtitle hardware graph.
+</span><span class="c1"></span>build_rga_args<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">local</span> -a <span class="nv">src</span><span class="o">=(</span><span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span><span class="o">)</span> <span class="nv">out</span><span class="o">=()</span>
+    <span class="nb">local</span> i <span class="nv">have_hw_rk</span><span class="o">=</span><span class="m">0</span> <span class="nv">inserted_hw</span><span class="o">=</span><span class="m">0</span>
+
+    <span class="k">for</span> <span class="o">((</span><span class="nv">i</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span> i &lt; <span class="si">${#</span><span class="nv">src</span><span class="p">[@]</span><span class="si">}</span><span class="p">;</span> i++<span class="o">))</span><span class="p">;</span> <span class="k">do</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;-hwaccel&#39;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i+1]</span><span class="k">:-</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;rkmpp&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nv">have_hw_rk</span><span class="o">=</span><span class="m">1</span>
+            <span class="nb">break</span>
+        <span class="k">fi</span>
+    <span class="k">done</span>
+
+    <span class="k">for</span> <span class="o">((</span><span class="nv">i</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span> i &lt; <span class="si">${#</span><span class="nv">src</span><span class="p">[@]</span><span class="si">}</span><span class="p">;</span> i++<span class="o">))</span><span class="p">;</span> <span class="k">do</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;-i&#39;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$have_hw_rk</span><span class="s2">&#34;</span> -eq <span class="m">0</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$inserted_hw</span><span class="s2">&#34;</span> -eq <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nv">out</span><span class="o">+=(</span><span class="s1">&#39;-hwaccel&#39;</span> <span class="s1">&#39;rkmpp&#39;</span> <span class="s1">&#39;-hwaccel_output_format&#39;</span> <span class="s1">&#39;drm_prime&#39;</span><span class="o">)</span>
+            <span class="nv">inserted_hw</span><span class="o">=</span><span class="m">1</span>
+        <span class="k">fi</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;-hwaccel&#39;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i+1]</span><span class="k">:-</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;rkmpp&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nv">out</span><span class="o">+=(</span><span class="s1">&#39;-hwaccel&#39;</span> <span class="s1">&#39;rkmpp&#39;</span> <span class="s1">&#39;-hwaccel_output_format&#39;</span> <span class="s1">&#39;drm_prime&#39;</span><span class="o">)</span>
+            <span class="nv">i</span><span class="o">=</span><span class="k">$((</span>i <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+            <span class="k">continue</span>
+        <span class="k">fi</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$i</span><span class="s2">&#34;</span> -eq <span class="s2">&#34;</span><span class="nv">$VF_INDEX</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">RGA_SUBTITLE</span><span class="k">:-</span><span class="nv">0</span><span class="si">}</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+                <span class="nv">out</span><span class="o">+=(</span><span class="s1">&#39;-filter_complex&#39;</span> <span class="s2">&#34;</span><span class="nv">$RGA_GRAPH</span><span class="s2">&#34;</span><span class="o">)</span>
+            <span class="k">else</span>
+                <span class="nv">out</span><span class="o">+=(</span><span class="s1">&#39;-vf&#39;</span> <span class="s2">&#34;</span><span class="nv">$SIMPLE_GRAPH</span><span class="s2">&#34;</span><span class="o">)</span>
+            <span class="k">fi</span>
+            <span class="nv">i</span><span class="o">=</span><span class="k">$((</span>i <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+            <span class="k">continue</span>
+        <span class="k">fi</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$i</span><span class="s2">&#34;</span> -eq <span class="s2">&#34;</span><span class="nv">$VIDEO_MAP_INDEX</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">RGA_SUBTITLE</span><span class="k">:-</span><span class="nv">0</span><span class="si">}</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nv">out</span><span class="o">+=(</span><span class="s1">&#39;-map&#39;</span> <span class="s1">&#39;[out]&#39;</span><span class="o">)</span>
+            <span class="nv">i</span><span class="o">=</span><span class="k">$((</span>i <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+            <span class="k">continue</span>
+        <span class="k">fi</span>
+        <span class="nv">out</span><span class="o">+=(</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span><span class="o">)</span>
+    <span class="k">done</span>
+    <span class="nv">RGA_ARGS</span><span class="o">=(</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">out</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span><span class="o">)</span>
+<span class="o">}</span>
+
+build_software_args<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">local</span> -a <span class="nv">src</span><span class="o">=(</span><span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span><span class="o">)</span> <span class="nv">out</span><span class="o">=()</span>
+    <span class="nb">local</span> i <span class="nv">inserted</span><span class="o">=</span><span class="m">0</span>
+    <span class="k">for</span> i in <span class="s2">&#34;</span><span class="si">${</span><span class="p">!src[@]</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">;</span> <span class="k">do</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$inserted</span><span class="s2">&#34;</span> -eq <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="k">case</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span> in
+                -vf<span class="p">|</span>-filter<span class="p">|</span>-filter_complex<span class="p">|</span>-filter:v*<span class="o">)</span>
+                    <span class="nv">out</span><span class="o">+=(</span><span class="s1">&#39;-sws_flags&#39;</span> <span class="s1">&#39;fast_bilinear&#39;</span><span class="o">)</span>
+                    <span class="nv">inserted</span><span class="o">=</span><span class="m">1</span>
+                    <span class="p">;;</span>
+            <span class="k">esac</span>
+        <span class="k">fi</span>
+        <span class="nv">out</span><span class="o">+=(</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">src</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span><span class="o">)</span>
+    <span class="k">done</span>
+    <span class="nv">SW_ARGS</span><span class="o">=(</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">out</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="nv">args</span><span class="o">=(</span><span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span><span class="o">)</span>
+<span class="nv">use_rga</span><span class="o">=</span><span class="m">0</span>
+<span class="nv">RGA_SUBTITLE</span><span class="o">=</span><span class="m">0</span>
+<span class="nv">VIDEO_MAP_INDEX</span><span class="o">=</span>-1
+<span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">JELLYFIN_RGA_WRAPPER</span><span class="k">:-</span><span class="nv">1</span><span class="si">}</span><span class="s2">&#34;</span> !<span class="o">=</span> <span class="s1">&#39;0&#39;</span> <span class="o">]</span> <span class="se">\
+</span><span class="se"></span>    <span class="o">&amp;&amp;</span> has_exact_arg <span class="s1">&#39;h264_rkmpp&#39;</span> <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span> <span class="se">\
+</span><span class="se"></span>    <span class="o">&amp;&amp;</span> ! has_exact_arg <span class="s1">&#39;-filter_complex&#39;</span> <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span> <span class="se">\
+</span><span class="se"></span>    <span class="o">&amp;&amp;</span> ! has_exact_arg <span class="s1">&#39;-hwaccel_output_format&#39;</span> <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nv">input_count</span><span class="o">=</span><span class="m">0</span>
+    <span class="nv">init_rk</span><span class="o">=</span><span class="m">0</span>
+    <span class="nv">hw_rk</span><span class="o">=</span><span class="m">0</span>
+    <span class="nv">other_hw</span><span class="o">=</span><span class="m">0</span>
+    <span class="nv">force_decode</span><span class="o">=</span><span class="m">0</span>
+    <span class="k">for</span> <span class="o">((</span><span class="nv">i</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span> i &lt; <span class="si">${#</span><span class="nv">args</span><span class="p">[@]</span><span class="si">}</span><span class="p">;</span> i++<span class="o">))</span><span class="p">;</span> <span class="k">do</span>
+        <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">args</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;-i&#39;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nv">input_count</span><span class="o">=</span><span class="k">$((</span>input_count <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">args</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;-init_hw_device&#39;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">args</span><span class="p">[i+1]</span><span class="k">:-</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">==</span> <span class="nv">rkmpp</span><span class="o">=</span>* <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nv">init_rk</span><span class="o">=</span><span class="m">1</span>
+        <span class="k">fi</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">args</span><span class="p">[i]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;-hwaccel&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">args</span><span class="p">[i+1]</span><span class="k">:-</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;rkmpp&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+                <span class="nv">hw_rk</span><span class="o">=</span><span class="m">1</span>
+            <span class="k">else</span>
+                <span class="nv">other_hw</span><span class="o">=</span><span class="m">1</span>
+            <span class="k">fi</span>
+        <span class="k">fi</span>
+    <span class="k">done</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$input_count</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$init_rk</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$other_hw</span><span class="s2">&#34;</span> -eq <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="k">if</span> find_vf_graph <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span> <span class="o">&amp;&amp;</span> <span class="o">[[</span> <span class="s2">&#34;</span><span class="nv">$VF_GRAPH</span><span class="s2">&#34;</span> <span class="o">==</span> *subtitles<span class="o">=</span>* <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="k">if</span> find_video_map <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span><span class="p">;</span> <span class="k">then</span>
+                <span class="k">if</span> try_text_subtitle_graph <span class="s2">&#34;</span><span class="nv">$VF_GRAPH</span><span class="s2">&#34;</span><span class="p">;</span> <span class="k">then</span>
+                    build_rga_args <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span> <span class="o">&amp;&amp;</span> <span class="nv">use_rga</span><span class="o">=</span><span class="m">1</span>
+                <span class="k">fi</span>
+            <span class="k">fi</span>
+        <span class="k">elif</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$hw_rk</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span> <span class="o">||</span> <span class="o">{</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$hw_rk</span><span class="s2">&#34;</span> -eq <span class="m">0</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">args</span><span class="p">[*]</span><span class="k">:-</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">==</span> *format<span class="o">=</span>yuv420p* <span class="o">]]</span><span class="p">;</span> <span class="o">}</span><span class="p">;</span> <span class="k">then</span>
+            <span class="k">if</span> find_vf_graph <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span> <span class="o">&amp;&amp;</span> try_simple_graph <span class="s2">&#34;</span><span class="nv">$VF_GRAPH</span><span class="s2">&#34;</span><span class="p">;</span> <span class="k">then</span>
+                build_rga_args <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span> <span class="o">&amp;&amp;</span> <span class="nv">use_rga</span><span class="o">=</span><span class="m">1</span>
+            <span class="k">fi</span>
+        <span class="k">fi</span>
+    <span class="k">fi</span>
+<span class="k">fi</span>
+
+<span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$use_rga</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$RGA_SUBTITLE</span><span class="s2">&#34;</span> -eq <span class="m">1</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        log_args rga-subtitles <span class="s2">&#34;</span><span class="si">${</span><span class="nv">RGA_ARGS</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span>
+        <span class="nv">mode</span><span class="o">=</span>rga-subtitles
+    <span class="k">else</span>
+        log_args rga <span class="s2">&#34;</span><span class="si">${</span><span class="nv">RGA_ARGS</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span>
+        <span class="nv">mode</span><span class="o">=</span>rga
+    <span class="k">fi</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">JELLYFIN_RGA_WRAPPER_DRYRUN</span><span class="k">:-</span><span class="nv">0</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">printf</span> <span class="s1">&#39;%s&#39;</span> <span class="s2">&#34;</span><span class="nv">$mode</span><span class="s2">&#34;</span><span class="p">;</span> <span class="nb">printf</span> <span class="s1">&#39; %q&#39;</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">RGA_ARGS</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">;</span> <span class="nb">printf</span> <span class="s1">&#39;\n&#39;</span>
+        <span class="nb">exit</span> <span class="m">0</span>
+    <span class="k">fi</span>
+    <span class="nb">exec</span> <span class="s2">&#34;</span><span class="nv">$REAL</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">RGA_ARGS</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span>
+<span class="k">fi</span>
+
+build_software_args <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>
+log_args software <span class="s2">&#34;</span><span class="si">${</span><span class="nv">SW_ARGS</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span>
+<span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">JELLYFIN_RGA_WRAPPER_DRYRUN</span><span class="k">:-</span><span class="nv">0</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">printf</span> <span class="s1">&#39;SOFTWARE&#39;</span><span class="p">;</span> <span class="nb">printf</span> <span class="s1">&#39; %q&#39;</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">SW_ARGS</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">;</span> <span class="nb">printf</span> <span class="s1">&#39;\n&#39;</span>
+    <span class="nb">exit</span> <span class="m">0</span>
+<span class="k">fi</span>
+<span class="nb">exec</span> <span class="s2">&#34;</span><span class="nv">$REAL</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">SW_ARGS</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span></code></pre></div>
+<h4 id="5-3-jellyfin-控制台设置">5.3 Jellyfin 控制台设置</h4>
+
+<p>在容器启动后，登录 Jellyfin 控制台进行配置：</p>
+
+<ol>
+<li><p><strong>进入 控制台 → 播放 → 硬件加速</strong>：</p>
+
+<ul>
+<li>硬件加速选项选择：<code>RKMPP</code></li>
+<li>启用硬件编码：勾选</li>
+<li>硬件解码格式：将 <code>H264</code>、<code>HEVC</code>、<code>VC1</code>、<code>VP8</code>、<code>VP9</code>、<code>MPEG2</code> 全部勾选。</li>
+<li><strong>特别注意</strong>：务必勾选 <code>启用 10 位 HEVC 解码</code>（现在海量 4K 资源都是 HEVC Main 10，RK3399 的 rkvdec 硬解 10bit 没有任何压力；如果不勾选，遇到 10bit 会强制回落到 CPU 软解，直接导致转码暴毙）。</li>
+<li>色调映射（Tone mapping）：<strong>不要开启</strong>（Mali-T864 的 OpenCL 支持在该内核下跑不通互操作）。</li>
+<li>编码格式：仅保留 H.264（RK3399 没有硬件 HEVC 编码器，编码只能走 H.264）。</li>
+</ul></li>
+
+<li><p><strong>客户端字幕烧录选项避坑</strong>：
+千万不要试图直接在服务端的 <code>encoding.xml</code> 配置文件中强加 <code>&lt;AlwaysBurnInSubtitleWhenTranscoding&gt;</code>，这是 Web 客户端的 Session 级状态参数，写进 xml 会被 Jellyfin 服务端初始化时自动覆盖或抹除。<br />
+如果客户端确实需要服务端强制烧录字幕，应该在具体播放端的客户端中开启（<code>设置 → 字幕 → 烧录字幕</code> 选择 <code>始终</code>）。我们的 wrapper 能够智能嗅探请求中是否真的带有 <code>subtitles=</code> 滤镜，按需切换转码模式。</p></li>
+</ol>
+
+<hr />
+
+<h3 id="6-实测验证与压测">6. 实测验证与压测</h3>
+
+<p>改完这一整套方案后，启动转码播放，通过以下手段观察系统状态：</p>
+
+<h4 id="6-1-检查实际执行参数与日志">6.1 检查实际执行参数与日志</h4>
+
+<p>进入容器内查看 wrapper 输出：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker <span class="nb">exec</span> jellyfin tail -f /tmp/jellyfin-rga-wrapper.log</code></pre></div>
+<p>观察到日志输出为 <code>mode=rga</code> 或 <code>mode=rga-subtitles</code>，说明入参已成功命中硬件加速链路。</p>
+
+<p>在宿主机上抓取实际执行的进程命令行：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="k">for</span> p in <span class="k">$(</span>pgrep -x ffmpeg.real<span class="k">)</span><span class="p">;</span> <span class="k">do</span>
+    tr <span class="s1">&#39;\0&#39;</span> <span class="s1">&#39; &#39;</span> &lt; /proc/<span class="nv">$p</span>/cmdline
+    <span class="nb">echo</span>
+<span class="k">done</span></code></pre></div>
+<p>看到参数里准确包含了 <code>vpp_rkrga=</code>，且带有文本字幕时包含 <code>hwdownload,format=nv12,subtitles=...</code> 且编码器为 <code>h264_rkmpp</code>，说明流水线完全吻合预期。</p>
+
+<h4 id="6-2-硬件中断计数-硬解硬编的照妖镜">6.2 硬件中断计数（硬解硬编的照妖镜）</h4>
+
+<p>软件层面的监控有时会说谎，但硬件中断不会。通过监控 <code>/proc/interrupts</code> 中的硬件中断变化，能 100% 确认硬件单元是否参与了工作：</p>
+
+<ul>
+<li><code>IRQ 48</code>：<code>rkvdec</code>（RK3399 的主力高清硬件解码器）</li>
+<li><code>IRQ 46</code>：<code>vpu_service</code>（VEPU 硬件编码器）</li>
+<li><code>IRQ 50</code>：<code>rga</code>（2D 硬件缩放器）</li>
+</ul>
+
+<p>运行监控脚本：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">r0</span><span class="o">=</span><span class="k">$(</span>awk <span class="s1">&#39;$1==&#34;50:&#34;{s+=$2} END{print s+0}&#39;</span> /proc/interrupts<span class="k">)</span>
+<span class="nv">d0</span><span class="o">=</span><span class="k">$(</span>awk <span class="s1">&#39;$1==&#34;48:&#34;{s+=$2} END{print s+0}&#39;</span> /proc/interrupts<span class="k">)</span>
+<span class="nv">e0</span><span class="o">=</span><span class="k">$(</span>awk <span class="s1">&#39;$1==&#34;46:&#34;{s+=$2} END{print s+0}&#39;</span> /proc/interrupts<span class="k">)</span>
+sleep <span class="m">5</span>
+<span class="nv">r1</span><span class="o">=</span><span class="k">$(</span>awk <span class="s1">&#39;$1==&#34;50:&#34;{s+=$2} END{print s+0}&#39;</span> /proc/interrupts<span class="k">)</span>
+<span class="nv">d1</span><span class="o">=</span><span class="k">$(</span>awk <span class="s1">&#39;$1==&#34;48:&#34;{s+=$2} END{print s+0}&#39;</span> /proc/interrupts<span class="k">)</span>
+<span class="nv">e1</span><span class="o">=</span><span class="k">$(</span>awk <span class="s1">&#39;$1==&#34;46:&#34;{s+=$2} END{print s+0}&#39;</span> /proc/interrupts<span class="k">)</span>
+<span class="nb">echo</span> <span class="s2">&#34;RGA_DIFF=</span><span class="k">$((</span>r1-r0<span class="k">))</span><span class="s2"> DEC_DIFF=</span><span class="k">$((</span>d1-d0<span class="k">))</span><span class="s2"> ENC_DIFF=</span><span class="k">$((</span>e1-e0<span class="k">))</span><span class="s2">&#34;</span></code></pre></div>
+<p>当播放 4K HEVC 10bit 转码 1080p 时，<code>RGA_DIFF</code>、<code>DEC_DIFF</code> 和 <code>ENC_DIFF</code> 每秒都在快速增加，硬件单元全员满负荷工作！</p>
+
+<h4 id="6-3-cpu-表现对比">6.3 CPU 表现对比</h4>
+
+<p>找了一部 4K HDR 10bit、码率 45Mbps 的电影进行转码测试：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">测试模式</th>
+<th align="left">典型 FFmpeg 单进程 CPU 占用</th>
+<th align="left">播放状态</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left"><strong>未启用本方案（纯软解软编）</strong></td>
+<td align="left"><strong>500% ~ 550%</strong></td>
+<td align="left">严重卡顿，持续缓冲，基本不可看</td>
+</tr>
+
+<tr>
+<td align="left"><strong>打通硬解 + RGA 缩放 + 硬编</strong></td>
+<td align="left"><strong>29% ~ 35%</strong></td>
+<td align="left">丝滑秒开，进度条拖拽响应迅速</td>
+</tr>
+</tbody>
+</table>
+
+<p>四路同时转码时，开发板整机的负载均值也稳定在很低的水平。RK3399 的大核心 Cortex-A72 算力原本就强于 RK3568，如今补齐了硬件加速的最后一块拼图，整体表现甚至优于不少入门级的四核 NAS。</p>
+
+<hr />
+
+<h3 id="总结">总结</h3>
+
+<p>架构演进和底层性能排查其实是一个道理：<strong>不能脱离实际场景去追求盲目的技术纯粹性</strong>。</p>
+
+<p>在折腾的过程中，很多次我都想过要不要干脆换个新板子，或者为了让字幕贴图也走 RGA 硬加速去死磕驱动重构。但冷静下来想一想，搭建这台家庭 NAS 的根本诉求是为了稳定低功耗地服务家庭娱乐，而不是为了跑分。</p>
+
+<p>当发现 RGA2 在老内核上处理透明通道贴图有硬件缺陷时，退一步采用“<strong>硬件硬解 + 硬件缩放 + CPU 极低损耗烧录字幕 + 硬件编码</strong>”的混合方案，反而把工程复杂度降到了最低，在妥协中找到了真正的最优解。</p>
+
+<p>这几年 AI 工具的爆发，也实实在在改变了我们这些老程序员折腾技术的方式。原本面对浩如烟海的内核驱动源码、FFmpeg 滤镜链路和晦涩的 ioctl 错误，单凭个人在业余时间死磕，很容易由于信息不对称在中途放弃。而现在有了 AI 的代码级检索和逻辑推理协助，把许多原本只属于专业嵌入式大厂的调优能力，平民化地赋能给了每一个普通的开发者。</p>
+
+<p>老旧的 TN3399v3 又重新焕发了新生，这场折腾很有意思，也收获颇丰。</p>
+
+
+</div>
+
+
+
+<script src="https://utteranc.es/client.js"
+  repo="zhu327/zhu327.github.io"
+  issue-term="title"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  </body>
+</html>
+
