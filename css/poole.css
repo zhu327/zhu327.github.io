@@ -89,11 +89,11 @@ h1 {
 }
 h2 {
   margin-top: 1rem;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
 }
 h3 {
   margin-top: 1.5rem;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 h4, h5, h6 {
   margin-top: 1rem;
@@ -321,7 +321,7 @@ tbody tr:nth-child(odd) th {
 .page-title,
 .post-title {
   margin-top: 0;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   line-height: 1.4;
 }
 
