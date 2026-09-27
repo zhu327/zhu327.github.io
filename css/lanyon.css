@@ -310,6 +310,8 @@ a.sidebar-nav-item:focus {
 .page-title,
 .post-title {
   margin-top: 0;
+  font-size: 1.5rem;
+  line-height: 1.4;
 }
 
 /* Meta data line below post title */
